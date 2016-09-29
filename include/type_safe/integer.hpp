@@ -8,6 +8,7 @@
 #include <limits>
 #include <type_traits>
 
+#include <type_safe/detail/force_inline.hpp>
 #include <type_safe/assert.hpp>
 
 namespace type_safe
@@ -103,12 +104,12 @@ namespace type_safe
 
         //=== constructors ===//
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE constexpr integer(const T& val) noexcept : value_(val)
+        TYPE_SAFE_FORCE_INLINE constexpr integer(const T& val) noexcept : value_(val)
         {
         }
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE constexpr integer(const integer<T>& val) noexcept
+        TYPE_SAFE_FORCE_INLINE constexpr integer(const integer<T>& val) noexcept
             : value_(static_cast<T>(val))
         {
         }
@@ -118,14 +119,14 @@ namespace type_safe
 
         //=== assignment ===//
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator=(const T& val) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator=(const T& val) noexcept
         {
             value_ = val;
             return *this;
         }
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator=(const integer<T>& val) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator=(const integer<T>& val) noexcept
         {
             value_ = static_cast<T>(val);
             return *this;
@@ -135,38 +136,38 @@ namespace type_safe
         integer& operator=(T) = delete;
 
         //=== conversion back ===//
-        DEBUG_ASSERT_FORCE_INLINE explicit constexpr operator integer_type() const noexcept
+        TYPE_SAFE_FORCE_INLINE explicit constexpr operator integer_type() const noexcept
         {
             return value_;
         }
 
         //=== unary operators ===//
-        DEBUG_ASSERT_FORCE_INLINE constexpr integer operator+() const noexcept
+        TYPE_SAFE_FORCE_INLINE constexpr integer operator+() const noexcept
         {
             return *this;
         }
 
-        DEBUG_ASSERT_FORCE_INLINE constexpr integer operator-() const noexcept
+        TYPE_SAFE_FORCE_INLINE constexpr integer operator-() const noexcept
         {
             static_assert(std::is_signed<integer_type>::value,
                           "cannot call unary minus on unsigned integer");
             return -value_;
         }
 
-        DEBUG_ASSERT_FORCE_INLINE integer& operator++() noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator++() noexcept
         {
             ++value_;
             return *this;
         }
 
-        DEBUG_ASSERT_FORCE_INLINE integer operator++(int)noexcept
+        TYPE_SAFE_FORCE_INLINE integer operator++(int)noexcept
         {
             auto res = *this;
             ++value_;
             return res;
         }
 
-        DEBUG_ASSERT_FORCE_INLINE integer& operator--() noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator--() noexcept
         {
             DEBUG_ASSERT(std::is_signed<integer_type>::value || value_ > integer_type(0),
                          assert_handler{}, "underflow detected");
@@ -174,7 +175,7 @@ namespace type_safe
             return *this;
         }
 
-        DEBUG_ASSERT_FORCE_INLINE integer operator--(int)noexcept
+        TYPE_SAFE_FORCE_INLINE integer operator--(int)noexcept
         {
             DEBUG_ASSERT(std::is_signed<integer_type>::value || value_ > integer_type(0),
                          assert_handler{}, "underflow detected");
@@ -185,14 +186,14 @@ namespace type_safe
 
         //=== compound assignment ====//
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator+=(const integer<T>& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator+=(const integer<T>& other) noexcept
         {
             value_ += static_cast<T>(other);
             return *this;
         }
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator+=(const T& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator+=(const T& other) noexcept
         {
             value_ += other;
             return *this;
@@ -202,7 +203,7 @@ namespace type_safe
         integer& operator+=(T) = delete;
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator-=(const integer<T>& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator-=(const integer<T>& other) noexcept
         {
             DEBUG_ASSERT(std::is_signed<T>::value || value_ > static_cast<T>(other),
                          assert_handler{}, "underflow detected");
@@ -211,7 +212,7 @@ namespace type_safe
         }
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator-=(const T& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator-=(const T& other) noexcept
         {
             DEBUG_ASSERT(std::is_signed<T>::value || value_ > other, assert_handler{},
                          "underflow detected");
@@ -223,14 +224,14 @@ namespace type_safe
         integer& operator-=(T) = delete;
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator*=(const integer<T>& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator*=(const integer<T>& other) noexcept
         {
             value_ *= static_cast<T>(other);
             return *this;
         }
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator*=(const T& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator*=(const T& other) noexcept
         {
             value_ *= other;
             return *this;
@@ -240,14 +241,14 @@ namespace type_safe
         integer& operator*=(T) = delete;
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator/=(const integer<T>& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator/=(const integer<T>& other) noexcept
         {
             value_ /= static_cast<T>(other);
             return *this;
         }
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator/=(const T& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator/=(const T& other) noexcept
         {
             value_ /= other;
             return *this;
@@ -257,14 +258,14 @@ namespace type_safe
         integer& operator/=(T) = delete;
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator%=(const integer<T>& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator%=(const integer<T>& other) noexcept
         {
             value_ %= static_cast<T>(other);
             return *this;
         }
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        DEBUG_ASSERT_FORCE_INLINE integer& operator%=(const T& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator%=(const T& other) noexcept
         {
             value_ %= other;
             return *this;
@@ -307,7 +308,7 @@ namespace type_safe
     /// \returns A new [type_safe::integer]() of the corresponding signed integer type.
     /// \requires The value of `i` must fit into signed type.
     template <typename Integer>
-    DEBUG_ASSERT_FORCE_INLINE constexpr make_signed_t<integer<Integer>> make_signed(
+    TYPE_SAFE_FORCE_INLINE constexpr make_signed_t<integer<Integer>> make_signed(
         const integer<Integer>& i) noexcept
     {
         using result_type = typename std::make_signed<Integer>::type;
@@ -325,7 +326,7 @@ namespace type_safe
     /// \returns A new [type_safe::integer]() of the corresponding unsigned integer type.
     /// \requires The value of `i` must not be negative.
     template <typename Integer>
-    DEBUG_ASSERT_FORCE_INLINE constexpr make_unsigned_t<integer<Integer>> make_unsigned(
+    TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<integer<Integer>> make_unsigned(
         const integer<Integer>& i) noexcept
     {
         using result_type = typename std::make_unsigned<Integer>::type;
@@ -336,137 +337,137 @@ namespace type_safe
 
     //=== comparision ===//
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator==(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator==(integer<A> a, integer<B> b) noexcept
     {
         return static_cast<A>(a) == static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator==(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator==(A a, integer<B> b) noexcept
     {
         return a == static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator==(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator==(integer<A> a, B b) noexcept
     {
         return static_cast<A>(a) == b;
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator!=(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(integer<A> a, integer<B> b) noexcept
     {
         return static_cast<A>(a) != static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator!=(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(A a, integer<B> b) noexcept
     {
         return a != static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator!=(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(integer<A> a, B b) noexcept
     {
         return static_cast<A>(a) != b;
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator<(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator<(integer<A> a, integer<B> b) noexcept
     {
         return static_cast<A>(a) < static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator<(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator<(A a, integer<B> b) noexcept
     {
         return a < static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator<(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator<(integer<A> a, B b) noexcept
     {
         return static_cast<A>(a) < b;
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator>(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator>(integer<A> a, integer<B> b) noexcept
     {
         return static_cast<A>(a) > static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator>(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator>(A a, integer<B> b) noexcept
     {
         return a > static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator>(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator>(integer<A> a, B b) noexcept
     {
         return static_cast<A>(a) > b;
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator<=(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator<=(integer<A> a, integer<B> b) noexcept
     {
         return static_cast<A>(a) <= static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator<=(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator<=(A a, integer<B> b) noexcept
     {
         return a <= static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator<=(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator<=(integer<A> a, B b) noexcept
     {
         return static_cast<A>(a) <= b;
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator>=(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator>=(integer<A> a, integer<B> b) noexcept
     {
         return static_cast<A>(a) >= static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator>=(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator>=(A a, integer<B> b) noexcept
     {
         return a >= static_cast<B>(b);
     }
 
     template <typename A, typename B, typename = detail::enable_safe_integer_comparision<A, B>>
-    DEBUG_ASSERT_FORCE_INLINE constexpr bool operator>=(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator>=(integer<A> a, B b) noexcept
     {
         return static_cast<A>(a) >= b;
     }
 
     //=== binary operations ===//
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator+(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator+(integer<A> a, integer<B> b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return static_cast<A>(a) + static_cast<B>(b);
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator+(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator+(A a, integer<B> b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return a + static_cast<B>(b);
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator+(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator+(integer<A> a, B b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return static_cast<A>(a) + b;
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator-(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator-(integer<A> a, integer<B> b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return (constexpr_assert<A>(std::is_signed<A>::value || a >= b,
@@ -475,7 +476,7 @@ namespace type_safe
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator-(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator-(A a, integer<B> b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return (constexpr_assert<A>(std::is_signed<A>::value || a >= b,
@@ -484,7 +485,7 @@ namespace type_safe
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator-(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator-(integer<A> a, B b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return (constexpr_assert<A>(std::is_signed<A>::value || a >= b,
@@ -493,63 +494,63 @@ namespace type_safe
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator*(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator*(integer<A> a, integer<B> b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return static_cast<A>(a) * static_cast<B>(b);
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator*(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator*(A a, integer<B> b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return a * static_cast<B>(b);
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator*(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator*(integer<A> a, B b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return static_cast<A>(a) * b;
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator/(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator/(integer<A> a, integer<B> b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return static_cast<A>(a) / static_cast<B>(b);
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator/(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator/(A a, integer<B> b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return a / static_cast<B>(b);
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator/(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator/(integer<A> a, B b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return static_cast<A>(a) / b;
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator%(integer<A> a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator%(integer<A> a, integer<B> b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return static_cast<A>(a) % static_cast<B>(b);
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator%(A a, integer<B> b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator%(A a, integer<B> b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return a % static_cast<B>(b);
     }
 
     template <typename A, typename B>
-    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator%(integer<A> a, B b) noexcept
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator%(integer<A> a, B b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
         return static_cast<A>(a) % b;
