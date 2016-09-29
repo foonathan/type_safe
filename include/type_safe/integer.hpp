@@ -256,6 +256,23 @@ namespace type_safe
         template <typename T, typename = detail::fallback_safe_integer_conversion<T, integer_type>>
         integer& operator/=(T) = delete;
 
+        template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
+        DEBUG_ASSERT_FORCE_INLINE integer& operator%=(const integer<T>& other) noexcept
+        {
+            value_ %= static_cast<T>(other);
+            return *this;
+        }
+
+        template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
+        DEBUG_ASSERT_FORCE_INLINE integer& operator%=(const T& other) noexcept
+        {
+            value_ %= other;
+            return *this;
+        }
+
+        template <typename T, typename = detail::fallback_safe_integer_conversion<T, integer_type>>
+        integer& operator%=(T) = delete;
+
     private:
         integer_type value_;
     };
@@ -515,6 +532,27 @@ namespace type_safe
         -> integer<detail::integer_result_t<A, B>>
     {
         return static_cast<A>(a) / b;
+    }
+
+    template <typename A, typename B>
+    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator%(integer<A> a, integer<B> b) noexcept
+        -> integer<detail::integer_result_t<A, B>>
+    {
+        return static_cast<A>(a) % static_cast<B>(b);
+    }
+
+    template <typename A, typename B>
+    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator%(A a, integer<B> b) noexcept
+        -> integer<detail::integer_result_t<A, B>>
+    {
+        return a % static_cast<B>(b);
+    }
+
+    template <typename A, typename B>
+    DEBUG_ASSERT_FORCE_INLINE constexpr auto operator%(integer<A> a, B b) noexcept
+        -> integer<detail::integer_result_t<A, B>>
+    {
+        return static_cast<A>(a) % b;
     }
 } // namespace type_safe
 
