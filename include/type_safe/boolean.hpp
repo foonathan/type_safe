@@ -9,27 +9,57 @@
 
 namespace type_safe
 {
+    class boolean;
+
+    /// \exclude
+    namespace detail
+    {
+        template <typename T>
+        struct is_boolean : std::false_type
+        {
+        };
+
+        template <>
+        struct is_boolean<bool> : std::true_type
+        {
+        };
+
+        template <>
+        struct is_boolean<boolean> : std::true_type
+        {
+        };
+
+        template <typename T>
+        using enable_boolean = typename std::enable_if<is_boolean<T>::value>::type;
+
+        template <typename T>
+        using fallback_boolean = typename std::enable_if<!is_boolean<T>::value>::type;
+    } // namespace detail
+
     /// A type safe boolean class.
     ///
-    /// It can only be constructed/assigned `bool` values
-    /// and does not provide all the operations.
+    /// It is a tiny, no overhead wrapper over `bool`.
+    /// It can only be constructed from `bool` values
+    /// and does not implictly convert to integral types.
     class boolean
     {
     public:
-        TYPE_SAFE_FORCE_INLINE constexpr boolean(bool value) noexcept : value_(value)
+        template <typename T, typename = detail::enable_boolean<T>>
+        TYPE_SAFE_FORCE_INLINE constexpr boolean(T value) noexcept : value_(value)
         {
         }
 
-        template <typename T>
+        template <typename T, typename = detail::fallback_boolean<T>>
         constexpr boolean(const T&) = delete;
 
-        TYPE_SAFE_FORCE_INLINE boolean& operator=(bool value) noexcept
+        template <typename T, typename = detail::enable_boolean<T>>
+        TYPE_SAFE_FORCE_INLINE boolean& operator=(T value) noexcept
         {
             value_ = value;
             return *this;
         }
 
-        template <typename T>
+        template <typename T, typename = detail::fallback_boolean<T>>
         boolean& operator=(const T&) = delete;
 
         TYPE_SAFE_FORCE_INLINE explicit constexpr operator bool() const noexcept
@@ -47,46 +77,40 @@ namespace type_safe
     };
 
     //=== comparision ===//
-    TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const boolean& a, const boolean& b) noexcept
+    template <typename T, typename = detail::enable_boolean<T>>
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const boolean& a, T b) noexcept
     {
         return static_cast<bool>(a) == static_cast<bool>(b);
     }
 
-    TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const boolean& a, bool b) noexcept
-    {
-        return static_cast<bool>(a) == b;
-    }
-
-    TYPE_SAFE_FORCE_INLINE constexpr bool operator==(bool a, const boolean& b) noexcept
-    {
-        return a == static_cast<bool>(b);
-    }
-
-    template <typename T>
+    template <typename T, typename                      = detail::fallback_boolean<T>>
     constexpr bool operator==(const boolean&, const T&) = delete;
 
-    template <typename T>
+    template <typename T, typename = detail::enable_boolean<T>>
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator==(T a, const boolean& b) noexcept
+    {
+        return static_cast<bool>(a) == static_cast<bool>(b);
+    }
+
+    template <typename T, typename                      = detail::fallback_boolean<T>>
     constexpr bool operator==(const T&, const boolean&) = delete;
 
-    TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const boolean& a, const boolean& b) noexcept
+    template <typename T, typename = detail::enable_boolean<T>>
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const boolean& a, T b) noexcept
     {
-        return !(a == b);
+        return static_cast<bool>(a) != static_cast<bool>(b);
     }
 
-    TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const boolean& a, bool b) noexcept
-    {
-        return !(a == b);
-    }
-
-    TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(bool a, const boolean& b) noexcept
-    {
-        return !(a == b);
-    }
-
-    template <typename T>
+    template <typename T, typename                      = detail::fallback_boolean<T>>
     constexpr bool operator!=(const boolean&, const T&) = delete;
 
-    template <typename T>
+    template <typename T, typename = detail::enable_boolean<T>>
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(T a, const boolean& b) noexcept
+    {
+        return static_cast<bool>(a) != static_cast<bool>(b);
+    }
+
+    template <typename T, typename                      = detail::fallback_boolean<T>>
     constexpr bool operator!=(const T&, const boolean&) = delete;
 } // namespace type_safe
 
