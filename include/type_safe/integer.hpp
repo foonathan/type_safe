@@ -300,6 +300,27 @@ namespace type_safe
                 integer<result_type>(static_cast<result_type>(static_cast<Integer>(i))));
     }
 
+    /// \returns The absolute value of an [type_safe::integer]().
+    /// \unique_name type_safe::abs-signed
+    template <typename SignedInteger,
+              typename = typename std::enable_if<std::is_signed<SignedInteger>::value>::type>
+    TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<integer<SignedInteger>> abs(
+        const integer<SignedInteger>& i) noexcept
+    {
+        return make_unsigned(i > 0 ? i : -i);
+    }
+
+    /// \returns `i` unchanged.
+    /// \notes This is an optimization of [type_safe::abs-signed]() for `unsigned` [type_safe::integer]().
+    /// \unique_name type_safe::abs-unsigned
+    template <typename UnsignedInteger,
+              typename = typename std::enable_if<std::is_unsigned<UnsignedInteger>::value>::type>
+    TYPE_SAFE_FORCE_INLINE constexpr integer<UnsignedInteger> abs(
+        const integer<UnsignedInteger>& i) noexcept
+    {
+        return i;
+    }
+
 //=== comparision ===//
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
     template <typename A, typename B, typename = detail::enable_safe_integer_conversion<A, B>>     \
