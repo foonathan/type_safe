@@ -26,7 +26,8 @@ namespace type_safe
 // if an error message points you to this function
 // you're using a constexpr function with an assertion where the assertion failed
 #if TYPE_SAFE_ENABLE_ASSERTIONS
-        return condition ? Return() : (assert_handler{}.handle(loc, "", message), Return());
+        return condition ? Return() :
+                           (assert_handler{}.handle(loc, "", message), std::abort(), Return());
 #else
         return Return();
 #endif
