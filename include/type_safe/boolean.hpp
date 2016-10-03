@@ -83,17 +83,11 @@ namespace type_safe
         return static_cast<bool>(a) == static_cast<bool>(b);
     }
 
-    template <typename T, typename                      = detail::fallback_boolean<T>>
-    constexpr bool operator==(const boolean&, const T&) = delete;
-
     template <typename T, typename = detail::enable_boolean<T>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(T a, const boolean& b) noexcept
     {
         return static_cast<bool>(a) == static_cast<bool>(b);
     }
-
-    template <typename T, typename                      = detail::fallback_boolean<T>>
-    constexpr bool operator==(const T&, const boolean&) = delete;
 
     template <typename T, typename = detail::enable_boolean<T>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const boolean& a, T b) noexcept
@@ -101,17 +95,11 @@ namespace type_safe
         return static_cast<bool>(a) != static_cast<bool>(b);
     }
 
-    template <typename T, typename                      = detail::fallback_boolean<T>>
-    constexpr bool operator!=(const boolean&, const T&) = delete;
-
     template <typename T, typename = detail::enable_boolean<T>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(T a, const boolean& b) noexcept
     {
         return static_cast<bool>(a) != static_cast<bool>(b);
     }
-
-    template <typename T, typename                      = detail::fallback_boolean<T>>
-    constexpr bool operator!=(const T&, const boolean&) = delete;
 } // namespace type_safe
 
 #endif // TYPE_SAFE_BOOLEAN_HPP_INCLUDED
