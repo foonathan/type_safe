@@ -71,7 +71,7 @@ namespace type_safe
     /// It behaves exactly like the built-in types except it does not allow narrowing conversions.
     ///
     /// \requires `FloatT` must be a floating point type.
-    /// \notes It intentionally does not provide equality operators.
+    /// \notes It intentionally does not provide equality or increment/decrement operators.
     template <typename FloatT>
     class floating_point
     {
@@ -136,32 +136,6 @@ namespace type_safe
         TYPE_SAFE_FORCE_INLINE constexpr floating_point operator-() const noexcept
         {
             return -value_;
-        }
-
-        TYPE_SAFE_FORCE_INLINE floating_point& operator++() noexcept
-        {
-            ++value_;
-            return *this;
-        }
-
-        TYPE_SAFE_FORCE_INLINE floating_point operator++(int)noexcept
-        {
-            auto res = *this;
-            ++value_;
-            return res;
-        }
-
-        TYPE_SAFE_FORCE_INLINE floating_point& operator--() noexcept
-        {
-            --value_;
-            return *this;
-        }
-
-        TYPE_SAFE_FORCE_INLINE floating_point operator--(int)noexcept
-        {
-            auto res = *this;
-            --value_;
-            return res;
         }
 
 //=== compound assignment ====//
