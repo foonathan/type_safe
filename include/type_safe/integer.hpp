@@ -8,8 +8,8 @@
 #include <limits>
 #include <type_traits>
 
+#include <type_safe/detail/assert.hpp>
 #include <type_safe/detail/force_inline.hpp>
-#include <type_safe/assert.hpp>
 
 namespace type_safe
 {
@@ -169,7 +169,7 @@ namespace type_safe
         TYPE_SAFE_FORCE_INLINE integer& operator--() noexcept
         {
             DEBUG_ASSERT(std::is_signed<integer_type>::value || value_ > integer_type(0),
-                         assert_handler{}, "underflow detected");
+                         detail::assert_handler{}, "underflow detected");
             --value_;
             return *this;
         }
@@ -177,7 +177,7 @@ namespace type_safe
         TYPE_SAFE_FORCE_INLINE integer operator--(int)noexcept
         {
             DEBUG_ASSERT(std::is_signed<integer_type>::value || value_ > integer_type(0),
-                         assert_handler{}, "underflow detected");
+                         detail::assert_handler{}, "underflow detected");
             auto res = *this;
             --value_;
             return res;
@@ -207,7 +207,7 @@ namespace type_safe
         TYPE_SAFE_FORCE_INLINE integer& operator-=(const integer<T>& other) noexcept
         {
             DEBUG_ASSERT(std::is_signed<T>::value || value_ > static_cast<T>(other),
-                         assert_handler{}, "underflow detected");
+                         detail::assert_handler{}, "underflow detected");
             value_ -= static_cast<T>(other);
             return *this;
         }
@@ -277,10 +277,11 @@ namespace type_safe
         const integer<Integer>& i) noexcept
     {
         using result_type = typename std::make_signed<Integer>::type;
-        return (constexpr_assert<result_type>(i <= static_cast<Integer>(
-                                                       std::numeric_limits<result_type>::max()),
-                                              DEBUG_ASSERT_CUR_SOURCE_LOCATION,
-                                              "conversion would overflow"),
+        return (detail::
+                    constexpr_assert<result_type>(i <= static_cast<Integer>(
+                                                           std::numeric_limits<result_type>::max()),
+                                                  DEBUG_ASSERT_CUR_SOURCE_LOCATION,
+                                                  "conversion would overflow"),
                 integer<result_type>(static_cast<result_type>(static_cast<Integer>(i))));
     }
 
@@ -295,8 +296,8 @@ namespace type_safe
         const integer<Integer>& i) noexcept
     {
         using result_type = typename std::make_unsigned<Integer>::type;
-        return (constexpr_assert<result_type>(i >= 1, DEBUG_ASSERT_CUR_SOURCE_LOCATION,
-                                              "conversion would underflow"),
+        return (detail::constexpr_assert<result_type>(i >= 1, DEBUG_ASSERT_CUR_SOURCE_LOCATION,
+                                                      "conversion would underflow"),
                 integer<result_type>(static_cast<result_type>(static_cast<Integer>(i))));
     }
 
@@ -425,8 +426,8 @@ namespace type_safe
                                                     const integer<B>& b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
-        return (constexpr_assert<A>(std::is_signed<A>::value || a >= b,
-                                    DEBUG_ASSERT_CUR_SOURCE_LOCATION, "underflow detected"),
+        return (detail::constexpr_assert<A>(std::is_signed<A>::value || a >= b,
+                                            DEBUG_ASSERT_CUR_SOURCE_LOCATION, "underflow detected"),
                 static_cast<A>(a) - static_cast<B>(b));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(-)

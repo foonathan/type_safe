@@ -68,9 +68,9 @@ namespace type_safe
     {
         using target_integer = typename detail::get_target_integer<Target>::type;
         using target_t       = typename target_integer::integer_type;
-        return (constexpr_assert<target_t>(!detail::is_narrowing<Target>(source),
-                                           DEBUG_ASSERT_CUR_SOURCE_LOCATION,
-                                           "conversion would truncate value"),
+        return (detail::constexpr_assert<target_t>(!detail::is_narrowing<Target>(source),
+                                                   DEBUG_ASSERT_CUR_SOURCE_LOCATION,
+                                                   "conversion would truncate value"),
                 target_integer(static_cast<target_t>(static_cast<Source>(source))));
     }
 
@@ -84,9 +84,9 @@ namespace type_safe
     {
         using target_float = typename detail::get_target_floating_point<Target>::type;
         using target_t     = typename target_float::floating_point_type;
-        return (constexpr_assert<target_t>(!detail::is_narrowing<Target>(source),
-                                           DEBUG_ASSERT_CUR_SOURCE_LOCATION,
-                                           "conversion would truncate value"),
+        return (detail::constexpr_assert<target_t>(!detail::is_narrowing<Target>(source),
+                                                   DEBUG_ASSERT_CUR_SOURCE_LOCATION,
+                                                   "conversion would truncate value"),
                 target_float(static_cast<target_t>(static_cast<Source>(source))));
     }
 } // namespace type_safe

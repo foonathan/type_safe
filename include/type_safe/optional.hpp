@@ -9,7 +9,7 @@
 #include <new>
 #include <type_traits>
 
-#include <type_safe/assert.hpp>
+#include <type_safe/detail/assert.hpp>
 
 namespace type_safe
 {
@@ -324,7 +324,7 @@ namespace type_safe
         /// \requires `has_value() == true`.
         auto value() & noexcept -> decltype(policy_.get_value())
         {
-            DEBUG_ASSERT(has_value(), assert_handler{});
+            DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return policy_.get_value();
         }
 
@@ -332,7 +332,7 @@ namespace type_safe
         /// \requires `has_value() == true`.
         auto value() const & noexcept -> decltype(policy_.get_value())
         {
-            DEBUG_ASSERT(has_value(), assert_handler{});
+            DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return policy_.get_value();
         }
 
@@ -340,7 +340,7 @@ namespace type_safe
         /// \requires `has_value() == true`.
         auto value() && noexcept -> decltype(std::move(policy_).get_value())
         {
-            DEBUG_ASSERT(has_value(), assert_handler{});
+            DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return std::move(policy_).get_value();
         }
 
@@ -348,7 +348,7 @@ namespace type_safe
         /// \requires `has_value() == true`.
         auto value() const && noexcept -> decltype(std::move(policy_).get_value())
         {
-            DEBUG_ASSERT(has_value(), assert_handler{});
+            DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return std::move(policy_).get_value();
         }
 
