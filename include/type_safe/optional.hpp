@@ -44,10 +44,11 @@ namespace type_safe
         struct is_nothrow_swappable
         {
             template <typename U>
-            auto adl_swap(int, U& a, U& b) noexcept(noexcept(swap(a, b))) -> decltype(swap(a, b));
+            static auto adl_swap(int, U& a, U& b) noexcept(noexcept(swap(a, b)))
+                -> decltype(swap(a, b));
 
             template <typename U>
-            auto adl_swap(short, U& a, U& b) noexcept(noexcept(std::swap(a, b)))
+            static auto adl_swap(short, U& a, U& b) noexcept(noexcept(std::swap(a, b)))
                 -> decltype(std::swap(a, b));
 
             static constexpr bool value =
