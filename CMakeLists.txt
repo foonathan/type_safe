@@ -28,6 +28,7 @@ set(detail_header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/force_inline.hpp)
 set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/boolean.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/constrained_type.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/floating_point.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/integer.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/narrow_cast.hpp

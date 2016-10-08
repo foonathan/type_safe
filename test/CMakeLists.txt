@@ -19,7 +19,8 @@ if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/catch.hpp)
     endif()
 endif()
 
-set(source_files test.cpp)
+set(source_files test.cpp
+                 boolean.cpp)
 add_executable(type_safe_test EXCLUDE_FROM_ALL ${source_files})
 target_link_libraries(type_safe_test PUBLIC type_safe)
 target_include_directories(type_safe_test PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
