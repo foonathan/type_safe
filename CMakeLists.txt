@@ -42,3 +42,9 @@ target_compile_definitions(type_safe INTERFACE
                                      TYPE_SAFE_ENABLE_ASSERTIONS=${_type_safe_enable_assertions}
                                      TYPE_SAFE_DISABLE_WRAPPER=${_type_safe_disable_wrapper})
 target_link_libraries(type_safe INTERFACE debug_assert)
+
+# other subdirectories
+# only add if not inside add_subdirectory()
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    add_subdirectory(test/)
+endif()
