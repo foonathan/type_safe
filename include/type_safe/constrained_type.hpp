@@ -2,8 +2,8 @@
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
-#ifndef TYPE_SAFE_CONSTRAINED_VALUE_HPP_INCLUDED
-#define TYPE_SAFE_CONSTRAINED_VALUE_HPP_INCLUDED
+#ifndef TYPE_SAFE_CONSTRAINED_TYPE_HPP_INCLUDED
+#define TYPE_SAFE_CONSTRAINED_TYPE_HPP_INCLUDED
 
 #include <type_traits>
 #include <utility>
@@ -12,7 +12,7 @@
 
 namespace type_safe
 {
-    /// A `Verifier` for [type_safe::constrained_value<T, Constraint, Verifier]() that `DEBUG_ASSERT`s the constraint.
+    /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that `DEBUG_ASSERT`s the constraint.
     struct assertion_verifier
     {
         template <typename Value, typename Predicate>
@@ -22,7 +22,7 @@ namespace type_safe
         }
     };
 
-    /// A `Verifier` for [type_safe::constrained_value<T, Constraint, Verifier]() that doesn't check the constraint.
+    /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that doesn't check the constraint.
     struct null_verifier
     {
         template <typename Value, typename Predicate>
@@ -36,7 +36,7 @@ namespace type_safe
     /// \requires `T` must not be a reference, `Constraint` must be a functor of type `bool(const T&)`
     /// and `Verifier` must provide a `static` function `void verify(const T&, const Predicate&)`.
     template <typename T, typename Constraint, typename Verifier = assertion_verifier>
-    class constrained_value : Constraint, Verifier
+    class constrained_type : Constraint, Verifier
     {
         static_assert(!std::is_reference<T>::value, "T must not be a reference");
 
@@ -46,7 +46,7 @@ namespace type_safe
 
         /// \effects Creates it giving it a valid `value` and a `predicate`.
         /// The `value` will be copied and verified.
-        explicit constrained_value(const value_type& value, constraint_predicate predicate = {})
+        explicit constrained_type(const value_type& value, constraint_predicate predicate = {})
         : Constraint(std::move(predicate)), value_(value)
         {
             verify();
@@ -54,7 +54,7 @@ namespace type_safe
 
         /// \effects Creates it giving it a valid `value` and a `predicate`.
         /// The `value` will be moved and verified.
-        explicit constrained_value(value_type&& value, constraint_predicate predicate = {})
+        explicit constrained_type(value_type&& value, constraint_predicate predicate = {})
         : Constraint(std::move(predicate)), value_(std::move(value))
         {
             verify();
@@ -97,12 +97,12 @@ namespace type_safe
             }
 
         private:
-            modifier(constrained_value& value) noexcept : value_(&value)
+            modifier(constrained_type& value) noexcept : value_(&value)
             {
             }
 
-            constrained_value* value_;
-            friend constrained_value;
+            constrained_type* value_;
+            friend constrained_type;
         };
 
         /// \returns A proxy object to provide verified write-access to the stored value.
@@ -111,7 +111,7 @@ namespace type_safe
             return modifier(*this);
         }
 
-        /// \effects Moves the stored value out of the `constrained_value`,
+        /// \effects Moves the stored value out of the `constrained_type`,
         /// it will not be checked further.
         /// \returns An rvalue reference to the stored value.
         value_type&& release() noexcept
@@ -141,11 +141,11 @@ namespace type_safe
         value_type value_;
     };
 
-    /// \effects Calls `f` with a non-`const` reference to the stored value of the [type_safe::constrained_value<T, Constraint, Verifier>]().
+    /// \effects Calls `f` with a non-`const` reference to the stored value of the [type_safe::constrained_type<T, Constraint, Verifier>]().
     /// It checks that `f` does not change the validity of the object.
     /// \notes The same behavior can be accomplished by using the `modify()` member function.
     template <typename T, typename Constraint, class Verifier, typename Func>
-    void with(constrained_value<T, Constraint, Verifier>& value, Func&& f)
+    void with(constrained_type<T, Constraint, Verifier>& value, Func&& f)
     {
         auto modifier = value.modify();
         std::forward<Func>(f)(modifier.get());
@@ -153,7 +153,7 @@ namespace type_safe
 
     namespace constraints
     {
-        /// A `Constraint` for the [type_safe::constrained_value<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
         /// A value of a pointer type is valid if it is not equal to `nullptr`.
         struct non_null
         {
@@ -164,7 +164,7 @@ namespace type_safe
             }
         };
 
-        /// A `Constraint` for the [type_safe::constrained_value<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
         /// A value of a container type is valid if it is not empty.
         /// Empty-ness is determined with either a member or non-member function.
         struct non_empty
@@ -182,7 +182,7 @@ namespace type_safe
             }
         };
 
-        /// A `Constraint` for the [type_safe::constrained_value<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
         /// A value is valid if it not equal to the default constructed value.
         struct non_default
         {
@@ -193,7 +193,7 @@ namespace type_safe
             }
         };
 
-        /// A `Constraint` for the [type_safe::constrained_value<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
         /// A value of a pointer-like type is valid if the expression `!value` is `true`.
         struct non_invalid
         {
@@ -206,4 +206,4 @@ namespace type_safe
     } // namespace constraints
 } // namespace type_safe
 
-#endif // TYPE_SAFE_CONSTRAINED_VALUE_HPP_INCLUDED
+#endif // TYPE_SAFE_CONSTRAINED_TYPE_HPP_INCLUDED
