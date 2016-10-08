@@ -5,7 +5,7 @@
 #ifndef TYPE_SAFE_DETAIL_ASSERT_HPP_INCLUDED
 #define TYPE_SAFE_DETAIL_ASSERT_HPP_INCLUDED
 
-#include <debug-assert/debug_assert.hpp>
+#include <debug_assert.hpp>
 
 #ifndef TYPE_SAFE_ENABLE_ASSERTIONS
 #define TYPE_SAFE_ENABLE_ASSERTIONS 1
