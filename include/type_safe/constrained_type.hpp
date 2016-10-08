@@ -22,8 +22,25 @@ namespace type_safe
         }
     };
 
+    /// \exclude
+    namespace detail
+    {
+        template <class Constraint, typename T>
+        auto verify_static_constrained(int) -> typename Constraint::template is_valid<T>;
+
+        template <class Constraint, typename T>
+        auto verify_static_constrained(char) -> std::true_type;
+
+        template <class Constraint, typename T>
+        struct is_valid : decltype(verify_static_constrained<Constraint, T>(0))
+        {
+        };
+    } // namespace detail
+
     /// A value of type `T` that always fulfills the predicate `Constraint`.
     /// The `Constraint` is checked by the `Verifier`.
+    /// The `Constraint` can also provide a nested template `is_valid<T>` to statically check types.
+    /// Those will be checked regardless of the `Verifier`.
     /// \requires `T` must not be a reference, `Constraint` must be a functor of type `bool(const T&)`
     /// and `Verifier` must provide a `static` function `void verify(const T&, const Predicate&)`.
     template <typename T, typename Constraint, typename Verifier = assertion_verifier>
@@ -51,6 +68,11 @@ namespace type_safe
             verify();
         }
 
+        template <typename U,
+                  typename = typename std::enable_if<!detail::is_valid<constraint_predicate,
+                                                                       U>::value>::type>
+        constrained_type(U) = delete;
+
         /// \effects Copy assigns the stored value to the valid value `other`.
         /// It will also verify the new value prior to assigning.
         constrained_type& operator=(const value_type& other)
@@ -68,6 +90,11 @@ namespace type_safe
             value_ = std::move(other);
             return *this;
         }
+
+        template <typename U,
+                  typename = typename std::enable_if<!detail::is_valid<constraint_predicate,
+                                                                       U>::value>::type>
+        constrained_type& operator=(U) = delete;
 
         /// A proxy class to provide write access to the stored value.
         /// The destructor will verify the value again.
@@ -188,10 +215,20 @@ namespace type_safe
         struct non_null
         {
             template <typename T>
+            struct is_valid : std::true_type
+            {
+            };
+
+            template <typename T>
             bool operator()(const T* ptr) const noexcept
             {
                 return ptr != nullptr;
             }
+        };
+
+        template <>
+        struct non_null::is_valid<std::nullptr_t> : std::false_type
+        {
         };
 
         /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
