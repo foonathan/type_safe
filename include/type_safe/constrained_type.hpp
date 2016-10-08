@@ -261,13 +261,13 @@ namespace type_safe
         };
 
         /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
-        /// A value of a pointer-like type is valid if the expression `!value` is `true`.
+        /// A value of a pointer-like type is valid if the expression `!value` is `false`.
         struct non_invalid
         {
             template <typename T>
-            bool operator()(const T& t) const noexcept(noexcept(!t))
+            bool operator()(const T& t) const noexcept(noexcept(!!t))
             {
-                return !t;
+                return !!t;
             }
         };
 
