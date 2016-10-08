@@ -22,7 +22,8 @@ endif()
 set(source_files test.cpp
                  boolean.cpp
                  constrained_type.cpp
-                 floating_point.cpp)
+                 floating_point.cpp
+                 integer.cpp)
 add_executable(type_safe_test EXCLUDE_FROM_ALL ${source_files})
 target_link_libraries(type_safe_test PUBLIC type_safe)
 target_include_directories(type_safe_test PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
