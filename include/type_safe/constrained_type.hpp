@@ -22,15 +22,6 @@ namespace type_safe
         }
     };
 
-    /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that doesn't check the constraint.
-    struct null_verifier
-    {
-        template <typename Value, typename Predicate>
-        static void verify(const Value&, const Predicate&)
-        {
-        }
-    };
-
     /// A value of type `T` that always fulfills the predicate `Constraint`.
     /// The `Constraint` is checked by the `Verifier`.
     /// \requires `T` must not be a reference, `Constraint` must be a functor of type `bool(const T&)`
@@ -151,10 +142,31 @@ namespace type_safe
         std::forward<Func>(f)(modifier.get());
     }
 
+    /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that doesn't check the constraint.
+    struct null_verifier
+    {
+        template <typename Value, typename Predicate>
+        static void verify(const Value&, const Predicate&)
+        {
+        }
+    };
+
+    /// An alias for [type_safe::constrained_type<T, Constraint, Verifier>]() that never checks the constraint.
+    /// It is useful for creating tagged types:
+    /// The `Constraint` - which does not need to be a predicate anymore - is a "tag" to differentiate a type in different states.
+    /// For example, you could have a "sanitized" value and a "non-sanitized" value
+    /// that have different types, so you cannot accidentally mix them.
+    /// \notes It is only intended if the `Constrained` cannot be formalized easily and/or is expensive.
+    /// Otherwise [type_safe::constrained_type<T, Constrained, Verifier>]() is recommended
+    /// as it does additional runtime checks in debug mode.
+    template <typename T, typename Constraint>
+    using tagged_type = constrained_type<T, Constraint, null_verifier>;
+
     namespace constraints
     {
         /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
         /// A value of a pointer type is valid if it is not equal to `nullptr`.
+        /// This is borrowed from GSL's [non_null](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#a-namess-viewsagslview-views).
         struct non_null
         {
             template <typename T>
@@ -202,6 +214,14 @@ namespace type_safe
             {
                 return !t;
             }
+        };
+
+        /// A `Constraint` for the [type_safe::tagged_type<T, Constraint>]().
+        /// It marks an owning pointer.
+        /// It is borrowed from GSL's [non_null](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#a-namess-viewsagslview-views).
+        /// \notes This is not actually a predicate.
+        struct owner
+        {
         };
     } // namespace constraints
 } // namespace type_safe
