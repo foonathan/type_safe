@@ -65,7 +65,7 @@ namespace type_safe
             typename std::enable_if<!is_safe_floating_point_operation<A, B>::value>::type;
     } // namespace detail
 
-    /// A type safe boolean class.
+    /// A type safe floating point class.
     ///
     /// It is a tiny, no overhead wrapper over a standard floating point type.
     /// It behaves exactly like the built-in types except it does not allow narrowing conversions.
