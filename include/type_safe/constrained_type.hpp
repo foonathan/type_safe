@@ -51,6 +51,24 @@ namespace type_safe
             verify();
         }
 
+        /// \effects Copy assigns the stored value to the valid value `other`.
+        /// It will also verify the new value prior to assigning.
+        constrained_type& operator=(const value_type& other)
+        {
+            Verifier::verify(other, get_constraint());
+            value_ = other;
+            return *this;
+        }
+
+        /// \effects Move assigns the stored value to the valid value `other`.
+        /// It will also verify the new value prior to assigning.
+        constrained_type& operator=(value_type&& other)
+        {
+            Verifier::verify(other, get_constraint());
+            value_ = std::move(other);
+            return *this;
+        }
+
         /// A proxy class to provide write access to the stored value.
         /// The destructor will verify the value again.
         class modifier
