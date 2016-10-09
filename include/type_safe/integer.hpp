@@ -448,7 +448,7 @@ namespace type_safe
         return (detail::constexpr_assert<A>(!detail::will_overflow<detail::integer_result_t<A, B>>(
                                                 static_cast<A>(a), static_cast<B>(b)),
                                             DEBUG_ASSERT_CUR_SOURCE_LOCATION, "overflow detected"),
-                static_cast<A>(a) + static_cast<B>(b));
+                detail::integer_result_t<A, B>(static_cast<A>(a) + static_cast<B>(b)));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(+)
 
@@ -460,7 +460,7 @@ namespace type_safe
         return (detail::constexpr_assert<A>(!detail::will_underflow<detail::integer_result_t<A, B>>(
                                                 static_cast<A>(a), static_cast<B>(b)),
                                             DEBUG_ASSERT_CUR_SOURCE_LOCATION, "underflow detected"),
-                static_cast<A>(a) - static_cast<B>(b));
+                detail::integer_result_t<A, B>(static_cast<A>(a) - static_cast<B>(b)));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(-)
 
@@ -476,7 +476,7 @@ namespace type_safe
                                                                                      static_cast<B>(
                                                                                          b)),
                     DEBUG_ASSERT_CUR_SOURCE_LOCATION, "overflow detected"),
-                static_cast<A>(a) * static_cast<B>(b));
+                detail::integer_result_t<A, B>(static_cast<A>(a) * static_cast<B>(b)));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(*)
 
@@ -485,7 +485,7 @@ namespace type_safe
                                                     const integer<B>& b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
-        return static_cast<A>(a) / static_cast<B>(b);
+        return detail::integer_result_t<A, B>(static_cast<A>(a) / static_cast<B>(b));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(/)
 
@@ -494,7 +494,7 @@ namespace type_safe
                                                     const integer<B>& b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
-        return static_cast<A>(a) % static_cast<B>(b);
+        return detail::integer_result_t<A, B>(static_cast<A>(a) % static_cast<B>(b));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(%)
 

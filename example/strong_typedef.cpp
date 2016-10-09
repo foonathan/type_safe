@@ -1,0 +1,66 @@
+// Copyright (C) 2016 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// This file is subject to the license terms in the LICENSE file
+// found in the top-level directory of this distribution.
+
+#include <iostream>
+#include <string>
+
+#include <type_safe/strong_typedef.hpp>
+
+namespace ts = type_safe;
+
+// we want some kind of handle to an int
+struct handle : ts::strong_typedef<handle, int*>,                    // required
+                ts::strong_typedef_op::equality_comparision<handle>, // for operator==/operator!=
+                ts::strong_typedef_op::dereference<handle, int>      // for operator*/operator->
+{
+    using strong_typedef::strong_typedef;
+
+    // we also want the operator bool()
+    explicit operator bool() const noexcept
+    {
+        return static_cast<int*>(*this) != nullptr;
+    }
+};
+
+void use_handle(handle h)
+{
+    // we can dereference it
+    std::cout << *h << '\n';
+
+    // and compare it
+    h == handle(nullptr);
+
+    // and reassign
+    int a;
+    h = handle(&a);
+    // or get back
+    int* ptr = static_cast<int*>(h);
+}
+
+// integer representing a distance
+struct distance
+    : ts::strong_typedef<distance, unsigned>,                  // required
+      ts::strong_typedef_op::equality_comparision<distance>,   // for operator==/operator!=
+      ts::strong_typedef_op::relational_comparision<distance>, // for operator< etc.
+      ts::strong_typedef_op::
+          integer_arithmetic<distance> // all arithmetic operators that make sense for integers
+{
+    using strong_typedef::strong_typedef;
+};
+
+// we want to output it
+std::ostream& operator<<(std::ostream& out, const distance& d)
+{
+    return out << static_cast<unsigned>(d) << " distance";
+}
+
+int main()
+{
+    distance d(4);
+    //    int      val = d; // error
+    //    d += 3;           // error
+    d += distance(3); // works
+
+    std::cout << d << '\n';
+}
