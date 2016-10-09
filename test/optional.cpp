@@ -454,6 +454,19 @@ TEST_CASE("optional")
         REQUIRE(d_res.has_value());
         REQUIRE(d_res.value() == 'A');
     }
+    SECTION("with")
+    {
+        optional<int> a;
+        with(a, [](int) { REQUIRE(false); });
+
+        a = 0;
+        with(a, [](int& i) {
+            REQUIRE(i == 0);
+            i = 1;
+        });
+        REQUIRE(a.has_value());
+        REQUIRE(a.value() == 1);
+    }
     SECTION("visit")
     {
         struct visitor

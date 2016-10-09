@@ -431,6 +431,17 @@ namespace type_safe
         }
     };
 
+    /// \effects Calls the `operator()` of `f` passing it the value of `opt`,
+    /// if it has a value.
+    /// Otherwise does nothing.
+    /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
+    template <class Optional, typename Func>
+    void with(Optional&& opt, Func&& f)
+    {
+        if (opt.has_value())
+            std::forward<Func>(f)(std::forward<Optional>(opt).value());
+    }
+
     /// \effects Calls the `operator()` of `visitor` passing it the value of `optional` or `nullopt`,
     /// if there is none.
     /// \returns The result of `operator()`.
