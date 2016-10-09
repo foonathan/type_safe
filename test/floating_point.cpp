@@ -6,6 +6,8 @@
 
 #include <catch.hpp>
 
+#include <sstream>
+
 using namespace type_safe;
 
 // conversion checks
@@ -188,5 +190,17 @@ TEST_CASE("floating_point")
         REQUIRE(bool(float_t(5.) >= 4.));
         REQUIRE(!(float_t(4.) >= 5.));
         REQUIRE(bool(float_t(5.) >= 5.));
+    }
+    SECTION("i/o")
+    {
+        std::ostringstream out;
+        std::istringstream in("1.0");
+
+        float_t f(0.0);
+        out << f;
+        REQUIRE(out.str() == "0");
+
+        in >> f;
+        REQUIRE(static_cast<double>(f) == 1.0);
     }
 }

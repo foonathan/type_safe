@@ -5,6 +5,7 @@
 #ifndef TYPE_SAFE_INTEGER_HPP_INCLUDED
 #define TYPE_SAFE_INTEGER_HPP_INCLUDED
 
+#include <iosfwd>
 #include <limits>
 #include <type_traits>
 
@@ -498,6 +499,24 @@ namespace type_safe
     TYPE_SAFE_DETAIL_MAKE_OP(%)
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
+
+    //=== input/output ===/
+    template <typename Char, class CharTraits, typename IntegerT>
+    std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
+                                                     integer<IntegerT>& i)
+    {
+        IntegerT val;
+        in >> val;
+        i = val;
+        return in;
+    }
+
+    template <typename Char, class CharTraits, typename IntegerT>
+    std::basic_ostream<Char, CharTraits>& operator<<(std::basic_ostream<Char, CharTraits>& out,
+                                                     const integer<IntegerT>& i)
+    {
+        return out << static_cast<IntegerT>(i);
+    }
 } // namespace type_safe
 
 #endif // TYPE_SAFE_INTEGER_HPP_INCLUDED

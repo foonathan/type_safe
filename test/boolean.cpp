@@ -6,6 +6,8 @@
 
 #include <catch.hpp>
 
+#include <sstream>
+
 using namespace type_safe;
 
 // conversion checks
@@ -57,5 +59,17 @@ TEST_CASE("boolean")
         REQUIRE(true != b2);
         REQUIRE(b2 == boolean(false));
         REQUIRE(b2 != boolean(true));
+    }
+    SECTION("i/o")
+    {
+        std::ostringstream out;
+        std::istringstream in("0");
+
+        boolean b(true);
+        out << b;
+        REQUIRE(out.str() == "1");
+
+        in >> b;
+        REQUIRE(!static_cast<bool>(b));
     }
 }

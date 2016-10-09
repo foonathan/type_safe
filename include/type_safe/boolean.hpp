@@ -5,6 +5,7 @@
 #ifndef TYPE_SAFE_BOOLEAN_HPP_INCLUDED
 #define TYPE_SAFE_BOOLEAN_HPP_INCLUDED
 
+#include <iosfwd>
 #include <type_traits>
 
 #include <type_safe/detail/force_inline.hpp>
@@ -33,9 +34,6 @@ namespace type_safe
 
         template <typename T>
         using enable_boolean = typename std::enable_if<is_boolean<T>::value>::type;
-
-        template <typename T>
-        using fallback_boolean = typename std::enable_if<!is_boolean<T>::value>::type;
     } // namespace detail
 
     /// A type safe boolean class.
@@ -51,18 +49,12 @@ namespace type_safe
         {
         }
 
-        template <typename T, typename = detail::fallback_boolean<T>>
-        constexpr boolean(const T&) = delete;
-
         template <typename T, typename = detail::enable_boolean<T>>
         TYPE_SAFE_FORCE_INLINE boolean& operator=(T value) noexcept
         {
             value_ = value;
             return *this;
         }
-
-        template <typename T, typename = detail::fallback_boolean<T>>
-        boolean& operator=(const T&) = delete;
 
         TYPE_SAFE_FORCE_INLINE explicit constexpr operator bool() const noexcept
         {
@@ -111,6 +103,24 @@ namespace type_safe
     TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(T a, const boolean& b) noexcept
     {
         return static_cast<bool>(a) != static_cast<bool>(b);
+    }
+
+    //=== input/output ===/
+    template <typename Char, class CharTraits>
+    std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
+                                                     boolean& b)
+    {
+        bool val;
+        in >> val;
+        b = val;
+        return in;
+    }
+
+    template <typename Char, class CharTraits>
+    std::basic_ostream<Char, CharTraits>& operator<<(std::basic_ostream<Char, CharTraits>& out,
+                                                     const boolean& b)
+    {
+        return out << static_cast<bool>(b);
     }
 } // namespace type_safe
 

@@ -5,6 +5,7 @@
 #ifndef TYPE_SAFE_FLOATING_POINT_HPP_INCLUDED
 #define TYPE_SAFE_FLOATING_POINT_HPP_INCLUDED
 
+#include <iosfwd>
 #include <type_traits>
 
 #include <type_safe/detail/force_inline.hpp>
@@ -317,6 +318,24 @@ namespace type_safe
     TYPE_SAFE_DETAIL_MAKE_OP(/)
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
+
+    //=== input/output ===/
+    template <typename Char, class CharTraits, typename FloatT>
+    std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
+                                                     floating_point<FloatT>& f)
+    {
+        FloatT val;
+        in >> val;
+        f = val;
+        return in;
+    }
+
+    template <typename Char, class CharTraits, typename FloatT>
+    std::basic_ostream<Char, CharTraits>& operator<<(std::basic_ostream<Char, CharTraits>& out,
+                                                     const floating_point<FloatT>& f)
+    {
+        return out << static_cast<FloatT>(f);
+    }
 } // namespace type_safe
 
 #endif // TYPE_SAFE_FLOATING_POINT_HPP_INCLUDED

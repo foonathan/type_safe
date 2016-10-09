@@ -47,5 +47,6 @@ target_link_libraries(type_safe INTERFACE debug_assert)
 # other subdirectories
 # only add if not inside add_subdirectory()
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    add_subdirectory(example/)
     add_subdirectory(test/)
 endif()

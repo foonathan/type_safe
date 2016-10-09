@@ -5,6 +5,7 @@
 #ifndef TYPE_SAFE_STRONG_TYPEDEF_HPP_INCLUDED
 #define TYPE_SAFE_STRONG_TYPEDEF_HPP_INCLUDED
 
+#include <iosfwd>
 #include <iterator>
 #include <type_traits>
 #include <utility>
@@ -380,6 +381,30 @@ namespace type_safe
             {
                 using type = underlying_type<StrongTypedef>;
                 return static_cast<const type&>(lhs) - static_cast<const type&>(rhs);
+            }
+        };
+
+        template <class StrongTypedef>
+        struct input_operator
+        {
+            template <typename Char, class CharTraits>
+            friend std::basic_istream<Char, CharTraits>& operator>>(
+                std::basic_istream<Char, CharTraits>& in, StrongTypedef& val)
+            {
+                using type = underlying_type<StrongTypedef>;
+                return in >> static_cast<type&>(val);
+            }
+        };
+
+        template <class StrongTypedef>
+        struct output_operator
+        {
+            template <typename Char, class CharTraits>
+            friend std::basic_ostream<Char, CharTraits>& operator<<(
+                std::basic_ostream<Char, CharTraits>& out, const StrongTypedef& val)
+            {
+                using type = underlying_type<StrongTypedef>;
+                return out << static_cast<const type&>(val);
             }
         };
     } // namespace strong_typedef_op

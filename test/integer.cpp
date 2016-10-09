@@ -6,6 +6,8 @@
 
 #include <catch.hpp>
 
+#include <sstream>
+
 using namespace type_safe;
 
 // conversion checks
@@ -280,5 +282,17 @@ TEST_CASE("integer")
         b = 125u;
         a = make_signed(b);
         REQUIRE(static_cast<int>(a) == 125);
+    }
+    SECTION("i/o")
+    {
+        std::ostringstream out;
+        std::istringstream in("10");
+
+        int_t i(0);
+        out << i;
+        REQUIRE(out.str() == "0");
+
+        in >> i;
+        REQUIRE(static_cast<int>(i) == 10);
     }
 }

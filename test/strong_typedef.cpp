@@ -6,13 +6,15 @@
 
 #include <catch.hpp>
 
+#include <sstream>
+
 using namespace type_safe;
 
 TEST_CASE("strong_typedef")
 {
     SECTION("equality_comparision")
     {
-        struct type : strong_typedef<type, int>, strong_typedef_op::equality_comparision<type>
+        struct type : strong_typedef<type, int>, strong_typedef_op::equality_comparision<type, bool>
         {
             using strong_typedef::strong_typedef;
         };
@@ -28,7 +30,8 @@ TEST_CASE("strong_typedef")
     }
     SECTION("relational_comparision")
     {
-        struct type : strong_typedef<type, int>, strong_typedef_op::relational_comparision<type>
+        struct type : strong_typedef<type, int>,
+                      strong_typedef_op::relational_comparision<type, bool>
         {
             using strong_typedef::strong_typedef;
         };
@@ -242,5 +245,24 @@ TEST_CASE("strong_typedef")
         REQUIRE(a == type(&arr[1]));
 
         REQUIRE(a - type(&arr[0]) == 1);
+    }
+    SECTION("i/o")
+    {
+        struct type : strong_typedef<type, int>,
+                      strong_typedef_op::input_operator<type>,
+                      strong_typedef_op::output_operator<type>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+        std::ostringstream out;
+        std::istringstream in("1");
+
+        type a(0);
+        out << a;
+        REQUIRE(out.str() == "0");
+
+        in >> a;
+        REQUIRE(static_cast<int>(a) == 1);
     }
 }
