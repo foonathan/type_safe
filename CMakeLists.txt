@@ -28,6 +28,7 @@ set(detail_header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/force_inline.hpp)
 set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/boolean.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/constrained_type.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/floating_point.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/integer.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/narrow_cast.hpp
@@ -42,3 +43,9 @@ target_compile_definitions(type_safe INTERFACE
                                      TYPE_SAFE_ENABLE_ASSERTIONS=${_type_safe_enable_assertions}
                                      TYPE_SAFE_DISABLE_WRAPPER=${_type_safe_disable_wrapper})
 target_link_libraries(type_safe INTERFACE debug_assert)
+
+# other subdirectories
+# only add if not inside add_subdirectory()
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    add_subdirectory(test/)
+endif()

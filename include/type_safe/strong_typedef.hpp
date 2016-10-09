@@ -26,14 +26,18 @@ namespace type_safe
     /// struct my_handle
     /// : strong_typedef<my_handle, void*>,
     ///   strong_typedef_op::equality_comparision<my_handle>
-    /// {};
+    /// {
+    ///     using strong_typedef::strong_typedef;
+    /// };
     ///
     /// struct my_int
     /// : strong_typedef<my_int, int>,
     ///   strong_typedef_op::integer_arithmetic<my_int>,
     ///   strong_typedef_op::equality_comparision<my_int>,
     ///   strong_typedef_op::relational_comparision<my_int>
-    /// {};
+    /// {
+    ///     using strong_typedef::strong_typedef;
+    /// };
     /// ```
     template <class Tag, typename T>
     class strong_typedef
@@ -128,12 +132,11 @@ namespace type_safe
     template <class StrongTypedef>                                                                 \
     struct Name                                                                                    \
     {                                                                                              \
-        StrongTypedef& operator Op##=(const StrongTypedef& other)                                  \
+        friend StrongTypedef& operator Op##=(StrongTypedef& lhs, const StrongTypedef& rhs)         \
         {                                                                                          \
-            using type = underlying_type<StrongTypedef>;                                           \
-            static_cast<type&>(static_cast<StrongTypedef&>(*this)) Op## =                          \
-                static_cast<const type&>(other);                                                   \
-            return static_cast<StrongTypedef&>(*this);                                             \
+            using type                   = underlying_type<StrongTypedef>;                         \
+            static_cast<type&>(lhs) Op## = static_cast<const type&>(rhs);                          \
+            return lhs;                                                                            \
         }                                                                                          \
                                                                                                    \
         friend StrongTypedef operator Op(const StrongTypedef& lhs, const StrongTypedef& rhs)       \
@@ -146,12 +149,11 @@ namespace type_safe
     template <class StrongTypedef, typename Other>                                                 \
     struct mixed_##Name                                                                            \
     {                                                                                              \
-        StrongTypedef& operator Op##=(const Other& other)                                          \
+        friend StrongTypedef& operator Op##=(StrongTypedef& lhs, const Other& other)               \
         {                                                                                          \
-            using type = underlying_type<StrongTypedef>;                                           \
-            static_cast<type&>(static_cast<StrongTypedef&>(*this)) Op## =                          \
-                static_cast<const type&>(other);                                                   \
-            return static_cast<StrongTypedef&>(*this);                                             \
+            using type                   = underlying_type<StrongTypedef>;                         \
+            static_cast<type&>(lhs) Op## = static_cast<const type&>(other);                        \
+            return lhs;                                                                            \
         }                                                                                          \
                                                                                                    \
         friend StrongTypedef operator Op(const StrongTypedef& lhs, const Other& rhs)               \
@@ -187,7 +189,7 @@ namespace type_safe
 
             StrongTypedef operator++(int)
             {
-                auto result = static_cast<StrongTypedef>(*this);
+                auto result = static_cast<StrongTypedef&>(*this);
                 ++*this;
                 return result;
             }
@@ -205,7 +207,7 @@ namespace type_safe
 
             StrongTypedef operator--(int)
             {
-                auto result = static_cast<StrongTypedef>(*this);
+                auto result = static_cast<StrongTypedef&>(*this);
                 --*this;
                 return result;
             }
@@ -256,7 +258,8 @@ namespace type_safe
         {
         };
 
-        template <class StrongTypedef, typename Result>
+        template <class StrongTypedef, typename Result, typename ResultPtr = Result*,
+                  typename ResultConstPtr = const Result*>
         struct dereference
         {
             Result& operator*()
@@ -271,18 +274,16 @@ namespace type_safe
                 return *static_cast<const type&>(static_cast<const StrongTypedef&>(*this));
             }
 
-            Result* operator->()
+            ResultPtr operator->()
             {
                 using type = underlying_type<StrongTypedef>;
-                return static_cast<type&>(static_cast<StrongTypedef&>(*this)).operator->();
+                return static_cast<type&>(static_cast<StrongTypedef&>(*this));
             }
 
-            const Result* operator->() const
+            ResultConstPtr operator->() const
             {
                 using type = underlying_type<StrongTypedef>;
-                return static_cast<const type&>(static_cast<const StrongTypedef&>(*this))
-                    .
-                    operator->();
+                return static_cast<const type&>(static_cast<const StrongTypedef&>(*this));
             }
         };
 
@@ -304,7 +305,7 @@ namespace type_safe
 
         template <class StrongTypedef, class Category, typename T,
                   typename Distance = std::ptrdiff_t>
-        struct iterator : dereference<StrongTypedef, T>, increment<StrongTypedef>
+        struct iterator : dereference<StrongTypedef, T, T*, const T*>, increment<StrongTypedef>
         {
             using iterator_category = Category;
             using value_type        = T;
@@ -373,11 +374,6 @@ namespace type_safe
             {
                 using type = underlying_type<StrongTypedef>;
                 return StrongTypedef(static_cast<const type&>(iter) - n);
-            }
-
-            friend StrongTypedef operator-(const Distance& n, const StrongTypedef& iter)
-            {
-                return iter - n;
             }
 
             friend Distance operator-(const StrongTypedef& lhs, const StrongTypedef& rhs)

@@ -5,6 +5,8 @@
 #ifndef TYPE_SAFE_BOOLEAN_HPP_INCLUDED
 #define TYPE_SAFE_BOOLEAN_HPP_INCLUDED
 
+#include <type_traits>
+
 #include <type_safe/detail/force_inline.hpp>
 
 namespace type_safe
@@ -77,6 +79,11 @@ namespace type_safe
     };
 
     //=== comparision ===//
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const boolean& a, const boolean& b) noexcept
+    {
+        return static_cast<bool>(a) == static_cast<bool>(b);
+    }
+
     template <typename T, typename = detail::enable_boolean<T>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const boolean& a, T b) noexcept
     {
@@ -87,6 +94,11 @@ namespace type_safe
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(T a, const boolean& b) noexcept
     {
         return static_cast<bool>(a) == static_cast<bool>(b);
+    }
+
+    TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const boolean& a, const boolean& b) noexcept
+    {
+        return static_cast<bool>(a) != static_cast<bool>(b);
     }
 
     template <typename T, typename = detail::enable_boolean<T>>
