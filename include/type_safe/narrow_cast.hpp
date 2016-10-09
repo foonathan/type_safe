@@ -68,10 +68,10 @@ namespace type_safe
     {
         using target_integer = typename detail::get_target_integer<Target>::type;
         using target_t       = typename target_integer::integer_type;
-        return (detail::constexpr_assert<target_t>(!detail::is_narrowing<Target>(source),
-                                                   DEBUG_ASSERT_CUR_SOURCE_LOCATION,
-                                                   "conversion would truncate value"),
-                target_integer(static_cast<target_t>(static_cast<Source>(source))));
+        return detail::is_narrowing<Target>(source) ?
+                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion would truncate value"),
+                    target_t()) :
+                   target_integer(static_cast<target_t>(static_cast<Source>(source)));
     }
 
     /// \returns A [type_safe::floating_point]() with the same value as `source` but of a different type.
@@ -84,10 +84,10 @@ namespace type_safe
     {
         using target_float = typename detail::get_target_floating_point<Target>::type;
         using target_t     = typename target_float::floating_point_type;
-        return (detail::constexpr_assert<target_t>(!detail::is_narrowing<Target>(source),
-                                                   DEBUG_ASSERT_CUR_SOURCE_LOCATION,
-                                                   "conversion would truncate value"),
-                target_float(static_cast<target_t>(static_cast<Source>(source))));
+        return detail::is_narrowing<Target>(source) ?
+                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion would truncate value"),
+                    target_t()) :
+                   target_float(static_cast<target_t>(static_cast<Source>(source)));
     }
 } // namespace type_safe
 

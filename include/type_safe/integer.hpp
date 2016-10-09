@@ -305,12 +305,12 @@ namespace type_safe
         const integer<Integer>& i) noexcept
     {
         using result_type = typename std::make_signed<Integer>::type;
-        return (detail::
-                    constexpr_assert<result_type>(i <= static_cast<Integer>(
-                                                           std::numeric_limits<result_type>::max()),
-                                                  DEBUG_ASSERT_CUR_SOURCE_LOCATION,
-                                                  "conversion would overflow"),
-                integer<result_type>(static_cast<result_type>(static_cast<Integer>(i))));
+        return i <= static_cast<Integer>(std::numeric_limits<result_type>::max()) ?
+                   integer<result_type>(static_cast<result_type>(static_cast<Integer>(i))) :
+                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion "
+                                                                "would "
+                                                                "overflow"),
+                    result_type());
     }
 
     /// [std::make_unsigned]() for [type_safe::integer]().
@@ -324,9 +324,10 @@ namespace type_safe
         const integer<Integer>& i) noexcept
     {
         using result_type = typename std::make_unsigned<Integer>::type;
-        return (detail::constexpr_assert<result_type>(i >= 1, DEBUG_ASSERT_CUR_SOURCE_LOCATION,
-                                                      "conversion would underflow"),
-                integer<result_type>(static_cast<result_type>(static_cast<Integer>(i))));
+        return i >= Integer(0) ?
+                   integer<result_type>(static_cast<result_type>(static_cast<Integer>(i))) :
+                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion would underflow"),
+                    result_type(0));
     }
 
     /// \returns The absolute value of an [type_safe::integer]().
@@ -445,10 +446,10 @@ namespace type_safe
                                                     const integer<B>& b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
-        return (detail::constexpr_assert<A>(!detail::will_overflow<detail::integer_result_t<A, B>>(
-                                                static_cast<A>(a), static_cast<B>(b)),
-                                            DEBUG_ASSERT_CUR_SOURCE_LOCATION, "overflow detected"),
-                detail::integer_result_t<A, B>(static_cast<A>(a) + static_cast<B>(b)));
+        return detail::will_overflow<detail::integer_result_t<A, B>>(static_cast<A>(a),
+                                                                     static_cast<B>(b)) ?
+                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "overflow detected"), A()) :
+                   detail::integer_result_t<A, B>(static_cast<A>(a) + static_cast<B>(b));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(+)
 
@@ -457,10 +458,10 @@ namespace type_safe
                                                     const integer<B>& b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
-        return (detail::constexpr_assert<A>(!detail::will_underflow<detail::integer_result_t<A, B>>(
-                                                static_cast<A>(a), static_cast<B>(b)),
-                                            DEBUG_ASSERT_CUR_SOURCE_LOCATION, "underflow detected"),
-                detail::integer_result_t<A, B>(static_cast<A>(a) - static_cast<B>(b)));
+        return detail::will_underflow<detail::integer_result_t<A, B>>(static_cast<A>(a),
+                                                                      static_cast<B>(b)) ?
+                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "underflow detected"), A()) :
+                   detail::integer_result_t<A, B>(static_cast<A>(a) - static_cast<B>(b));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(-)
 
@@ -469,14 +470,12 @@ namespace type_safe
                                                     const integer<B>& b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
-        return (detail::constexpr_assert<A>(
-                    !detail::
-                        will_multiplication_overflow<detail::integer_result_t<A, B>>(static_cast<A>(
-                                                                                         a),
-                                                                                     static_cast<B>(
-                                                                                         b)),
-                    DEBUG_ASSERT_CUR_SOURCE_LOCATION, "overflow detected"),
-                detail::integer_result_t<A, B>(static_cast<A>(a) * static_cast<B>(b)));
+        return detail::will_multiplication_overflow<detail::integer_result_t<A, B>>(static_cast<A>(
+                                                                                        a),
+                                                                                    static_cast<B>(
+                                                                                        b)) ?
+                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "overflow detected"), A()) :
+                   detail::integer_result_t<A, B>(static_cast<A>(a) * static_cast<B>(b));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(*)
 

@@ -19,21 +19,6 @@ namespace type_safe
                                 debug_assert::default_handler
         {
         };
-
-        template <typename Return>
-        constexpr Return constexpr_assert(bool condition, debug_assert::source_location loc,
-                                          const char* message)
-        {
-// dear user,
-// if an error message points you to this function
-// you're using a constexpr function with an assertion where the assertion failed
-#if TYPE_SAFE_ENABLE_ASSERTIONS
-            return condition ? Return() :
-                               (assert_handler{}.handle(loc, "", message), std::abort(), Return());
-#else
-            return Return();
-#endif
-        }
     } // namespace detail
 } // namespace type_safe
 
