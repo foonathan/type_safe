@@ -33,6 +33,19 @@ static_assert(!std::is_assignable<integer<int>, long long>::value, "");
 static_assert(!std::is_assignable<integer<int>, unsigned>::value, "");
 static_assert(!std::is_assignable<integer<unsigned>, int>::value, "");
 
+TEST_CASE("over/underflow")
+{
+    REQUIRE(!detail::will_overflow<std::uint8_t>(254, 1));
+    REQUIRE(detail::will_overflow<std::uint8_t>(254, 2));
+
+    REQUIRE(!detail::will_underflow<std::uint8_t>(100, 100));
+    REQUIRE(detail::will_underflow<std::uint8_t>(100, 255));
+
+    REQUIRE(!detail::will_multiplication_overflow<std::uint8_t>(0, 255));
+    REQUIRE(!detail::will_multiplication_overflow<std::uint8_t>(2, 127));
+    REQUIRE(detail::will_multiplication_overflow<std::uint8_t>(255, 255));
+}
+
 TEST_CASE("integer")
 {
     using int_t = integer<int>;

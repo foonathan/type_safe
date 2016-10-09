@@ -80,13 +80,32 @@ namespace type_safe
         template <typename A, typename B>
         using fallback_integer_result =
             typename std::enable_if<!is_safe_integer_operation<A, B>::value>::type;
+
+        template <typename T>
+        constexpr bool will_underflow(T a, T b)
+        {
+            return !std::is_signed<T>::value && a < b;
+        }
+
+        template <typename T>
+        constexpr bool will_overflow(T a, T b)
+        {
+            return !std::is_signed<T>::value && T(a + b) < a;
+        }
+
+        template <typename T>
+        constexpr bool will_multiplication_overflow(T a, T b)
+        {
+            return !std::is_signed<T>::value && a != 0 && (T(a * b) / a) != b;
+        }
     } // namespace detail
 
     /// A type safe integer class.
     ///
     /// This is a tiny, no overhead wrapper over a standard integer type.
     /// It behaves exactly like the built-in types except that narrowing conversions are not allowed.
-    /// It also checks against `unsigned` underflow in debug mode.
+    /// It also checks against `unsigned` under/overflow in debug mode
+    /// and marks it as undefined for the optimizer otherwise.
     ///
     /// A conversion is considered safe if both integer types have the same signedness
     /// and the size of the value being converted is less than or equal to the destination size.
@@ -155,12 +174,16 @@ namespace type_safe
 
         TYPE_SAFE_FORCE_INLINE integer& operator++() noexcept
         {
+            DEBUG_ASSERT(!detail::will_overflow(value_, integer_type(1)), detail::assert_handler{},
+                         "overflow detected");
             ++value_;
             return *this;
         }
 
         TYPE_SAFE_FORCE_INLINE integer operator++(int)noexcept
         {
+            DEBUG_ASSERT(!detail::will_overflow(value_, integer_type(1)), detail::assert_handler{},
+                         "overflow detected");
             auto res = *this;
             ++value_;
             return res;
@@ -168,16 +191,16 @@ namespace type_safe
 
         TYPE_SAFE_FORCE_INLINE integer& operator--() noexcept
         {
-            DEBUG_ASSERT(std::is_signed<integer_type>::value || value_ > integer_type(0),
-                         detail::assert_handler{}, "underflow detected");
+            DEBUG_ASSERT(!detail::will_underflow(value_, integer_type(1)), detail::assert_handler{},
+                         "underflow detected");
             --value_;
             return *this;
         }
 
         TYPE_SAFE_FORCE_INLINE integer operator--(int)noexcept
         {
-            DEBUG_ASSERT(std::is_signed<integer_type>::value || value_ > integer_type(0),
-                         detail::assert_handler{}, "underflow detected");
+            DEBUG_ASSERT(!detail::will_underflow(value_, integer_type(1)), detail::assert_handler{},
+                         "underflow detected");
             auto res = *this;
             --value_;
             return res;
@@ -198,6 +221,8 @@ namespace type_safe
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE integer& operator+=(const integer<T>& other) noexcept
         {
+            DEBUG_ASSERT(!detail::will_overflow(value_, static_cast<T>(other)),
+                         detail::assert_handler{}, "overflow detected");
             value_ += static_cast<T>(other);
             return *this;
         }
@@ -206,7 +231,7 @@ namespace type_safe
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE integer& operator-=(const integer<T>& other) noexcept
         {
-            DEBUG_ASSERT(std::is_signed<T>::value || value_ > static_cast<T>(other),
+            DEBUG_ASSERT(!detail::will_underflow(value_, static_cast<T>(other)),
                          detail::assert_handler{}, "underflow detected");
             value_ -= static_cast<T>(other);
             return *this;
@@ -216,6 +241,8 @@ namespace type_safe
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE integer& operator*=(const integer<T>& other) noexcept
         {
+            DEBUG_ASSERT(!detail::will_multiplication_overflow(value_, static_cast<T>(other)),
+                         detail::assert_handler{}, "overflow detected");
             value_ *= static_cast<T>(other);
             return *this;
         }
@@ -417,7 +444,10 @@ namespace type_safe
                                                     const integer<B>& b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
-        return static_cast<A>(a) + static_cast<B>(b);
+        return (detail::constexpr_assert<A>(!detail::will_overflow<detail::integer_result_t<A, B>>(
+                                                static_cast<A>(a), static_cast<B>(b)),
+                                            DEBUG_ASSERT_CUR_SOURCE_LOCATION, "overflow detected"),
+                static_cast<A>(a) + static_cast<B>(b));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(+)
 
@@ -426,7 +456,8 @@ namespace type_safe
                                                     const integer<B>& b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
-        return (detail::constexpr_assert<A>(std::is_signed<A>::value || a >= b,
+        return (detail::constexpr_assert<A>(!detail::will_underflow<detail::integer_result_t<A, B>>(
+                                                static_cast<A>(a), static_cast<B>(b)),
                                             DEBUG_ASSERT_CUR_SOURCE_LOCATION, "underflow detected"),
                 static_cast<A>(a) - static_cast<B>(b));
     }
@@ -437,7 +468,14 @@ namespace type_safe
                                                     const integer<B>& b) noexcept
         -> integer<detail::integer_result_t<A, B>>
     {
-        return static_cast<A>(a) * static_cast<B>(b);
+        return (detail::constexpr_assert<A>(
+                    !detail::
+                        will_multiplication_overflow<detail::integer_result_t<A, B>>(static_cast<A>(
+                                                                                         a),
+                                                                                     static_cast<B>(
+                                                                                         b)),
+                    DEBUG_ASSERT_CUR_SOURCE_LOCATION, "overflow detected"),
+                static_cast<A>(a) * static_cast<B>(b));
     }
     TYPE_SAFE_DETAIL_MAKE_OP(*)
 
