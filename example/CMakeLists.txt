@@ -7,4 +7,6 @@ function(_type_safe_example name)
     target_link_libraries(type_safe_example_${name} PUBLIC type_safe)
 endfunction()
 
+_type_safe_example(constrained)
+_type_safe_example(optional)
 _type_safe_example(types)
