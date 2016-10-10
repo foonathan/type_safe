@@ -97,7 +97,7 @@ namespace type_safe
         template <typename T>
         constexpr bool will_multiplication_overflow(T a, T b)
         {
-            return !std::is_signed<T>::value && a != 0 && (T(a * b) / a) != b;
+            return !std::is_signed<T>::value && a * b < a;
         }
     } // namespace detail
 

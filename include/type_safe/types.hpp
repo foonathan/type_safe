@@ -13,8 +13,8 @@
 #include <type_safe/floating_point.hpp>
 #include <type_safe/integer.hpp>
 
-#ifndef TYPE_SAFE_DISABLE_WRAPPER
-#define TYPE_SAFE_DISABLE_WRAPPER 0
+#ifndef TYPE_SAFE_ENABLE_WRAPPER
+#define TYPE_SAFE_ENABLE_WRAPPER 1
 #endif
 
 namespace type_safe

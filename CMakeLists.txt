@@ -15,11 +15,11 @@ else()
     set(_type_safe_enable_assertions 0)
 endif()
 
-option(TYPE_SAFE_DISABLE_WRAPPER "whether or not the wrappers in types.hpp are used" OFF)
-if(${TYPE_SAFE_DISABLE_WRAPPER})
-    set(_type_safe_disable_wrapper 1)
+option(TYPE_SAFE_ENABLE_WRAPPER "whether or not the wrappers in types.hpp are used" OFF)
+if(${TYPE_SAFE_ENABLE_WRAPPER})
+    set(_type_safe_enable_wrapper 1)
 else()
-    set(_type_safe_disable_wrapper 0)
+    set(_type_safe_enable_wrapper 0)
 endif()
 
 # interface target
@@ -41,7 +41,7 @@ target_sources(type_safe INTERFACE ${detail_header_files} ${header_files})
 target_include_directories(type_safe INTERFACE include/)
 target_compile_definitions(type_safe INTERFACE
                                      TYPE_SAFE_ENABLE_ASSERTIONS=${_type_safe_enable_assertions}
-                                     TYPE_SAFE_DISABLE_WRAPPER=${_type_safe_disable_wrapper})
+                                     TYPE_SAFE_ENABLE_WRAPPER=${_type_safe_enable_wrapper})
 target_link_libraries(type_safe INTERFACE debug_assert)
 
 # other subdirectories
