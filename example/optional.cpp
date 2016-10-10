@@ -92,4 +92,28 @@ int main()
         std::cout << "got: " << i << '\n';
         ++i;
     });
+
+    // an optional reference
+    // basically a pointer, but provides the funcionality of optional
+    ts::optional_ref<int> ref;
+
+    int a = 42;
+    ref   = a; // assignment rebinds
+    std::cout << ref.value() << '\n';
+
+    ref.value() = 0;
+    std::cout << a << '\n';
+
+    int b = 5;
+    ref.value_or(b)++;
+    std::cout << a << ' ' << b << '\n';
+
+    ref = nullptr; // assign nullptr as additional way to reset
+
+    // an optional reference to const
+    ts::optional_ref<const int> ref_const(ref);
+
+    // create optional_ref from pointer
+    auto ptr       = ts::ref(&a);
+    auto ptr_const = ts::cref(&a);
 }

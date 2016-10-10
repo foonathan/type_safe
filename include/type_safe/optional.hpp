@@ -722,6 +722,15 @@ namespace type_safe
             pointer_ = &obj;
         }
 
+        /// \effects Binds the same target as `const_ref`.
+        template <typename U,
+                  typename = typename std::
+                      enable_if<std::is_same<U, typename std::remove_const<T>::type>::value>::type>
+        void create_value(const basic_optional<reference_optional_storage<U>>& const_ref)
+        {
+            pointer_ = const_ref.has_value() ? &const_ref.value() : nullptr;
+        }
+
         /// \effects Same as `destroy_value()`.
         void create_value(std::nullptr_t) noexcept
         {
