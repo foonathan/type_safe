@@ -652,6 +652,33 @@ namespace type_safe
         return detail::visit(std::forward<Visitor>(visitor), std::forward<Optionals>(optionals)...);
     }
 
+    /// \exclude
+    namespace detail
+    {
+        template <class Optional>
+        bool all_have_value(Optional& optional)
+        {
+            return optional.has_value();
+        }
+
+        template <class Optional, class... Rest>
+        bool all_have_value(Optional& optional, Rest&... rest)
+        {
+            return optional.has_value() && all_have_value(rest...);
+        }
+    } // namespace detail
+
+    /// \returns If all optionals have a value, returns an optional with the value `f(optionals.value()...)` (perfectly forwarded).
+    /// Otherwise returns an empty optional.
+    /// \notes An `Optional` here is every type with functions named `has_value()` and `value()` and default constructor.
+    template <class ResultOptional, typename Func, class... Optionals>
+    ResultOptional apply(Func&& f, Optionals&&... optionals)
+    {
+        if (detail::all_have_value(optionals...))
+            return std::forward<Func>(f)(std::forward<Optionals>(optionals).value()...);
+        return {};
+    }
+
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \
     template <class StoragePolicy>                                                                 \
     bool operator Op(const basic_optional<StoragePolicy>& lhs, nullopt_t)                          \
