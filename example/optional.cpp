@@ -116,4 +116,11 @@ int main()
     // create optional_ref from pointer
     auto ptr       = ts::ref(&a);
     auto ptr_const = ts::cref(&a);
+
+    // map() takes a functor and wraps the result in an optional itself
+    // transform() does not wrap it in an optional to allow arbitrary transformation
+    // but it needs a fallback value if there is no value stored
+    // here transform() is used to transform an optional_ref to a normal optional
+    auto ptr_transformed = ref.transform(ts::optional<int>(), [](int a) { return a; });
+    std::cout << ptr_transformed.value() << '\n';
 }

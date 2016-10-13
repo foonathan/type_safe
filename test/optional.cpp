@@ -429,6 +429,18 @@ TEST_CASE("optional")
         REQUIRE(e_res.has_value());
         REQUIRE(e_res.value() == 'a');
     }
+    SECTION("transform")
+    {
+        auto func = [](int i) { return "abc"[i]; };
+
+        optional<int> a;
+        char          a_res = a.transform(char('\0'), func);
+        REQUIRE(a_res == '\0');
+
+        optional<int> b(0);
+        char          b_res = b.transform(char('\0'), func);
+        REQUIRE(b_res == 'a');
+    }
     SECTION("then")
     {
         auto func1 = [](optional<int> i) { return i.value_or(-1); };

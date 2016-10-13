@@ -397,8 +397,7 @@ namespace type_safe
         /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `const value_type&`.
         /// If `has_value()` is `true`, returns the new optional with result of `std::forward<Func>(f)(std::move(value))`,
         /// otherwise returns an empty optional.
-        /// \notes It will move the `value()` to the function.
-        /// \requires `f` must be callable with `value_type&&`.
+        /// \requires `f` must be callable with `const value_type&`.
         template <typename Func>
         auto map(Func&& f) const& -> rebind<decltype(std::forward<Func>(f)(this->value()))>
         {
@@ -440,6 +439,38 @@ namespace type_safe
             Func&& f) && -> detail::unwrap_optional_t<decltype(this->map(std::forward<Func>(f)))>
         {
             return map(std::forward<Func>(f)).unwrap();
+        }
+
+    private:
+        template <typename T>
+        using remove_cv_ref =
+            typename std::remove_cv<typename std::remove_reference<T>::type>::type;
+
+    public:
+        /// \returns If the optional is not empty, `std::forward<Func>(f)(value())` converted to the type `T` without cv or references.
+        /// Otherwise returns `std::forward<T>(t)`.
+        /// \requires `f` must be callable with `const value_type&`.
+        /// \notes This is similar to `map()` but does not wrap the resulting type in an optional.
+        /// Hence a fallback value must be provided.
+        template <typename T, typename Func>
+        auto transform(T&& t, Func&& f) const& -> remove_cv_ref<T>
+        {
+            if (has_value())
+                return static_cast<remove_cv_ref<T>>(std::forward<Func>(f)(value()));
+            return std::forward<T>(t);
+        }
+
+        /// \returns If the optional is not empty, `std::forward<Func>(f)(std::move(value()))` converted to the type `T` without cv or references.
+        /// Otherwise returns `std::forward<T>(t)`.
+        /// \requires `f` must be callable with `value_type&&`.
+        /// \notes This is similar to `map()` but does not wrap the resulting type in an optional.
+        /// Hence a fallback value must be provided.
+        template <typename T, typename Func>
+        auto transform(T&& t, Func&& f) && -> remove_cv_ref<T>
+        {
+            if (has_value())
+                return static_cast<remove_cv_ref<T>>(std::forward<Func>(f)(std::move(value())));
+            return std::forward<T>(t);
         }
 
         /// \returns A `basic_optional` with the value of `std::forward<Func>(f)(*this)`.
