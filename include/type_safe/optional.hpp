@@ -394,13 +394,27 @@ namespace type_safe
             return detail::unwrap_optional(*this);
         }
 
+        /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `const value_type&`.
+        /// If `has_value()` is `true`, returns the new optional with result of `std::forward<Func>(f)(std::move(value))`,
+        /// otherwise returns an empty optional.
+        /// \notes It will move the `value()` to the function.
+        /// \requires `f` must be callable with `value_type&&`.
+        template <typename Func>
+        auto map(Func&& f) const& -> rebind<decltype(std::forward<Func>(f)(this->value()))>
+        {
+            if (has_value())
+                return std::forward<Func>(f)(value());
+            else
+                return nullopt;
+        }
+
         /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `value_type&&`.
         /// If `has_value()` is `true`, returns the new optional with result of `std::forward<Func>(f)(std::move(value))`,
         /// otherwise returns an empty optional.
         /// \notes It will move the `value()` to the function.
         /// \requires `f` must be callable with `value_type&&`.
         template <typename Func>
-        auto map(Func&& f) -> rebind<decltype(std::forward<Func>(f)(std::move(this->value())))>
+        auto map(Func&& f) && -> rebind<decltype(std::forward<Func>(f)(std::move(this->value())))>
         {
             if (has_value())
                 return std::forward<Func>(f)(std::move(value()));
@@ -412,9 +426,33 @@ namespace type_safe
         /// \notes This is useful for functions that return an optional type itself,
         /// the optional will be "flattened" properly.
         template <typename Func>
-        auto bind(Func&& f) -> detail::unwrap_optional_t<decltype(this->map(std::forward<Func>(f)))>
+        auto bind(Func&& f)
+            const& -> detail::unwrap_optional_t<decltype(this->map(std::forward<Func>(f)))>
         {
             return map(std::forward<Func>(f)).unwrap();
+        }
+
+        /// \returns The same as `map(std::forward<Func>(f)).unwrap()`.
+        /// \notes This is useful for functions that return an optional type itself,
+        /// the optional will be "flattened" properly.
+        template <typename Func>
+        auto bind(
+            Func&& f) && -> detail::unwrap_optional_t<decltype(this->map(std::forward<Func>(f)))>
+        {
+            return map(std::forward<Func>(f)).unwrap();
+        }
+
+        /// \returns A `basic_optional` with the value of `std::forward<Func>(f)(*this)`.
+        /// If the result of `f` is a `basic_optional` itself, it will be returned instead,
+        /// i.e. it calls `unwrap()`.
+        /// \requires `f` must be callable with `decltype(*this)`,
+        /// i.e. a `const` lvalue reference to the type of this optional.
+        template <typename Func>
+        auto then(Func&& f)
+            const& -> detail::unwrap_optional_t<rebind<decltype(std::forward<Func>(f)(*this))>>
+        {
+            using result_type = decltype(std::forward<Func>(f)(*this));
+            return rebind<result_type>(std::forward<Func>(f)(*this)).unwrap();
         }
 
         /// \returns A `basic_optional` with the value of `std::forward<Func>(f)(std::move(*this))`.
@@ -423,8 +461,8 @@ namespace type_safe
         /// \requires `f` must be callable with `decltype(std::move(*this))`,
         /// i.e. an rvalue reference to the type of this optional.
         template <typename Func>
-        auto then(Func&& f)
-            -> detail::unwrap_optional_t<rebind<decltype(std::forward<Func>(f)(std::move(*this)))>>
+        auto then(Func&& f) && -> detail::
+            unwrap_optional_t<rebind<decltype(std::forward<Func>(f)(std::move(*this)))>>
         {
             using result_type = decltype(std::forward<Func>(f)(std::move(*this)));
             return rebind<result_type>(std::forward<Func>(f)(std::move(*this))).unwrap();
