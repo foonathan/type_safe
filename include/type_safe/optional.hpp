@@ -602,14 +602,31 @@ namespace type_safe
             }
         };
 
-        template <bool Save, typename Visitor, class... Optionals>
+        template <typename T>
+        struct visitor_allow_incomplete
+        {
+            template <typename U, typename = typename U::incomplete_visitor>
+            static std::true_type test(int);
+
+            template <typename U>
+            static std::true_type test(int, decltype(U::incomplete_visitor));
+
+            template <typename U>
+            static std::false_type test(short);
+
+            static const bool value = decltype(test<typename std::decay<T>::type>(0))::value;
+        };
+
+        template <typename Visitor, class... Optionals>
         auto visit(Visitor&& visitor, Optionals&&... optionals) -> decltype(
-            detail::visit_optional<Save, decltype(std::forward<Visitor>(visitor)),
+            detail::visit_optional<!visitor_allow_incomplete<Visitor>::value,
+                                   decltype(std::forward<Visitor>(visitor)),
                                    decltype(std::forward<Optionals>(
                                        optionals))...>::call(std::forward<Visitor>(visitor),
                                                              std::forward<Optionals>(optionals)...))
         {
-            return detail::visit_optional<Save, decltype(std::forward<Visitor>(visitor)),
+            return detail::visit_optional<!visitor_allow_incomplete<Visitor>::value,
+                                          decltype(std::forward<Visitor>(visitor)),
                                           decltype(std::forward<Optionals>(
                                               optionals))...>::call(std::forward<Visitor>(visitor),
                                                                     std::forward<Optionals>(
@@ -621,34 +638,18 @@ namespace type_safe
     /// i.e. the `operator()` of `visitor` passing it `sizeof...(Optionals)` arguments,
     /// where the `i`th argument is the `value()` of the `i`th optional or `nullopt`, if it has none.
     /// If the particular combination of types is not overloaded,
-    /// this function has no effect.
+    /// the program is ill-formed,
+    /// unelss the `Visitor` provides a member named `incomplete_visitor`,
+    /// then `visit()` does not do anything instead of the error.
     /// \returns The result of the chosen `operator()`,
     /// it's the type is the common type of all possible combinations.
     /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
     template <typename Visitor, class... Optionals>
     auto visit(Visitor&& visitor, Optionals&&... optionals)
-        -> decltype(detail::visit<false>(std::forward<Visitor>(visitor),
-                                         std::forward<Optionals>(optionals)...))
+        -> decltype(detail::visit(std::forward<Visitor>(visitor),
+                                  std::forward<Optionals>(optionals)...))
     {
-        return detail::visit<false>(std::forward<Visitor>(visitor),
-                                    std::forward<Optionals>(optionals)...);
-    }
-
-    /// \effects Effectively calls `visitor((optionals.has_value() ? optionals.value() : nullopt)...)`,
-    /// i.e. the `operator()` of `visitor` passing it `sizeof...(Optionals)` arguments,
-    /// where the `i`th argument is the `value()` of the `i`th optional or `nullopt`, if it has none.
-    /// If the particular combination of types is not overloaded,
-    /// the call to `visit_exhaustive()` is ill-formed.
-    /// \returns The result of the chosen `operator()`,
-    /// it's the type is the common type of all possible combinations.
-    /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
-    template <typename Visitor, class... Optionals>
-    auto visit_exhaustive(Visitor&& visitor, Optionals&&... optionals)
-        -> decltype(detail::visit<true>(std::forward<Visitor>(visitor),
-                                        std::forward<Optionals>(optionals)...))
-    {
-        return detail::visit<true>(std::forward<Visitor>(visitor),
-                                   std::forward<Optionals>(optionals)...);
+        return detail::visit(std::forward<Visitor>(visitor), std::forward<Optionals>(optionals)...);
     }
 
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \

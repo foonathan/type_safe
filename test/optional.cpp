@@ -483,6 +483,8 @@ TEST_CASE("optional")
     {
         struct visitor
         {
+            using incomplete_visitor = void;
+
             int value;
 
             void operator()(nullopt_t) const
