@@ -494,6 +494,16 @@ TEST_CASE("optional")
             {
                 REQUIRE(value == i);
             }
+
+            void operator()(int a, nullopt_t) const
+            {
+                REQUIRE(value == -1);
+            }
+
+            void operator()(int a, int b) const
+            {
+                REQUIRE(value == b);
+            }
         };
 
         optional<int> a;
@@ -501,6 +511,12 @@ TEST_CASE("optional")
 
         a = 42;
         visit(visitor{42}, a);
+
+        optional<int> b;
+        visit(visitor{-1}, a, b);
+
+        b = 32;
+        visit(visitor{32}, a, b);
     }
     SECTION("comparision")
     {
