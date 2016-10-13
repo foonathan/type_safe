@@ -685,4 +685,32 @@ TEST_CASE("optional_ref")
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
     }
+    SECTION("copy")
+    {
+        debugger_type dbg(0);
+
+        optional_ref<debugger_type> a;
+        optional<debugger_type>     a_res = copy(a);
+        REQUIRE_FALSE(a_res.has_value());
+
+        optional_ref<debugger_type> b(dbg);
+        optional<debugger_type>     b_res = copy(b);
+        REQUIRE(b_res.has_value());
+        REQUIRE(b_res.value().id == 0);
+        REQUIRE(b_res.value().copy_ctor());
+    }
+    SECTION("move")
+    {
+        debugger_type dbg(0);
+
+        optional_ref<debugger_type> a;
+        optional<debugger_type>     a_res = move(a);
+        REQUIRE_FALSE(a_res.has_value());
+
+        optional_ref<debugger_type> b(dbg);
+        optional<debugger_type>     b_res = move(b);
+        REQUIRE(b_res.has_value());
+        REQUIRE(b_res.value().id == 0);
+        REQUIRE(b_res.value().move_ctor());
+    }
 }

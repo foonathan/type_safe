@@ -121,6 +121,8 @@ int main()
     // transform() does not wrap it in an optional to allow arbitrary transformation
     // but it needs a fallback value if there is no value stored
     // here transform() is used to transform an optional_ref to a normal optional
-    auto ptr_transformed = ref.transform(ts::optional<int>(), [](int a) { return a; });
+    auto ptr_transformed = ptr.transform(ts::optional<int>(), [](int a) { return a; });
+    // note that the same for this particular situation can be achieved like this
+    ptr_transformed = ts::copy(ptr); // there is also ts::move() to move the value
     std::cout << ptr_transformed.value() << '\n';
 }

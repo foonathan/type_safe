@@ -842,18 +842,38 @@ namespace type_safe
     template <typename T>
     using optional_ref = basic_optional<reference_optional_storage<T>>;
 
-    /// \returns A [type_safe::optional_ref<T>] to the pointee of `ptr` or `nullopt`.
+    /// \returns A [type_safe::optional_ref<T>]() to the pointee of `ptr` or `nullopt`.
     template <typename T>
     optional_ref<T> ref(T* ptr) noexcept
     {
         return ptr ? optional_ref<T>(*ptr) : nullopt;
     }
 
-    /// \returns A [type_safe::optional_ref<T>] to `const` to the pointee of `ptr` or `nullopt`.
+    /// \returns A [type_safe::optional_ref<T>]() to `const` to the pointee of `ptr` or `nullopt`.
     template <typename T>
     optional_ref<const T> cref(const T* ptr) noexcept
     {
         return ptr ? optional_ref<const T>(*ptr) : nullopt;
+    }
+
+    /// \returns A [type_safe::optional<T>]() containing a copy of the value of `ref`
+    /// if there is any value.
+    /// \requires `T` must be copyable.
+    template <typename T>
+    optional<typename std::remove_const<T>::type> copy(const optional_ref<T>& ref)
+    {
+        return ref.has_value() ? make_optional(ref.value()) : nullopt;
+    }
+
+    /// \returns A [type_safe::optional<T>]() containing a copy of the value of `ref` created by move constructing
+    /// if ther is any value.
+    /// \requires `T` must be moveable and `ref` must not be a reference to `const`.
+    template <typename T>
+    optional<T> move(const optional_ref<T>& ref) noexcept(
+        std::is_nothrow_move_constructible<T>::value)
+    {
+        static_assert(!std::is_const<T>::value, "move() cannot be called on reference to const");
+        return ref.has_value() ? make_optional(std::move(ref.value())) : nullopt;
     }
 } // namespace type_safe
 
