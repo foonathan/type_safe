@@ -82,6 +82,8 @@ namespace type_safe
         using floating_point_type = FloatT;
 
         //=== constructors ===//
+        floating_point() = delete;
+
         template <typename T,
                   typename = detail::enable_safe_floating_point_conversion<T, floating_point_type>>
         TYPE_SAFE_FORCE_INLINE constexpr floating_point(const T& val) noexcept : value_(val)

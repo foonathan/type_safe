@@ -44,6 +44,8 @@ namespace type_safe
     class boolean
     {
     public:
+        boolean() = delete;
+
         template <typename T, typename = detail::enable_boolean<T>>
         TYPE_SAFE_FORCE_INLINE constexpr boolean(T value) noexcept : value_(value)
         {

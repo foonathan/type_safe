@@ -10,6 +10,7 @@
 
 using namespace type_safe;
 
+static_assert(std::is_pod<integer<int>>::value, "");
 // conversion checks
 static_assert(sizeof(short) < sizeof(int), "");
 static_assert(std::is_constructible<integer<short>, short>::value, "");

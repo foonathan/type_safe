@@ -10,6 +10,7 @@
 
 using namespace type_safe;
 
+static_assert(std::is_pod<floating_point<float>>::value, "");
 // conversion checks
 static_assert(std::is_constructible<floating_point<float>, float>::value, "");
 static_assert(!std::is_constructible<floating_point<float>, double>::value, "");

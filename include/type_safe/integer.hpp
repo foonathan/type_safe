@@ -122,6 +122,8 @@ namespace type_safe
         using integer_type = IntegerT;
 
         //=== constructors ===//
+        integer() = delete;
+
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE constexpr integer(const T& val) noexcept : value_(val)
         {
