@@ -234,18 +234,26 @@ namespace type_safe
         /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
         /// A value of a container type is valid if it is not empty.
         /// Empty-ness is determined with either a member or non-member function.
-        struct non_empty
+        class non_empty
         {
             template <typename T>
-            auto operator()(const T& t) const noexcept(noexcept(t.empty())) -> decltype(t.empty())
+            auto is_empty(int, const T& t) const noexcept(noexcept(t.empty()))
+                -> decltype(t.empty())
             {
                 return !t.empty();
             }
 
             template <typename T>
-            auto operator()(const T& t) const noexcept(noexcept(empty(t))) -> decltype(empty(t))
+            bool is_empty(short, const T& t) const
             {
                 return !empty(t);
+            }
+
+        public:
+            template <typename T>
+            bool operator()(const T& t) const
+            {
+                return is_empty(0, t);
             }
         };
 
