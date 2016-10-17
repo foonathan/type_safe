@@ -1032,16 +1032,12 @@ namespace type_safe
 
 namespace std
 {
-    template <typename T>
-    class hash;
-
     template <class StoragePolicy>
-    class hash<type_safe::basic_optional<StoragePolicy>>
+    struct hash<type_safe::basic_optional<StoragePolicy>>
     {
         using value_type = typename StoragePolicy::value_type;
         using value_hash = std::hash<value_type>;
 
-    public:
         std::size_t operator()(const type_safe::basic_optional<StoragePolicy>& opt) const
             noexcept(noexcept(value_hash{}(std::declval<value_type>())))
         {
