@@ -683,12 +683,12 @@ namespace type_safe
     template <class StoragePolicy>                                                                 \
     bool operator Op(const basic_optional<StoragePolicy>& lhs, nullopt_t)                          \
     {                                                                                              \
-        return Expr;                                                                               \
+        return (void)lhs, Expr;                                                                    \
     }                                                                                              \
     template <class StoragePolicy>                                                                 \
     bool operator Op(nullopt_t, const basic_optional<StoragePolicy>& rhs)                          \
     {                                                                                              \
-        return Expr2;                                                                              \
+        return (void)rhs, Expr2;                                                                   \
     }
 
     // equal to nullopt when empty
