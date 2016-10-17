@@ -22,11 +22,19 @@ else()
     set(_type_safe_enable_wrapper 0)
 endif()
 
+option(TYPE_SAFE_ARITHMETIC_UB "whether or not the undefined_behavior_arithmetic policy is used" ON)
+if(${TYPE_SAFE_ARITHMETIC_UB})
+    set(_type_safe_arithmetic_ub 1)
+else()
+    set(_type_safe_arithmetic_ub 0)
+endif()
+
 # interface target
 set(detail_header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/assert.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/force_inline.hpp)
 set(header_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/arithmetic_policy.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/boolean.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/constrained_type.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/floating_point.hpp
@@ -41,7 +49,8 @@ target_sources(type_safe INTERFACE ${detail_header_files} ${header_files})
 target_include_directories(type_safe INTERFACE include/)
 target_compile_definitions(type_safe INTERFACE
                                      TYPE_SAFE_ENABLE_ASSERTIONS=${_type_safe_enable_assertions}
-                                     TYPE_SAFE_ENABLE_WRAPPER=${_type_safe_enable_wrapper})
+                                     TYPE_SAFE_ENABLE_WRAPPER=${_type_safe_enable_wrapper}
+                                     TYPE_SAFE_ARITHMETIC_UB=${_type_safe_arithmetic_ub})
 target_link_libraries(type_safe INTERFACE debug_assert)
 
 # other subdirectories

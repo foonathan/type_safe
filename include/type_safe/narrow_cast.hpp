@@ -12,16 +12,16 @@ namespace type_safe
 {
     namespace detail
     {
-        template <typename T>
+        template <typename T, class Policy>
         struct get_target_integer
         {
-            using type = integer<T>;
+            using type = integer<T, Policy>;
         };
 
-        template <typename T>
-        struct get_target_integer<integer<T>>
+        template <typename T, class Policy>
+        struct get_target_integer<integer<T, Policy>, Policy>
         {
-            using type = integer<T>;
+            using type = integer<T, Policy>;
         };
 
         template <typename T>
@@ -36,10 +36,10 @@ namespace type_safe
             using type = floating_point<T>;
         };
 
-        template <typename Target, typename Source>
-        TYPE_SAFE_FORCE_INLINE constexpr bool is_narrowing(const integer<Source>& source)
+        template <typename Target, typename Source, class Policy>
+        TYPE_SAFE_FORCE_INLINE constexpr bool is_narrowing(const integer<Source, Policy>& source)
         {
-            using target_t = typename get_target_integer<Target>::type::integer_type;
+            using target_t = typename get_target_integer<Target, Policy>::type::integer_type;
             using limits   = std::numeric_limits<target_t>;
             return sizeof(target_t) < sizeof(Source) // no narrowing possible
                    && (source > Source(limits::max())
@@ -62,11 +62,12 @@ namespace type_safe
     /// \requires The value of `source` must be representable by the new target type.
     /// \notes `Target` can either be a specialization of the `integer` template itself
     /// or a built-in integer type, the result will be wrapped if needed.
-    template <typename Target, typename Source>
-    TYPE_SAFE_FORCE_INLINE constexpr auto narrow_cast(const integer<Source>& source) noexcept ->
-        typename detail::get_target_integer<Target>::type
+    template <typename Target, typename Source, class Policy>
+    TYPE_SAFE_FORCE_INLINE constexpr auto narrow_cast(
+        const integer<Source, Policy>& source) noexcept ->
+        typename detail::get_target_integer<Target, Policy>::type
     {
-        using target_integer = typename detail::get_target_integer<Target>::type;
+        using target_integer = typename detail::get_target_integer<Target, Policy>::type;
         using target_t       = typename target_integer::integer_type;
         return detail::is_narrowing<Target>(source) ?
                    (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion would truncate value"),

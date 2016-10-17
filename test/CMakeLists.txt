@@ -20,6 +20,7 @@ if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/catch.hpp)
 endif()
 
 set(source_files test.cpp
+                 arithmetic_policy.cpp
                  boolean.cpp
                  constrained_type.cpp
                  floating_point.cpp
