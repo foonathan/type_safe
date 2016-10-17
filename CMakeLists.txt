@@ -55,7 +55,8 @@ target_link_libraries(type_safe INTERFACE debug_assert)
 
 # other subdirectories
 # only add if not inside add_subdirectory()
-if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+option(TYPE_SAFE_BUILD_TEST_EXAMPLE "build test and example" OFF)
+if(${TYPE_SAFE_BUILD_TEST_EXAMPLE} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     add_subdirectory(example/)
     add_subdirectory(test/)
 endif()
