@@ -108,13 +108,13 @@ namespace type_safe
         integer() = delete;
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        TYPE_SAFE_FORCE_INLINE constexpr integer(const T& val) noexcept : value_(val)
+        TYPE_SAFE_FORCE_INLINE constexpr integer(const T& val) : value_(val)
         {
         }
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        TYPE_SAFE_FORCE_INLINE constexpr integer(const integer<T, Policy>& val) noexcept
-            : value_(static_cast<T>(val))
+        TYPE_SAFE_FORCE_INLINE constexpr integer(const integer<T, Policy>& val)
+        : value_(static_cast<T>(val))
         {
         }
 
@@ -123,14 +123,14 @@ namespace type_safe
 
         //=== assignment ===//
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        TYPE_SAFE_FORCE_INLINE integer& operator=(const T& val) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator=(const T& val)
         {
             value_ = val;
             return *this;
         }
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        TYPE_SAFE_FORCE_INLINE integer& operator=(const integer<T, Policy>& val) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator=(const integer<T, Policy>& val)
         {
             value_ = static_cast<T>(val);
             return *this;
@@ -140,44 +140,44 @@ namespace type_safe
         integer& operator=(T) = delete;
 
         //=== conversion back ===//
-        TYPE_SAFE_FORCE_INLINE explicit constexpr operator integer_type() const noexcept
+        TYPE_SAFE_FORCE_INLINE explicit constexpr operator integer_type() const
         {
             return value_;
         }
 
         //=== unary operators ===//
-        TYPE_SAFE_FORCE_INLINE constexpr integer operator+() const noexcept
+        TYPE_SAFE_FORCE_INLINE constexpr integer operator+() const
         {
             return *this;
         }
 
-        TYPE_SAFE_FORCE_INLINE constexpr integer operator-() const noexcept
+        TYPE_SAFE_FORCE_INLINE constexpr integer operator-() const
         {
             static_assert(std::is_signed<integer_type>::value,
                           "cannot call unary minus on unsigned integer");
             return -value_;
         }
 
-        TYPE_SAFE_FORCE_INLINE integer& operator++() noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator++()
         {
             value_ = Policy::template do_addition(value_, integer_type(1));
             return *this;
         }
 
-        TYPE_SAFE_FORCE_INLINE integer operator++(int)noexcept
+        TYPE_SAFE_FORCE_INLINE integer operator++(int)
         {
             auto res = *this;
             ++*this;
             return res;
         }
 
-        TYPE_SAFE_FORCE_INLINE integer& operator--() noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator--()
         {
             value_ = Policy::template do_subtraction(value_, integer_type(1));
             return *this;
         }
 
-        TYPE_SAFE_FORCE_INLINE integer operator--(int)noexcept
+        TYPE_SAFE_FORCE_INLINE integer operator--(int)
         {
             auto res = *this;
             --*this;
@@ -187,7 +187,7 @@ namespace type_safe
 //=== compound assignment ====//
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
     template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>      \
-    TYPE_SAFE_FORCE_INLINE integer& operator Op(const T& other) noexcept                           \
+    TYPE_SAFE_FORCE_INLINE integer& operator Op(const T& other)                                    \
     {                                                                                              \
         return *this Op integer<T, Policy>(other);                                                 \
     }                                                                                              \
@@ -197,7 +197,7 @@ namespace type_safe
     integer& operator Op(T) = delete;
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        TYPE_SAFE_FORCE_INLINE integer& operator+=(const integer<T, Policy>& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator+=(const integer<T, Policy>& other)
         {
             value_ = Policy::template do_addition(value_, static_cast<T>(other));
             return *this;
@@ -205,7 +205,7 @@ namespace type_safe
         TYPE_SAFE_DETAIL_MAKE_OP(+=)
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        TYPE_SAFE_FORCE_INLINE integer& operator-=(const integer<T, Policy>& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator-=(const integer<T, Policy>& other)
         {
             value_ = Policy::template do_subtraction(value_, static_cast<T>(other));
             return *this;
@@ -214,7 +214,7 @@ namespace type_safe
         TYPE_SAFE_DETAIL_MAKE_OP(-=)
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        TYPE_SAFE_FORCE_INLINE integer& operator*=(const integer<T, Policy>& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator*=(const integer<T, Policy>& other)
         {
             value_ = Policy::template do_multiplication(value_, static_cast<T>(other));
             return *this;
@@ -222,7 +222,7 @@ namespace type_safe
         TYPE_SAFE_DETAIL_MAKE_OP(*=)
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        TYPE_SAFE_FORCE_INLINE integer& operator/=(const integer<T, Policy>& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator/=(const integer<T, Policy>& other)
         {
             value_ = Policy::template do_division(value_, static_cast<T>(other));
             return *this;
@@ -230,7 +230,7 @@ namespace type_safe
         TYPE_SAFE_DETAIL_MAKE_OP(/=)
 
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
-        TYPE_SAFE_FORCE_INLINE integer& operator%=(const integer<T, Policy>& other) noexcept
+        TYPE_SAFE_FORCE_INLINE integer& operator%=(const integer<T, Policy>& other)
         {
             value_ = Policy::template do_modulo(value_, static_cast<T>(other));
             return *this;
@@ -274,7 +274,7 @@ namespace type_safe
     /// \requires The value of `i` must fit into signed type.
     template <typename Integer, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr make_signed_t<integer<Integer, Policy>> make_signed(
-        const integer<Integer, Policy>& i) noexcept
+        const integer<Integer, Policy>& i)
     {
         using result_type = typename std::make_signed<Integer>::type;
         return i <= static_cast<Integer>(std::numeric_limits<result_type>::max()) ?
@@ -293,7 +293,7 @@ namespace type_safe
     /// \requires The value of `i` must not be negative.
     template <typename Integer, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<integer<Integer, Policy>> make_unsigned(
-        const integer<Integer, Policy>& i) noexcept
+        const integer<Integer, Policy>& i)
     {
         using result_type = typename std::make_unsigned<Integer>::type;
         return i >= Integer(0) ?
@@ -307,7 +307,7 @@ namespace type_safe
     template <typename SignedInteger, class Policy,
               typename = typename std::enable_if<std::is_signed<SignedInteger>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<integer<SignedInteger, Policy>> abs(
-        const integer<SignedInteger, Policy>& i) noexcept
+        const integer<SignedInteger, Policy>& i)
     {
         return make_unsigned(i > 0 ? i : -i);
     }
@@ -318,7 +318,7 @@ namespace type_safe
     template <typename UnsignedInteger, class Policy,
               typename = typename std::enable_if<std::is_unsigned<UnsignedInteger>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr integer<UnsignedInteger, Policy> abs(
-        const integer<UnsignedInteger, Policy>& i) noexcept
+        const integer<UnsignedInteger, Policy>& i)
     {
         return i;
     }
@@ -350,7 +350,7 @@ namespace type_safe
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const integer<A, Policy>& a,
-                                                     const integer<B, Policy>& b) noexcept
+                                                     const integer<B, Policy>& b)
     {
         return static_cast<A>(a) == static_cast<B>(b);
     }
@@ -359,7 +359,7 @@ namespace type_safe
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const integer<A, Policy>& a,
-                                                     const integer<B, Policy>& b) noexcept
+                                                     const integer<B, Policy>& b)
     {
         return static_cast<A>(a) != static_cast<B>(b);
     }
@@ -368,7 +368,7 @@ namespace type_safe
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator<(const integer<A, Policy>& a,
-                                                    const integer<B, Policy>& b) noexcept
+                                                    const integer<B, Policy>& b)
     {
         return static_cast<A>(a) < static_cast<B>(b);
     }
@@ -377,7 +377,7 @@ namespace type_safe
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator<=(const integer<A, Policy>& a,
-                                                     const integer<B, Policy>& b) noexcept
+                                                     const integer<B, Policy>& b)
     {
         return static_cast<A>(a) <= static_cast<B>(b);
     }
@@ -386,7 +386,7 @@ namespace type_safe
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator>(const integer<A, Policy>& a,
-                                                    const integer<B, Policy>& b) noexcept
+                                                    const integer<B, Policy>& b)
     {
         return static_cast<A>(a) > static_cast<B>(b);
     }
@@ -395,7 +395,7 @@ namespace type_safe
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator>=(const integer<A, Policy>& a,
-                                                     const integer<B, Policy>& b) noexcept
+                                                     const integer<B, Policy>& b)
     {
         return static_cast<A>(a) >= static_cast<B>(b);
     }
@@ -406,32 +406,30 @@ namespace type_safe
 //=== binary operations ===//
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
     template <typename A, typename B, class Policy>                                                \
-    TYPE_SAFE_FORCE_INLINE constexpr auto operator Op(const A& a,                                  \
-                                                      const integer<B, Policy>& b) noexcept        \
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator Op(const A& a, const integer<B, Policy>& b)     \
         ->integer<detail::integer_result_t<A, B>, Policy>                                          \
     {                                                                                              \
         return integer<A, Policy>(a) Op b;                                                         \
     }                                                                                              \
     template <typename A, class Policy, typename B>                                                \
-    TYPE_SAFE_FORCE_INLINE constexpr auto operator Op(const integer<A, Policy>& a,                 \
-                                                      const B& b) noexcept                         \
+    TYPE_SAFE_FORCE_INLINE constexpr auto operator Op(const integer<A, Policy>& a, const B& b)     \
         ->integer<detail::integer_result_t<A, B>, Policy>                                          \
     {                                                                                              \
         return a Op integer<B, Policy>(b);                                                         \
     }                                                                                              \
     template <typename A, typename B, class Policy,                                                \
               typename = detail::fallback_integer_result<A, B>>                                    \
-    constexpr int operator Op(integer<A, Policy>, integer<B, Policy>) noexcept = delete;           \
+    constexpr int operator Op(integer<A, Policy>, integer<B, Policy>) = delete;                    \
     template <typename A, typename B, class Policy,                                                \
               typename = detail::fallback_integer_result<A, B>>                                    \
-    constexpr int operator Op(A, integer<B, Policy>) noexcept = delete;                            \
+    constexpr int operator Op(A, integer<B, Policy>) = delete;                                     \
     template <typename A, class Policy, typename B,                                                \
               typename = detail::fallback_integer_result<A, B>>                                    \
-    constexpr int operator Op(integer<A, Policy>, B) noexcept = delete;
+    constexpr int operator Op(integer<A, Policy>, B) = delete;
 
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator+(const integer<A, Policy>& a,
-                                                    const integer<B, Policy>& b) noexcept
+                                                    const integer<B, Policy>& b)
         -> integer<detail::integer_result_t<A, B>, Policy>
     {
         using type = detail::integer_result_t<A, B>;
@@ -441,7 +439,7 @@ namespace type_safe
 
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator-(const integer<A, Policy>& a,
-                                                    const integer<B, Policy>& b) noexcept
+                                                    const integer<B, Policy>& b)
         -> integer<detail::integer_result_t<A, B>, Policy>
     {
         using type = detail::integer_result_t<A, B>;
@@ -451,7 +449,7 @@ namespace type_safe
 
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator*(const integer<A, Policy>& a,
-                                                    const integer<B, Policy>& b) noexcept
+                                                    const integer<B, Policy>& b)
         -> integer<detail::integer_result_t<A, B>, Policy>
     {
         using type = detail::integer_result_t<A, B>;
@@ -461,7 +459,7 @@ namespace type_safe
 
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator/(const integer<A, Policy>& a,
-                                                    const integer<B, Policy>& b) noexcept
+                                                    const integer<B, Policy>& b)
         -> integer<detail::integer_result_t<A, B>, Policy>
     {
         using type = detail::integer_result_t<A, B>;
@@ -471,7 +469,7 @@ namespace type_safe
 
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator%(const integer<A, Policy>& a,
-                                                    const integer<B, Policy>& b) noexcept
+                                                    const integer<B, Policy>& b)
         -> integer<detail::integer_result_t<A, B>, Policy>
     {
         using type = detail::integer_result_t<A, B>;
