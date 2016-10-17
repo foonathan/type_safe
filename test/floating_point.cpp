@@ -10,6 +10,7 @@
 
 using namespace type_safe;
 
+#ifndef _MSC_VER
 static_assert(std::is_pod<floating_point<float>>::value, "");
 // conversion checks
 static_assert(std::is_constructible<floating_point<float>, float>::value, "");
@@ -22,6 +23,7 @@ static_assert(!std::is_assignable<floating_point<float>, double>::value, "");
 static_assert(std::is_assignable<floating_point<double>, double>::value, "");
 static_assert(std::is_assignable<floating_point<double>, double>::value, "");
 static_assert(!std::is_assignable<floating_point<double>, long double>::value, "");
+#endif
 
 TEST_CASE("floating_point")
 {
