@@ -1,0 +1,48 @@
+language: cpp
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5']
+      env: TOOLSET=g++-5 BUILD_TYPE='Debug'
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5']
+      env: TOOLSET=g++-5 BUILD_TYPE='Release'
+
+    - os: osx
+      compiler: clang
+      env: TOOLSET=clang++ BUILD_TYPE='Debug'
+    - os: osx
+      compiler: clang
+      env: TOOLSET=clang++ BUILD_TYPE='Release'
+
+install:
+  - cd ../
+
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget --no-check-certificate https://www.cmake.org/files/v3.3/cmake-3.3.1-Linux-x86_64.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar -xzf cmake-3.3.1-Linux-x86_64.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CMAKE=$TRAVIS_BUILD_DIR/../cmake-3.3.1-Linux-x86_64/bin/cmake; fi
+
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget --no-check-certificate https://cmake.org/files/v3.3/cmake-3.3.0-Darwin-x86_64.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then tar -xzf cmake-3.3.0-Darwin-x86_64.tar.gz && ls && ls cmake-3.3.0-Darwin-x86_64; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CMAKE=$TRAVIS_BUILD_DIR/../cmake-3.3.0-Darwin-x86_64/CMake.app/Contents/bin/cmake; fi
+
+  - export CXX=$TOOLSET
+  - $CXX --version
+  - $CMAKE --version
+
+  - cd type_safe/
+
+script:
+  - mkdir build/ && cd build/
+  - $CMAKE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-Wall -Wextra -pedantic -Wno-parentheses" -DTYPE_SAFE_BUILD_TEST_EXAMPLE=ON ../
+  - $CMAKE --build .
+  - ./test/type_safe_test
