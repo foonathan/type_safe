@@ -86,7 +86,7 @@ struct debugger_type
 
 TEST_CASE("optional")
 {
-    /*    SECTION("constructor - empty")
+    SECTION("constructor - empty")
     {
         optional<int> a;
         REQUIRE_FALSE(a.has_value());
@@ -519,7 +519,7 @@ TEST_CASE("optional")
 
         b = 32;
         visit(visitor{32}, a, b);
-    }*/
+    }
     SECTION("apply")
     {
         auto called = false;
