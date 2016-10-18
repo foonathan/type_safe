@@ -113,18 +113,18 @@ namespace type_safe
             return b == T(0) || (b == T(-1) && a == std::numeric_limits<T>::min());
         }
         template <typename T>
-        constexpr bool will_division_error(unsigned_integer_tag, const T& a, const T& b)
+        constexpr bool will_division_error(unsigned_integer_tag, const T&, const T& b)
         {
             return b == T(0);
         }
 
         template <typename T>
-        constexpr bool will_modulo_error(signed_integer_tag, const T& a, const T& b)
+        constexpr bool will_modulo_error(signed_integer_tag, const T&, const T& b)
         {
             return b == T(0);
         }
         template <typename T>
-        constexpr bool will_modulo_error(unsigned_integer_tag, const T& a, const T& b)
+        constexpr bool will_modulo_error(unsigned_integer_tag, const T&, const T& b)
         {
             return b == T(0);
         }

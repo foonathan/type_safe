@@ -1,5 +1,8 @@
 # type_safe
 
+[![Build Status](https://travis-ci.org/foonathan/type_safe.svg?branch=master)](https://travis-ci.org/foonathan/type_safe)
+[![Build status](https://ci.appveyor.com/api/projects/status/aw1j2h2s52g4laen/branch/master?svg=true)](https://ci.appveyor.com/project/foonathan/type-safe/branch/master)
+
 type_safe provides zero overhead abstractions that use the C++ type system to prevent bugs.
 
 > Zero overhead abstractions here and in following mean abstractions that have no cost with optimizations enabled,

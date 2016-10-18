@@ -10,6 +10,7 @@
 
 using namespace type_safe;
 
+#ifndef _MSC_VER
 static_assert(std::is_pod<integer<int>>::value, "");
 // conversion checks
 static_assert(sizeof(short) < sizeof(int), "");
@@ -35,6 +36,7 @@ static_assert(std::is_assignable<integer<int>, short>::value, "");
 static_assert(!std::is_assignable<integer<int>, long long>::value, "");
 static_assert(!std::is_assignable<integer<int>, unsigned>::value, "");
 static_assert(!std::is_assignable<integer<unsigned>, int>::value, "");
+#endif
 
 TEST_CASE("integer")
 {

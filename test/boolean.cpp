@@ -10,12 +10,14 @@
 
 using namespace type_safe;
 
+#ifndef _MSC_VER
 static_assert(std::is_pod<boolean>::value, "");
 // conversion checks
 static_assert(std::is_constructible<boolean, bool>::value, "");
 static_assert(!std::is_constructible<boolean, int>::value, "");
 static_assert(std::is_assignable<boolean, bool>::value, "");
 static_assert(!std::is_assignable<boolean, int>::value, "");
+#endif
 
 TEST_CASE("boolean")
 {

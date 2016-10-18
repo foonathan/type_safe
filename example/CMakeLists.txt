@@ -3,7 +3,7 @@
 # found in the top-level directory of this distribution.
 
 function(_type_safe_example name)
-    add_executable(type_safe_example_${name} EXCLUDE_FROM_ALL ${name}.cpp)
+    add_executable(type_safe_example_${name} ${name}.cpp)
     target_link_libraries(type_safe_example_${name} PUBLIC type_safe)
 endfunction()
 
