@@ -36,6 +36,7 @@ void use_handle(handle h)
     h = handle(&a);
     // or get back
     int* ptr = static_cast<int*>(h);
+    std::cout << &a << ' ' << ptr << '\n';
 }
 
 // integer representing a distance

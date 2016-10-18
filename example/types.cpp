@@ -49,6 +49,7 @@ int main()
 
     i1 += 4;
     ts::integer<long long> i4 = i1 + 100ll; // 100ll is long long, so result is long long
+    std::cout << i4 << '\n';
 
     //    --u1; // runtime error: unsigned underflow
     //    -u1;  // error: no unary minus for unsigned
@@ -65,9 +66,11 @@ int main()
     ts::unsigned_t u5 = ts::make_unsigned(i1);
     //    ts::unsigned_t u6 = ts::make_unsigned(-i1); // runtime error: value does not fit
     ts::unsigned_t u7 = ts::abs(-i1); // but this works and returns an the unsigned integer
+    std::cout << u5 << ' ' << u7 << '\n';
 
     //    ts::int8_t i5 = ts::make_signed(u4); // runtime error: value does not fit
     ts::int8_t i6 = ts::make_signed(u4 - std::uint8_t(200));
+    std::cout << i6 << '\n';
 
     //=== type safe floating points ===//
     // ts::float_t is alias for ts::floating_point<std::float_t> (std::float_t is float)
@@ -91,10 +94,12 @@ int main()
     //        ts::narrow_cast<ts::uint8_t>(uint32_val); // runtime error: value does not fit
     uint32_val             = std::uint32_t(100);
     ts::uint8_t uint8_val2 = ts::narrow_cast<ts::uint8_t>(uint32_val); // works
+    std::cout << uint32_val << ' ' << uint8_val2 << '\n';
 
     ts::double_t double_val(0.1);
     //    ts::float_t  float_val1 =
     //        ts::narrow_cast<ts::float_t>(double_val); // runtime error: 0.1 is not exact
     double_val             = 0.5;
     ts::float_t float_val2 = ts::narrow_cast<ts::float_t>(double_val); // works, 0.5 is exact
+    std::cout << double_val << ' ' << float_val2 << '\n';
 }

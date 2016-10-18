@@ -497,12 +497,12 @@ TEST_CASE("optional")
                 REQUIRE(value == i);
             }
 
-            void operator()(int a, nullopt_t) const
+            void operator()(int, nullopt_t) const
             {
                 REQUIRE(value == -1);
             }
 
-            void operator()(int a, int b) const
+            void operator()(int, int b) const
             {
                 REQUIRE(value == b);
             }
