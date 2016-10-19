@@ -29,6 +29,7 @@ I highly suggest that you check out [the blog post](https://foonathan.github.io/
     * no default constructor to force meaningful initialization
     * no conversion from integer values
     * no arithmetic operators
+* `ts::flag` - an improved flag type, better than a regular `bool` or `ts::boolean`
 * `ts::narrow_cast<T>` - to actually do narrow conversions
 * aliases of `std::` integer/floating point types that either use the wrapper or the built-in types,
   depending on a macro

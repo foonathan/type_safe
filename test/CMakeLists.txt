@@ -23,6 +23,7 @@ set(source_files test.cpp
                  arithmetic_policy.cpp
                  boolean.cpp
                  constrained_type.cpp
+                 flag.cpp
                  floating_point.cpp
                  integer.cpp
                  narrow_cast.cpp
