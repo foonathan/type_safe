@@ -56,6 +56,18 @@ TEST_CASE("constrained_type")
         test_verifier::expected = false;
         a                       = -1;
     }
+    SECTION("constrain")
+    {
+        test_verifier::expected = true;
+        my_int a                = constrain<test_verifier>(5, predicate{});
+        REQUIRE(a.get_value() == 5);
+        my_int b = constrain<test_verifier>(-4, predicate{});
+        REQUIRE(b.get_value() == -4);
+
+        test_verifier::expected = false;
+        my_int c                = constrain<test_verifier>(-1, predicate{});
+        REQUIRE(c.get_value() == -1);
+    }
     SECTION("modify()")
     {
         // with() is the same

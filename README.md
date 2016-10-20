@@ -10,7 +10,7 @@ type_safe provides zero overhead abstractions that use the C++ type system to pr
 > especially when assertions for this library are enabled.
 
 The library features cannot really explained in the scope of this readme,
-I highly suggest that you check out [the blog post](https://foonathan.github.io/blog/2016/10/11/type-safe.html) and the examples.
+I highly suggest that you check out [the first](https://foonathan.github.io/blog/2016/10/11/type-safe.html) and [second blog post](https://foonathan.github.io/blog/2016/10/19/strong-typedefs.html) and the examples.
 
 ## Features
 
@@ -35,7 +35,11 @@ I highly suggest that you check out [the blog post](https://foonathan.github.io/
   depending on a macro
 * `ts::basic_optional<StoragePolicy>` - a generic, improved `std::optional` that is fully monadic,
   also `ts::optional<T>` and `ts::optional_ref<T>` aliases
-* `ts::constrained_type` - a wrapper over some type that verifies that a certain constraint is always fulfilled
+* `ts::constrained_type<T, Constraint, Verifier>` - a wrapper over some type that verifies that a certain constraint is always fulfilled
+    * `ts::constraints::*` - predefined constraints like `non_null`, `non_empty`, ...
+    * `ts::tagged_type<T, Constraint>` - constrained type without checking, useful for tagging
+    * `ts::bounded_type<T>` - constrained type that ensures a value in a certain interval
+    * `ts::clamped_type<T>` - constrained type that clamps a value to ensure that it is in the certain interval
 * `ts::strong_typedef` - a generic facility to create strong typedefs more easily
 
 ## Installation

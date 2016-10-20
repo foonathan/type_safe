@@ -42,7 +42,7 @@ namespace type_safe
     /// The `Constraint` can also provide a nested template `is_valid<T>` to statically check types.
     /// Those will be checked regardless of the `Verifier`.
     /// \requires `T` must not be a reference, `Constraint` must be a functor of type `bool(const T&)`
-    /// and `Verifier` must provide a `static` function `void verify(const T&, const Predicate&)`.
+    /// and `Verifier` must provide a `static` function `void verify([const] T&, const Predicate&)`.
     template <typename T, typename Constraint, typename Verifier = assertion_verifier>
     class constrained_type : Constraint, Verifier
     {
@@ -169,13 +169,32 @@ namespace type_safe
         }
 
     private:
-        void verify() const
+        void verify()
         {
             Verifier::verify(value_, get_constraint());
         }
 
         value_type value_;
     };
+
+    /// \returns A [type_safe::constrained_type<T, Constraint, Verifier>]() with the given `value` and `Constraint`.
+    template <typename T, typename Constraint>
+    auto constrain(T&& value, Constraint c)
+        -> constrained_type<typename std::decay<T>::type, Constraint>
+    {
+        return constrained_type<typename std::decay<T>::type, Constraint>(std::forward<T>(value),
+                                                                          std::move(c));
+    }
+
+    /// \returns A [type_safe::constrained_type<T, Constraint, Verifier>]() with the given `value`,  `Constraint` and `Verifier`.
+    template <class Verifier, typename T, typename Constraint>
+    auto constrain(T&& value, Constraint c)
+        -> constrained_type<typename std::decay<T>::type, Constraint, Verifier>
+    {
+        return constrained_type<typename std::decay<T>::type, Constraint, Verifier>(std::forward<T>(
+                                                                                        value),
+                                                                                    std::move(c));
+    }
 
     /// \effects Calls `f` with a non-`const` reference to the stored value of the [type_safe::constrained_type<T, Constraint, Verifier>]().
     /// It checks that `f` does not change the validity of the object.
@@ -206,6 +225,14 @@ namespace type_safe
     /// as it does additional runtime checks in debug mode.
     template <typename T, typename Constraint>
     using tagged_type = constrained_type<T, Constraint, null_verifier>;
+
+    /// \returns A [type_safe::tagged_type<T, Constraint>]() with the given `value` and `Constraint`.
+    template <typename T, typename Constraint>
+    auto tag(T&& value, Constraint c) -> tagged_type<typename std::decay<T>::type, Constraint>
+    {
+        return tagged_type<typename std::decay<T>::type, Constraint>(std::forward<T>(value),
+                                                                     std::move(c));
+    }
 
     namespace constraints
     {

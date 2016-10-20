@@ -22,6 +22,7 @@ endif()
 set(source_files test.cpp
                  arithmetic_policy.cpp
                  boolean.cpp
+                 bounded_type.cpp
                  constrained_type.cpp
                  flag.cpp
                  floating_point.cpp
