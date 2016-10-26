@@ -7,6 +7,7 @@
 
 #include <new>
 #include <type_traits>
+#include <utility>
 
 #include <type_safe/detail/assert.hpp>
 
