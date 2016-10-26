@@ -41,6 +41,8 @@ I highly suggest that you check out [the first](https://foonathan.github.io/blog
     * `ts::bounded_type<T>` - constrained type that ensures a value in a certain interval
     * `ts::clamped_type<T>` - constrained type that clamps a value to ensure that it is in the certain interval
 * `ts::strong_typedef` - a generic facility to create strong typedefs more easily
+* `ts::deferred_construction<T>` - create an object without initializing it yet
+* `ts::output_parameter<T>` - an improved output parameter compared to the naive lvalue reference
 
 ## Installation
 

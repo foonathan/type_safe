@@ -9,5 +9,6 @@ endfunction()
 
 _type_safe_example(constrained)
 _type_safe_example(optional)
+_type_safe_example(output_parameter)
 _type_safe_example(strong_typedef)
 _type_safe_example(types)

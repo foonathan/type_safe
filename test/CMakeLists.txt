@@ -24,11 +24,13 @@ set(source_files test.cpp
                  boolean.cpp
                  bounded_type.cpp
                  constrained_type.cpp
+                 deferred_construction.cpp
                  flag.cpp
                  floating_point.cpp
                  integer.cpp
                  narrow_cast.cpp
                  optional.cpp
+                 output_parameter.cpp
                  strong_typedef.cpp)
 add_executable(type_safe_test ${source_files})
 target_link_libraries(type_safe_test PUBLIC type_safe)
