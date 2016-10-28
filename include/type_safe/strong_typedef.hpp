@@ -26,7 +26,7 @@ namespace type_safe
     /// ```cpp
     /// struct my_handle
     /// : strong_typedef<my_handle, void*>,
-    ///   strong_typedef_op::equality_comparision<my_handle>
+    ///   strong_typedef_op::equality_comparison<my_handle>
     /// {
     ///     using strong_typedef::strong_typedef;
     /// };
@@ -34,8 +34,8 @@ namespace type_safe
     /// struct my_int
     /// : strong_typedef<my_int, int>,
     ///   strong_typedef_op::integer_arithmetic<my_int>,
-    ///   strong_typedef_op::equality_comparision<my_int>,
-    ///   strong_typedef_op::relational_comparision<my_int>
+    ///   strong_typedef_op::equality_comparison<my_int>,
+    ///   strong_typedef_op::relational_comparison<my_int>
     /// {
     ///     using strong_typedef::strong_typedef;
     /// };
@@ -90,7 +90,7 @@ namespace type_safe
     namespace strong_typedef_op
     {
         template <class StrongTypedef, typename Result = bool_t>
-        struct equality_comparision
+        struct equality_comparison
         {
             friend Result operator==(const StrongTypedef& lhs, const StrongTypedef& rhs)
             {
@@ -105,7 +105,7 @@ namespace type_safe
         };
 
         template <class StrongTypedef, typename Result = bool_t>
-        struct relational_comparision
+        struct relational_comparison
         {
             friend Result operator<(const StrongTypedef& lhs, const StrongTypedef& rhs)
             {
@@ -317,7 +317,7 @@ namespace type_safe
 
         template <class StrongTypedef, typename T, typename Distance = std::ptrdiff_t>
         struct input_iterator : iterator<StrongTypedef, std::input_iterator_tag, T, Distance>,
-                                equality_comparision<StrongTypedef, bool>
+                                equality_comparison<StrongTypedef, bool>
         {
         };
 
@@ -342,7 +342,7 @@ namespace type_safe
         template <class StrongTypedef, typename T, typename Distance = std::ptrdiff_t>
         struct random_access_iterator : bidirectional_iterator<StrongTypedef, T, Distance>,
                                         array_subscript<StrongTypedef, T, Distance>,
-                                        relational_comparision<StrongTypedef, bool>
+                                        relational_comparison<StrongTypedef, bool>
         {
             using iterator_category = std::random_access_iterator_tag;
 
