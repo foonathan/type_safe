@@ -7,9 +7,7 @@
 
 #include <debug_assert.hpp>
 
-#ifndef TYPE_SAFE_ENABLE_ASSERTIONS
-#define TYPE_SAFE_ENABLE_ASSERTIONS 1
-#endif
+#include <type_safe/config.hpp>
 
 namespace type_safe
 {

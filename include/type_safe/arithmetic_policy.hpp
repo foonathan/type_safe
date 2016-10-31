@@ -11,10 +11,7 @@
 
 #include <type_safe/detail/assert.hpp>
 #include <type_safe/detail/force_inline.hpp>
-
-#ifndef TYPE_SAFE_ARITHMETIC_UB
-#define TYPE_SAFE_ARITHMETIC_UB 1
-#endif
+#include <type_safe/config.hpp>
 
 namespace type_safe
 {

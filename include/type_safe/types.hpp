@@ -10,20 +10,17 @@
 #include <cmath>
 
 #include <type_safe/boolean.hpp>
+#include <type_safe/config.hpp>
 #include <type_safe/floating_point.hpp>
 #include <type_safe/integer.hpp>
 
-#ifndef TYPE_SAFE_ENABLE_WRAPPER
-#define TYPE_SAFE_ENABLE_WRAPPER 1
-#endif
-
 namespace type_safe
 {
-#if TYPE_SAFE_DISABLE_WRAPPER
-#define TYPE_SAFE_DETAIL_WRAP(templ, x) x
-#else
+#if TYPE_SAFE_ENABLE_WRAPPER
 /// \exclude
 #define TYPE_SAFE_DETAIL_WRAP(templ, x) templ<x>
+#else
+#define TYPE_SAFE_DETAIL_WRAP(templ, x) x
 #endif
 
     //=== fixed with integer ===//
@@ -150,10 +147,10 @@ namespace type_safe
     }
 
 //=== boolean ===//
-#if TYPE_SAFE_DISABLE_WRAPPER
-    using bool_t = bool;
-#else
+#if TYPE_SAFE_ENABLE_WRAPPER
     using bool_t = boolean;
+#else
+    using bool_t = bool;
 #endif
 
 #undef TYPE_SAFE_DETAIL_WRAP
