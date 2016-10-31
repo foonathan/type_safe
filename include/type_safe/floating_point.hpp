@@ -57,10 +57,9 @@ namespace type_safe
         };
 
         template <typename A, typename B>
-        using floating_point_result_t =
-            typename std::enable_if<is_safe_floating_point_operation<A, B>::value,
-                                    typename std::conditional<sizeof(A) < sizeof(B), B,
-                                                              A>::type>::type;
+        using floating_point_result_t = typename std::
+            enable_if<is_safe_floating_point_operation<A, B>::value,
+                      typename std::conditional<sizeof(A) < sizeof(B), B, A>::type>::type;
         template <typename A, typename B>
         using fallback_floating_point_result =
             typename std::enable_if<!is_safe_floating_point_operation<A, B>::value>::type;
@@ -93,7 +92,7 @@ namespace type_safe
         template <typename T,
                   typename = detail::enable_safe_floating_point_conversion<T, floating_point_type>>
         TYPE_SAFE_FORCE_INLINE constexpr floating_point(const floating_point<T>& val) noexcept
-            : value_(static_cast<T>(val))
+        : value_(static_cast<T>(val))
         {
         }
 
@@ -126,6 +125,11 @@ namespace type_safe
 
         //=== conversion back ===//
         TYPE_SAFE_FORCE_INLINE explicit constexpr operator floating_point_type() const noexcept
+        {
+            return value_;
+        }
+
+        TYPE_SAFE_FORCE_INLINE constexpr floating_point_type get() const noexcept
         {
             return value_;
         }

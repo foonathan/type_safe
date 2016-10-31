@@ -140,7 +140,12 @@ namespace type_safe
         integer& operator=(T) = delete;
 
         //=== conversion back ===//
-        TYPE_SAFE_FORCE_INLINE explicit constexpr operator integer_type() const
+        TYPE_SAFE_FORCE_INLINE explicit constexpr operator integer_type() const noexcept
+        {
+            return value_;
+        }
+
+        TYPE_SAFE_FORCE_INLINE constexpr integer_type get() const noexcept
         {
             return value_;
         }
