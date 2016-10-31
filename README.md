@@ -29,6 +29,8 @@ I highly suggest that you check out [the first](https://foonathan.github.io/blog
     * no default constructor to force meaningful initialization
     * no conversion from integer values
     * no arithmetic operators
+* aliases like `ts::uint32_t` or `ts::size_t` that are either wrapper or built-in type depending on macro
+* literal operators for those aliases like `342_u32` or `0_usize`
 * `ts::flag` - an improved flag type, better than a regular `bool` or `ts::boolean`
 * `ts::narrow_cast<T>` - to actually do narrow conversions
 * aliases of `std::` integer/floating point types that either use the wrapper or the built-in types,

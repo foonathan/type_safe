@@ -18,6 +18,8 @@ void only_unsigned(ts::unsigned_t val)
 
 int main()
 {
+    using namespace ts::literals; // for the literal operators
+
     //=== type safe boolean ===//
     // ts::bool_t is alias for ts::boolean
     ts::bool_t b1(true);
@@ -54,9 +56,9 @@ int main()
     //    --u1; // runtime error: unsigned underflow
     //    -u1;  // error: no unary minus for unsigned
 
-    ts::uint8_t u4(std::uint8_t(255));
+    ts::uint8_t u4(255_u8); // instead of std::uint8_t(255)
     //    u4 += 2;  // error: 2 is signed
-    //    u4 += std::uint8_t(2); // runtime error: unsigned overflow
+    //    u4 += 2_u8; // runtime error: unsigned overflow
 
     //    only_unsigned(-4); // error: -4 is not unsigned
     //    only_unsigned(10); // error: 10 is not unsigned
@@ -69,7 +71,7 @@ int main()
     std::cout << u5 << ' ' << u7 << '\n';
 
     //    ts::int8_t i5 = ts::make_signed(u4); // runtime error: value does not fit
-    ts::int8_t i6 = ts::make_signed(u4 - std::uint8_t(200));
+    ts::int8_t i6 = ts::make_signed(u4 - 200_u8);
     std::cout << i6 << '\n';
 
     //=== type safe floating points ===//
@@ -89,10 +91,10 @@ int main()
     //    f1 == 0.f; // error: no equality comparision for floats
 
     //=== narrow cast ===//
-    ts::uint32_t uint32_val(std::uint32_t(325));
+    ts::uint32_t uint32_val(325_u32);
     //    ts::uint8_t  uint8_val1 =
     //        ts::narrow_cast<ts::uint8_t>(uint32_val); // runtime error: value does not fit
-    uint32_val             = std::uint32_t(100);
+    uint32_val             = 100_u32;
     ts::uint8_t uint8_val2 = ts::narrow_cast<ts::uint8_t>(uint32_val); // works
     std::cout << uint32_val << ' ' << uint8_val2 << '\n';
 
