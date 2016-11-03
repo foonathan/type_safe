@@ -87,6 +87,30 @@ namespace type_safe
     template <class StrongTypedef>
     using underlying_type = decltype(detail::underlying_type(std::declval<StrongTypedef>()));
 
+    template <class Tag, typename T>
+    T& get(strong_typedef<Tag, T>& type) noexcept
+    {
+        return static_cast<T&>(type);
+    }
+
+    template <class Tag, typename T>
+    const T& get(const strong_typedef<Tag, T>& type) noexcept
+    {
+        return static_cast<const T&>(type);
+    }
+
+    template <class Tag, typename T>
+    T&& get(strong_typedef<Tag, T>&& type) noexcept
+    {
+        return static_cast<T&&>(type);
+    }
+
+    template <class Tag, typename T>
+    const T&& get(const strong_typedef<Tag, T>&& type) noexcept
+    {
+        return static_cast<const T&&>(type);
+    }
+
     namespace strong_typedef_op
     {
         template <class StrongTypedef, typename Result = bool_t>
