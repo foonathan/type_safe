@@ -44,15 +44,16 @@ namespace type_safe
     class strong_typedef
     {
     public:
-        strong_typedef() : value_()
+        constexpr strong_typedef() : value_()
         {
         }
 
-        explicit strong_typedef(const T& value) : value_(value)
+        explicit constexpr strong_typedef(const T& value) : value_(value)
         {
         }
 
-        explicit strong_typedef(T&& value) noexcept(std::is_nothrow_move_constructible<T>::value)
+        explicit constexpr strong_typedef(T&& value) noexcept(
+            std::is_nothrow_move_constructible<T>::value)
         : value_(std::move(value))
         {
         }
@@ -62,7 +63,7 @@ namespace type_safe
             return value_;
         }
 
-        explicit operator const T&() const noexcept
+        explicit constexpr operator const T&() const noexcept
         {
             return value_;
         }
@@ -88,25 +89,25 @@ namespace type_safe
     using underlying_type = decltype(detail::underlying_type(std::declval<StrongTypedef>()));
 
     template <class Tag, typename T>
-    T& get(strong_typedef<Tag, T>& type) noexcept
+    constexpr T& get(strong_typedef<Tag, T>& type) noexcept
     {
         return static_cast<T&>(type);
     }
 
     template <class Tag, typename T>
-    const T& get(const strong_typedef<Tag, T>& type) noexcept
+    constexpr const T& get(const strong_typedef<Tag, T>& type) noexcept
     {
         return static_cast<const T&>(type);
     }
 
     template <class Tag, typename T>
-    T&& get(strong_typedef<Tag, T>&& type) noexcept
+    constexpr T&& get(strong_typedef<Tag, T>&& type) noexcept
     {
         return static_cast<T&&>(type);
     }
 
     template <class Tag, typename T>
-    const T&& get(const strong_typedef<Tag, T>&& type) noexcept
+    constexpr const T&& get(const strong_typedef<Tag, T>&& type) noexcept
     {
         return static_cast<const T&&>(type);
     }
@@ -116,13 +117,13 @@ namespace type_safe
         template <class StrongTypedef, typename Result = bool_t>
         struct equality_comparision
         {
-            friend Result operator==(const StrongTypedef& lhs, const StrongTypedef& rhs)
+            friend constexpr Result operator==(const StrongTypedef& lhs, const StrongTypedef& rhs)
             {
                 using type = underlying_type<StrongTypedef>;
                 return static_cast<const type&>(lhs) == static_cast<const type&>(rhs);
             }
 
-            friend Result operator!=(const StrongTypedef& lhs, const StrongTypedef& rhs)
+            friend constexpr Result operator!=(const StrongTypedef& lhs, const StrongTypedef& rhs)
             {
                 return !(lhs == rhs);
             }
@@ -131,23 +132,23 @@ namespace type_safe
         template <class StrongTypedef, typename Result = bool_t>
         struct relational_comparision
         {
-            friend Result operator<(const StrongTypedef& lhs, const StrongTypedef& rhs)
+            friend constexpr Result operator<(const StrongTypedef& lhs, const StrongTypedef& rhs)
             {
                 using type = underlying_type<StrongTypedef>;
                 return static_cast<const type&>(lhs) < static_cast<const type&>(rhs);
             }
 
-            friend Result operator>(const StrongTypedef& lhs, const StrongTypedef& rhs)
+            friend constexpr Result operator>(const StrongTypedef& lhs, const StrongTypedef& rhs)
             {
                 return rhs < lhs;
             }
 
-            friend Result operator<=(const StrongTypedef& lhs, const StrongTypedef& rhs)
+            friend constexpr Result operator<=(const StrongTypedef& lhs, const StrongTypedef& rhs)
             {
                 return !(rhs < lhs);
             }
 
-            friend Result operator>=(const StrongTypedef& lhs, const StrongTypedef& rhs)
+            friend constexpr Result operator>=(const StrongTypedef& lhs, const StrongTypedef& rhs)
             {
                 return !(lhs < rhs);
             }
@@ -164,7 +165,8 @@ namespace type_safe
             return lhs;                                                                            \
         }                                                                                          \
                                                                                                    \
-        friend StrongTypedef operator Op(const StrongTypedef& lhs, const StrongTypedef& rhs)       \
+        friend constexpr StrongTypedef operator Op(const StrongTypedef& lhs,                       \
+                                                   const StrongTypedef& rhs)                       \
         {                                                                                          \
             using type = underlying_type<StrongTypedef>;                                           \
             return StrongTypedef(static_cast<const type&>(lhs) Op static_cast<const type&>(rhs));  \
@@ -181,13 +183,13 @@ namespace type_safe
             return lhs;                                                                            \
         }                                                                                          \
                                                                                                    \
-        friend StrongTypedef operator Op(const StrongTypedef& lhs, const Other& rhs)               \
+        friend constexpr StrongTypedef operator Op(const StrongTypedef& lhs, const Other& rhs)     \
         {                                                                                          \
             using type = underlying_type<StrongTypedef>;                                           \
             return StrongTypedef(static_cast<const type&>(lhs) Op rhs);                            \
         }                                                                                          \
                                                                                                    \
-        friend StrongTypedef operator Op(const Other& lhs, const StrongTypedef& rhs)               \
+        friend constexpr StrongTypedef operator Op(const Other& lhs, const StrongTypedef& rhs)     \
         {                                                                                          \
             using type = underlying_type<StrongTypedef>;                                           \
             return StrongTypedef(lhs Op static_cast<const type&>(rhs));                            \
@@ -241,7 +243,7 @@ namespace type_safe
         template <class StrongTypedef>
         struct unary_plus
         {
-            StrongTypedef operator+() const
+            constexpr StrongTypedef operator+() const
             {
                 using type = underlying_type<StrongTypedef>;
                 return StrongTypedef(
@@ -252,7 +254,7 @@ namespace type_safe
         template <class StrongTypedef>
         struct unary_minus
         {
-            StrongTypedef operator-() const
+            constexpr StrongTypedef operator-() const
             {
                 using type = underlying_type<StrongTypedef>;
                 return StrongTypedef(
