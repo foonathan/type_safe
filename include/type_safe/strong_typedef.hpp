@@ -129,6 +129,31 @@ namespace type_safe
             }
         };
 
+        template <class StrongTypedef, typename Other, typename Result = bool_t>
+        struct mixed_equality_comparison
+        {
+            friend constexpr Result operator==(const StrongTypedef& lhs, const Other& rhs)
+            {
+                using type = underlying_type<StrongTypedef>;
+                return static_cast<const type&>(lhs) == static_cast<const type&>(rhs);
+            }
+
+            friend constexpr Result operator==(const Other& lhs, const StrongTypedef& rhs)
+            {
+                return rhs == lhs;
+            }
+
+            friend constexpr Result operator!=(const StrongTypedef& lhs, const Other& rhs)
+            {
+                return !(lhs == rhs);
+            }
+
+            friend constexpr Result operator!=(const Other& lhs, const StrongTypedef& rhs)
+            {
+                return !(rhs == lhs);
+            }
+        };
+
         template <class StrongTypedef, typename Result = bool_t>
         struct relational_comparison
         {
@@ -149,6 +174,52 @@ namespace type_safe
             }
 
             friend constexpr Result operator>=(const StrongTypedef& lhs, const StrongTypedef& rhs)
+            {
+                return !(lhs < rhs);
+            }
+        };
+
+        template <class StrongTypedef, typename Other, typename Result = bool_t>
+        struct mixed_relational_comparison
+        {
+            friend constexpr Result operator<(const StrongTypedef& lhs, const Other& rhs)
+            {
+                using type = underlying_type<StrongTypedef>;
+                return static_cast<const type&>(lhs) < static_cast<const type&>(rhs);
+            }
+
+            friend constexpr Result operator<(const Other& lhs, const StrongTypedef& rhs)
+            {
+                using type = underlying_type<StrongTypedef>;
+                return static_cast<const type&>(lhs) < static_cast<const type&>(rhs);
+            }
+
+            friend constexpr Result operator>(const StrongTypedef& lhs, const Other& rhs)
+            {
+                return rhs < lhs;
+            }
+
+            friend constexpr Result operator>(const Other& lhs, const StrongTypedef& rhs)
+            {
+                return rhs < lhs;
+            }
+
+            friend constexpr Result operator<=(const StrongTypedef& lhs, const Other& rhs)
+            {
+                return !(rhs < lhs);
+            }
+
+            friend constexpr Result operator<=(const Other& lhs, const StrongTypedef& rhs)
+            {
+                return !(rhs < lhs);
+            }
+
+            friend constexpr Result operator>=(const StrongTypedef& lhs, const Other& rhs)
+            {
+                return !(lhs < rhs);
+            }
+
+            friend constexpr Result operator>=(const Other& lhs, const StrongTypedef& rhs)
             {
                 return !(lhs < rhs);
             }

@@ -28,13 +28,16 @@ namespace type_safe
     ///
     /// It is a [type_safe::strong_typedef<Tag, T>]() for a `signed` integer type.
     /// It is comparable and you can add and subtract two differences.
-    struct distance_t : strong_typedef<distance_t, detail::distance_t>,
-                        strong_typedef_op::equality_comparison<distance_t>,
-                        strong_typedef_op::relational_comparison<distance_t>,
-                        strong_typedef_op::unary_plus<distance_t>,
-                        strong_typedef_op::unary_minus<distance_t>,
-                        strong_typedef_op::addition<distance_t>,
-                        strong_typedef_op::subtraction<distance_t>
+    struct distance_t
+        : strong_typedef<distance_t, detail::distance_t>,
+          strong_typedef_op::equality_comparison<distance_t>,
+          strong_typedef_op::mixed_equality_comparison<distance_t, detail::distance_t>,
+          strong_typedef_op::relational_comparison<distance_t>,
+          strong_typedef_op::mixed_relational_comparison<distance_t, detail::distance_t>,
+          strong_typedef_op::unary_plus<distance_t>,
+          strong_typedef_op::unary_minus<distance_t>,
+          strong_typedef_op::addition<distance_t>,
+          strong_typedef_op::subtraction<distance_t>
     {
         using strong_typedef::strong_typedef;
 
@@ -53,7 +56,9 @@ namespace type_safe
     /// but without the dereference functions.
     struct index_t : strong_typedef<index_t, detail::index_t>,
                      strong_typedef_op::equality_comparison<index_t>,
+                     strong_typedef_op::mixed_equality_comparison<index_t, detail::index_t>,
                      strong_typedef_op::relational_comparison<index_t>,
+                     strong_typedef_op::mixed_relational_comparison<index_t, detail::index_t>,
                      strong_typedef_op::increment<index_t>,
                      strong_typedef_op::decrement<index_t>,
                      strong_typedef_op::unary_plus<index_t>

@@ -14,7 +14,9 @@ TEST_CASE("strong_typedef")
 {
     SECTION("equality_comparison")
     {
-        struct type : strong_typedef<type, int>, strong_typedef_op::equality_comparison<type, bool>
+        struct type : strong_typedef<type, int>,
+                      strong_typedef_op::equality_comparison<type, bool>,
+                      strong_typedef_op::mixed_equality_comparison<type, int, bool>
         {
             using strong_typedef::strong_typedef;
         };
@@ -23,15 +25,20 @@ TEST_CASE("strong_typedef")
         type b(1);
 
         REQUIRE(a == a);
+        REQUIRE(a == 0);
+        REQUIRE(0 == a);
         REQUIRE(!(a == b));
 
         REQUIRE(a != b);
+        REQUIRE(a != 1);
+        REQUIRE(1 != a);
         REQUIRE(!(a != a));
     }
     SECTION("relational_comparison")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::relational_comparison<type, bool>
+                      strong_typedef_op::relational_comparison<type, bool>,
+                      strong_typedef_op::mixed_relational_comparison<type, int, bool>
         {
             using strong_typedef::strong_typedef;
         };
@@ -40,12 +47,20 @@ TEST_CASE("strong_typedef")
         type b(1);
 
         REQUIRE(a < b);
+        REQUIRE(0 < b);
+        REQUIRE(a < 1);
         REQUIRE(!(b < a));
         REQUIRE(a <= b);
+        REQUIRE(a <= 1);
+        REQUIRE(1 <= b);
         REQUIRE(a <= a);
         REQUIRE(b > a);
+        REQUIRE(1 > a);
+        REQUIRE(b > 0);
         REQUIRE(!(a > b));
         REQUIRE(b >= a);
+        REQUIRE(b >= 0);
+        REQUIRE(1 >= a);
         REQUIRE(b >= b);
     }
     SECTION("addition")

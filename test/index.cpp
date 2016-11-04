@@ -99,7 +99,7 @@ TEST_CASE("index_t")
     {
         std::size_t array[] = {0, 1, 2, 3, 4, 5};
 
-        for (index_t i; i != index_t(5u); ++i)
+        for (index_t i; i != 5u; ++i)
             REQUIRE(at(array, i) == std::size_t(get(i)));
     }
 }
