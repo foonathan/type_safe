@@ -33,8 +33,6 @@ I highly suggest that you check out [the first](https://foonathan.github.io/blog
 * literal operators for those aliases like `342_u32` or `0_usize`
 * `ts::flag` - an improved flag type, better than a regular `bool` or `ts::boolean`
 * `ts::index_t` and `ts::distance_t` - index and distance integer types with only a subset of operations available
-* aliases of `std::` integer/floating point types that either use the wrapper or the built-in types,
-  depending on a macro
 * `ts::basic_optional<StoragePolicy>` - a generic, improved `std::optional` that is fully monadic,
   also `ts::optional<T>` and `ts::optional_ref<T>` aliases
 * `ts::constrained_type<T, Constraint, Verifier>` - a wrapper over some type that verifies that a certain constraint is always fulfilled
