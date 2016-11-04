@@ -115,7 +115,7 @@ namespace type_safe
     namespace strong_typedef_op
     {
         template <class StrongTypedef, typename Result = bool_t>
-        struct equality_comparision
+        struct equality_comparison
         {
             friend constexpr Result operator==(const StrongTypedef& lhs, const StrongTypedef& rhs)
             {
@@ -130,7 +130,7 @@ namespace type_safe
         };
 
         template <class StrongTypedef, typename Result = bool_t>
-        struct relational_comparision
+        struct relational_comparison
         {
             friend constexpr Result operator<(const StrongTypedef& lhs, const StrongTypedef& rhs)
             {
@@ -343,7 +343,7 @@ namespace type_safe
 
         template <class StrongTypedef, typename T, typename Distance = std::ptrdiff_t>
         struct input_iterator : iterator<StrongTypedef, std::input_iterator_tag, T, Distance>,
-                                equality_comparision<StrongTypedef, bool>
+                                equality_comparison<StrongTypedef, bool>
         {
         };
 
@@ -368,7 +368,7 @@ namespace type_safe
         template <class StrongTypedef, typename T, typename Distance = std::ptrdiff_t>
         struct random_access_iterator : bidirectional_iterator<StrongTypedef, T, Distance>,
                                         array_subscript<StrongTypedef, T, Distance>,
-                                        relational_comparision<StrongTypedef, bool>
+                                        relational_comparison<StrongTypedef, bool>
         {
             using iterator_category = std::random_access_iterator_tag;
 

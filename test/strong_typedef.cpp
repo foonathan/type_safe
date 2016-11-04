@@ -12,9 +12,9 @@ using namespace type_safe;
 
 TEST_CASE("strong_typedef")
 {
-    SECTION("equality_comparision")
+    SECTION("equality_comparison")
     {
-        struct type : strong_typedef<type, int>, strong_typedef_op::equality_comparision<type, bool>
+        struct type : strong_typedef<type, int>, strong_typedef_op::equality_comparison<type, bool>
         {
             using strong_typedef::strong_typedef;
         };
@@ -28,10 +28,10 @@ TEST_CASE("strong_typedef")
         REQUIRE(a != b);
         REQUIRE(!(a != a));
     }
-    SECTION("relational_comparision")
+    SECTION("relational_comparison")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::relational_comparision<type, bool>
+                      strong_typedef_op::relational_comparison<type, bool>
         {
             using strong_typedef::strong_typedef;
         };
