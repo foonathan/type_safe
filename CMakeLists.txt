@@ -42,6 +42,7 @@ set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/deferred_construction.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/flag.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/floating_point.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/index.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/integer.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/narrow_cast.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/optional.hpp

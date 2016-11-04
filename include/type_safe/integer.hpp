@@ -253,7 +253,10 @@ namespace type_safe
     namespace detail
     {
         template <typename T>
-        struct make_signed;
+        struct make_signed
+        {
+            using type = typename std::make_signed<T>::type;
+        };
 
         template <typename T, class Policy>
         struct make_signed<integer<T, Policy>>
@@ -262,7 +265,10 @@ namespace type_safe
         };
 
         template <typename T>
-        struct make_unsigned;
+        struct make_unsigned
+        {
+            using type = typename std::make_unsigned<T>::type;
+        };
 
         template <typename T, class Policy>
         struct make_unsigned<integer<T, Policy>>
@@ -275,24 +281,46 @@ namespace type_safe
     template <class Integer>
     using make_signed_t = typename detail::make_signed<Integer>::type;
 
-    /// \returns A new [type_safe::integer]() of the corresponding signed integer type.
+    /// \returns A new integer of the corresponding signed integer type.
     /// \requires The value of `i` must fit into signed type.
-    template <typename Integer, class Policy>
-    TYPE_SAFE_FORCE_INLINE constexpr make_signed_t<integer<Integer, Policy>> make_signed(
-        const integer<Integer, Policy>& i)
+    template <typename Integer,
+              typename = typename std::enable_if<detail::is_integer<Integer>::value>::type>
+    TYPE_SAFE_FORCE_INLINE constexpr make_signed_t<Integer> make_signed(const Integer& i)
     {
-        using result_type = typename std::make_signed<Integer>::type;
-        return i <= static_cast<Integer>(std::numeric_limits<result_type>::max()) ?
-                   integer<result_type, Policy>(static_cast<result_type>(static_cast<Integer>(i))) :
+        using result_type = make_signed_t<Integer>;
+        return i <= std::numeric_limits<result_type>::max() ?
+                   static_cast<result_type>(i) :
                    (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion "
                                                                 "would "
                                                                 "overflow"),
                     result_type());
     }
 
+    /// \returns A new [type_safe::integer]() of the corresponding signed integer type.
+    /// \requires The value of `i` must fit into signed type.
+    template <typename Integer, class Policy>
+    TYPE_SAFE_FORCE_INLINE constexpr make_signed_t<integer<Integer, Policy>> make_signed(
+        const integer<Integer, Policy>& i)
+    {
+        return make_signed(static_cast<Integer>(i));
+    }
+
     /// [std::make_unsigned]() for [type_safe::integer]().
     template <class Integer>
     using make_unsigned_t = typename detail::make_unsigned<Integer>::type;
+
+    /// \returns A new integer of the corresponding unsigned integer type.
+    /// \requires The value of `i` must not be negative.
+    template <typename Integer,
+              typename = typename std::enable_if<detail::is_integer<Integer>::value>::type>
+    TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<Integer> make_unsigned(const Integer& i)
+    {
+        using result_type = make_unsigned_t<Integer>;
+        return i >= Integer(0) ?
+                   static_cast<result_type>(i) :
+                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion would underflow"),
+                    result_type(0));
+    }
 
     /// \returns A new [type_safe::integer]() of the corresponding unsigned integer type.
     /// \requires The value of `i` must not be negative.
@@ -300,15 +328,19 @@ namespace type_safe
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<integer<Integer, Policy>> make_unsigned(
         const integer<Integer, Policy>& i)
     {
-        using result_type = typename std::make_unsigned<Integer>::type;
-        return i >= Integer(0) ?
-                   integer<result_type, Policy>(static_cast<result_type>(static_cast<Integer>(i))) :
-                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion would underflow"),
-                    result_type(0));
+        return make_unsigned(static_cast<Integer>(i));
+    }
+
+    /// \returns The absolute value of a built-in signed integer.
+    /// It will be changed to the unsigned return type as well.
+    template <typename SignedInteger,
+              typename = typename std::enable_if<std::is_signed<SignedInteger>::value>::type>
+    TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<SignedInteger> abs(const SignedInteger& i)
+    {
+        return make_unsigned(i > 0 ? i : -1);
     }
 
     /// \returns The absolute value of an [type_safe::integer]().
-    /// \unique_name type_safe::abs-signed
     template <typename SignedInteger, class Policy,
               typename = typename std::enable_if<std::is_signed<SignedInteger>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<integer<SignedInteger, Policy>> abs(
@@ -318,8 +350,16 @@ namespace type_safe
     }
 
     /// \returns `i` unchanged.
-    /// \notes This is an optimization of [type_safe::abs-signed]() for `unsigned` [type_safe::integer]().
-    /// \unique_name type_safe::abs-unsigned
+    /// \notes This is an optimization of `abs()` for unsigned integer types.
+    template <typename UnsignedInteger,
+              typename = typename std::enable_if<std::is_unsigned<UnsignedInteger>::value>::type>
+    TYPE_SAFE_FORCE_INLINE constexpr UnsignedInteger abs(const UnsignedInteger& i)
+    {
+        return i;
+    }
+
+    /// \returns `i` unchanged.
+    /// \notes This is an optimization of `abs()` for unsigned integer types.
     template <typename UnsignedInteger, class Policy,
               typename = typename std::enable_if<std::is_unsigned<UnsignedInteger>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr integer<UnsignedInteger, Policy> abs(

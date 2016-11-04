@@ -27,6 +27,7 @@ set(source_files test.cpp
                  deferred_construction.cpp
                  flag.cpp
                  floating_point.cpp
+                 index.cpp
                  integer.cpp
                  narrow_cast.cpp
                  optional.cpp

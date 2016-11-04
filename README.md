@@ -32,7 +32,7 @@ I highly suggest that you check out [the first](https://foonathan.github.io/blog
 * aliases like `ts::uint32_t` or `ts::size_t` that are either wrapper or built-in type depending on macro
 * literal operators for those aliases like `342_u32` or `0_usize`
 * `ts::flag` - an improved flag type, better than a regular `bool` or `ts::boolean`
-* `ts::narrow_cast<T>` - to actually do narrow conversions
+* `ts::index_t` and `ts::distance_t` - index and distance integer types with only a subset of operations available
 * aliases of `std::` integer/floating point types that either use the wrapper or the built-in types,
   depending on a macro
 * `ts::basic_optional<StoragePolicy>` - a generic, improved `std::optional` that is fully monadic,
