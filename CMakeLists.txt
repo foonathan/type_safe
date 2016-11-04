@@ -15,7 +15,7 @@ else()
     set(_type_safe_enable_assertions 0)
 endif()
 
-option(TYPE_SAFE_ENABLE_WRAPPER "whether or not the wrappers in types.hpp are used" OFF)
+option(TYPE_SAFE_ENABLE_WRAPPER "whether or not the wrappers in types.hpp are used" ON)
 if(${TYPE_SAFE_ENABLE_WRAPPER})
     set(_type_safe_enable_wrapper 1)
 else()
