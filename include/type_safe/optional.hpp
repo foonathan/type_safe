@@ -31,7 +31,7 @@ namespace type_safe
 
             template <typename U>
             static std::true_type check(
-                decltype(std::declval<T&>() = std::declval<consume_udc<U>>(), 0)*);
+                decltype(std::declval<T&>() = std::declval<consume_udc<U>>(), 0) *);
 
             template <typename U>
             static std::false_type check(...);
@@ -179,9 +179,11 @@ namespace type_safe
         /// If `other` has a value, it will be created with a value by moving `other.value()`.
         /// \throws Anything thrown by the move constructor of `value_type` if `other` has a value.
         /// \notes `other` will still have a value after the move operation,
-        /// it is just in a moved-from state.
+        /// it is just in a moved-from state./
+        /// \notes If reference qualifiers on member functions are not supported,
+        /// it will copy instead of move.
         basic_optional(basic_optional&& other) noexcept(
-            std::is_nothrow_move_constructible<value_type>::value)
+            TYPE_SAFE_USE_REF_QUALIFIERS&& std::is_nothrow_move_constructible<value_type>::value)
         {
             if (other.has_value())
                 policy_.create_value(std::move(other).value());
@@ -232,7 +234,7 @@ namespace type_safe
                 std::is_nothrow_move_assignable<value_type>::value)
         {
             if (other.has_value())
-                emplace(std::move(other).value());
+                emplace(std::move(other.value()));
             else
                 reset();
             return *this;
@@ -323,7 +325,7 @@ namespace type_safe
 
         /// \returns A reference to the stored value.
         /// \requires `has_value() == true`.
-        auto value() & noexcept -> decltype(policy_.get_value())
+        auto value() TYPE_SAFE_LVALUE_REF noexcept -> decltype(policy_.get_value())
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return policy_.get_value();
@@ -331,12 +333,13 @@ namespace type_safe
 
         /// \returns A `const` reference to the stored value.
         /// \requires `has_value() == true`.
-        auto value() const & noexcept -> decltype(policy_.get_value())
+        auto value() const TYPE_SAFE_LVALUE_REF noexcept -> decltype(policy_.get_value())
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return policy_.get_value();
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns An rvalue reference to the stored value.
         /// \requires `has_value() == true`.
         auto value() && noexcept -> decltype(std::move(policy_).get_value())
@@ -352,16 +355,19 @@ namespace type_safe
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return std::move(policy_).get_value();
         }
+#endif
 
         /// \returns If it has a value, `value()`, otherwise `u` converted to the same type as `value()`.
         /// \requires `u` must be valid argument to the `value_or()` function of the `StoragePolicy`.
         /// \notes Depending on the `StoragePolicy`, this either returns a decayed type or a reference.
         template <typename U>
-        auto value_or(U&& u) const& -> decltype(policy_.get_value_or(std::forward<U>(u)))
+        auto value_or(U&& u) const TYPE_SAFE_LVALUE_REF
+            -> decltype(policy_.get_value_or(std::forward<U>(u)))
         {
             return policy_.get_value_or(std::forward<U>(u));
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns If it has a value, `value()`, otherwise `u` converted to the same type as `value()`.
         /// \requires `u` must be valid argument to the `value_or()` function of the `StoragePolicy`.
         /// \notes Depending on the `StoragePolicy`, this either returns a decayed type or a reference.
@@ -370,6 +376,7 @@ namespace type_safe
         {
             return std::move(policy_).get_value_or(std::forward<U>(u));
         }
+#endif
 
         //=== factories ===//
         /// \returns If `value_type` is a `basic_optional` itself, returns a copy of that optional
@@ -378,11 +385,12 @@ namespace type_safe
         /// \requires `value_type` must be copy constructible.
         template <typename T = value_type,
                   typename std::enable_if<std::is_copy_constructible<T>::value, int>::type = 0>
-        detail::unwrap_optional_t<basic_optional<StoragePolicy>> unwrap() const&
+        detail::unwrap_optional_t<basic_optional<StoragePolicy>> unwrap() const TYPE_SAFE_LVALUE_REF
         {
             return detail::unwrap_optional(*this);
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns If `value_type` is a `basic_optional` itself, returns a copy of that optional by moving
         /// or a null optional of that type if `has_value()` is `false`.
         /// Otherwise returns a copy of `*this` by moving.
@@ -393,13 +401,15 @@ namespace type_safe
         {
             return detail::unwrap_optional(*this);
         }
+#endif
 
         /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `const value_type&`.
         /// If `has_value()` is `true`, returns the new optional with result of `std::forward<Func>(f)(std::move(value))`,
         /// otherwise returns an empty optional.
         /// \requires `f` must be callable with `const value_type&`.
         template <typename Func>
-        auto map(Func&& f) const& -> rebind<decltype(std::forward<Func>(f)(this->value()))>
+        auto map(Func&& f) const TYPE_SAFE_LVALUE_REF
+            -> rebind<decltype(std::forward<Func>(f)(this->value()))>
         {
             if (has_value())
                 return std::forward<Func>(f)(value());
@@ -407,6 +417,7 @@ namespace type_safe
                 return nullopt;
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `value_type&&`.
         /// If `has_value()` is `true`, returns the new optional with result of `std::forward<Func>(f)(std::move(value))`,
         /// otherwise returns an empty optional.
@@ -420,26 +431,28 @@ namespace type_safe
             else
                 return nullopt;
         }
+#endif
 
         /// \returns The same as `map(std::forward<Func>(f)).unwrap()`.
         /// \notes This is useful for functions that return an optional type itself,
         /// the optional will be "flattened" properly.
         template <typename Func>
-        auto bind(Func&& f)
-            const& -> detail::unwrap_optional_t<decltype(this->map(std::forward<Func>(f)))>
+        auto bind(Func&& f) const TYPE_SAFE_LVALUE_REF
+            -> decltype(this->map(std::forward<Func>(f)).unwrap())
         {
             return map(std::forward<Func>(f)).unwrap();
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns The same as `map(std::forward<Func>(f)).unwrap()`.
         /// \notes This is useful for functions that return an optional type itself,
         /// the optional will be "flattened" properly.
         template <typename Func>
-        auto bind(
-            Func&& f) && -> detail::unwrap_optional_t<decltype(this->map(std::forward<Func>(f)))>
+        auto bind(Func&& f) && -> decltype(this->map(std::forward<Func>(f)).unwrap())
         {
             return map(std::forward<Func>(f)).unwrap();
         }
+#endif
 
     private:
         template <typename T>
@@ -453,13 +466,14 @@ namespace type_safe
         /// \notes This is similar to `map()` but does not wrap the resulting type in an optional.
         /// Hence a fallback value must be provided.
         template <typename T, typename Func>
-        auto transform(T&& t, Func&& f) const& -> remove_cv_ref<T>
+        auto transform(T&& t, Func&& f) const TYPE_SAFE_LVALUE_REF -> remove_cv_ref<T>
         {
             if (has_value())
                 return static_cast<remove_cv_ref<T>>(std::forward<Func>(f)(value()));
             return std::forward<T>(t);
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns If the optional is not empty, `std::forward<Func>(f)(std::move(value()))` converted to the type `T` without cv or references.
         /// Otherwise returns `std::forward<T>(t)`.
         /// \requires `f` must be callable with `value_type&&`.
@@ -472,6 +486,7 @@ namespace type_safe
                 return static_cast<remove_cv_ref<T>>(std::forward<Func>(f)(std::move(value())));
             return std::forward<T>(t);
         }
+#endif
 
         /// \returns A `basic_optional` with the value of `std::forward<Func>(f)(*this)`.
         /// If the result of `f` is a `basic_optional` itself, it will be returned instead,
@@ -479,13 +494,14 @@ namespace type_safe
         /// \requires `f` must be callable with `decltype(*this)`,
         /// i.e. a `const` lvalue reference to the type of this optional.
         template <typename Func>
-        auto then(Func&& f)
-            const& -> detail::unwrap_optional_t<rebind<decltype(std::forward<Func>(f)(*this))>>
+        auto then(Func&& f) const TYPE_SAFE_LVALUE_REF
+            -> detail::unwrap_optional_t<rebind<decltype(std::forward<Func>(f)(*this))>>
         {
             using result_type = decltype(std::forward<Func>(f)(*this));
             return rebind<result_type>(std::forward<Func>(f)(*this)).unwrap();
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns A `basic_optional` with the value of `std::forward<Func>(f)(std::move(*this))`.
         /// If the result of `f` is a `basic_optional` itself, it will be returned instead,
         /// i.e. it calls `unwrap()`.
@@ -498,6 +514,7 @@ namespace type_safe
             using result_type = decltype(std::forward<Func>(f)(std::move(*this)));
             return rebind<result_type>(std::forward<Func>(f)(std::move(*this))).unwrap();
         }
+#endif
     };
 
     /// \effects Calls the `operator()` of `f` passing it the value of `opt`,
@@ -618,12 +635,12 @@ namespace type_safe
         };
 
         template <typename Visitor, class... Optionals>
-        auto visit(Visitor&& visitor, Optionals&&... optionals) -> decltype(
-            detail::visit_optional<!visitor_allow_incomplete<Visitor>::value,
-                                   decltype(std::forward<Visitor>(visitor)),
-                                   decltype(std::forward<Optionals>(
-                                       optionals))...>::call(std::forward<Visitor>(visitor),
-                                                             std::forward<Optionals>(optionals)...))
+        auto visit(Visitor&& visitor, Optionals&&... optionals)
+            -> decltype(detail::visit_optional<!visitor_allow_incomplete<Visitor>::value,
+                                               decltype(std::forward<Visitor>(visitor)),
+                                               decltype(std::forward<Optionals>(optionals))...>::
+                            call(std::forward<Visitor>(visitor),
+                                 std::forward<Optionals>(optionals)...))
         {
             return detail::visit_optional<!visitor_allow_incomplete<Visitor>::value,
                                           decltype(std::forward<Visitor>(visitor)),
@@ -818,18 +835,19 @@ namespace type_safe
 
         /// \returns A reference to the stored value.
         /// \requires `has_value() == true`.
-        lvalue_reference get_value() & noexcept
+        lvalue_reference get_value() TYPE_SAFE_LVALUE_REF noexcept
         {
             return *static_cast<value_type*>(as_void());
         }
 
         /// \returns A `const` reference to the stored value.
         /// \requires `has_value() == true`.
-        const_lvalue_reference get_value() const& noexcept
+        const_lvalue_reference get_value() const TYPE_SAFE_LVALUE_REF noexcept
         {
             return *static_cast<const value_type*>(as_void());
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns A reference to the stored value.
         /// \requires `has_value() == true`.
         rvalue_reference get_value() && noexcept
@@ -839,10 +857,11 @@ namespace type_safe
 
         /// \returns A `const` reference to the stored value.
         /// \requires `has_value() == true`.
-        const_rvalue_reference get_value() const&& noexcept
+        const_rvalue_reference get_value() const && noexcept
         {
             return std::move(*static_cast<const value_type*>(as_void()));
         }
+#endif
 
         /// \returns Either `get_value()` or `u` converted to `value_type`.
         /// \requires `value_type` must be copy constructible and `u` convertible to `value_type`.
@@ -850,11 +869,12 @@ namespace type_safe
                   typename =
                       typename std::enable_if<std::is_copy_constructible<value_type>::value
                                               && std::is_convertible<U&&, value_type>::value>::type>
-        value_type get_value_or(U&& u) const&
+        value_type get_value_or(U&& u) const TYPE_SAFE_LVALUE_REF
         {
             return has_value() ? get_value() : static_cast<value_type>(std::forward<U>(u));
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns Either `std::move(get_value())` or `u` converted to `value_type`.
         /// \requires `value_type` must be move constructible and `u` convertible to `value_type`.
         template <typename U,
@@ -866,6 +886,7 @@ namespace type_safe
             return has_value() ? std::move(get_value()) :
                                  static_cast<value_type>(std::forward<U>(u));
         }
+#endif
 
     private:
         void* as_void() noexcept

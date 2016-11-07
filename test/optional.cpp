@@ -136,7 +136,7 @@ TEST_CASE("optional")
         optional<debugger_type> d(std::move(org_value));
         REQUIRE(d.has_value());
         REQUIRE(d.value().id == 0);
-        REQUIRE(d.value().move_ctor());
+        REQUIRE(d.value().move_ctor() == TYPE_SAFE_USE_REF_QUALIFIERS);
     }
     SECTION("assignment - nullopt_t")
     {
@@ -347,11 +347,11 @@ TEST_CASE("optional")
         // only test the return types
         optional<debugger_type> a(0);
         static_assert(std::is_same<decltype(a.value()), debugger_type&>::value, "");
-        static_assert(std::is_same<decltype(std::move(a).value()), debugger_type&&>::value, "");
+        static_assert(std::is_same<decltype(std::move(a.value())), debugger_type&&>::value, "");
 
         const optional<debugger_type> b(0);
         static_assert(std::is_same<decltype(b.value()), const debugger_type&>::value, "");
-        static_assert(std::is_same<decltype(std::move(b).value()), const debugger_type&&>::value,
+        static_assert(std::is_same<decltype(std::move(b.value())), const debugger_type&&>::value,
                       "");
     }
     SECTION("value_or")
@@ -740,7 +740,9 @@ TEST_CASE("optional_ref")
         optional<debugger_type>     b_res = copy(b);
         REQUIRE(b_res.has_value());
         REQUIRE(b_res.value().id == 0);
-        // MSVC does something weird here: REQUIRE(b_res.value().copy_ctor());
+#ifndef _MSC_VER
+        REQUIRE(b_res.value().move_ctor());
+#endif
     }
     SECTION("move")
     {
@@ -754,6 +756,8 @@ TEST_CASE("optional_ref")
         optional<debugger_type>     b_res = move(b);
         REQUIRE(b_res.has_value());
         REQUIRE(b_res.value().id == 0);
+#ifndef _MSC_VER
         REQUIRE(b_res.value().move_ctor());
+#endif
     }
 }

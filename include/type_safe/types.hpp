@@ -35,42 +35,42 @@ namespace type_safe
 
     inline namespace literals
     {
-        constexpr int8_t operator""_i8(unsigned long long val)
+        constexpr int8_t operator"" _i8(unsigned long long val)
         {
             return int8_t(static_cast<std::int8_t>(val));
         }
 
-        constexpr int16_t operator""_i16(unsigned long long val)
+        constexpr int16_t operator"" _i16(unsigned long long val)
         {
             return int16_t(static_cast<std::int16_t>(val));
         }
 
-        constexpr int32_t operator""_i32(unsigned long long val)
+        constexpr int32_t operator"" _i32(unsigned long long val)
         {
             return int32_t(static_cast<std::int32_t>(val));
         }
 
-        constexpr int64_t operator""_i64(unsigned long long val)
+        constexpr int64_t operator"" _i64(unsigned long long val)
         {
             return int64_t(static_cast<std::int64_t>(val));
         }
 
-        constexpr uint8_t operator""_u8(unsigned long long val)
+        constexpr uint8_t operator"" _u8(unsigned long long val)
         {
             return uint8_t(static_cast<std::uint8_t>(val));
         }
 
-        constexpr uint16_t operator""_u16(unsigned long long val)
+        constexpr uint16_t operator"" _u16(unsigned long long val)
         {
             return uint16_t(static_cast<std::uint16_t>(val));
         }
 
-        constexpr uint32_t operator""_u32(unsigned long long val)
+        constexpr uint32_t operator"" _u32(unsigned long long val)
         {
             return uint32_t(static_cast<std::uint32_t>(val));
         }
 
-        constexpr uint64_t operator""_u64(unsigned long long val)
+        constexpr uint64_t operator"" _u64(unsigned long long val)
         {
             return uint64_t(static_cast<std::uint64_t>(val));
         }
@@ -108,22 +108,22 @@ namespace type_safe
 
     inline namespace literals
     {
-        constexpr ptrdiff_t operator""_isize(unsigned long long val)
+        constexpr ptrdiff_t operator"" _isize(unsigned long long val)
         {
             return ptrdiff_t(static_cast<std::ptrdiff_t>(val));
         }
 
-        constexpr size_t operator""_usize(unsigned long long val)
+        constexpr size_t operator"" _usize(unsigned long long val)
         {
             return size_t(static_cast<std::size_t>(val));
         }
 
-        constexpr int_t operator""_i(unsigned long long val)
+        constexpr int_t operator"" _i(unsigned long long val)
         {
             return int_t(static_cast<int>(val));
         }
 
-        constexpr unsigned_t operator""_u(unsigned long long val)
+        constexpr unsigned_t operator"" _u(unsigned long long val)
         {
             return unsigned_t(static_cast<unsigned>(val));
         }
@@ -135,12 +135,12 @@ namespace type_safe
 
     inline namespace literals
     {
-        constexpr float_t operator""_f(long double val)
+        constexpr float_t operator"" _f(long double val)
         {
             return float_t(static_cast<std::float_t>(val));
         }
 
-        constexpr double_t operator""_d(long double val)
+        constexpr double_t operator"" _d(long double val)
         {
             return double_t(static_cast<std::double_t>(val));
         }

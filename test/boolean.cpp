@@ -10,7 +10,7 @@
 
 using namespace type_safe;
 
-#ifndef _MSC_VER
+#ifndef TYPE_SAFE_TEST_NO_STATIC_ASSERT
 static_assert(std::is_pod<boolean>::value, "");
 // conversion checks
 static_assert(std::is_constructible<boolean, bool>::value, "");

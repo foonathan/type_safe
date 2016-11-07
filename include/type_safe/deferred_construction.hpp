@@ -126,7 +126,7 @@ namespace type_safe
 
         /// \returns A reference to the stored value.
         /// \requires `has_value() == true`.
-        value_type& value() & noexcept
+        value_type& value() TYPE_SAFE_LVALUE_REF noexcept
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return *static_cast<value_type*>(as_void());
@@ -134,12 +134,13 @@ namespace type_safe
 
         /// \returns A `const` reference to the stored value.
         /// \requires `has_value() == true`.
-        const value_type& value() const& noexcept
+        const value_type& value() const TYPE_SAFE_LVALUE_REF noexcept
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return *static_cast<const value_type*>(as_void());
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns An rvalue reference to the stored value.
         /// \requires `has_value() == true`.
         value_type&& value() && noexcept
@@ -150,11 +151,12 @@ namespace type_safe
 
         /// \returns An rvalue reference to the stored value.
         /// \requires `has_value() == true`.
-        const value_type&& value() const&& noexcept
+        const value_type&& value() const && noexcept
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return std::move(*static_cast<const value_type*>(as_void()));
         }
+#endif
 
     private:
         void* as_void() noexcept

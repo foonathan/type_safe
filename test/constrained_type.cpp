@@ -108,7 +108,7 @@ TEST_CASE("constraints::non_null")
 {
     // conversion checks
     using ptr = constrained_type<int*, constraints::non_null>;
-#ifndef _MSC_VER
+#ifndef TYPE_SAFE_TEST_NO_STATIC_ASSERT
     static_assert(std::is_constructible<ptr, int*>::value, "");
     static_assert(!std::is_constructible<ptr, std::nullptr_t>::value, "");
     static_assert(std::is_assignable<ptr, int*>::value, "");

@@ -288,7 +288,7 @@ namespace type_safe
     TYPE_SAFE_FORCE_INLINE constexpr make_signed_t<Integer> make_signed(const Integer& i)
     {
         using result_type = make_signed_t<Integer>;
-        return i <= std::numeric_limits<result_type>::max() ?
+        return i <= Integer(std::numeric_limits<result_type>::max()) ?
                    static_cast<result_type>(i) :
                    (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion "
                                                                 "would "
