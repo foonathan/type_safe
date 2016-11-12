@@ -741,7 +741,7 @@ TEST_CASE("optional_ref")
         REQUIRE(b_res.has_value());
         REQUIRE(b_res.value().id == 0);
 #ifndef _MSC_VER
-        REQUIRE(b_res.value().move_ctor());
+        REQUIRE(b_res.value().copy_ctor());
 #endif
     }
     SECTION("move")
