@@ -85,10 +85,10 @@ TEST_CASE("constrained_type")
         }
         REQUIRE(a.get_value() == 2);
 
-        test_verifier::expected = false;
         {
-            auto modify  = a.modify();
-            modify.get() = -1;
+            auto modify             = a.modify();
+            modify.get()            = -1;
+            test_verifier::expected = false;
         }
         REQUIRE(a.get_value() == -1);
         try

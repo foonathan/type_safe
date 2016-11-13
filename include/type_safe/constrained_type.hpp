@@ -82,6 +82,7 @@ namespace type_safe
         /// \throws Anything thrown by the copy constructor of `value_type`.
         constrained_type(const constrained_type& other) : Constraint(other), value_(other.value_)
         {
+            debug_verify();
         }
 
         /// \effects Destroys the value.
@@ -127,6 +128,9 @@ namespace type_safe
         friend void swap(constrained_type& a, constrained_type& b) noexcept(
             detail::is_nothrow_swappable<value_type>::value)
         {
+            a.debug_verify();
+            b.debug_verify();
+
             using std::swap;
             swap(a.value_, b.value_);
             swap(static_cast<Constraint&>(a), static_cast<Constraint&>(b));
@@ -180,14 +184,18 @@ namespace type_safe
         /// \returns A proxy object to provide verified write-access to the stored value.
         modifier modify() noexcept
         {
+            debug_verify();
             return modifier(*this);
         }
 
         /// \effects Moves the stored value out of the `constrained_type`,
         /// it will not be checked further.
         /// \returns An rvalue reference to the stored value.
-        value_type&& release() noexcept
+        /// \notes After this function is called, the object must not be used anymore
+        /// except as target for assignment or in the destructor.
+        value_type&& release() TYPE_SAFE_RVALUE_REF noexcept
         {
+            debug_verify();
             return std::move(value_);
         }
 
@@ -195,6 +203,7 @@ namespace type_safe
         /// \requires Any `const` operations on the `value_type` must not affect the validity of the value.
         const value_type& get_value() const noexcept
         {
+            debug_verify();
             return value_;
         }
 
@@ -205,9 +214,16 @@ namespace type_safe
         }
 
     private:
-        void verify()
+        void verify() const
         {
             Verifier::verify(value_, get_constraint());
+        }
+
+        void debug_verify() const noexcept
+        {
+#if TYPE_SAFE_ENABLE_ASSERTIONS
+            verify();
+#endif
         }
 
         value_type value_;
