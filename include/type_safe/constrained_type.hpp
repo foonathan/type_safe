@@ -299,7 +299,7 @@ namespace type_safe
             };
 
             template <typename T>
-            bool operator()(const T* ptr) const noexcept
+            bool operator()(const T& ptr) const noexcept
             {
                 return ptr != nullptr;
             }
