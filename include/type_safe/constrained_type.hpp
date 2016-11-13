@@ -9,6 +9,8 @@
 #include <utility>
 
 #include <type_safe/detail/assert.hpp>
+#include <type_safe/detail/is_nothrow_swappable.hpp>
+#include <type_safe/config.hpp>
 
 namespace type_safe
 {
@@ -44,7 +46,7 @@ namespace type_safe
     /// \requires `T` must not be a reference, `Constraint` must be a functor of type `bool(const T&)`
     /// and `Verifier` must provide a `static` function `void verify([const] T&, const Predicate&)`.
     template <typename T, typename Constraint, typename Verifier = assertion_verifier>
-    class constrained_type : Constraint, Verifier
+    class constrained_type : Constraint
     {
         static_assert(!std::is_reference<T>::value, "T must not be a reference");
 
@@ -54,6 +56,7 @@ namespace type_safe
 
         /// \effects Creates it giving it a valid `value` and a `predicate`.
         /// The `value` will be copied and verified.
+        /// \throws Anything thrown by the copy constructor of `value_type`.
         explicit constrained_type(const value_type& value, constraint_predicate predicate = {})
         : Constraint(std::move(predicate)), value_(value)
         {
@@ -62,7 +65,9 @@ namespace type_safe
 
         /// \effects Creates it giving it a valid `value` and a `predicate`.
         /// The `value` will be moved and verified.
-        explicit constrained_type(value_type&& value, constraint_predicate predicate = {})
+        /// \throws Anything thrown by the the move constructor of `value_type`.
+        explicit constrained_type(value_type&& value, constraint_predicate predicate = {}) noexcept(
+            std::is_nothrow_constructible<value_type>::value)
         : Constraint(std::move(predicate)), value_(std::move(value))
         {
             verify();
@@ -73,8 +78,18 @@ namespace type_safe
                                                                        U>::value>::type>
         constrained_type(U) = delete;
 
+        /// \effects Copies the value and predicate of `other`.
+        /// \throws Anything thrown by the copy constructor of `value_type`.
+        constrained_type(const constrained_type& other) : Constraint(other), value_(other.value_)
+        {
+        }
+
+        /// \effects Destroys the value.
+        ~constrained_type() noexcept = default;
+
         /// \effects Copy assigns the stored value to the valid value `other`.
         /// It will also verify the new value prior to assigning.
+        /// \throws Anything thrown by the copy assignment operator of `value_type`.
         constrained_type& operator=(const value_type& other)
         {
             Verifier::verify(other, get_constraint());
@@ -84,7 +99,9 @@ namespace type_safe
 
         /// \effects Move assigns the stored value to the valid value `other`.
         /// It will also verify the new value prior to assigning.
-        constrained_type& operator=(value_type&& other)
+        /// \throws Anything thrown by the move assignment operator of `value_type`.
+        constrained_type& operator=(value_type&& other) noexcept(
+            std::is_nothrow_move_assignable<value_type>::value)
         {
             Verifier::verify(other, get_constraint());
             value_ = std::move(other);
@@ -95,6 +112,25 @@ namespace type_safe
                   typename = typename std::enable_if<!detail::is_valid<constraint_predicate,
                                                                        U>::value>::type>
         constrained_type& operator=(U) = delete;
+
+        /// \effects Copies the value and predicate from `other`.
+        /// \throws Anything thrown by the copy assignment operator of `value_type`.
+        constrained_type& operator=(const constrained_type& other)
+        {
+            constrained_type tmp(other);
+            swap(*this, tmp);
+            return *this;
+        }
+
+        /// \effects Swaps the value and predicate of a `a` and `b`.
+        /// \throws Anything thrown by the swap function of `value_type`.
+        friend void swap(constrained_type& a, constrained_type& b) noexcept(
+            detail::is_nothrow_swappable<value_type>::value)
+        {
+            using std::swap;
+            swap(a.value_, b.value_);
+            swap(static_cast<Constraint&>(a), static_cast<Constraint&>(b));
+        }
 
         /// A proxy class to provide write access to the stored value.
         /// The destructor will verify the value again.

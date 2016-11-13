@@ -10,6 +10,7 @@
 #include <type_traits>
 
 #include <type_safe/detail/assert.hpp>
+#include <type_safe/detail/is_nothrow_swappable.hpp>
 
 namespace type_safe
 {
@@ -37,22 +38,6 @@ namespace type_safe
             static std::false_type check(...);
 
             static constexpr bool value = decltype(check<Arg>(0))::value;
-        };
-
-        //=== is_nothrow_swappable ===//
-        template <typename T>
-        struct is_nothrow_swappable
-        {
-            template <typename U>
-            static auto adl_swap(int, U& a, U& b) noexcept(noexcept(swap(a, b)))
-                -> decltype(swap(a, b));
-
-            template <typename U>
-            static auto adl_swap(short, U& a, U& b) noexcept(noexcept(std::swap(a, b)))
-                -> decltype(std::swap(a, b));
-
-            static constexpr bool value =
-                noexcept(adl_swap(0, std::declval<T&>(), std::declval<T&>()));
         };
 
         //=== is_optional ===//
