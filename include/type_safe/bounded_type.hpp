@@ -78,7 +78,7 @@ namespace type_safe
 
         /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
         /// A value is valid if it is between two given bounds,
-        /// `LowerInclusive`/`UpperInclusive` control whether the lower/upper bound itself is valid to.
+        /// `LowerInclusive`/`UpperInclusive` control whether the lower/upper bound itself is valid too.
         template <typename T, bool LowerInclusive, bool UpperInclusive>
         class bounded
         {
@@ -95,7 +95,7 @@ namespace type_safe
             }
 
             template <typename U>
-            bool operator()(const U& u)
+            bool operator()(const U& u) const
             {
                 return lower_(u) && upper_(u);
             }
