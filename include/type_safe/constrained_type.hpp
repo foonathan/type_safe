@@ -67,7 +67,8 @@ namespace type_safe
         /// The `value` will be moved and verified.
         /// \throws Anything thrown by the the move constructor of `value_type`.
         explicit constrained_type(value_type&& value, constraint_predicate predicate = {}) noexcept(
-            std::is_nothrow_constructible<value_type>::value)
+            std::is_nothrow_constructible<value_type>::value &&
+            noexcept(std::declval<constrained_type>().verify()))
         : Constraint(std::move(predicate)), value_(std::move(value))
         {
             verify();
@@ -102,7 +103,8 @@ namespace type_safe
         /// It will also verify the new value prior to assigning.
         /// \throws Anything thrown by the move assignment operator of `value_type`.
         constrained_type& operator=(value_type&& other) noexcept(
-            std::is_nothrow_move_assignable<value_type>::value)
+            std::is_nothrow_move_assignable<value_type>::value &&
+            noexcept(std::declval<constrained_type>().verify()))
         {
             Verifier::verify(other, get_constraint());
             value_ = std::move(other);
@@ -214,7 +216,8 @@ namespace type_safe
         }
 
     private:
-        void verify() const
+        void verify() const noexcept(noexcept(
+            Verifier::verify(std::declval<value_type>(),std::declval<constraint_predicate>())))
         {
             Verifier::verify(value_, get_constraint());
         }
