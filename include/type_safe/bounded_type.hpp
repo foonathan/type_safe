@@ -95,7 +95,7 @@ namespace type_safe
             }
 
             template <typename U>
-            bool operator()(const U& u)
+            bool operator()(const U& u) const
             {
                 return lower_(u) && upper_(u);
             }
