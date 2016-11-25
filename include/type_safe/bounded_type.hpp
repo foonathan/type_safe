@@ -80,8 +80,15 @@ namespace type_safe
         /// A value is valid if it is between two given bounds,
         /// `LowerInclusive`/`UpperInclusive` control whether the lower/upper bound itself is valid too.
         template <typename T, bool LowerInclusive, bool UpperInclusive>
-        class bounded
+        class bounded : detail::lower_bound_t<LowerInclusive, T>,
+                        detail::upper_bound_t<UpperInclusive, T>
         {
+            using Lower = detail::lower_bound_t<LowerInclusive, T>;
+            using Upper = detail::upper_bound_t<UpperInclusive, T>;
+
+            const Lower& lower() const noexcept { return *this; }
+            const Upper& upper() const noexcept { return *this; }
+
             template <typename U>
             using decay_same = std::is_same<typename std::decay<U>::type, T>;
 
@@ -90,29 +97,25 @@ namespace type_safe
                       typename = typename std::enable_if<decay_same<U1>::value>::type,
                       typename = typename std::enable_if<decay_same<U2>::value>::type>
             bounded(U1&& lower, U2&& upper)
-            : lower_(std::forward<U1>(lower)), upper_(std::forward<U2>(upper))
+            : Lower(std::forward<U1>(lower)), Upper(std::forward<U2>(upper))
             {
             }
 
             template <typename U>
             bool operator()(const U& u) const
             {
-                return lower_(u) && upper_(u);
+                return lower()(u) && upper()(u);
             }
 
             const T& get_lower_bound() const noexcept
             {
-                return lower_.get_bound();
+                return lower().get_bound();
             }
 
             const T& get_upper_bound() const noexcept
             {
-                return upper_.get_bound();
+                return upper().get_bound();
             }
-
-        private:
-            detail::lower_bound_t<LowerInclusive, T> lower_;
-            detail::upper_bound_t<UpperInclusive, T> upper_;
         };
 
         /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
