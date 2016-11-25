@@ -114,7 +114,7 @@ namespace type_safe
         /// `LowerInclusive`/`UpperInclusive` control whether the lower/upper bound itself is valid too.
         /// `LowerConstant`/`UpperConstant` control whether the lower/upper bound is specified statically or dinamically.
         /// When they are `dynamic_bound`, the bounds are specified at run-time. Otherwise, they must match
-        /// the `boost::hana::Constant` concept, in which case their nested `value` is the bound.
+        /// the `boost::hana::Constant` concept, in which case their value is the bound.
         template <typename T, bool LowerInclusive, bool UpperInclusive,
                   typename LowerConstant = dynamic_bound,
                   typename UpperConstant = dynamic_bound>
