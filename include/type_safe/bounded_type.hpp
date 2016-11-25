@@ -13,33 +13,64 @@ namespace type_safe
 {
     namespace constraints
     {
+
+        struct dynamic_bound { };
+
+        namespace detail
+        {
+            // Base to enable empty base optimization when BoundConstant is not dynamic_bound.
+            // Neccessary when T is not a class.
+            template <class T>
+            struct Wrapper
+            {
+                T value;
+            };
+
+            template <class BoundConstant>
+            struct is_dynamic : std::is_same<BoundConstant,dynamic_bound>
+            {
+            };
+
+            template <class T, class BoundConstant>
+            using Base = typename std::conditional<is_dynamic<BoundConstant>::value,
+                                                   Wrapper<T>,
+                                                   BoundConstant>::type;
+        } // detail namespace
+
 #define TYPE_SAFE_DETAIL_MAKE(Name, Op)                                                            \
-    template <typename T>                                                                          \
-    class Name                                                                                     \
+    template <typename T, typename BoundConstant = dynamic_bound>                                  \
+    class Name : detail::Base<T, BoundConstant>                                                    \
     {                                                                                              \
+        using Base = detail::Base<T, BoundConstant>;                                               \
+                                                                                                   \
+        static constexpr bool is_dynamic = detail::is_dynamic<BoundConstant>::value;               \
     public:                                                                                        \
-        explicit Name(const T& bound) : bound_(bound)                                              \
+        explicit Name()                                                                            \
         {                                                                                          \
+            static_assert(!is_dynamic,"constructor requires static bound");                        \
+        }                                                                                          \
+                                                                                                   \
+        explicit Name(const T& bound) : Base{bound}                                                \
+        {                                                                                          \
+            static_assert(is_dynamic,"constructor requires dynamic bound");                        \
         }                                                                                          \
                                                                                                    \
         explicit Name(T&& bound) noexcept(std::is_nothrow_move_constructible<T>::value)            \
-        : bound_(std::move(bound))                                                                 \
+        : Base{std::move(bound)}                                                                   \
         {                                                                                          \
+            static_assert(is_dynamic,"constructor requires dynamic bound");                        \
         }                                                                                          \
                                                                                                    \
         template <typename U>                                                                      \
         bool operator()(const U& u) const                                                          \
         {                                                                                          \
-            return u Op bound_;                                                                    \
+            return u Op get_bound();                                                               \
         }                                                                                          \
                                                                                                    \
         const T& get_bound() const noexcept                                                        \
         {                                                                                          \
-            return bound_;                                                                         \
+            return Base::value;                                                                    \
         }                                                                                          \
-                                                                                                   \
-    private:                                                                                       \
-        T bound_;                                                                                  \
     };
 
         /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
@@ -63,14 +94,16 @@ namespace type_safe
         namespace detail
         {
             // checks that that the value is less than the upper bound
-            template <bool Inclusive, typename T>
+            template <bool Inclusive, typename T, typename BoundConstant>
             using upper_bound_t =
-                typename std::conditional<Inclusive, less_equal<T>, less<T>>::type;
+                typename std::conditional<Inclusive, less_equal<T, BoundConstant>,
+                                                     less<T, BoundConstant>>::type;
 
             // checks that the value is greater than the lower bound
-            template <bool Inclusive, typename T>
+            template <bool Inclusive, typename T, typename BoundConstant>
             using lower_bound_t =
-                typename std::conditional<Inclusive, greater_equal<T>, greater<T>>::type;
+                typename std::conditional<Inclusive, greater_equal<T, BoundConstant>,
+                                                     greater<T, BoundConstant>>::type;
         } // namespace detail
 
         constexpr bool open   = false;
@@ -79,12 +112,23 @@ namespace type_safe
         /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
         /// A value is valid if it is between two given bounds,
         /// `LowerInclusive`/`UpperInclusive` control whether the lower/upper bound itself is valid too.
-        template <typename T, bool LowerInclusive, bool UpperInclusive>
-        class bounded : detail::lower_bound_t<LowerInclusive, T>,
-                        detail::upper_bound_t<UpperInclusive, T>
+        /// `LowerConstant`/`UpperConstant` control whether the lower/upper bound is specified statically or dinamically.
+        /// When they are `dynamic_bound`, the bounds are specified at run-time. Otherwise, they must match
+        /// the `boost::hana::Constant` concept, in which case their nested `value` is the bound.
+        template <typename T, bool LowerInclusive, bool UpperInclusive,
+                  typename LowerConstant = dynamic_bound,
+                  typename UpperConstant = dynamic_bound>
+        class bounded : detail::lower_bound_t<LowerInclusive, T, LowerConstant>,
+                        detail::upper_bound_t<UpperInclusive, T, UpperConstant>
         {
-            using Lower = detail::lower_bound_t<LowerInclusive, T>;
-            using Upper = detail::upper_bound_t<UpperInclusive, T>;
+            static constexpr bool lower_is_dynamic = detail::is_dynamic<LowerConstant>::value;
+            static constexpr bool upper_is_dynamic = detail::is_dynamic<UpperConstant>::value;
+
+            static_assert(lower_is_dynamic==upper_is_dynamic,
+                          "mixed static and dynamic bounds is unsupported");
+
+            using Lower = detail::lower_bound_t<LowerInclusive, T, LowerConstant>;
+            using Upper = detail::upper_bound_t<UpperInclusive, T, UpperConstant>;
 
             const Lower& lower() const noexcept { return *this; }
             const Upper& upper() const noexcept { return *this; }
@@ -93,12 +137,25 @@ namespace type_safe
             using decay_same = std::is_same<typename std::decay<U>::type, T>;
 
         public:
+            template <typename LC = LowerConstant, typename UC = UpperConstant,
+                      typename = typename std::enable_if<
+                                    decay_same<typename LC::value_type>::value>::type,
+                      typename = typename std::enable_if<
+                                    decay_same<typename UC::value_type>::value>::type>
+            bounded()
+            {
+                static_assert(!lower_is_dynamic && !upper_is_dynamic,
+                              "constructor requires static bounds");
+            }
+
             template <typename U1, typename U2,
                       typename = typename std::enable_if<decay_same<U1>::value>::type,
                       typename = typename std::enable_if<decay_same<U2>::value>::type>
             bounded(U1&& lower, U2&& upper)
             : Lower(std::forward<U1>(lower)), Upper(std::forward<U2>(upper))
             {
+                static_assert(upper_is_dynamic && lower_is_dynamic,
+                              "constructor requires dynamic bounds");
             }
 
             template <typename U>
@@ -154,9 +211,12 @@ namespace type_safe
 
     /// An alias for [type_safe::constrained_type<T, Constraint, Verifier>]() that uses [type_safe::constraints::bounded<T, LowerInclusive, UpperInclusive>]() as its `Constraint`.
     /// \notes This is some type where the values must be in a certain interval.
-    template <typename T, bool LowerInclusive, bool UpperInclusive>
+    template <typename T, bool LowerInclusive, bool UpperInclusive,
+              typename LowerConstant = constraints::dynamic_bound,
+              typename UpperConstant = constraints::dynamic_bound>
     using bounded_type =
-        constrained_type<T, constraints::bounded<T, LowerInclusive, UpperInclusive>>;
+        constrained_type<T, constraints::bounded<T, LowerInclusive, UpperInclusive,
+                                                    LowerConstant, UpperConstant>>;
 
     /// \returns A [type_safe::bounded_type<T, LowerInclusive, UpperInclusive>]() with the given `value` and lower and upper bounds,
     /// where those bounds are valid values as well.
