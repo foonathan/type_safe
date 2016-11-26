@@ -151,8 +151,6 @@ namespace type_safe
             bounded(U&& upper)
             : Upper(std::forward<U>(upper))
             {
-                static_assert(!lower_is_dynamic && upper_is_dynamic,
-                              "constructor requires dynamic upper bound");
             }
 
             template <typename U, typename UC = UpperConstant, bool req = lower_is_dynamic,
@@ -161,8 +159,14 @@ namespace type_safe
             bounded(U&& lower)
             : Lower(std::forward<U>(lower))
             {
-                static_assert(lower_is_dynamic && !upper_is_dynamic,
-                              "constructor requires dynamic lower bound");
+            }
+
+            /// \exclude
+            template <typename U, bool req = lower_is_dynamic!=upper_is_dynamic,
+                      typename = typename std::enable_if<!req>::type>
+            bounded(U&&)
+            {
+                static_assert(req,"one-argument constructors require a dynamic and static bound");
             }
 
             template <typename U1, typename U2,
