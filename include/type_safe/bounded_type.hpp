@@ -112,8 +112,8 @@ namespace type_safe
         /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
         /// A value is valid if it is between two given bounds,
         /// `LowerInclusive`/`UpperInclusive` control whether the lower/upper bound itself is valid too.
-        /// `LowerConstant`/`UpperConstant` control whether the lower/upper bound is specified statically or dinamically.
-        /// When one is `dynamic_bound`, its bound is specified at run-time. Otherwise, it must match
+        /// `LowerConstant`/`UpperConstant` control whether the lower/upper bound is specified statically or dynamically.
+        /// When one is `dynamic_bound`, its bound is specified at runtime. Otherwise, it must match
         /// the interface and semantics of `std::integral_constant<T>`, in which case its `value` is the bound.
         template <typename T, bool LowerInclusive, bool UpperInclusive,
                   typename LowerConstant = dynamic_bound,
