@@ -20,18 +20,18 @@ namespace type_safe
         {
             // Base to enable empty base optimization when BoundConstant is not dynamic_bound.
             // Neccessary when T is not a class.
-            template <class T>
+            template <typename T>
             struct Wrapper
             {
                 T value;
             };
 
-            template <class BoundConstant>
+            template <typename BoundConstant>
             struct is_dynamic : std::is_same<BoundConstant,dynamic_bound>
             {
             };
 
-            template <class T, class BoundConstant>
+            template <typename T, typename BoundConstant>
             using Base = typename std::conditional<is_dynamic<BoundConstant>::value,
                                                    Wrapper<T>,
                                                    BoundConstant>::type;
