@@ -124,9 +124,6 @@ namespace type_safe
             static constexpr bool lower_is_dynamic = detail::is_dynamic<LowerConstant>::value;
             static constexpr bool upper_is_dynamic = detail::is_dynamic<UpperConstant>::value;
 
-            static_assert(lower_is_dynamic==upper_is_dynamic,
-                          "mixed static and dynamic bounds is unsupported");
-
             using Lower = detail::lower_bound_t<LowerInclusive, T, LowerConstant>;
             using Upper = detail::upper_bound_t<UpperInclusive, T, UpperConstant>;
 
@@ -146,6 +143,26 @@ namespace type_safe
             {
                 static_assert(!lower_is_dynamic && !upper_is_dynamic,
                               "constructor requires static bounds");
+            }
+
+            template <typename U, bool req = upper_is_dynamic, typename LC = LowerConstant,
+                      typename = typename std::enable_if<req &&
+                                    decay_same<typename LC::value_type>::value>::type>
+            bounded(U&& upper)
+            : Upper(std::forward<U>(upper))
+            {
+                static_assert(!lower_is_dynamic && upper_is_dynamic,
+                              "constructor requires dynamic upper bound");
+            }
+
+            template <typename U, typename UC = UpperConstant, bool req = lower_is_dynamic,
+                      typename = typename std::enable_if<req &&
+                                    decay_same<typename UC::value_type>::value>::type>
+            bounded(U&& lower)
+            : Lower(std::forward<U>(lower))
+            {
+                static_assert(lower_is_dynamic && !upper_is_dynamic,
+                              "constructor requires dynamic lower bound");
             }
 
             template <typename U1, typename U2,
