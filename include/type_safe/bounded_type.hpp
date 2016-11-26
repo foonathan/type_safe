@@ -230,7 +230,7 @@ namespace type_safe
                                              typename std::decay<U2>::type>::type;
     } // namespace detail
 
-    /// An alias for [type_safe::constrained_type<T, Constraint, Verifier>]() that uses [type_safe::constraints::bounded<T, LowerInclusive, UpperInclusive>]() as its `Constraint`.
+    /// An alias for [type_safe::constrained_type<T, Constraint, Verifier>]() that uses [type_safe::constraints::bounded<T, LowerInclusive, UpperInclusive, LowerConstant, UpperConstant>]() as its `Constraint`.
     /// \notes This is some type where the values must be in a certain interval.
     template <typename T, bool LowerInclusive, bool UpperInclusive,
               typename LowerConstant = constraints::dynamic_bound,
@@ -239,7 +239,7 @@ namespace type_safe
         constrained_type<T, constraints::bounded<T, LowerInclusive, UpperInclusive,
                                                     LowerConstant, UpperConstant>>;
 
-    /// \returns A [type_safe::bounded_type<T, LowerInclusive, UpperInclusive>]() with the given `value` and lower and upper bounds,
+    /// \returns A [type_safe::bounded_type<T, LowerInclusive, UpperInclusive LowerConstant, UpperConstant>]() with the given `value` and lower and upper bounds,
     /// where those bounds are valid values as well.
     template <typename T, typename U1, typename U2>
     auto make_bounded(T&& value, U1&& lower, U2&& upper)
@@ -253,7 +253,7 @@ namespace type_safe
                                                                                upper)));
     }
 
-    /// \returns A [type_safe::bounded_type<T, LowerInclusive, UpperInclusive>]() with the given `value` and lower and upper bounds,
+    /// \returns A [type_safe::bounded_type<T, LowerInclusive, UpperInclusive LowerConstant, UpperConstant>]() with the given `value` and lower and upper bounds,
     /// where those bounds are not valid values.
     template <typename T, typename U1, typename U2>
     auto make_bounded_exclusive(T&& value, U1&& lower, U2&& upper)
@@ -278,7 +278,7 @@ namespace type_safe
     }
 
     /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that clamps the value to make it valid.
-    /// It must be used together with [type_safe::constraints::less_equal<T>](), [type_safe::constraints::greater_equal<T>]() or [type_safe::constraints::closed_interval<T>]().
+    /// It must be used together with [type_safe::constraints::less_equal<T, BoundConstant>](), [type_safe::constraints::greater_equal<T, BoundConstant>]() or [type_safe::constraints::closed_interval<T>]().
     struct clamping_verifier
     {
         /// \effects If `val` is greater than the bound of `p`,
