@@ -147,7 +147,8 @@ namespace type_safe
 
             template <typename U, bool req = upper_is_dynamic, typename LC = LowerConstant,
                       typename = typename std::enable_if<req &&
-                                    decay_same<typename LC::value_type>::value>::type>
+                                    decay_same<typename LC::value_type>::value>::type,
+                      typename = typename std::enable_if<decay_same<U>::value>::type>
             bounded(U&& upper)
             : Upper(std::forward<U>(upper))
             {
@@ -155,7 +156,8 @@ namespace type_safe
 
             template <typename U, typename UC = UpperConstant, bool req = lower_is_dynamic,
                       typename = typename std::enable_if<req &&
-                                    decay_same<typename UC::value_type>::value>::type>
+                                    decay_same<typename UC::value_type>::value>::type,
+                      typename = typename std::enable_if<decay_same<U>::value>::type>
             bounded(U&& lower)
             : Lower(std::forward<U>(lower))
             {
@@ -163,7 +165,8 @@ namespace type_safe
 
             /// \exclude
             template <typename U, bool req = lower_is_dynamic!=upper_is_dynamic,
-                      typename = typename std::enable_if<!req>::type>
+                      typename = typename std::enable_if<!req>::type,
+                      typename = typename std::enable_if<decay_same<U>::value>::type>
             bounded(U&&)
             {
                 static_assert(req,"one-argument constructors require a dynamic and static bound");
