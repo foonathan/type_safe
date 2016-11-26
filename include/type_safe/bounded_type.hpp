@@ -323,7 +323,7 @@ namespace type_safe
     /// \effects Changes `val` so that it is in the interval.
     /// If it is not in the interval, assigns the bound that is closer to the value.
     template <typename T, typename LowerConstant, typename UpperConstant, typename U>
-    void clamp(const constraints::closed_interval<T,LowerConstant,UpperConstant>& interval, U& val)
+    void clamp(const constraints::closed_interval<T, LowerConstant, UpperConstant>& interval, U& val)
     {
         if (val < interval.get_lower_bound())
             val = static_cast<U>(interval.get_lower_bound());
@@ -332,14 +332,14 @@ namespace type_safe
     }
 
     /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that clamps the value to make it valid.
-    /// It must be used together with [type_safe::constraints::less_equal<T, BoundConstant>](), [type_safe::constraints::greater_equal<T, BoundConstant>]() or [type_safe::constraints::closed_interval<T>]().
+    /// It must be used together with [type_safe::constraints::less_equal<T, BoundConstant>](), [type_safe::constraints::greater_equal<T, BoundConstant>]() or [type_safe::constraints::closed_interval<T, LowerConstant, UpperConstant>]().
     struct clamping_verifier
     {
         /// \effects If `val` is greater than the bound of `p`,
         /// assigns the bound to `val`.
         /// Otherwise does nothing.
         template <typename Value, typename T, typename BoundConstant>
-        static void verify(Value& val, const constraints::less_equal<T,BoundConstant>& p)
+        static void verify(Value& val, const constraints::less_equal<T, BoundConstant>& p)
         {
             if (!p(val))
                 val = static_cast<Value>(p.get_bound());
