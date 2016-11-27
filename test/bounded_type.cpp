@@ -122,6 +122,47 @@ TEST_CASE("constraints::bounded")
     }
 }
 
+TEST_CASE("bounded_type")
+{
+    constrained_type<int, constraints::closed_interval<int>> dynamic_closed =
+        make_bounded(10, 0, 42);
+    static_assert(std::is_same<decltype(dynamic_closed), bounded_type<int, true, true>>::value, "");
+    REQUIRE(dynamic_closed.get_value() == 10);
+    REQUIRE(dynamic_closed.get_constraint().get_lower_bound() == 0);
+    REQUIRE(dynamic_closed.get_constraint().get_upper_bound() == 42);
+
+    constrained_type<int, constraints::open_interval<int>> dynamic_open =
+        make_bounded_exlusive(10, 0, 42);
+    static_assert(std::is_same<decltype(dynamic_open), bounded_type<int, false, false>>::value, "");
+    REQUIRE(dynamic_open.get_value() == 10);
+    REQUIRE(dynamic_open.get_constraint().get_lower_bound() == 0);
+    REQUIRE(dynamic_open.get_constraint().get_upper_bound() == 42);
+
+    constrained_type<int, constraints::closed_interval<int, std::integral_constant<int, 0>,
+                                                       std::integral_constant<int, 42>>>
+        static_closed =
+            make_bounded(10, std::integral_constant<int, 0>{}, std::integral_constant<int, 42>{});
+    static_assert(std::is_same<decltype(static_closed),
+                               bounded_type<int, true, true, std::integral_constant<int, 0>,
+                                            std::integral_constant<int, 42>>>::value,
+                  "");
+    REQUIRE(static_closed.get_value() == 10);
+    REQUIRE(static_closed.get_constraint().get_lower_bound() == 0);
+    REQUIRE(static_closed.get_constraint().get_upper_bound() == 42);
+
+    constrained_type<int, constraints::open_interval<int, std::integral_constant<int, 0>,
+                                                     std::integral_constant<int, 42>>>
+        static_open = make_bounded_exlusive(10, std::integral_constant<int, 0>{},
+                                            std::integral_constant<int, 42>{});
+    static_assert(std::is_same<decltype(static_open),
+                               bounded_type<int, false, false, std::integral_constant<int, 0>,
+                                            std::integral_constant<int, 42>>>::value,
+                  "");
+    REQUIRE(static_open.get_value() == 10);
+    REQUIRE(static_open.get_constraint().get_lower_bound() == 0);
+    REQUIRE(static_open.get_constraint().get_upper_bound() == 42);
+}
+
 TEST_CASE("clamping_verifier")
 {
     SECTION("less_equal")
