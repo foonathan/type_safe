@@ -316,8 +316,8 @@ namespace type_safe
         constrained_type<T, constraints::closed_interval<T, LowerConstant, UpperConstant>,
                          clamping_verifier>;
 
-    /// \returns A [type_safe::clamped_type<T, LowerInclusive, UpperInclusive, LowerConstant, UpperConstant>]() with the given `value` and lower and upper bounds,
-    /// where the bounds are not valid values.
+    /// \returns A [type_safe::clamped_type<T, LowerConstant, UpperConstant>]() with the given `value` and lower and upper bounds,
+    /// where the bounds are valid values.
     /// \notes If this function is passed in dynamic values of the same type as `value`,
     /// it will create a dynamic bound.
     /// Otherwise it must be passed static bounds.
