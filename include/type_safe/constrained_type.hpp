@@ -43,12 +43,19 @@ namespace type_safe
     /// The `Constraint` is checked by the `Verifier`.
     /// The `Constraint` can also provide a nested template `is_valid<T>` to statically check types.
     /// Those will be checked regardless of the `Verifier`.
-    /// \requires `T` must not be a reference, `Constraint` must be a functor of type `bool(const T&)`
+    /// \requires `T` must not be a reference, `Constraint` must be a moveable, non-final class where no operation throws,
     /// and `Verifier` must provide a `static` function `void verify([const] T&, const Predicate&)`.
+    /// \notes Additional requirements of the `Constraint` depend on the `Verifier` used.
+    /// If not stated otherwise, a `Verifier` in this library requires
+    /// that the `Constraint` is a `Predicate` for `T`.
     template <typename T, typename Constraint, typename Verifier = assertion_verifier>
     class constrained_type : Constraint
     {
         static_assert(!std::is_reference<T>::value, "T must not be a reference");
+
+        using nothrow_verifier =
+            std::integral_constant<bool, noexcept(Verifier::verify(std::declval<T&>(),
+                                                                   std::declval<Constraint&>()))>;
 
     public:
         using value_type           = typename std::remove_cv<T>::type;
@@ -56,7 +63,8 @@ namespace type_safe
 
         /// \effects Creates it giving it a valid `value` and a `predicate`.
         /// The `value` will be copied and verified.
-        /// \throws Anything thrown by the copy constructor of `value_type`.
+        /// \throws Anything thrown by the copy constructor of `value_type`
+        /// or the `Verifier` if the `value` is invalid.
         explicit constrained_type(const value_type& value, constraint_predicate predicate = {})
         : Constraint(std::move(predicate)), value_(value)
         {
@@ -65,10 +73,10 @@ namespace type_safe
 
         /// \effects Creates it giving it a valid `value` and a `predicate`.
         /// The `value` will be moved and verified.
-        /// \throws Anything thrown by the the move constructor of `value_type`.
+        /// \throws Anything thrown by the the move constructor of `value_type`
+        /// or the `Verifier` if the `value` is invalid.
         explicit constrained_type(value_type&& value, constraint_predicate predicate = {}) noexcept(
-            std::is_nothrow_constructible<value_type>::value&& noexcept(
-                std::declval<constrained_type>().verify()))
+            std::is_nothrow_constructible<value_type>::value&& nothrow_verifier::value)
         : Constraint(std::move(predicate)), value_(std::move(value))
         {
             verify();
@@ -91,7 +99,8 @@ namespace type_safe
 
         /// \effects Copy assigns the stored value to the valid value `other`.
         /// It will also verify the new value prior to assigning.
-        /// \throws Anything thrown by the copy assignment operator of `value_type`.
+        /// \throws Anything thrown by the copy assignment operator of `value_type`,
+        /// or the `Verifier` if the `value` is invalid.
         constrained_type& operator=(const value_type& other)
         {
             Verifier::verify(other, get_constraint());
@@ -101,10 +110,10 @@ namespace type_safe
 
         /// \effects Move assigns the stored value to the valid value `other`.
         /// It will also verify the new value prior to assigning.
-        /// \throws Anything thrown by the move assignment operator of `value_type`.
+        /// \throws Anything thrown by the move assignment operator of `value_type`
+        /// or the `Verifier` if the `value` is invalid.
         constrained_type& operator=(value_type&& other) noexcept(
-            std::is_nothrow_move_assignable<value_type>::value&& noexcept(
-                std::declval<constrained_type>().verify()))
+            std::is_nothrow_move_assignable<value_type>::value&& nothrow_verifier::value)
         {
             Verifier::verify(other, get_constraint());
             value_ = std::move(other);
@@ -118,6 +127,7 @@ namespace type_safe
 
         /// \effects Copies the value and predicate from `other`.
         /// \throws Anything thrown by the copy assignment operator of `value_type`.
+        /// \requires `Constraint` must be copyable.
         constrained_type& operator=(const constrained_type& other)
         {
             constrained_type tmp(other);
@@ -127,6 +137,7 @@ namespace type_safe
 
         /// \effects Swaps the value and predicate of a `a` and `b`.
         /// \throws Anything thrown by the swap function of `value_type`.
+        /// \requires `Constraint` must be swappable.
         friend void swap(constrained_type& a, constrained_type& b) noexcept(
             detail::is_nothrow_swappable<value_type>::value)
         {
@@ -215,8 +226,7 @@ namespace type_safe
         }
 
     private:
-        void verify() noexcept(noexcept(Verifier::verify(std::declval<value_type&>(),
-                                                         std::declval<constraint_predicate>())))
+        void verify() noexcept(nothrow_verifier::value)
         {
             Verifier::verify(value_, get_constraint());
         }
@@ -261,6 +271,7 @@ namespace type_safe
     }
 
     /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that doesn't check the constraint.
+    /// \notes It does not impose any additional requirements on the `Predicate`.
     struct null_verifier
     {
         template <typename Value, typename Predicate>
