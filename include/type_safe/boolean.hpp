@@ -7,6 +7,7 @@
 
 #include <iosfwd>
 #include <type_traits>
+#include <utility>
 
 #include <type_safe/detail/force_inline.hpp>
 
@@ -124,6 +125,44 @@ namespace type_safe
     {
         return out << static_cast<bool>(b);
     }
+
+//=== comparison functors ===//
+/// \exclude
+#define TYPE_SAFE_DETAIL_MAKE_PREDICATE(Name, Op)                                                  \
+    struct Name                                                                                    \
+    {                                                                                              \
+        using is_transparent = int;                                                                \
+                                                                                                   \
+        template <typename T1, typename T2>                                                        \
+        constexpr bool operator()(T1&& a, T2&& b) noexcept(noexcept(std::forward<T1>(a)            \
+                                                                        Op std::forward<T2>(b)))   \
+        {                                                                                          \
+            return static_cast<bool>(std::forward<T1>(a) Op std::forward<T2>(b));                  \
+        }                                                                                          \
+    };
+
+    /// Comparison functor similar to the `std::` version,
+    /// but explictly casts the result of the comparison to `bool`.
+    ///
+    /// This allows using types where the comparison operator returns [type_safe::boolean](),
+    /// as it can not be implictly converted to `bool`
+    /// so, for example, [std::less]() can not be used.
+    /// \notes These comparison functors are always transparent,
+    /// i.e. can be used with two different types.
+    /// \group comparison_functors
+    TYPE_SAFE_DETAIL_MAKE_PREDICATE(equal_to, ==)
+    /// \group comparison_functors
+    TYPE_SAFE_DETAIL_MAKE_PREDICATE(not_equal_to, !=)
+    /// \group comparison_functors
+    TYPE_SAFE_DETAIL_MAKE_PREDICATE(less, <)
+    /// \group comparison_functors
+    TYPE_SAFE_DETAIL_MAKE_PREDICATE(less_equal, <=)
+    /// \group comparison_functors
+    TYPE_SAFE_DETAIL_MAKE_PREDICATE(greater, >)
+    /// \group comparison_functors
+    TYPE_SAFE_DETAIL_MAKE_PREDICATE(greater_equal, >=)
+
+#undef TYPE_SAFE_DETAIL_MAKE_PREDICATE
 } // namespace type_safe
 
 #endif // TYPE_SAFE_BOOLEAN_HPP_INCLUDED
