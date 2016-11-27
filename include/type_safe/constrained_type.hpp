@@ -14,6 +14,7 @@
 
 namespace type_safe
 {
+    //=== verifiers ===//
     /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that `DEBUG_ASSERT`s the constraint.
     struct assertion_verifier
     {
@@ -24,6 +25,7 @@ namespace type_safe
         }
     };
 
+    //=== constrained_type ===//
     /// \exclude
     namespace detail
     {
@@ -241,6 +243,33 @@ namespace type_safe
         value_type value_;
     };
 
+/// \exclude
+#define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
+    template <typename T, typename Constraint, class Verifier>                                     \
+    auto operator Op(const constrained_type<T, Constraint, Verifier>& lhs,                         \
+                     const constrained_type<T, Constraint, Verifier>&                              \
+                         rhs) noexcept(noexcept(lhs.get_value() < rhs.get_value()))                \
+        ->decltype(lhs.get_value() < rhs.get_value())                                              \
+    {                                                                                              \
+        return lhs.get_value() Op rhs.get_value();                                                 \
+    }
+
+    /// \returns The result of the comparison of the underlying value.
+    /// \group constrained_comp
+    TYPE_SAFE_DETAIL_MAKE_OP(==)
+    /// \group constrained_comp
+    TYPE_SAFE_DETAIL_MAKE_OP(!=)
+    /// \group constrained_comp
+    TYPE_SAFE_DETAIL_MAKE_OP(<)
+    /// \group constrained_comp
+    TYPE_SAFE_DETAIL_MAKE_OP(<=)
+    /// \group constrained_comp
+    TYPE_SAFE_DETAIL_MAKE_OP(>)
+    /// \group constrained_comp
+    TYPE_SAFE_DETAIL_MAKE_OP(>=)
+
+#undef TYPE_SAFE_DETAIL_MAKE_OP
+
     /// \returns A [type_safe::constrained_type<T, Constraint, Verifier>]() with the given `value` and `Constraint`.
     template <typename T, typename Constraint>
     auto constrain(T&& value, Constraint c)
@@ -270,6 +299,7 @@ namespace type_safe
         std::forward<Func>(f)(modifier.get());
     }
 
+    //=== tagged_type ===//
     /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that doesn't check the constraint.
     /// \notes It does not impose any additional requirements on the `Predicate`.
     struct null_verifier
@@ -299,6 +329,7 @@ namespace type_safe
                                                                      std::move(c));
     }
 
+    //=== constraints ===//
     namespace constraints
     {
         /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
