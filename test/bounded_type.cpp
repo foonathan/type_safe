@@ -234,3 +234,39 @@ TEST_CASE("clamping_verifier")
         REQUIRE(f == 0);
     }
 }
+
+TEST_CASE("clamped_type")
+{
+    int value;
+    SECTION("no_clamping")
+    {
+        value = 10;
+    }
+    SECTION("clamping_lower")
+    {
+        value = -42;
+    }
+    SECTION("clamping_upper")
+    {
+        value = 100;
+    }
+
+    clamped_type<int> dynamic = make_clamped(value, 0, 42);
+
+    auto clamped_val = value;
+    clamp(dynamic.get_constraint(), clamped_val);
+    REQUIRE(dynamic.get_value() == clamped_val);
+
+    REQUIRE(dynamic.get_constraint().get_lower_bound() == 0);
+    REQUIRE(dynamic.get_constraint().get_upper_bound() == 42);
+
+    clamped_type<int, std::integral_constant<int, 0>, std::integral_constant<int, 42>> static_ =
+        make_clamped(value, std::integral_constant<int, 0>{}, std::integral_constant<int, 42>{});
+
+    clamped_val = value;
+    clamp(static_.get_constraint(), clamped_val);
+    REQUIRE(static_.get_value() == clamped_val);
+
+    REQUIRE(static_.get_constraint().get_lower_bound() == 0);
+    REQUIRE(static_.get_constraint().get_upper_bound() == 42);
+}
