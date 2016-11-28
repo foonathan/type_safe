@@ -49,6 +49,11 @@ namespace type_safe
         static constexpr bool is_dynamic = detail::is_dynamic<BoundConstant>::value;               \
                                                                                                    \
     public:                                                                                        \
+        explicit Name()                                                                            \
+        {                                                                                          \
+            static_assert(!is_dynamic, "constructor requires static bound");                       \
+        }                                                                                          \
+                                                                                                   \
         explicit Name(BoundConstant)                                                               \
         {                                                                                          \
             static_assert(!is_dynamic, "constructor requires static bound");                       \
@@ -143,8 +148,14 @@ namespace type_safe
             using decay_same = std::is_same<typename std::decay<U>::type, T>;
 
         public:
+            bounded()
+            {
+                static_assert(!lower_is_dynamic && !upper_is_dynamic,
+                              "default constructor requires static bounds");
+            }
+
             template <typename U1, typename U2>
-            bounded(U1&& lower, U2&& upper)
+            explicit bounded(U1&& lower, U2&& upper)
             : Lower(std::forward<U1>(lower)), Upper(std::forward<U2>(upper))
             {
             }
@@ -182,11 +193,16 @@ namespace type_safe
     /// \exclude
     namespace detail
     {
+        template <typename T>
+        struct valid_bound : std::integral_constant<bool, true || T::value>
+        {
+        };
+
         template <class Verifier, bool LowerInclusive, bool UpperInclusive, typename T, typename U1,
                   typename U2>
         struct bounded_type_impl
         {
-            static_assert(true || U1::value || U2::value,
+            static_assert(valid_bound<U1>::value && valid_bound<U2>::value,
                           "make_bounded() called with mismatched types");
 
             using value_type     = T;
@@ -205,6 +221,42 @@ namespace type_safe
         {
             using value_type     = T;
             using lower_constant = constraints::dynamic_bound;
+            using upper_constant = constraints::dynamic_bound;
+
+            using type =
+                constrained_type<value_type,
+                                 constraints::bounded<value_type, LowerInclusive, UpperInclusive,
+                                                      lower_constant, upper_constant>,
+                                 Verifier>;
+        };
+
+        template <class Verifier, bool LowerInclusive, bool UpperInclusive, typename T,
+                  typename UpperBound>
+        struct bounded_type_impl<Verifier, LowerInclusive, UpperInclusive, T, T, UpperBound>
+        {
+            static_assert(valid_bound<UpperBound>::value,
+                          "make_bounded() called with mismatched types");
+
+            using value_type     = T;
+            using lower_constant = constraints::dynamic_bound;
+            using upper_constant = UpperBound;
+
+            using type =
+                constrained_type<value_type,
+                                 constraints::bounded<value_type, LowerInclusive, UpperInclusive,
+                                                      lower_constant, upper_constant>,
+                                 Verifier>;
+        };
+
+        template <class Verifier, bool LowerInclusive, bool UpperInclusive, typename T,
+                  typename LowerBound>
+        struct bounded_type_impl<Verifier, LowerInclusive, UpperInclusive, T, LowerBound, T>
+        {
+            static_assert(valid_bound<LowerBound>::value,
+                          "make_bounded() called with mismatched types");
+
+            using value_type     = T;
+            using lower_constant = LowerBound;
             using upper_constant = constraints::dynamic_bound;
 
             using type =
