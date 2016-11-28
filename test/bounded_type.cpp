@@ -132,7 +132,7 @@ TEST_CASE("bounded_type")
     REQUIRE(dynamic_closed.get_constraint().get_upper_bound() == 42);
 
     constrained_type<int, constraints::open_interval<int>> dynamic_open =
-        make_bounded_exlusive(10, 0, 42);
+        make_bounded_exclusive(10, 0, 42);
     static_assert(std::is_same<decltype(dynamic_open), bounded_type<int, false, false>>::value, "");
     REQUIRE(dynamic_open.get_value() == 10);
     REQUIRE(dynamic_open.get_constraint().get_lower_bound() == 0);
@@ -152,8 +152,8 @@ TEST_CASE("bounded_type")
 
     constrained_type<int, constraints::open_interval<int, std::integral_constant<int, 0>,
                                                      std::integral_constant<int, 42>>>
-        static_open = make_bounded_exlusive(10, std::integral_constant<int, 0>{},
-                                            std::integral_constant<int, 42>{});
+        static_open = make_bounded_exclusive(10, std::integral_constant<int, 0>{},
+                                             std::integral_constant<int, 42>{});
     static_assert(std::is_same<decltype(static_open),
                                bounded_type<int, false, false, std::integral_constant<int, 0>,
                                             std::integral_constant<int, 42>>>::value,

@@ -252,7 +252,7 @@ namespace type_safe
     /// it will create a dynamic bound.
     /// Otherwise it must be passed static bounds.
     template <typename T, typename U1, typename U2>
-    auto make_bounded_exlusive(T&& value, U1&& lower, U2&& upper)
+    auto make_bounded_exclusive(T&& value, U1&& lower, U2&& upper)
         -> detail::make_bounded_type<assertion_verifier, false, false, T, U1, U2>
     {
         using result_type = detail::make_bounded_type<assertion_verifier, false, false, T, U1, U2>;
