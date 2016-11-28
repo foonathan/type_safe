@@ -248,8 +248,8 @@ namespace type_safe
     template <typename T, typename Constraint, class Verifier>                                     \
     auto operator Op(const constrained_type<T, Constraint, Verifier>& lhs,                         \
                      const constrained_type<T, Constraint, Verifier>&                              \
-                         rhs) noexcept(noexcept(lhs.get_value() < rhs.get_value()))                \
-        ->decltype(lhs.get_value() < rhs.get_value())                                              \
+                         rhs) noexcept(noexcept(lhs.get_value() Op rhs.get_value()))               \
+        ->decltype(lhs.get_value() Op rhs.get_value())                                             \
     {                                                                                              \
         return lhs.get_value() Op rhs.get_value();                                                 \
     }
