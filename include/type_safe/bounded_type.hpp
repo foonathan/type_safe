@@ -52,16 +52,19 @@ namespace type_safe
     public:                                                                                        \
         template <bool Condition = !is_dynamic,                                                    \
                   typename       = typename std::enable_if<Condition>::type>                       \
-        Name()                                                                                     \
+        Name(BoundConstant = {})                                                                   \
         {                                                                                          \
         }                                                                                          \
                                                                                                    \
-        explicit Name(const arg_type& bound) : base{bound}                                         \
+        template <bool Condition = is_dynamic,                                                     \
+                  typename       = typename std::enable_if<Condition>::type>                       \
+        explicit Name(const T& bound) : base{bound}                                                \
         {                                                                                          \
         }                                                                                          \
                                                                                                    \
-        explicit Name(arg_type&& bound) noexcept(                                                  \
-            is_dynamic || std::is_nothrow_move_constructible<arg_type>::value)                     \
+        template <bool Condition = is_dynamic,                                                     \
+                  typename       = typename std::enable_if<Condition>::type>                       \
+        explicit Name(T&& bound) noexcept(std::is_nothrow_move_constructible<T>::value)            \
         : base{std::move(bound)}                                                                   \
         {                                                                                          \
         }                                                                                          \
