@@ -23,7 +23,7 @@ namespace type_safe
             // Base to enable empty base optimization when BoundConstant is not dynamic_bound.
             // Neccessary when T is not a class.
             template <typename T>
-            struct Wrapper
+            struct wrapper
             {
                 using value_type = T;
                 T value;
@@ -35,39 +35,35 @@ namespace type_safe
             };
 
             template <typename T, typename BoundConstant>
-            using Base = typename std::conditional<is_dynamic<BoundConstant>::value, Wrapper<T>,
+            using base = typename std::conditional<is_dynamic<BoundConstant>::value, wrapper<T>,
                                                    BoundConstant>::type;
         } // detail namespace
 
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE(Name, Op)                                                            \
     template <typename T, typename BoundConstant = dynamic_bound>                                  \
-    class Name : detail::Base<T, BoundConstant>                                                    \
+    class Name : detail::base<T, BoundConstant>                                                    \
     {                                                                                              \
-        using Base = detail::Base<T, BoundConstant>;                                               \
-                                                                                                   \
         static constexpr bool is_dynamic = detail::is_dynamic<BoundConstant>::value;               \
                                                                                                    \
+        using base     = detail::base<T, BoundConstant>;                                           \
+        using arg_type = typename std::conditional<is_dynamic, T, BoundConstant>::type;            \
+                                                                                                   \
     public:                                                                                        \
-        explicit Name()                                                                            \
+        template <bool Condition = !is_dynamic,                                                    \
+                  typename       = typename std::enable_if<Condition>::type>                       \
+        Name()                                                                                     \
         {                                                                                          \
-            static_assert(!is_dynamic, "constructor requires static bound");                       \
         }                                                                                          \
                                                                                                    \
-        explicit Name(BoundConstant)                                                               \
+        explicit Name(const arg_type& bound) : base{bound}                                         \
         {                                                                                          \
-            static_assert(!is_dynamic, "constructor requires static bound");                       \
         }                                                                                          \
                                                                                                    \
-        explicit Name(const T& bound) : Base{bound}                                                \
+        explicit Name(arg_type&& bound) noexcept(                                                  \
+            is_dynamic || std::is_nothrow_move_constructible<arg_type>::value)                     \
+        : base{std::move(bound)}                                                                   \
         {                                                                                          \
-            static_assert(is_dynamic, "constructor requires dynamic bound");                       \
-        }                                                                                          \
-                                                                                                   \
-        explicit Name(T&& bound) noexcept(std::is_nothrow_move_constructible<T>::value)            \
-        : Base{std::move(bound)}                                                                   \
-        {                                                                                          \
-            static_assert(is_dynamic, "constructor requires dynamic bound");                       \
         }                                                                                          \
                                                                                                    \
         template <typename U>                                                                      \
@@ -78,7 +74,7 @@ namespace type_safe
                                                                                                    \
         const T& get_bound() const noexcept                                                        \
         {                                                                                          \
-            return Base::value;                                                                    \
+            return base::value;                                                                    \
         }                                                                                          \
     };
 
@@ -132,14 +128,14 @@ namespace type_safe
             static constexpr bool lower_is_dynamic = detail::is_dynamic<LowerConstant>::value;
             static constexpr bool upper_is_dynamic = detail::is_dynamic<UpperConstant>::value;
 
-            using Lower = detail::lower_bound_t<LowerInclusive, T, LowerConstant>;
-            using Upper = detail::upper_bound_t<UpperInclusive, T, UpperConstant>;
+            using lower_type = detail::lower_bound_t<LowerInclusive, T, LowerConstant>;
+            using upper_type = detail::upper_bound_t<UpperInclusive, T, UpperConstant>;
 
-            const Lower& lower() const noexcept
+            const lower_type& lower() const noexcept
             {
                 return *this;
             }
-            const Upper& upper() const noexcept
+            const upper_type& upper() const noexcept
             {
                 return *this;
             }
@@ -148,15 +144,17 @@ namespace type_safe
             using decay_same = std::is_same<typename std::decay<U>::type, T>;
 
         public:
+            template <bool Condition = !lower_is_dynamic && !upper_is_dynamic,
+                      typename       = typename std::enable_if<Condition>::type>
             bounded()
             {
-                static_assert(!lower_is_dynamic && !upper_is_dynamic,
-                              "default constructor requires static bounds");
             }
 
             template <typename U1, typename U2>
-            explicit bounded(U1&& lower, U2&& upper)
-            : Lower(std::forward<U1>(lower)), Upper(std::forward<U2>(upper))
+            explicit bounded(U1&& lower, U2&& upper,
+                             decltype(lower_type(std::forward<U1>(lower)), 0) = 0,
+                             decltype(upper_type(std::forward<U2>(upper)), 0) = 0)
+            : lower_type(std::forward<U1>(lower)), upper_type(std::forward<U2>(upper))
             {
             }
 
