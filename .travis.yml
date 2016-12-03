@@ -6,16 +6,24 @@ matrix:
       compiler: gcc
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.8']
-      env: TOOLSET=g++-4.8 BUILD_TYPE='Debug'
+          sources: ['ubuntu-toolchain-r-test', 'boost-latest']
+          packages: ['g++-5']
+      env: TOOLSET=g++-5 BUILD_TYPE='Release' BUILD_DOCS=1
+
     - os: linux
       compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.8']
-      env: TOOLSET=g++-4.8 BUILD_TYPE='Release'
+      env: TOOLSET=g++-4.8 BUILD_TYPE='Debug' BUILD_DOCS=0
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.8']
+      env: TOOLSET=g++-4.8 BUILD_TYPE='Release' BUILD_DOCS=0
 
     - os: linux
       compiler: gcc
@@ -23,21 +31,29 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
-      env: TOOLSET=g++-5 BUILD_TYPE='Debug'
+      env: TOOLSET=g++-5 BUILD_TYPE='Debug' BUILD_DOCS=0
     - os: linux
       compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
-      env: TOOLSET=g++-5 BUILD_TYPE='Release'
+      env: TOOLSET=g++-5 BUILD_TYPE='Release' BUILD_DOCS=0
 
     - os: osx
       compiler: clang
-      env: TOOLSET=clang++ BUILD_TYPE='Debug'
+      env: TOOLSET=clang++ BUILD_TYPE='Debug' BUILD_DOCS=0
     - os: osx
       compiler: clang
-      env: TOOLSET=clang++ BUILD_TYPE='Release'
+      env: TOOLSET=clang++ BUILD_TYPE='Release' BUILD_DOCS=0
+
+env:
+  global:
+    - GIT_NAME: Travis CI
+    - GIT_EMAIL: jonathanmueller.dev@gmail.com
+    - GITHUB_REPO: foonathan/foonathan.github.io
+    - GIT_SOURCE: doc/type_safe
+    - GIT_BRANCH: master
 
 install:
   - cd ../
@@ -54,10 +70,18 @@ install:
   - $CXX --version
   - $CMAKE --version
 
+  - if [[ $BUILD_DOCS ]]; then wget https://raw.githubusercontent.com/foonathan/standardese/travis_get_standardese.sh; fi
+  - if [[ $BUILD_DOCS ]]; then STANDARDESE_TAG=v0.3-1 . travis_get_standardese.sh; fi
+
   - cd type_safe/
 
 script:
   - mkdir build/ && cd build/
-  - $CMAKE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-Wall -Wextra -pedantic -Wno-parentheses" -DTYPE_SAFE_BUILD_TEST_EXAMPLE=ON ../
+  - $CMAKE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-Wall -Wextra -pedantic -Wno-parentheses" -DTYPE_SAFE_BUILD_TEST_EXAMPLE=ON -DTYPE_SAFE_BUILD_DOC=$BUILD_DOCS -DTYPE_SAFE_STANDARDESE_DOWNLOAD_DIRECTORY=../standardese/ ../
   - $CMAKE --build .
   - ./test/type_safe_test
+
+after_success:
+  - if [[ $BUILD_DOCS ]]; then $CMAKE --build . --target=standardese_type_safe; fi
+  - if [[ $BUILD_DOCS ]]; then mv doc/standardese_type_safe doc/type_safe/; fi
+  - if [[ $BUILD_DOCS ]] &&  [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then npm install git-update-ghpages && ./node_modules/.bin/git-update-ghpages -e; fi

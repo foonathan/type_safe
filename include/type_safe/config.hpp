@@ -38,4 +38,7 @@
 #define TYPE_SAFE_RVALUE_REF
 #endif
 
+/// \entity type_safe
+/// \unique_name ts
+
 #endif // TYPE_SAFE_CONFIG_HPP_INCLUDED

@@ -17,13 +17,13 @@ namespace type_safe
     ///
     /// This is useful if you have a type that is default constructible,
     /// but can't be initialized properly - yet.
-    /// It works especially well with [type_safe::output_parameter<T>]().
+    /// It works especially well with [ts::output_parameter]().
     ///
     /// It has two states:
     /// Either it is *intialized* in which case you can get its value,
     /// or it is *un-initialized* in which case you cannot get its value.
     /// All objects start out un-initialized.
-    /// For consistency with [type_safe::basic_optional<T>]() it provides a similar interface,
+    /// For consistency with [ts::basic_optional]() it provides a similar interface,
     /// yet it is not as flexible and does not allow to reset it to the uninitialized state,
     /// once initialized.
     ///
@@ -87,6 +87,7 @@ namespace type_safe
         /// \requires `value_type` must be constructible from `U`.
         /// \notes You must not use this function to actually "assign" the value,
         /// like `emplace()`, the object must not be initialized.
+        /// \synopsis template \<typename U\>\ndeferred_construction& operator=(U&& u);
         template <typename U>
         auto operator=(U&& u) ->
             typename std::enable_if<std::is_constructible<T, decltype(std::forward<U>(u))>::value,

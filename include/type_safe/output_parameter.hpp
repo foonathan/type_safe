@@ -26,7 +26,7 @@ namespace type_safe
     /// If you use this class as your output parameter type,
     /// you do not have these disadvantages.
     /// The creation is explicit, you cannot read the value,
-    /// and it works with [type_safe::deferred_construction<T>]().
+    /// and it works with [ts::deferred_construction]().
     ///
     /// \notes While you could use this class in other locations besides paramaters,
     /// this is not recommended.
@@ -48,7 +48,7 @@ namespace type_safe
         output_parameter(T&&)       = delete;
         output_parameter(const T&&) = delete;
 
-        /// \effects Creates it from a [type_safe::deferred_construction<T>()] object.
+        /// \effects Creates it from a [ts::deferred_construction]() object.
         /// All output will be assigned or created in the storage of the defer construction object,
         /// depending on wheter it is initialized.
         /// \requires The referred object must live as long as the function has not returned.
@@ -75,8 +75,8 @@ namespace type_safe
         /// \notes This constructor is only there because guaranteed copy elision isn't available
         /// and otherwise the `out()` function could not be implemented.
         /// It is not intended to use it otherwise.
-        output_parameter(output_parameter&& other) noexcept : ptr_(other.ptr_),
-                                                              is_normal_ptr_(other.is_normal_ptr_)
+        output_parameter(output_parameter&& other) noexcept
+        : ptr_(other.ptr_), is_normal_ptr_(other.is_normal_ptr_)
         {
             other.ptr_ = nullptr;
         }
@@ -124,9 +124,8 @@ namespace type_safe
 
     private:
         template <typename U>
-        auto assign_impl(U&& u) ->
-            typename std::enable_if<std::is_assignable<T&,
-                                                       decltype(std::forward<U>(u))>::value>::type
+        auto assign_impl(U&& u) -> typename std::
+            enable_if<std::is_assignable<T&, decltype(std::forward<U>(u))>::value>::type
         {
             *static_cast<T*>(ptr_) = std::forward<U>(u);
         }
@@ -141,14 +140,14 @@ namespace type_safe
         bool  is_normal_ptr_;
     };
 
-    /// \returns A new [type_safe::output_parameter<T>]() using the reference `obj` as output.
+    /// \returns A new [ts::output_parameter]() using the reference `obj` as output.
     template <typename T>
     output_parameter<T> out(T& obj) noexcept
     {
         return output_parameter<T>(obj);
     }
 
-    /// \returns A new [type_safe::output_parameter<T>]() using the [type_safe::deferred_construction<T>]() as output.
+    /// \returns A new [ts::output_parameter]() using the [ts::deferred_construction]() as output.
     template <typename T>
     output_parameter<T> out(deferred_construction<T>& o) noexcept
     {

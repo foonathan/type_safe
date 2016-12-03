@@ -12,6 +12,7 @@ namespace type_safe
 {
     class flag;
 
+    /// \exclude
     template <typename T, typename = detail::enable_boolean<T>>
     constexpr bool operator==(flag lhs, T rhs) noexcept;
 
@@ -37,7 +38,7 @@ namespace type_safe
     ///
     /// With flag, it is better:
     /// ```cpp
-    /// ts::flag was_newl(false);
+    /// type_safe::flag was_newl(false);
     /// for (auto x : …)
     /// {
     ///      if (x == '\n')
@@ -52,7 +53,9 @@ namespace type_safe
         flag() = delete;
 
         /// \effects Gives the flag the intial state.
-        /// \requires `T` must be a boolean-like type.
+        /// \notes This function does not participate in overload resolution if `T` is not a boolean type.
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_boolean<T>>
         constexpr flag(T initial_state) noexcept : state_(static_cast<bool>(initial_state))
         {
@@ -69,6 +72,8 @@ namespace type_safe
 
         /// \effects Sets its state to the new one.
         /// \requires The new state must be different than the old one.
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_boolean<T>>
         void change(T new_state) noexcept
         {
@@ -117,34 +122,54 @@ namespace type_safe
         friend constexpr bool operator==(flag lhs, T rhs) noexcept;
     };
 
+    /// \returns `true` if (1) both [ts::flag]() objects are in the same state,
+    /// (2)/(3) the flag is in the given state.
+    /// \notes (2)/(3) do not participate in overload resolution unless `T` is a boolean type.
+    /// \group flag_equal
     constexpr bool operator==(flag lhs, flag rhs) noexcept
     {
         return lhs.state_ == rhs.state_;
     }
 
+    /// \group flag_equal
+    /// \param 1
+    /// \exclude
     template <typename T, typename>
     constexpr bool operator==(flag lhs, T rhs) noexcept
     {
         return lhs.state_ == static_cast<bool>(rhs);
     }
 
+    /// \group flag_equal
+    /// \param 1
+    /// \exclude
     template <typename T, typename = detail::enable_boolean<T>>
     constexpr bool operator==(T lhs, flag rhs) noexcept
     {
         return rhs == lhs;
     }
 
+    /// \returns `true` if (1) both [ts::flag]() objects are in the same state,
+    /// (2)/(3) the flag is in the given state.
+    /// \notes (2)/(3) do not participate in overload resolution unless `T` is a boolean type.
+    /// \group flag_unequal
     constexpr bool operator!=(flag lhs, flag rhs) noexcept
     {
         return !(lhs == rhs);
     }
 
+    /// \group flag_unequal
+    /// \param 1
+    /// \exclude
     template <typename T, typename = detail::enable_boolean<T>>
     constexpr bool operator!=(flag lhs, T rhs) noexcept
     {
         return !(lhs == rhs);
     }
 
+    /// \group flag_unequal
+    /// \param 1
+    /// \exclude
     template <typename T, typename = detail::enable_boolean<T>>
     constexpr bool operator!=(T lhs, flag rhs) noexcept
     {

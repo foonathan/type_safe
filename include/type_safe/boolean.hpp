@@ -47,11 +47,19 @@ namespace type_safe
     public:
         boolean() = delete;
 
+        /// \effects Creates a boolean from the given `value`.
+        /// \notes This function does not participate in overload resolution if `T` is not a boolean type.
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_boolean<T>>
         TYPE_SAFE_FORCE_INLINE constexpr boolean(T value) noexcept : value_(value)
         {
         }
 
+        /// \effects Assigns the given `value` to the boolean.
+        /// \notes This function does not participate in overload resolution if `T` is not a boolean type.
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_boolean<T>>
         TYPE_SAFE_FORCE_INLINE boolean& operator=(T value) noexcept
         {
@@ -59,11 +67,13 @@ namespace type_safe
             return *this;
         }
 
+        /// \returns The stored `bool` value.
         TYPE_SAFE_FORCE_INLINE explicit constexpr operator bool() const noexcept
         {
             return value_;
         }
 
+        /// \returns The same as `!static_cast<bool>(*this)`.
         TYPE_SAFE_FORCE_INLINE constexpr boolean operator!() const noexcept
         {
             return boolean(!value_);
@@ -74,34 +84,56 @@ namespace type_safe
     };
 
     //=== comparision ===//
+    /// \returns `true` if (1) both [ts::boolean]() objects have the same value,
+    /// (2)/(3) the boolean has the same value as the given value,
+    /// `false` otherwise.
+    /// \notes (2)/(3) do not participate in overload resolution if `T` is not a boolean type.
+    /// \group boolean_comp_equal
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const boolean& a, const boolean& b) noexcept
     {
         return static_cast<bool>(a) == static_cast<bool>(b);
     }
 
+    /// \group boolean_comp_equal
+    /// \param 1
+    /// \exclude
     template <typename T, typename = detail::enable_boolean<T>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const boolean& a, T b) noexcept
     {
         return static_cast<bool>(a) == static_cast<bool>(b);
     }
 
+    /// \group boolean_comp_equal
+    /// \param 1
+    /// \exclude
     template <typename T, typename = detail::enable_boolean<T>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(T a, const boolean& b) noexcept
     {
         return static_cast<bool>(a) == static_cast<bool>(b);
     }
 
+    /// \returns `false` if (1) both [ts::boolean]() objects have the same value,
+    /// (2)/(3) the boolean has the same value as the given value,
+    /// `true` otherwise.
+    /// \notes (2)/(3) do not participate in overload resolution if `T` is not a boolean type.
+    /// \group boolean_comp_unequal
     TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const boolean& a, const boolean& b) noexcept
     {
         return static_cast<bool>(a) != static_cast<bool>(b);
     }
 
+    /// \group boolean_comp_unequal
+    /// \param 1
+    /// \exclude
     template <typename T, typename = detail::enable_boolean<T>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const boolean& a, T b) noexcept
     {
         return static_cast<bool>(a) != static_cast<bool>(b);
     }
 
+    /// \group boolean_comp_unequal
+    /// \param 1
+    /// \exclude
     template <typename T, typename = detail::enable_boolean<T>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(T a, const boolean& b) noexcept
     {
@@ -109,6 +141,7 @@ namespace type_safe
     }
 
     //=== input/output ===/
+    /// \effects Reads a `bool` from the [std::istream]() and assigns it to the given [ts::boolean]().
     template <typename Char, class CharTraits>
     std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
                                                      boolean& b)
@@ -119,6 +152,7 @@ namespace type_safe
         return in;
     }
 
+    /// \effects Converts the given [ts::boolean]() to `bool` and writes it to the [std::ostream]().
     template <typename Char, class CharTraits>
     std::basic_ostream<Char, CharTraits>& operator<<(std::basic_ostream<Char, CharTraits>& out,
                                                      const boolean& b)
@@ -141,15 +175,15 @@ namespace type_safe
         }                                                                                          \
     };
 
-    /// Comparison functor similar to the `std::` version,
-    /// but explictly casts the result of the comparison to `bool`.
+    /// Comparison functors similar to the `std::` version,
+    /// but explictly cast the result of the comparison to `bool`.
     ///
-    /// This allows using types where the comparison operator returns [type_safe::boolean](),
+    /// This allows using types where the comparison operator returns [ts::boolean](),
     /// as it can not be implictly converted to `bool`
     /// so, for example, [std::less]() can not be used.
     /// \notes These comparison functors are always transparent,
     /// i.e. can be used with two different types.
-    /// \group comparison_functors
+    /// \group comparison_functors Comparison function objects
     TYPE_SAFE_DETAIL_MAKE_PREDICATE(equal_to, ==)
     /// \group comparison_functors
     TYPE_SAFE_DETAIL_MAKE_PREDICATE(not_equal_to, !=)
