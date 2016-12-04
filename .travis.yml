@@ -70,18 +70,18 @@ install:
   - $CXX --version
   - $CMAKE --version
 
-  - if [[ $BUILD_DOCS ]]; then wget https://raw.githubusercontent.com/foonathan/standardese/travis_get_standardese.sh; fi
-  - if [[ $BUILD_DOCS ]]; then STANDARDESE_TAG=v0.3-1 . travis_get_standardese.sh; fi
+  - if [[ "$BUILD_DOCS" -eq 1 ]]; then wget https://raw.githubusercontent.com/foonathan/standardese/master/travis_get_standardese.sh; fi
+  - if [[ "$BUILD_DOCS" -eq 1 ]]; then STANDARDESE_TAG=v0.3-1 . travis_get_standardese.sh; fi
 
   - cd type_safe/
 
 script:
   - mkdir build/ && cd build/
-  - $CMAKE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-Wall -Wextra -pedantic -Wno-parentheses" -DTYPE_SAFE_BUILD_TEST_EXAMPLE=ON -DTYPE_SAFE_BUILD_DOC=$BUILD_DOCS -DTYPE_SAFE_STANDARDESE_DOWNLOAD_DIRECTORY=../standardese/ ../
+  - $CMAKE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-Wall -Wextra -pedantic -Wno-parentheses" -DTYPE_SAFE_BUILD_TEST_EXAMPLE=ON -DTYPE_SAFE_BUILD_DOC="$BUILD_DOCS" -DTYPE_SAFE_STANDARDESE_DOWNLOAD_DIRECTORY=../../standardese/ ../
   - $CMAKE --build .
   - ./test/type_safe_test
 
 after_success:
-  - if [[ $BUILD_DOCS ]]; then $CMAKE --build . --target=standardese_type_safe; fi
-  - if [[ $BUILD_DOCS ]]; then mv doc/standardese_type_safe doc/type_safe/; fi
-  - if [[ $BUILD_DOCS ]] &&  [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then npm install git-update-ghpages && ./node_modules/.bin/git-update-ghpages -e; fi
+  - if [[ "$BUILD_DOCS" -eq 1 ]]; then $CMAKE --build . --target=standardese_type_safe; fi
+  - if [[ "$BUILD_DOCS" -eq 1 ]]; then mv doc/standardese_type_safe doc/type_safe/; fi
+  - if [[ "$BUILD_DOCS" -eq 1 ]] &&  [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then npm install git-update-ghpages && ./node_modules/.bin/git-update-ghpages -e; fi
