@@ -205,7 +205,7 @@ TEST_CASE("strong_typedef")
         REQUIRE(static_cast<int>(+a) == 2);
         REQUIRE(static_cast<int>(-a) == -2);
     }
-    SECTION("dereference")
+    SECTION("dereference pointer")
     {
         struct test
         {
@@ -220,6 +220,23 @@ TEST_CASE("strong_typedef")
         type a(&t);
         REQUIRE((*a).a == 0);
         REQUIRE(a->a == 0);
+    }
+    SECTION("dereference value to forward methods")
+    {
+        struct test
+        {
+            test() {}
+            int run() { return 0; }
+        } t;
+
+        struct type : strong_typedef<type, test>, strong_typedef_op::dereference<type, test>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+        type a(t);
+        REQUIRE(a->run() == 0);
+        REQUIRE((*a).run() == 0);
     }
     SECTION("array subscript")
     {

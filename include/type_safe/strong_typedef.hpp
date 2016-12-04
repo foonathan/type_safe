@@ -362,26 +362,43 @@ namespace type_safe
         {
             Result& operator*()
             {
-                using type = underlying_type<StrongTypedef>;
-                return *static_cast<type&>(static_cast<StrongTypedef&>(*this));
+                return *deref_impl(get(static_cast<StrongTypedef&>(*this)));
             }
 
             const Result& operator*() const
             {
-                using type = underlying_type<StrongTypedef>;
-                return *static_cast<const type&>(static_cast<const StrongTypedef&>(*this));
+                return *deref_impl(get(static_cast<StrongTypedef const&>(*this)));
             }
 
             ResultPtr operator->()
             {
-                using type = underlying_type<StrongTypedef>;
-                return static_cast<type&>(static_cast<StrongTypedef&>(*this));
+                return deref_impl(get(static_cast<StrongTypedef&>(*this)));
             }
 
             ResultConstPtr operator->() const
             {
-                using type = underlying_type<StrongTypedef>;
-                return static_cast<const type&>(static_cast<const StrongTypedef&>(*this));
+                return deref_impl(get(static_cast<StrongTypedef const&>(*this)));
+            }
+
+        private:
+            ResultPtr deref_impl(ResultPtr r)
+            {
+                return r;
+            }
+
+            ResultConstPtr deref_impl(ResultConstPtr r)
+            {
+                return r;
+            }
+
+            ResultPtr deref_impl(Result& r)
+            {
+                return &r;
+            }
+
+            ResultConstPtr deref_impl(Result const& r)
+            {
+                return &r;
             }
         };
 
