@@ -10,6 +10,7 @@
 
 namespace type_safe
 {
+    /// \exclude
     namespace detail
     {
         template <typename T, class Policy>
@@ -63,6 +64,8 @@ namespace type_safe
     /// \returns An arithmetic type with the same value as in `source`,
     /// but converted to to a different type.
     /// \requires The value of `source` must be representable by the new target type.
+    /// \param 2
+    /// \exclude
     template <typename Target, typename Source,
               typename = typename std::enable_if<std::is_arithmetic<Source>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr Target narrow_cast(const Source& source) noexcept
@@ -73,7 +76,7 @@ namespace type_safe
                    static_cast<Target>(source);
     }
 
-    /// \returns A [type_safe::integer]() with the same value as `source` but of a different type.
+    /// \returns A [ts::integer]() with the same value as `source` but of a different type.
     /// \requires The value of `source` must be representable by the new target type.
     /// \notes `Target` can either be a specialization of the `integer` template itself
     /// or a built-in integer type, the result will be wrapped if needed.
@@ -87,7 +90,7 @@ namespace type_safe
         return narrow_cast<target_t>(static_cast<Source>(source));
     }
 
-    /// \returns A [type_safe::floating_point]() with the same value as `source` but of a different type.
+    /// \returns A [ts::floating_point]() with the same value as `source` but of a different type.
     /// \requires The value of `source` must be representable by the new target type.
     /// \notes `Target` can either be a specialization of the `floating_point` template itself
     /// or a built-in floating point type, the result will be wrapped if needed.

@@ -105,23 +105,40 @@ namespace type_safe
         using integer_type = IntegerT;
 
         //=== constructors ===//
+        /// \exclude
         integer() = delete;
 
+        /// \effects Initializes it with the given value.
+        /// \notes This function does not participate in overload resolution
+        /// if `T` is not an integer type safely convertible to this type.
+        /// \group constructor
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE constexpr integer(const T& val) : value_(val)
         {
         }
 
+        /// \group constructor
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE constexpr integer(const integer<T, Policy>& val)
         : value_(static_cast<T>(val))
         {
         }
 
+        /// \exclude
         template <typename T, typename = detail::fallback_safe_integer_conversion<T, integer_type>>
         constexpr integer(T) = delete;
 
         //=== assignment ===//
+        /// \effects Initializes it with the given value.
+        /// \notes This function does not participate in overload resolution
+        /// if `T` is not an integer type safely convertible to this type.
+        /// \group assignment
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE integer& operator=(const T& val)
         {
@@ -129,6 +146,9 @@ namespace type_safe
             return *this;
         }
 
+        /// \group assignment
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE integer& operator=(const integer<T, Policy>& val)
         {
@@ -136,26 +156,33 @@ namespace type_safe
             return *this;
         }
 
+        /// \exclude
         template <typename T, typename = detail::fallback_safe_integer_conversion<T, integer_type>>
         integer& operator=(T) = delete;
 
         //=== conversion back ===//
+        /// \returns The stored value as the native integer type.
+        /// \group conversion
         TYPE_SAFE_FORCE_INLINE explicit constexpr operator integer_type() const noexcept
         {
             return value_;
         }
 
+        /// \group conversion
         TYPE_SAFE_FORCE_INLINE constexpr integer_type get() const noexcept
         {
             return value_;
         }
 
         //=== unary operators ===//
+        /// \returns The integer type unchanged.
         TYPE_SAFE_FORCE_INLINE constexpr integer operator+() const
         {
             return *this;
         }
 
+        /// \returns The negative integer type.
+        /// \requires The integer type must not be unsigned.
         TYPE_SAFE_FORCE_INLINE constexpr integer operator-() const
         {
             static_assert(std::is_signed<integer_type>::value,
@@ -163,12 +190,15 @@ namespace type_safe
             return -value_;
         }
 
+        /// \effects Increments the integer by one.
+        /// \group increment
         TYPE_SAFE_FORCE_INLINE integer& operator++()
         {
             value_ = Policy::template do_addition(value_, integer_type(1));
             return *this;
         }
 
+        /// \group increment
         TYPE_SAFE_FORCE_INLINE integer operator++(int)
         {
             auto res = *this;
@@ -176,12 +206,15 @@ namespace type_safe
             return res;
         }
 
+        /// \effects Decrements the integer by one.
+        /// \group decrement
         TYPE_SAFE_FORCE_INLINE integer& operator--()
         {
             value_ = Policy::template do_subtraction(value_, integer_type(1));
             return *this;
         }
 
+        /// \group decrement
         TYPE_SAFE_FORCE_INLINE integer operator--(int)
         {
             auto res = *this;
@@ -190,17 +223,29 @@ namespace type_safe
         }
 
 //=== compound assignment ====//
+/// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
+    /** \group compound_assign
+     * \param 1
+     * \exclude */                                  \
     template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>      \
     TYPE_SAFE_FORCE_INLINE integer& operator Op(const T& other)                                    \
     {                                                                                              \
         return *this Op integer<T, Policy>(other);                                                 \
     }                                                                                              \
+    /** \exclude */                                                                                \
     template <typename T, typename = detail::fallback_safe_integer_conversion<T, integer_type>>    \
     integer& operator Op(integer<T, Policy>) = delete;                                             \
+    /** \exclude */                                                                                \
     template <typename T, typename = detail::fallback_safe_integer_conversion<T, integer_type>>    \
     integer& operator Op(T) = delete;
 
+        /// \effects Same as the operation on the integer type.
+        /// \notes These functions do not participate in overload resolution,
+        /// if `T` is not an integer type safely convertible to this type.
+        /// \group compound_assign Compound assignment
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE integer& operator+=(const integer<T, Policy>& other)
         {
@@ -209,6 +254,9 @@ namespace type_safe
         }
         TYPE_SAFE_DETAIL_MAKE_OP(+=)
 
+        /// \group compound_assign
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE integer& operator-=(const integer<T, Policy>& other)
         {
@@ -218,6 +266,9 @@ namespace type_safe
         }
         TYPE_SAFE_DETAIL_MAKE_OP(-=)
 
+        /// \group compound_assign
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE integer& operator*=(const integer<T, Policy>& other)
         {
@@ -226,6 +277,9 @@ namespace type_safe
         }
         TYPE_SAFE_DETAIL_MAKE_OP(*=)
 
+        /// \group compound_assign
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE integer& operator/=(const integer<T, Policy>& other)
         {
@@ -234,6 +288,9 @@ namespace type_safe
         }
         TYPE_SAFE_DETAIL_MAKE_OP(/=)
 
+        /// \group compound_assign
+        /// \param 1
+        /// \exclude
         template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
         TYPE_SAFE_FORCE_INLINE integer& operator%=(const integer<T, Policy>& other)
         {
@@ -277,12 +334,14 @@ namespace type_safe
         };
     } // namespace detail
 
-    /// [std::make_signed]() for [type_safe::integer]().
+    /// [std::make_signed]() for [ts::integer]().
     template <class Integer>
     using make_signed_t = typename detail::make_signed<Integer>::type;
 
     /// \returns A new integer of the corresponding signed integer type.
     /// \requires The value of `i` must fit into signed type.
+    /// \param 1
+    /// \exclude
     template <typename Integer,
               typename = typename std::enable_if<detail::is_integer<Integer>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr make_signed_t<Integer> make_signed(const Integer& i)
@@ -296,7 +355,7 @@ namespace type_safe
                     result_type());
     }
 
-    /// \returns A new [type_safe::integer]() of the corresponding signed integer type.
+    /// \returns A new [ts::integer]() of the corresponding signed integer type.
     /// \requires The value of `i` must fit into signed type.
     template <typename Integer, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr make_signed_t<integer<Integer, Policy>> make_signed(
@@ -305,12 +364,14 @@ namespace type_safe
         return make_signed(static_cast<Integer>(i));
     }
 
-    /// [std::make_unsigned]() for [type_safe::integer]().
+    /// [std::make_unsigned]() for [ts::integer]().
     template <class Integer>
     using make_unsigned_t = typename detail::make_unsigned<Integer>::type;
 
     /// \returns A new integer of the corresponding unsigned integer type.
     /// \requires The value of `i` must not be negative.
+    /// \param 1
+    /// \exclude
     template <typename Integer,
               typename = typename std::enable_if<detail::is_integer<Integer>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<Integer> make_unsigned(const Integer& i)
@@ -322,7 +383,7 @@ namespace type_safe
                     result_type(0));
     }
 
-    /// \returns A new [type_safe::integer]() of the corresponding unsigned integer type.
+    /// \returns A new [ts::integer]() of the corresponding unsigned integer type.
     /// \requires The value of `i` must not be negative.
     template <typename Integer, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<integer<Integer, Policy>> make_unsigned(
@@ -333,6 +394,8 @@ namespace type_safe
 
     /// \returns The absolute value of a built-in signed integer.
     /// It will be changed to the unsigned return type as well.
+    /// \param 1
+    /// \exclude
     template <typename SignedInteger,
               typename = typename std::enable_if<std::is_signed<SignedInteger>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<SignedInteger> abs(const SignedInteger& i)
@@ -340,7 +403,9 @@ namespace type_safe
         return make_unsigned(i > 0 ? i : -1);
     }
 
-    /// \returns The absolute value of an [type_safe::integer]().
+    /// \returns The absolute value of an [ts::integer]().
+    /// \param 1
+    /// \exclude
     template <typename SignedInteger, class Policy,
               typename = typename std::enable_if<std::is_signed<SignedInteger>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<integer<SignedInteger, Policy>> abs(
@@ -351,6 +416,8 @@ namespace type_safe
 
     /// \returns `i` unchanged.
     /// \notes This is an optimization of `abs()` for unsigned integer types.
+    /// \param 1
+    /// \exclude
     template <typename UnsignedInteger,
               typename = typename std::enable_if<std::is_unsigned<UnsignedInteger>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr UnsignedInteger abs(const UnsignedInteger& i)
@@ -360,6 +427,8 @@ namespace type_safe
 
     /// \returns `i` unchanged.
     /// \notes This is an optimization of `abs()` for unsigned integer types.
+    /// \param 1
+    /// \exclude
     template <typename UnsignedInteger, class Policy,
               typename = typename std::enable_if<std::is_unsigned<UnsignedInteger>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr integer<UnsignedInteger, Policy> abs(
@@ -368,30 +437,46 @@ namespace type_safe
         return i;
     }
 
-//=== comparision ===//
+//=== comparison ===//
+/// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
+    /** \group int_comp
+     * \param 3
+     * \exclude */                                         \
     template <typename A, typename B, class Policy,                                                \
               typename = detail::enable_safe_integer_conversion<A, B>>                             \
     TYPE_SAFE_FORCE_INLINE constexpr bool operator Op(const A& a, const integer<B, Policy>& b)     \
     {                                                                                              \
         return integer<A, Policy>(a) Op b;                                                         \
     }                                                                                              \
+    /** \group int_comp
+     * \param 3
+     * \exclude */                                         \
     template <typename A, class Policy, typename B,                                                \
               typename = detail::enable_safe_integer_conversion<A, B>>                             \
     TYPE_SAFE_FORCE_INLINE constexpr bool operator Op(const integer<A, Policy>& a, const B& b)     \
     {                                                                                              \
         return a Op integer<B, Policy>(b);                                                         \
     }                                                                                              \
+    /** \exclude */                                                                                \
     template <typename A, class Policy, typename B,                                                \
               typename = detail::fallback_safe_integer_comparision<A, B>>                          \
     constexpr bool operator Op(integer<A, Policy>, integer<B, Policy>) = delete;                   \
+    /** \exclude */                                                                                \
     template <typename A, typename B, class Policy,                                                \
               typename = detail::fallback_safe_integer_comparision<A, B>>                          \
     constexpr bool operator Op(A, integer<B, Policy>) = delete;                                    \
+    /** \exclude */                                                                                \
     template <typename A, class Policy, typename B,                                                \
               typename = detail::fallback_safe_integer_comparision<A, B>>                          \
     constexpr bool operator Op(integer<A, Policy>, B) = delete;
 
+    /// \returns The result of the comparison of the stored integer value in the [ts::integer]().
+    /// \notes These functions do not participate in overload resolution
+    /// unless `A` and `B` are both integer types.
+    /// \group int_comp Comparison operators
+    /// \param 3
+    /// \exclude
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const integer<A, Policy>& a,
@@ -401,6 +486,9 @@ namespace type_safe
     }
     TYPE_SAFE_DETAIL_MAKE_OP(==)
 
+    /// \group int_comp Comparison operators
+    /// \param 3
+    /// \exclude
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const integer<A, Policy>& a,
@@ -410,6 +498,9 @@ namespace type_safe
     }
     TYPE_SAFE_DETAIL_MAKE_OP(!=)
 
+    /// \group int_comp Comparison operators
+    /// \param 3
+    /// \exclude
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator<(const integer<A, Policy>& a,
@@ -419,6 +510,9 @@ namespace type_safe
     }
     TYPE_SAFE_DETAIL_MAKE_OP(<)
 
+    /// \group int_comp Comparison operators
+    /// \param 3
+    /// \exclude
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator<=(const integer<A, Policy>& a,
@@ -428,6 +522,9 @@ namespace type_safe
     }
     TYPE_SAFE_DETAIL_MAKE_OP(<=)
 
+    /// \group int_comp Comparison operators
+    /// \param 3
+    /// \exclude
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator>(const integer<A, Policy>& a,
@@ -437,6 +534,9 @@ namespace type_safe
     }
     TYPE_SAFE_DETAIL_MAKE_OP(>)
 
+    /// \group int_comp Comparison operators
+    /// \param 3
+    /// \exclude
     template <typename A, typename B, class Policy,
               typename = detail::enable_safe_integer_comparision<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator>=(const integer<A, Policy>& a,
@@ -449,29 +549,41 @@ namespace type_safe
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
 //=== binary operations ===//
+/// \entity TYPE_SAFE_DETAIL_MAKE_OP
+/// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
+    /** \group int_binary_op */                                                                    \
     template <typename A, typename B, class Policy>                                                \
     TYPE_SAFE_FORCE_INLINE constexpr auto operator Op(const A& a, const integer<B, Policy>& b)     \
         ->integer<detail::integer_result_t<A, B>, Policy>                                          \
     {                                                                                              \
         return integer<A, Policy>(a) Op b;                                                         \
     }                                                                                              \
+    /** \group int_binary_op */                                                                    \
     template <typename A, class Policy, typename B>                                                \
     TYPE_SAFE_FORCE_INLINE constexpr auto operator Op(const integer<A, Policy>& a, const B& b)     \
         ->integer<detail::integer_result_t<A, B>, Policy>                                          \
     {                                                                                              \
         return a Op integer<B, Policy>(b);                                                         \
     }                                                                                              \
+    /** \exclude */                                                                                \
     template <typename A, typename B, class Policy,                                                \
               typename = detail::fallback_integer_result<A, B>>                                    \
     constexpr int operator Op(integer<A, Policy>, integer<B, Policy>) = delete;                    \
+    /** \exclude */                                                                                \
     template <typename A, typename B, class Policy,                                                \
               typename = detail::fallback_integer_result<A, B>>                                    \
     constexpr int operator Op(A, integer<B, Policy>) = delete;                                     \
+    /** \exclude */                                                                                \
     template <typename A, class Policy, typename B,                                                \
               typename = detail::fallback_integer_result<A, B>>                                    \
     constexpr int operator Op(integer<A, Policy>, B) = delete;
 
+    /// \returns The result of the binary operation of the stored integer value in the [ts::integer]().
+    /// The type is a [ts::integer]() of the bigger integer type.
+    /// \notes These functions do not participate in overload resolution,
+    /// unless `A` and `B` are both integer types.
+    /// \group int_binary_op Binary operations
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator+(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -482,6 +594,7 @@ namespace type_safe
     }
     TYPE_SAFE_DETAIL_MAKE_OP(+)
 
+    /// \group int_binary_op
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator-(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -492,6 +605,7 @@ namespace type_safe
     }
     TYPE_SAFE_DETAIL_MAKE_OP(-)
 
+    /// \group int_binary_op
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator*(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -502,6 +616,7 @@ namespace type_safe
     }
     TYPE_SAFE_DETAIL_MAKE_OP(*)
 
+    /// \group int_binary_op
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator/(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -512,6 +627,7 @@ namespace type_safe
     }
     TYPE_SAFE_DETAIL_MAKE_OP(/)
 
+    /// \group int_binary_op
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator%(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -525,6 +641,7 @@ namespace type_safe
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
     //=== input/output ===/
+    /// \effects Reads an integer from the [std::istream]() and assigns it to the given [ts::integer]().
     template <typename Char, class CharTraits, typename IntegerT, class Policy>
     std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
                                                      integer<IntegerT, Policy>& i)
@@ -535,6 +652,7 @@ namespace type_safe
         return in;
     }
 
+    /// \effects Converts the given [ts::integer]() to the underlying integer type and writes it to th [std::ostream]().
     template <typename Char, class CharTraits, typename IntegerT, class Policy>
     std::basic_ostream<Char, CharTraits>& operator<<(std::basic_ostream<Char, CharTraits>& out,
                                                      const integer<IntegerT, Policy>& i)

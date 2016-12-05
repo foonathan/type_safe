@@ -6,6 +6,7 @@
 #define TYPE_SAFE_CONFIG_HPP_INCLUDED
 
 #include <cstddef>
+#include <cstdlib>
 
 #ifndef TYPE_SAFE_ENABLE_ASSERTIONS
 #define TYPE_SAFE_ENABLE_ASSERTIONS 1
@@ -37,5 +38,28 @@
 #define TYPE_SAFE_LVALUE_REF
 #define TYPE_SAFE_RVALUE_REF
 #endif
+
+#ifndef TYPE_SAFE_USE_EXCEPTIONS
+
+#if __cpp_exceptions
+#define TYPE_SAFE_USE_EXCEPTIONS 1
+#elif defined(__GNUC__) && defined(__EXCEPTIONS)
+#define TYPE_SAFE_USE_EXCEPTIONS 1
+#elif defined(_MSC_VER) && defined(__CPPUNWIND)
+#define TYPE_SAFE_USE_EXCEPTIONS 1
+#else
+#define TYPE_SAFE_USE_EXCEPTIONS 0
+#endif
+
+#endif
+
+#if TYPE_SAFE_USE_EXCEPTIONS
+#define TYPE_SAFE_THROW(Ex) throw Ex
+#else
+#define TYPE_SAFE_THROW(Ex) (Ex, std::abort())
+#endif
+
+/// \entity type_safe
+/// \unique_name ts
 
 #endif // TYPE_SAFE_CONFIG_HPP_INCLUDED

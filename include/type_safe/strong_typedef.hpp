@@ -225,6 +225,7 @@ namespace type_safe
             }
         };
 
+/// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Name, Op)                                                         \
     template <class StrongTypedef>                                                                 \
     struct Name                                                                                    \

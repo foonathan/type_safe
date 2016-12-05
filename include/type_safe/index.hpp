@@ -13,6 +13,7 @@
 
 namespace type_safe
 {
+    /// \exclude
     namespace detail
     {
 #if TYPE_SAFE_ENABLE_WRAPPER
@@ -24,9 +25,9 @@ namespace type_safe
 #endif
     } // namespace detail
 
-    /// A type modelling the distance between two [type_safe::index_t]() objects.
+    /// A type modelling the distance between two [ts::index_t]() objects.
     ///
-    /// It is a [type_safe::strong_typedef<Tag, T>]() for a `signed` integer type.
+    /// It is a [ts::strong_typedef]() for a `signed` integer type.
     /// It is comparable and you can add and subtract two differences.
     struct distance_t
         : strong_typedef<distance_t, detail::distance_t>,
@@ -49,9 +50,9 @@ namespace type_safe
 
     /// A type modelling an index into an array.
     ///
-    /// It is a [type_safe::strong_typedef<Tag, T>]() for an `unsigned` integer type.
+    /// It is a [ts::strong_typedef]() for an `unsigned` integer type.
     /// It is comparable and you can increment and decrement it,
-    /// as well as adding/subtracing a [type_safe::distance_t]().
+    /// as well as adding/subtracing a [ts::distance_t]().
     /// \notes It has a similar interface to a `RandomAccessIterator`,
     /// but without the dereference functions.
     struct index_t : strong_typedef<index_t, detail::index_t>,
@@ -89,21 +90,20 @@ namespace type_safe
         }
     };
 
-    /// \returns Same as `lhs += rhs`, but does not modify `lhs`,
-    /// returns a copy instead.
+    /// \returns The given [ts::index_t]() advanced by the given [ts::distance_t]().
+    /// \group index_distance_plus
     constexpr index_t operator+(const index_t& lhs, const distance_t& rhs) noexcept
     {
         return index_t(make_unsigned(make_signed(get(lhs)) + get(rhs)));
     }
 
-    /// \returns Same as `rhs + lhs`.
+    /// \group index_distance_plus
     constexpr index_t operator+(const distance_t& lhs, const index_t& rhs) noexcept
     {
         return rhs + lhs;
     }
 
-    /// \returns Same as `lhs -= rhs`, but does not modify `lhs`,
-    /// returns a copy instead.
+    /// \returns The given [ts::index_t]() advanced backwards by the given [ts::distance_t]().
     constexpr index_t operator-(const index_t& lhs, const distance_t& rhs) noexcept
     {
         return index_t(make_unsigned(make_signed(get(lhs)) - get(rhs)));
@@ -117,6 +117,7 @@ namespace type_safe
         return distance_t(make_signed(get(lhs)) - make_signed(get(rhs)));
     }
 
+    /// \exclude
     namespace detail
     {
         struct no_size
@@ -158,7 +159,7 @@ namespace type_safe
         }
     } // namespace detail
 
-    /// \returns The `i`th element of `obj` by invoking its `operator[]` with the index converted to `std::size_t`.
+    /// \returns The `i`th element of `obj` by invoking its `operator[]` with the [ts::index_t]() converted to `std::size_t`.
     /// \requires `index` must be a valid index for `obj`,
     /// i.e. less than the size of `obj`.
     template <typename Indexable>
@@ -171,7 +172,7 @@ namespace type_safe
         return std::forward<Indexable>(obj)[static_cast<std::size_t>(get(index))];
     }
 
-    /// \effects Increments the index by the specified distance.
+    /// \effects Increments the [ts::index_t]() by the specified distance.
     /// If the distance is negative, decrements the index instead.
     /// \notes This is the same as `index += dist` and the equivalent of [std::advance()]().
     void advance(index_t& index, const distance_t& dist)
@@ -179,7 +180,7 @@ namespace type_safe
         index += dist;
     }
 
-    /// \returns The distance between `a` and `b`,
+    /// \returns The distance between two [ts::index_t]() objects,
     /// i.e. how often you'd have to increment `a` to reach `b`.
     /// \notes This is the same as `b - a` and the equivalent of [std::distance()]().
     constexpr distance_t distance(const index_t& a, const index_t& b)
@@ -187,14 +188,14 @@ namespace type_safe
         return b - a;
     }
 
-    /// \returns The index that is `dist` greater than `index`.
+    /// \returns The [ts::index_t]() that is `dist` greater than `index`.
     /// \notes This is the same as `index + dist` and the equivalent of [std::next()]().
     constexpr index_t next(const index_t& index, const distance_t& dist = distance_t(1))
     {
         return index + dist;
     }
 
-    /// \returns The index that is `dist` smaller than `index`.
+    /// \returns The [ts::index_t]() that is `dist` smaller than `index`.
     /// \notes This is the same as `index - dist` and the equivalent of [std::prev()]().
     constexpr index_t prev(const index_t& index, const distance_t& dist = distance_t(1))
     {

@@ -35,11 +35,11 @@ set(detail_header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/force_inline.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/is_nothrow_swappable.hpp)
 set(header_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/config.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/arithmetic_policy.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/boolean.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/bounded_type.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/constrained_type.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/config.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/deferred_construction.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/flag.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/floating_point.hpp
@@ -66,4 +66,9 @@ option(TYPE_SAFE_BUILD_TEST_EXAMPLE "build test and example" OFF)
 if(${TYPE_SAFE_BUILD_TEST_EXAMPLE} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     add_subdirectory(example/)
     add_subdirectory(test/)
+endif()
+
+option(TYPE_SAFE_BUILD_DOC "generate documentation" OFF)
+if(TYPE_SAFE_BUILD_DOC)
+    add_subdirectory(doc/)
 endif()

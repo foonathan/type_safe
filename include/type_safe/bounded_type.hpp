@@ -81,19 +81,19 @@ namespace type_safe
         }                                                                                          \
     };
 
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it is less than some given value.
         TYPE_SAFE_DETAIL_MAKE(less, <)
 
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it is less than or equal to some given value.
         TYPE_SAFE_DETAIL_MAKE(less_equal, <=)
 
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it is greater than some given value.
         TYPE_SAFE_DETAIL_MAKE(greater, >)
 
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it is greater than or equal to some given value.
         TYPE_SAFE_DETAIL_MAKE(greater_equal, >=)
 
@@ -117,7 +117,7 @@ namespace type_safe
         constexpr bool open   = false;
         constexpr bool closed = true;
 
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it is between two given bounds,
         /// `LowerInclusive`/`UpperInclusive` control whether the lower/upper bound itself is valid too.
         /// `LowerConstant`/`UpperConstant` control whether the lower/upper bound is specified statically or dynamically.
@@ -178,13 +178,13 @@ namespace type_safe
             }
         };
 
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it is between two given bounds but not the bounds themselves.
         template <typename T, typename LowerConstant = dynamic_bound,
                   typename UpperConstant = dynamic_bound>
         using open_interval              = bounded<T, open, open, LowerConstant, UpperConstant>;
 
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it is between two given bounds or the bounds themselves.
         template <typename T, typename LowerConstant = dynamic_bound,
                   typename UpperConstant = dynamic_bound>
@@ -275,7 +275,7 @@ namespace type_safe
                                        typename std::decay<U2>::type>::type;
     } // namespace detail
 
-    /// An alias for [type_safe::constrained_type<T, Constraint, Verifier>]() that uses [type_safe::constraints::bounded<T, LowerInclusive, UpperInclusive, LowerConstant, UpperConstant>]() as its `Constraint`.
+    /// An alias for [ts::constrained_type]() that uses [ts::constraints::bounded]() as its `Constraint`.
     /// \notes This is some type where the values must be in a certain interval.
     template <typename T, bool LowerInclusive, bool UpperInclusive,
               typename LowerConstant = constraints::dynamic_bound,
@@ -284,7 +284,7 @@ namespace type_safe
                                                                   LowerConstant, UpperConstant>,
                                           assertion_verifier>;
 
-    /// \returns A [type_safe::bounded_type<T, LowerInclusive, UpperInclusive, LowerConstant, UpperConstant>]() with the given `value` and lower and upper bounds,
+    /// \returns A [ts::bounded_type]() with the given `value` and lower and upper bounds,
     /// where the bounds are valid values as well.
     /// \notes If this function is passed in dynamic values of the same type as `value`,
     /// it will create a dynamic bound.
@@ -299,7 +299,7 @@ namespace type_safe
                                                                       std::forward<U2>(upper)));
     }
 
-    /// \returns A [type_safe::bounded_type<T, LowerInclusive, UpperInclusive, LowerConstant, UpperConstant>]() with the given `value` and lower and upper bounds,
+    /// \returns A [ts::bounded_type]() with the given `value` and lower and upper bounds,
     /// where the bounds are not valid values.
     /// \notes If this function is passed in dynamic values of the same type as `value`,
     /// it will create a dynamic bound.
@@ -326,8 +326,8 @@ namespace type_safe
             val = static_cast<U>(interval.get_upper_bound());
     }
 
-    /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that clamps the value to make it valid.
-    /// It must be used together with [type_safe::constraints::less_equal<T, BoundConstant>](), [type_safe::constraints::greater_equal<T, BoundConstant>]() or [type_safe::constraints::closed_interval<T, LowerConstant, UpperConstant>]().
+    /// A `Verifier` for [ts::constrained_type]() that clamps the value to make it valid.
+    /// It must be used together with [ts::constraints::less_equal](), [ts::constraints::greater_equal]() or [ts::constraints::closed_interval]().
     struct clamping_verifier
     {
         /// \effects If `val` is greater than the bound of `p`,
@@ -360,8 +360,8 @@ namespace type_safe
         }
     };
 
-    /// An alias for [type_safe::constrained_type<T, Constraint, Verifier>]() that uses [type_safe::constraints::closed_interval<T, LowerConstant, UpperConstant>]() as its `Constraint`
-    /// and [type_safe::clamping_verifier]() as its `Verifier`.
+    /// An alias for [ts::constrained_type]() that uses [ts::constraints::closed_interval]() as its `Constraint`
+    /// and [ts::clamping_verifier]() as its `Verifier`.
     /// \notes This is some type where the values are always clamped so that they are in a certain interval.
     template <typename T, typename LowerConstant = constraints::dynamic_bound,
               typename UpperConstant = constraints::dynamic_bound>
@@ -369,7 +369,7 @@ namespace type_safe
         constrained_type<T, constraints::closed_interval<T, LowerConstant, UpperConstant>,
                          clamping_verifier>;
 
-    /// \returns A [type_safe::clamped_type<T, LowerConstant, UpperConstant>]() with the given `value` and lower and upper bounds,
+    /// \returns A [ts::clamped_type]() with the given `value` and lower and upper bounds,
     /// where the bounds are valid values.
     /// \notes If this function is passed in dynamic values of the same type as `value`,
     /// it will create a dynamic bound.

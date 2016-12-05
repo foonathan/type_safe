@@ -15,7 +15,7 @@
 namespace type_safe
 {
     //=== verifiers ===//
-    /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that `DEBUG_ASSERT`s the constraint.
+    /// A `Verifier` for [ts::constrained_type]() that `DEBUG_ASSERT`s the constraint.
     struct assertion_verifier
     {
         template <typename Value, typename Predicate>
@@ -84,6 +84,7 @@ namespace type_safe
             verify();
         }
 
+        /// \exclude
         template <typename U,
                   typename = typename std::enable_if<!detail::is_valid<constraint_predicate,
                                                                        U>::value>::type>
@@ -122,6 +123,7 @@ namespace type_safe
             return *this;
         }
 
+        /// \exclude
         template <typename U,
                   typename = typename std::enable_if<!detail::is_valid<constraint_predicate,
                                                                        U>::value>::type>
@@ -270,7 +272,8 @@ namespace type_safe
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
-    /// \returns A [type_safe::constrained_type<T, Constraint, Verifier>]() with the given `value` and `Constraint`.
+    /// \returns A [ts::constrained_type]() with the given `value` and `Constraint`.
+    /// \unique_name constrain
     template <typename T, typename Constraint>
     auto constrain(T&& value, Constraint c)
         -> constrained_type<typename std::decay<T>::type, Constraint>
@@ -279,7 +282,8 @@ namespace type_safe
                                                                           std::move(c));
     }
 
-    /// \returns A [type_safe::constrained_type<T, Constraint, Verifier>]() with the given `value`,  `Constraint` and `Verifier`.
+    /// \returns A [ts::constrained_type]() with the given `value`,  `Constraint` and `Verifier`.
+    /// \unique_name constrain_verifier
     template <class Verifier, typename T, typename Constraint>
     auto constrain(T&& value, Constraint c)
         -> constrained_type<typename std::decay<T>::type, Constraint, Verifier>
@@ -289,7 +293,7 @@ namespace type_safe
                                                                                     std::move(c));
     }
 
-    /// \effects Calls `f` with a non-`const` reference to the stored value of the [type_safe::constrained_type<T, Constraint, Verifier>]().
+    /// \effects Calls `f` with a non-`const` reference to the stored value of the [ts::constrained_type]().
     /// It checks that `f` does not change the validity of the object.
     /// \notes The same behavior can be accomplished by using the `modify()` member function.
     template <typename T, typename Constraint, class Verifier, typename Func>
@@ -300,7 +304,7 @@ namespace type_safe
     }
 
     //=== tagged_type ===//
-    /// A `Verifier` for [type_safe::constrained_type<T, Constraint, Verifier]() that doesn't check the constraint.
+    /// A `Verifier` for [ts::constrained_type]() that doesn't check the constraint.
     /// \notes It does not impose any additional requirements on the `Predicate`.
     struct null_verifier
     {
@@ -310,18 +314,18 @@ namespace type_safe
         }
     };
 
-    /// An alias for [type_safe::constrained_type<T, Constraint, Verifier>]() that never checks the constraint.
+    /// An alias for [ts::constrained_type]() that never checks the constraint.
     /// It is useful for creating tagged types:
     /// The `Constraint` - which does not need to be a predicate anymore - is a "tag" to differentiate a type in different states.
     /// For example, you could have a "sanitized" value and a "non-sanitized" value
     /// that have different types, so you cannot accidentally mix them.
     /// \notes It is only intended if the `Constrained` cannot be formalized easily and/or is expensive.
-    /// Otherwise [type_safe::constrained_type<T, Constrained, Verifier>]() is recommended
+    /// Otherwise [ts::constrained_type]() is recommended
     /// as it does additional runtime checks in debug mode.
     template <typename T, typename Constraint>
     using tagged_type = constrained_type<T, Constraint, null_verifier>;
 
-    /// \returns A [type_safe::tagged_type<T, Constraint>]() with the given `value` and `Constraint`.
+    /// \returns A [ts::tagged_type]() with the given `value` and `Constraint`.
     template <typename T, typename Constraint>
     auto tag(T&& value, Constraint c) -> tagged_type<typename std::decay<T>::type, Constraint>
     {
@@ -332,7 +336,7 @@ namespace type_safe
     //=== constraints ===//
     namespace constraints
     {
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value of a pointer type is valid if it is not equal to `nullptr`.
         /// This is borrowed from GSL's [non_null](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#a-namess-viewsagslview-views).
         struct non_null
@@ -354,7 +358,7 @@ namespace type_safe
         {
         };
 
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value of a container type is valid if it is not empty.
         /// Empty-ness is determined with either a member or non-member function.
         class non_empty
@@ -380,7 +384,7 @@ namespace type_safe
             }
         };
 
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it not equal to the default constructed value.
         struct non_default
         {
@@ -391,7 +395,7 @@ namespace type_safe
             }
         };
 
-        /// A `Constraint` for the [type_safe::constrained_type<T, Constraint, Verifier>]().
+        /// A `Constraint` for the [ts::constrained_type]().
         /// A value of a pointer-like type is valid if the expression `!value` is `false`.
         struct non_invalid
         {
@@ -402,7 +406,7 @@ namespace type_safe
             }
         };
 
-        /// A `Constraint` for the [type_safe::tagged_type<T, Constraint>]().
+        /// A `Constraint` for the [ts::tagged_type]().
         /// It marks an owning pointer.
         /// It is borrowed from GSL's [non_null](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#a-namess-viewsagslview-views).
         /// \notes This is not actually a predicate.
