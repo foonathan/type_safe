@@ -381,22 +381,22 @@ namespace type_safe
             }
 
         private:
-            ResultPtr deref_impl(ResultPtr r)
+            static ResultPtr deref_impl(ResultPtr r)
             {
                 return r;
             }
 
-            ResultConstPtr deref_impl(ResultConstPtr r)
+            static ResultConstPtr deref_impl(ResultConstPtr r)
             {
                 return r;
             }
 
-            ResultPtr deref_impl(Result& r)
+            static ResultPtr deref_impl(Result& r)
             {
                 return &r;
             }
 
-            ResultConstPtr deref_impl(Result const& r)
+            static ResultConstPtr deref_impl(Result const& r)
             {
                 return &r;
             }
