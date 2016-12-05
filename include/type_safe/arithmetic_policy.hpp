@@ -181,6 +181,8 @@ namespace type_safe
     };
 
     /// An `ArithmeticPolicy` where under/overflow throws an exception.
+    /// \notes If exceptions are not supported,
+    /// this is will assert.
     class checked_arithmetic
     {
     public:
@@ -189,6 +191,9 @@ namespace type_safe
         public:
             error(const char* msg) : std::range_error(msg)
             {
+#if !TYPE_SAFE_USE_EXCEPTIONS
+                DEBUG_UNREACHABLE(detail::assert_handler{}, msg);
+#endif
             }
         };
 
@@ -196,40 +201,40 @@ namespace type_safe
         TYPE_SAFE_FORCE_INLINE static constexpr T do_addition(const T& a, const T& b)
         {
             return detail::will_addition_error(detail::arithmetic_tag_for<T>{}, a, b) ?
-                       throw error("addition will result in overflow") :
-                       a + b;
+                   TYPE_SAFE_THROW(error("addition will result in overflow")),
+                   a : a + b;
         }
 
         template <typename T>
         TYPE_SAFE_FORCE_INLINE static constexpr T do_subtraction(const T& a, const T& b)
         {
             return detail::will_subtraction_error(detail::arithmetic_tag_for<T>{}, a, b) ?
-                       throw error("subtraction will result in underflow") :
-                       a - b;
+                   TYPE_SAFE_THROW(error("subtraction will result in underflow")),
+                   a : a - b;
         }
 
         template <typename T>
         TYPE_SAFE_FORCE_INLINE static constexpr T do_multiplication(const T& a, const T& b)
         {
             return detail::will_multiplication_error(detail::arithmetic_tag_for<T>{}, a, b) ?
-                       throw error("multiplication will result in overflow") :
-                       a * b;
+                   TYPE_SAFE_THROW(error("multiplication will result in overflow")),
+                   a : a * b;
         }
 
         template <typename T>
         TYPE_SAFE_FORCE_INLINE static constexpr T do_division(const T& a, const T& b)
         {
             return detail::will_division_error(detail::arithmetic_tag_for<T>{}, a, b) ?
-                       throw error("division by zero/overflow") :
-                       a / b;
+                   TYPE_SAFE_THROW(error("division by zero/overflow")),
+                   a : a / b;
         }
 
         template <typename T>
         TYPE_SAFE_FORCE_INLINE static constexpr T do_modulo(const T& a, const T& b)
         {
             return detail::will_modulo_error(detail::arithmetic_tag_for<T>{}, a, b) ?
-                       throw error("module by zero") :
-                       a % b;
+                   TYPE_SAFE_THROW(error("modulo by zero")),
+                   a : a % b;
         }
     };
 
