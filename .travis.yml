@@ -49,7 +49,7 @@ matrix:
 
 install:
   - if [[ "$BUILD_DOCS" -eq 1 ]]; then wget https://raw.githubusercontent.com/foonathan/standardese/master/travis_get_standardese.sh; fi
-  - if [[ "$BUILD_DOCS" -eq 1 ]]; then STANDARDESE_TAG=v0.3-1 . travis_get_standardese.sh; fi
+  - if [[ "$BUILD_DOCS" -eq 1 ]]; then LLVM_VERSION=3.9.0 STANDARDESE_TAG=v0.3-1 . travis_get_standardese.sh; fi
 
   - cd ../
 
