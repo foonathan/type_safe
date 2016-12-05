@@ -4,4 +4,4 @@
 
 execute_process(COMMAND git submodule update --init -- external/debug_assert
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_subdirectory(${CMAKE_SOURCE_DIR}/external/debug_assert)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/debug_assert)
