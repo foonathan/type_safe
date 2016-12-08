@@ -68,6 +68,9 @@ namespace type_safe
         using arg_type = typename std::conditional<is_dynamic, T, Bound>::type;                    \
                                                                                                    \
     public:                                                                                        \
+        using value_type = T;                                                                      \
+        using bound_type = Bound;                                                                  \
+                                                                                                   \
         template <bool Condition = !is_dynamic,                                                    \
                   typename       = typename std::enable_if<Condition>::type>                       \
         Name(Bound = {})                                                                           \
@@ -164,6 +167,13 @@ namespace type_safe
             using decay_same = std::is_same<typename std::decay<U>::type, T>;
 
         public:
+            using value_type  = T;
+            using lower_bound = LowerBound;
+            using upper_bound = UpperBound;
+
+            static constexpr auto lower_inclusive = LowerInclusive;
+            static constexpr auto upper_inclusive = UpperInclusive;
+
             template <bool Condition = !lower_is_dynamic && !upper_is_dynamic,
                       typename       = typename std::enable_if<Condition>::type>
             bounded()
