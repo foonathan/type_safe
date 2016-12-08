@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cmath>
+#include <limits>
 
 #include <type_safe/boolean.hpp>
 #include <type_safe/config.hpp>
@@ -16,6 +17,199 @@
 
 namespace type_safe
 {
+    /// \exclude
+    namespace detail
+    {
+        template <typename... Ts>
+        struct conditional_impl;
+
+        template <typename Else>
+        struct conditional_impl<Else>
+        {
+            using type = Else;
+        };
+
+        template <typename Result, typename... Tail>
+        struct conditional_impl<std::true_type, Result, Tail...>
+        {
+            using type = Result;
+        };
+
+        template <typename Result, typename... Tail>
+        struct conditional_impl<std::false_type, Result, Tail...>
+        {
+            using type = typename conditional_impl<Tail...>::type;
+        };
+
+        template <typename... Ts>
+        using conditional = typename conditional_impl<Ts...>::type;
+
+        template <bool Value>
+        using bool_constant = std::integral_constant<bool, Value>;
+
+        struct decimal_digit
+        {
+        };
+        struct lower_hexadecimal_digit
+        {
+        };
+        struct upper_hexadecimal_digit
+        {
+        };
+        struct no_digit
+        {
+        };
+
+        template <char C>
+        using digit_category =
+            conditional<bool_constant<C >= '0' && C <= '9'>, decimal_digit,
+                        bool_constant<C >= 'a' && C <= 'f'>, lower_hexadecimal_digit,
+                        bool_constant<C >= 'A' && C <= 'F'>, upper_hexadecimal_digit, no_digit>;
+
+        template <char C, typename Cat>
+        struct to_digit_impl
+        {
+            static_assert(!std::is_same<Cat, no_digit>::value, "invalid character, expected digit");
+        };
+
+        template <char C>
+        struct to_digit_impl<C, decimal_digit>
+        {
+            static constexpr auto value = static_cast<int>(C) - static_cast<int>('0');
+        };
+
+        template <char C>
+        struct to_digit_impl<C, lower_hexadecimal_digit>
+        {
+            static constexpr auto value = static_cast<int>(C) - static_cast<int>('a') + 10;
+        };
+
+        template <char C>
+        struct to_digit_impl<C, upper_hexadecimal_digit>
+        {
+            static constexpr auto value = static_cast<int>(C) - static_cast<int>('A') + 10;
+        };
+
+        template <typename T, char C>
+        constexpr T to_digit()
+        {
+            return to_digit_impl<C, digit_category<C>>::value;
+        }
+
+        template <char... Digits>
+        struct parse_loop;
+
+        template <>
+        struct parse_loop<>
+        {
+            template <typename T>
+            static constexpr T parse(T, T value)
+            {
+                return value;
+            }
+        };
+
+        template <char Head, char... Tail>
+        struct parse_loop<Head, Tail...>
+        {
+            template <typename T>
+            static constexpr T parse(T base, T value)
+            {
+                return parse_loop<Tail...>::parse(base, value * base + to_digit<T, Head>());
+            }
+        };
+
+        template <char Head, char... Tail, typename T>
+        constexpr T do_parse_loop(T base)
+        {
+            return parse_loop<Tail...>::parse(base, to_digit<T, Head>());
+        }
+
+        template <typename T, char... Digits>
+        struct parse_base
+        {
+            static constexpr T parse()
+            {
+                return do_parse_loop<Digits...>(T(10));
+            }
+        };
+
+        template <typename T, char... Tail>
+        struct parse_base<T, '0', Tail...>
+        {
+            static constexpr T parse()
+            {
+                return do_parse_loop<Tail...>(T(8));
+            }
+        };
+
+        template <typename T, char... Tail>
+        struct parse_base<T, '0', 'x', Tail...>
+        {
+            static constexpr T parse()
+            {
+                return do_parse_loop<Tail...>(T(16));
+            }
+        };
+
+        template <typename T, char... Tail>
+        struct parse_base<T, '0', 'X', Tail...>
+        {
+            static constexpr T parse()
+            {
+                return do_parse_loop<Tail...>(T(16));
+            }
+        };
+
+        template <typename T, char... Tail>
+        struct parse_base<T, '0', 'b', Tail...>
+        {
+            static constexpr T parse()
+            {
+                return do_parse_loop<Tail...>(T(2));
+            }
+        };
+
+        template <typename T, char... Tail>
+        struct parse_base<T, '0', 'B', Tail...>
+        {
+            static constexpr T parse()
+            {
+                return do_parse_loop<Tail...>(T(2));
+            }
+        };
+
+        template <typename T, char... Digits>
+        constexpr T parse()
+        {
+            return parse_base<T, Digits...>::parse();
+        }
+
+        template <typename T, typename U, U Value>
+        constexpr T validate_value()
+        {
+            static_assert(sizeof(T) <= sizeof(U)
+                              && std::is_signed<U>::value == std::is_signed<T>::value,
+                          "mismatched types");
+            static_assert(U(std::numeric_limits<T>::min()) <= Value
+                              && Value <= U(std::numeric_limits<T>::max()),
+                          "integer literal overflow");
+            return static_cast<T>(Value);
+        }
+
+        template <typename T, char... Digits>
+        constexpr T parse_signed()
+        {
+            return validate_value<T, long long, parse<long long, Digits...>()>();
+        }
+
+        template <typename T, char... Digits>
+        constexpr T parse_unsigned()
+        {
+            return validate_value<T, unsigned long long, parse<unsigned long long, Digits...>()>();
+        }
+    } // namespace detail
+
 #if TYPE_SAFE_ENABLE_WRAPPER
 /// \exclude
 #define TYPE_SAFE_DETAIL_WRAP(templ, x) templ<x>
@@ -35,44 +229,52 @@ namespace type_safe
 
     inline namespace literals
     {
-        constexpr int8_t operator"" _i8(unsigned long long val)
+        template <char... Digits>
+        constexpr int8_t operator"" _i8()
         {
-            return int8_t(static_cast<std::int8_t>(val));
+            return int8_t(detail::parse_signed<std::int8_t, Digits...>());
         }
 
-        constexpr int16_t operator"" _i16(unsigned long long val)
+        template <char... Digits>
+        constexpr int16_t operator"" _i16()
         {
-            return int16_t(static_cast<std::int16_t>(val));
+            return int16_t(detail::parse_signed<std::int16_t, Digits...>());
         }
 
-        constexpr int32_t operator"" _i32(unsigned long long val)
+        template <char... Digits>
+        constexpr int32_t operator"" _i32()
         {
-            return int32_t(static_cast<std::int32_t>(val));
+            return int32_t(detail::parse_signed<std::int32_t, Digits...>());
         }
 
-        constexpr int64_t operator"" _i64(unsigned long long val)
+        template <char... Digits>
+        constexpr int64_t operator"" _i64()
         {
-            return int64_t(static_cast<std::int64_t>(val));
+            return int64_t(detail::parse_signed<std::int64_t, Digits...>());
         }
 
-        constexpr uint8_t operator"" _u8(unsigned long long val)
+        template <char... Digits>
+        constexpr uint8_t operator"" _u8()
         {
-            return uint8_t(static_cast<std::uint8_t>(val));
+            return uint8_t(detail::parse_unsigned<std::uint8_t, Digits...>());
         }
 
-        constexpr uint16_t operator"" _u16(unsigned long long val)
+        template <char... Digits>
+        constexpr uint16_t operator"" _u16()
         {
-            return uint16_t(static_cast<std::uint16_t>(val));
+            return uint16_t(detail::parse_unsigned<std::uint16_t, Digits...>());
         }
 
-        constexpr uint32_t operator"" _u32(unsigned long long val)
+        template <char... Digits>
+        constexpr uint32_t operator"" _u32()
         {
-            return uint32_t(static_cast<std::uint32_t>(val));
+            return uint32_t(detail::parse_unsigned<std::uint32_t, Digits...>());
         }
 
-        constexpr uint64_t operator"" _u64(unsigned long long val)
+        template <char... Digits>
+        constexpr uint64_t operator"" _u64()
         {
-            return uint64_t(static_cast<std::uint64_t>(val));
+            return uint64_t(detail::parse_unsigned<std::uint64_t, Digits...>());
         }
     } // namespace literals
 
@@ -108,24 +310,30 @@ namespace type_safe
 
     inline namespace literals
     {
-        constexpr ptrdiff_t operator"" _isize(unsigned long long val)
+        template <char... Digits>
+        constexpr ptrdiff_t operator"" _isize()
         {
-            return ptrdiff_t(static_cast<std::ptrdiff_t>(val));
+            return ptrdiff_t(detail::parse_signed<std::ptrdiff_t, Digits...>());
         }
 
-        constexpr size_t operator"" _usize(unsigned long long val)
+        template <char... Digits>
+        constexpr size_t operator"" _usize()
         {
-            return size_t(static_cast<std::size_t>(val));
+            return size_t(detail::parse_unsigned<std::size_t, Digits...>());
         }
 
-        constexpr int_t operator"" _i(unsigned long long val)
+        template <char... Digits>
+        constexpr int_t operator"" _i()
         {
-            return int_t(static_cast<int>(val));
+            // int is at least 16 bits
+            return int_t(detail::parse_signed<std::int16_t, Digits...>());
         }
 
-        constexpr unsigned_t operator"" _u(unsigned long long val)
+        template <char... Digits>
+        constexpr unsigned_t operator"" _u()
         {
-            return unsigned_t(static_cast<unsigned>(val));
+            // int is at least 16 bits
+            return unsigned_t(detail::parse_unsigned<std::uint16_t, Digits...>());
         }
     } // namespace literalse
 

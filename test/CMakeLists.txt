@@ -32,7 +32,8 @@ set(source_files test.cpp
                  narrow_cast.cpp
                  optional.cpp
                  output_parameter.cpp
-                 strong_typedef.cpp)
+                 strong_typedef.cpp
+                 types.cpp)
 add_executable(type_safe_test ${source_files})
 target_link_libraries(type_safe_test PUBLIC type_safe)
 target_include_directories(type_safe_test PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
