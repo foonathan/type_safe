@@ -20,7 +20,7 @@ namespace type_safe
         /// \exclude
         namespace detail
         {
-            // Base to enable empty base optimization when BoundConstant is not dynamic_bound.
+            // Base to enable empty base optimization when Bound is not dynamic_bound.
             // Neccessary when T is not a class.
             template <typename T>
             struct wrapper
@@ -29,48 +29,48 @@ namespace type_safe
                 T value;
             };
 
-            template <typename BoundConstant>
-            struct is_dynamic : std::is_same<BoundConstant, dynamic_bound>
+            template <typename Bound>
+            struct is_dynamic : std::is_same<Bound, dynamic_bound>
             {
             };
 
-            template <bool Cond, typename T, typename BoundConstant>
+            template <bool Cond, typename T, typename Bound>
             struct select_bound;
 
-            template <typename T, typename BoundConstant>
-            struct select_bound<true, T, BoundConstant>
+            template <typename T, typename Bound>
+            struct select_bound<true, T, Bound>
             {
                 using type = wrapper<T>;
             };
 
-            template <typename T, typename BoundConstant>
-            struct select_bound<false, T, BoundConstant>
+            template <typename T, typename Bound>
+            struct select_bound<false, T, Bound>
             {
-                static_assert(std::is_convertible<T, typename std::decay<decltype(
-                                                         BoundConstant::value)>::type>::value,
-                              "static bound has wrong type");
-                using type = BoundConstant;
+                static_assert(
+                    std::is_convertible<T,
+                                        typename std::decay<decltype(Bound::value)>::type>::value,
+                    "static bound has wrong type");
+                using type = Bound;
             };
 
-            template <typename T, typename BoundConstant>
-            using base =
-                typename select_bound<is_dynamic<BoundConstant>::value, T, BoundConstant>::type;
+            template <typename T, typename Bound>
+            using base = typename select_bound<is_dynamic<Bound>::value, T, Bound>::type;
         } // detail namespace
 
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE(Name, Op)                                                            \
-    template <typename T, typename BoundConstant = dynamic_bound>                                  \
-    class Name : detail::base<T, BoundConstant>                                                    \
+    template <typename T, typename Bound = dynamic_bound>                                          \
+    class Name : detail::base<T, Bound>                                                            \
     {                                                                                              \
-        static constexpr bool is_dynamic = detail::is_dynamic<BoundConstant>::value;               \
+        static constexpr bool is_dynamic = detail::is_dynamic<Bound>::value;                       \
                                                                                                    \
-        using base     = detail::base<T, BoundConstant>;                                           \
-        using arg_type = typename std::conditional<is_dynamic, T, BoundConstant>::type;            \
+        using base     = detail::base<T, Bound>;                                                   \
+        using arg_type = typename std::conditional<is_dynamic, T, Bound>::type;                    \
                                                                                                    \
     public:                                                                                        \
         template <bool Condition = !is_dynamic,                                                    \
                   typename       = typename std::enable_if<Condition>::type>                       \
-        Name(BoundConstant = {})                                                                   \
+        Name(Bound = {})                                                                           \
         {                                                                                          \
         }                                                                                          \
                                                                                                    \
@@ -121,15 +121,14 @@ namespace type_safe
         namespace detail
         {
             // checks that that the value is less than the upper bound
-            template <bool Inclusive, typename T, typename BoundConstant>
-            using upper_bound_t = typename std::conditional<Inclusive, less_equal<T, BoundConstant>,
-                                                            less<T, BoundConstant>>::type;
+            template <bool Inclusive, typename T, typename Bound>
+            using upper_bound_t =
+                typename std::conditional<Inclusive, less_equal<T, Bound>, less<T, Bound>>::type;
 
             // checks that the value is greater than the lower bound
-            template <bool Inclusive, typename T, typename BoundConstant>
-            using lower_bound_t =
-                typename std::conditional<Inclusive, greater_equal<T, BoundConstant>,
-                                          greater<T, BoundConstant>>::type;
+            template <bool Inclusive, typename T, typename Bound>
+            using lower_bound_t = typename std::conditional<Inclusive, greater_equal<T, Bound>,
+                                                            greater<T, Bound>>::type;
         } // namespace detail
 
         constexpr bool open   = false;
@@ -138,19 +137,19 @@ namespace type_safe
         /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it is between two given bounds,
         /// `LowerInclusive`/`UpperInclusive` control whether the lower/upper bound itself is valid too.
-        /// `LowerConstant`/`UpperConstant` control whether the lower/upper bound is specified statically or dynamically.
+        /// `LowerBound`/`UpperBound` control whether the lower/upper bound is specified statically or dynamically.
         /// When one is `dynamic_bound`, its bound is specified at runtime. Otherwise, it must match
         /// the interface and semantics of `std::integral_constant<T>`, in which case its `value` is the bound.
         template <typename T, bool LowerInclusive, bool UpperInclusive,
-                  typename LowerConstant = dynamic_bound, typename UpperConstant = dynamic_bound>
-        class bounded : detail::lower_bound_t<LowerInclusive, T, LowerConstant>,
-                        detail::upper_bound_t<UpperInclusive, T, UpperConstant>
+                  typename LowerBound = dynamic_bound, typename UpperBound = dynamic_bound>
+        class bounded : detail::lower_bound_t<LowerInclusive, T, LowerBound>,
+                        detail::upper_bound_t<UpperInclusive, T, UpperBound>
         {
-            static constexpr bool lower_is_dynamic = detail::is_dynamic<LowerConstant>::value;
-            static constexpr bool upper_is_dynamic = detail::is_dynamic<UpperConstant>::value;
+            static constexpr bool lower_is_dynamic = detail::is_dynamic<LowerBound>::value;
+            static constexpr bool upper_is_dynamic = detail::is_dynamic<UpperBound>::value;
 
-            using lower_type = detail::lower_bound_t<LowerInclusive, T, LowerConstant>;
-            using upper_type = detail::upper_bound_t<UpperInclusive, T, UpperConstant>;
+            using lower_type = detail::lower_bound_t<LowerInclusive, T, LowerBound>;
+            using upper_type = detail::upper_bound_t<UpperInclusive, T, UpperBound>;
 
             const lower_type& lower() const noexcept
             {
@@ -198,15 +197,15 @@ namespace type_safe
 
         /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it is between two given bounds but not the bounds themselves.
-        template <typename T, typename LowerConstant = dynamic_bound,
-                  typename UpperConstant = dynamic_bound>
-        using open_interval              = bounded<T, open, open, LowerConstant, UpperConstant>;
+        template <typename T, typename LowerBound = dynamic_bound,
+                  typename UpperBound = dynamic_bound>
+        using open_interval           = bounded<T, open, open, LowerBound, UpperBound>;
 
         /// A `Constraint` for the [ts::constrained_type]().
         /// A value is valid if it is between two given bounds or the bounds themselves.
-        template <typename T, typename LowerConstant = dynamic_bound,
-                  typename UpperConstant = dynamic_bound>
-        using closed_interval            = bounded<T, closed, closed, LowerConstant, UpperConstant>;
+        template <typename T, typename LowerBound = dynamic_bound,
+                  typename UpperBound = dynamic_bound>
+        using closed_interval         = bounded<T, closed, closed, LowerBound, UpperBound>;
     } // namespace constraints
 
     /// \exclude
@@ -296,10 +295,10 @@ namespace type_safe
     /// An alias for [ts::constrained_type]() that uses [ts::constraints::bounded]() as its `Constraint`.
     /// \notes This is some type where the values must be in a certain interval.
     template <typename T, bool LowerInclusive, bool UpperInclusive,
-              typename LowerConstant = constraints::dynamic_bound,
-              typename UpperConstant = constraints::dynamic_bound>
+              typename LowerBound = constraints::dynamic_bound,
+              typename UpperBound = constraints::dynamic_bound>
     using bounded_type = constrained_type<T, constraints::bounded<T, LowerInclusive, UpperInclusive,
-                                                                  LowerConstant, UpperConstant>,
+                                                                  LowerBound, UpperBound>,
                                           assertion_verifier>;
 
     /// \returns A [ts::bounded_type]() with the given `value` and lower and upper bounds,
@@ -334,9 +333,8 @@ namespace type_safe
 
     /// \effects Changes `val` so that it is in the interval.
     /// If it is not in the interval, assigns the bound that is closer to the value.
-    template <typename T, typename LowerConstant, typename UpperConstant, typename U>
-    void clamp(const constraints::closed_interval<T, LowerConstant, UpperConstant>& interval,
-               U& val)
+    template <typename T, typename LowerBound, typename UpperBound, typename U>
+    void clamp(const constraints::closed_interval<T, LowerBound, UpperBound>& interval, U& val)
     {
         if (val < interval.get_lower_bound())
             val = static_cast<U>(interval.get_lower_bound());
@@ -351,8 +349,8 @@ namespace type_safe
         /// \effects If `val` is greater than the bound of `p`,
         /// assigns the bound to `val`.
         /// Otherwise does nothing.
-        template <typename Value, typename T, typename BoundConstant>
-        static void verify(Value& val, const constraints::less_equal<T, BoundConstant>& p)
+        template <typename Value, typename T, typename Bound>
+        static void verify(Value& val, const constraints::less_equal<T, Bound>& p)
         {
             if (!p(val))
                 val = static_cast<Value>(p.get_bound());
@@ -361,18 +359,17 @@ namespace type_safe
         /// \effects If `val` is less than the bound of `p`,
         /// assigns the bound to `val`.
         /// Otherwise does nothing.
-        template <typename Value, typename T, typename BoundConstant>
-        static void verify(Value& val, const constraints::greater_equal<T, BoundConstant>& p)
+        template <typename Value, typename T, typename Bound>
+        static void verify(Value& val, const constraints::greater_equal<T, Bound>& p)
         {
             if (!p(val))
                 val = static_cast<Value>(p.get_bound());
         }
 
         /// \effects Same as `clamp(interval, val)`.
-        template <typename Value, typename T, typename LowerConstant, typename UpperConstant>
-        static void verify(
-            Value& val,
-            const constraints::closed_interval<T, LowerConstant, UpperConstant>& interval)
+        template <typename Value, typename T, typename LowerBound, typename UpperBound>
+        static void verify(Value& val,
+                           const constraints::closed_interval<T, LowerBound, UpperBound>& interval)
         {
             clamp(interval, val);
         }
@@ -381,10 +378,10 @@ namespace type_safe
     /// An alias for [ts::constrained_type]() that uses [ts::constraints::closed_interval]() as its `Constraint`
     /// and [ts::clamping_verifier]() as its `Verifier`.
     /// \notes This is some type where the values are always clamped so that they are in a certain interval.
-    template <typename T, typename LowerConstant = constraints::dynamic_bound,
-              typename UpperConstant = constraints::dynamic_bound>
+    template <typename T, typename LowerBound = constraints::dynamic_bound,
+              typename UpperBound = constraints::dynamic_bound>
     using clamped_type =
-        constrained_type<T, constraints::closed_interval<T, LowerConstant, UpperConstant>,
+        constrained_type<T, constraints::closed_interval<T, LowerBound, UpperBound>,
                          clamping_verifier>;
 
     /// \returns A [ts::clamped_type]() with the given `value` and lower and upper bounds,
