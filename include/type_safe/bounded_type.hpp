@@ -47,8 +47,7 @@ namespace type_safe
             struct select_bound<false, T, Bound>
             {
                 static_assert(
-                    std::is_convertible<T,
-                                        typename std::decay<decltype(Bound::value)>::type>::value,
+                    std::is_same<T, typename std::decay<decltype(Bound::value)>::type>::value,
                     "static bound has wrong type");
                 using type = Bound;
             };
