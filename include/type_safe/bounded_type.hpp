@@ -34,9 +34,27 @@ namespace type_safe
             {
             };
 
+            template <bool Cond, typename T, typename BoundConstant>
+            struct select_bound;
+
             template <typename T, typename BoundConstant>
-            using base = typename std::conditional<is_dynamic<BoundConstant>::value, wrapper<T>,
-                                                   BoundConstant>::type;
+            struct select_bound<true, T, BoundConstant>
+            {
+                using type = wrapper<T>;
+            };
+
+            template <typename T, typename BoundConstant>
+            struct select_bound<false, T, BoundConstant>
+            {
+                static_assert(std::is_convertible<T, typename std::decay<decltype(
+                                                         BoundConstant::value)>::type>::value,
+                              "static bound has wrong type");
+                using type = BoundConstant;
+            };
+
+            template <typename T, typename BoundConstant>
+            using base =
+                typename select_bound<is_dynamic<BoundConstant>::value, T, BoundConstant>::type;
         } // detail namespace
 
 /// \exclude
