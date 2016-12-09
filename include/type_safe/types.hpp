@@ -109,6 +109,16 @@ namespace type_safe
             }
         };
 
+        template <char... Tail>
+        struct parse_loop<'\'', Tail...>
+        {
+            template <typename T>
+            static constexpr T parse(T base, T value)
+            {
+                return parse_loop<Tail...>::parse(base, value);
+            }
+        };
+
         template <char Head, char... Tail>
         struct parse_loop<Head, Tail...>
         {
