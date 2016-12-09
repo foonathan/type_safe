@@ -109,7 +109,7 @@ namespace type_safe
         /// \group get_value
         const_lvalue_reference get_value() const TYPE_SAFE_LVALUE_REF noexcept
         {
-            return static_cast<lvalue_reference>(storage_);
+            return static_cast<const_lvalue_reference>(storage_);
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
@@ -122,7 +122,7 @@ namespace type_safe
         /// \group get_value
         const_rvalue_reference get_value() const && noexcept
         {
-            return static_cast<rvalue_reference>(storage_);
+            return static_cast<const_rvalue_reference>(storage_);
         }
 #endif
 
