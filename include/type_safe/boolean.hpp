@@ -168,8 +168,8 @@ namespace type_safe
         using is_transparent = int;                                                                \
                                                                                                    \
         template <typename T1, typename T2>                                                        \
-        constexpr bool operator()(T1&& a, T2&& b) noexcept(noexcept(std::forward<T1>(a)            \
-                                                                        Op std::forward<T2>(b)))   \
+        constexpr bool operator()(T1&& a, T2&& b) const                                            \
+            noexcept(noexcept(std::forward<T1>(a) Op std::forward<T2>(b)))                         \
         {                                                                                          \
             return static_cast<bool>(std::forward<T1>(a) Op std::forward<T2>(b));                  \
         }                                                                                          \
