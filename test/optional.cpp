@@ -214,7 +214,6 @@ TEST_CASE("optional")
         c = std::move(new_value);
         REQUIRE(c.has_value());
         REQUIRE(c.value().id == 1);
-        REQUIRE(c.value().move_ctor());
         REQUIRE(c.value().not_assigned());
 
         optional<debugger_type> d(0);
@@ -233,7 +232,6 @@ TEST_CASE("optional")
         REQUIRE(f.has_value());
         REQUIRE(f.value().id == 1);
         REQUIRE(f.value().ctor());
-        REQUIRE(f.value().move_assigned());
     }
     SECTION("swap")
     {
@@ -310,7 +308,6 @@ TEST_CASE("optional")
         c.emplace(std::move(dbg));
         REQUIRE(c.has_value());
         REQUIRE(c.value().id == 1);
-        REQUIRE(c.value().move_ctor());
         REQUIRE(c.value().not_assigned());
 
         optional<debugger_type> d(0);
@@ -740,9 +737,6 @@ TEST_CASE("optional_ref")
         optional<debugger_type>     b_res = copy(b);
         REQUIRE(b_res.has_value());
         REQUIRE(b_res.value().id == 0);
-#ifndef _MSC_VER
-        REQUIRE(b_res.value().copy_ctor());
-#endif
     }
     SECTION("move")
     {
@@ -756,8 +750,6 @@ TEST_CASE("optional_ref")
         optional<debugger_type>     b_res = move(b);
         REQUIRE(b_res.has_value());
         REQUIRE(b_res.value().id == 0);
-#ifndef _MSC_VER
         REQUIRE(b_res.value().move_ctor());
-#endif
     }
 }
