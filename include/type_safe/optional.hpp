@@ -99,6 +99,27 @@ namespace type_safe
     /// Tag object of type [ts::nullopt_t]().
     constexpr nullopt_t nullopt;
 
+    /// Selects the storage policy used when rebinding a [ts::basic_optional]().
+    ///
+    /// Some operations like [ts::basic_optional::map()]() change the type of an optional.
+    /// This traits controls which `StoragePolicy` is going to be used for the new optional.
+    /// You can for example requests a [ts::compact_optional_storage]() for your type,
+    /// simply specialize it and set a `type` typedef.
+    template <typename T>
+    struct optional_storage_policy_for
+    {
+        using type = void;
+    };
+
+    /// \exclude
+    namespace detail
+    {
+        template <typename TraitsResult, typename Fallback>
+        using select_optional_storage_policy =
+            typename std::conditional<std::is_same<TraitsResult, void>::value, Fallback,
+                                      TraitsResult>::type;
+    }
+
     /// An optional type, i.e. a type that may or may not be there.
     ///
     /// It is similar to [std::optional<T>]() but lacks some functions and provides some others.
@@ -125,7 +146,9 @@ namespace type_safe
         using value_type = typename storage::value_type;
 
         template <typename U>
-        using rebind = basic_optional<typename StoragePolicy::template rebind<U>>;
+        using rebind = basic_optional<detail::select_optional_storage_policy<
+            typename optional_storage_policy_for<U>::type,
+            typename StoragePolicy::template rebind<U>>>;
 
     private:
         storage policy_;
@@ -222,7 +245,7 @@ namespace type_safe
                 std::is_nothrow_move_assignable<value_type>::value)
         {
             if (other.has_value())
-                emplace(std::move(other.value()));
+                emplace(std::move(other).value());
             else
                 reset();
             return *this;
@@ -1021,6 +1044,16 @@ namespace type_safe
 
     private:
         T* pointer_;
+    };
+
+    /// Specialization of [ts::optional_storage_policy_for]() for reference types.
+    ///
+    /// If a [ts::basic_optional]() rebinds to a reference,
+    /// it will use the [ts::reference_optional_storage]() policy.
+    template <typename T>
+    struct optional_storage_policy_for<T&>
+    {
+        using type = reference_optional_storage<T>;
     };
 
     /// A [ts::basic_optional]() that use [ts::reference_optional_storage<T>]().
