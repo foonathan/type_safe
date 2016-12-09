@@ -90,10 +90,12 @@ namespace type_safe
             static constexpr auto value = static_cast<int>(C) - static_cast<int>('A') + 10;
         };
 
-        template <typename T, char C>
+        template <typename T, T Base, char C>
         constexpr T to_digit()
         {
-            return to_digit_impl<C, digit_category<C>>::value;
+            using impl = to_digit_impl<C, digit_category<C>>;
+            static_assert(impl::value < Base, "invalid digit for base");
+            return impl::value;
         }
 
         template <char... Digits>
@@ -102,8 +104,8 @@ namespace type_safe
         template <>
         struct parse_loop<>
         {
-            template <typename T>
-            static constexpr T parse(T, T value)
+            template <typename T, T>
+            static constexpr T parse(T value)
             {
                 return value;
             }
@@ -112,27 +114,28 @@ namespace type_safe
         template <char... Tail>
         struct parse_loop<'\'', Tail...>
         {
-            template <typename T>
-            static constexpr T parse(T base, T value)
+            template <typename T, T Base>
+            static constexpr T parse(T value)
             {
-                return parse_loop<Tail...>::parse(base, value);
+                return parse_loop<Tail...>::template parse<T, Base>(value);
             }
         };
 
         template <char Head, char... Tail>
         struct parse_loop<Head, Tail...>
         {
-            template <typename T>
-            static constexpr T parse(T base, T value)
+            template <typename T, T Base>
+            static constexpr T parse(T value)
             {
-                return parse_loop<Tail...>::parse(base, value * base + to_digit<T, Head>());
+                return parse_loop<Tail...>::template parse<T, Base>(value * Base
+                                                                    + to_digit<T, Base, Head>());
             }
         };
 
-        template <char Head, char... Tail, typename T>
-        constexpr T do_parse_loop(T base)
+        template <typename T, T Base, char Head, char... Tail>
+        constexpr T do_parse_loop()
         {
-            return parse_loop<Tail...>::parse(base, to_digit<T, Head>());
+            return parse_loop<Tail...>::template parse<T, Base>(to_digit<T, Base, Head>());
         }
 
         template <typename T, char... Digits>
@@ -140,7 +143,7 @@ namespace type_safe
         {
             static constexpr T parse()
             {
-                return do_parse_loop<Digits...>(T(10));
+                return do_parse_loop<T, 10, Digits...>();
             }
         };
 
@@ -149,7 +152,7 @@ namespace type_safe
         {
             static constexpr T parse()
             {
-                return do_parse_loop<Tail...>(T(8));
+                return do_parse_loop<T, 8, Tail...>();
             }
         };
 
@@ -158,7 +161,7 @@ namespace type_safe
         {
             static constexpr T parse()
             {
-                return do_parse_loop<Tail...>(T(16));
+                return do_parse_loop<T, 16, Tail...>();
             }
         };
 
@@ -167,7 +170,7 @@ namespace type_safe
         {
             static constexpr T parse()
             {
-                return do_parse_loop<Tail...>(T(16));
+                return do_parse_loop<T, 16, Tail...>();
             }
         };
 
@@ -176,7 +179,7 @@ namespace type_safe
         {
             static constexpr T parse()
             {
-                return do_parse_loop<Tail...>(T(2));
+                return do_parse_loop<T, 2, Tail...>();
             }
         };
 
@@ -185,7 +188,7 @@ namespace type_safe
         {
             static constexpr T parse()
             {
-                return do_parse_loop<Tail...>(T(2));
+                return do_parse_loop<T, 2, Tail...>();
             }
         };
 
