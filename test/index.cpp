@@ -47,7 +47,7 @@ TEST_CASE("index_t")
         REQUIRE(e == index_t(2u));
 
         auto f = distance_t(-3) + d;
-        REQUIRE(e == index_t(2u));
+        REQUIRE(f == index_t(2u));
     }
     SECTION("next")
     {

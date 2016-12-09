@@ -39,6 +39,7 @@ set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/arithmetic_policy.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/boolean.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/bounded_type.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/compact_optional.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/constrained_type.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/deferred_construction.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/flag.hpp

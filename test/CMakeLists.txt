@@ -23,6 +23,7 @@ set(source_files test.cpp
                  arithmetic_policy.cpp
                  boolean.cpp
                  bounded_type.cpp
+                 compact_optional.cpp
                  constrained_type.cpp
                  deferred_construction.cpp
                  flag.cpp
