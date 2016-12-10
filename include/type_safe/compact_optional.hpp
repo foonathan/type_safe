@@ -64,7 +64,6 @@ namespace type_safe
         {
         }
 
-        /// \effects Calls the constructor of `value_type` by perfectly forwarding `args`.
         /// \effects Creates a temporary `value_type` by perfectly forwarding `args`,
         /// converts that to the `storage_type` and assigns it.
         /// Afterwards `has_value()` will return `true`.
