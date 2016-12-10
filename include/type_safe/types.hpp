@@ -231,59 +231,75 @@ namespace type_safe
 #endif
 
     //=== fixed with integer ===//
-    using int8_t   = TYPE_SAFE_DETAIL_WRAP(integer, int8_t);
-    using int16_t  = TYPE_SAFE_DETAIL_WRAP(integer, int16_t);
-    using int32_t  = TYPE_SAFE_DETAIL_WRAP(integer, int32_t);
-    using int64_t  = TYPE_SAFE_DETAIL_WRAP(integer, int64_t);
-    using uint8_t  = TYPE_SAFE_DETAIL_WRAP(integer, uint8_t);
+    /// \module types
+    using int8_t = TYPE_SAFE_DETAIL_WRAP(integer, int8_t);
+    /// \module types
+    using int16_t = TYPE_SAFE_DETAIL_WRAP(integer, int16_t);
+    /// \module types
+    using int32_t = TYPE_SAFE_DETAIL_WRAP(integer, int32_t);
+    /// \module types
+    using int64_t = TYPE_SAFE_DETAIL_WRAP(integer, int64_t);
+    /// \module types
+    using uint8_t = TYPE_SAFE_DETAIL_WRAP(integer, uint8_t);
+    /// \module types
     using uint16_t = TYPE_SAFE_DETAIL_WRAP(integer, uint16_t);
+    /// \module types
     using uint32_t = TYPE_SAFE_DETAIL_WRAP(integer, uint32_t);
+    /// \module types
     using uint64_t = TYPE_SAFE_DETAIL_WRAP(integer, uint64_t);
 
     inline namespace literals
     {
+        /// \module types
         template <char... Digits>
         constexpr int8_t operator"" _i8()
         {
             return int8_t(detail::parse_signed<std::int8_t, Digits...>());
         }
 
+        /// \module types
         template <char... Digits>
         constexpr int16_t operator"" _i16()
         {
             return int16_t(detail::parse_signed<std::int16_t, Digits...>());
         }
 
+        /// \module types
         template <char... Digits>
         constexpr int32_t operator"" _i32()
         {
             return int32_t(detail::parse_signed<std::int32_t, Digits...>());
         }
 
+        /// \module types
         template <char... Digits>
         constexpr int64_t operator"" _i64()
         {
             return int64_t(detail::parse_signed<std::int64_t, Digits...>());
         }
 
+        /// \module types
         template <char... Digits>
         constexpr uint8_t operator"" _u8()
         {
             return uint8_t(detail::parse_unsigned<std::uint8_t, Digits...>());
         }
 
+        /// \module types
         template <char... Digits>
         constexpr uint16_t operator"" _u16()
         {
             return uint16_t(detail::parse_unsigned<std::uint16_t, Digits...>());
         }
 
+        /// \module types
         template <char... Digits>
         constexpr uint32_t operator"" _u32()
         {
             return uint32_t(detail::parse_unsigned<std::uint32_t, Digits...>());
         }
 
+        /// \module types
         template <char... Digits>
         constexpr uint64_t operator"" _u64()
         {
@@ -291,50 +307,77 @@ namespace type_safe
         }
     } // namespace literals
 
-    using int_fast8_t   = TYPE_SAFE_DETAIL_WRAP(integer, int_fast8_t);
-    using int_fast16_t  = TYPE_SAFE_DETAIL_WRAP(integer, int_fast16_t);
-    using int_fast32_t  = TYPE_SAFE_DETAIL_WRAP(integer, int_fast32_t);
-    using int_fast64_t  = TYPE_SAFE_DETAIL_WRAP(integer, int_fast64_t);
-    using uint_fast8_t  = TYPE_SAFE_DETAIL_WRAP(integer, uint_fast8_t);
+    /// \module types
+    using int_fast8_t = TYPE_SAFE_DETAIL_WRAP(integer, int_fast8_t);
+    /// \module types
+    using int_fast16_t = TYPE_SAFE_DETAIL_WRAP(integer, int_fast16_t);
+    /// \module types
+    using int_fast32_t = TYPE_SAFE_DETAIL_WRAP(integer, int_fast32_t);
+    /// \module types
+    using int_fast64_t = TYPE_SAFE_DETAIL_WRAP(integer, int_fast64_t);
+    /// \module types
+    using uint_fast8_t = TYPE_SAFE_DETAIL_WRAP(integer, uint_fast8_t);
+    /// \module types
     using uint_fast16_t = TYPE_SAFE_DETAIL_WRAP(integer, uint_fast16_t);
+    /// \module types
     using uint_fast32_t = TYPE_SAFE_DETAIL_WRAP(integer, uint_fast32_t);
+    /// \module types
     using uint_fast64_t = TYPE_SAFE_DETAIL_WRAP(integer, uint_fast64_t);
 
-    using int_least8_t   = TYPE_SAFE_DETAIL_WRAP(integer, int_least8_t);
-    using int_least16_t  = TYPE_SAFE_DETAIL_WRAP(integer, int_least16_t);
-    using int_least32_t  = TYPE_SAFE_DETAIL_WRAP(integer, int_least32_t);
-    using int_least64_t  = TYPE_SAFE_DETAIL_WRAP(integer, int_least64_t);
-    using uint_least8_t  = TYPE_SAFE_DETAIL_WRAP(integer, uint_least8_t);
+    /// \module types
+    using int_least8_t = TYPE_SAFE_DETAIL_WRAP(integer, int_least8_t);
+    /// \module types
+    using int_least16_t = TYPE_SAFE_DETAIL_WRAP(integer, int_least16_t);
+    /// \module types
+    using int_least32_t = TYPE_SAFE_DETAIL_WRAP(integer, int_least32_t);
+    /// \module types
+    using int_least64_t = TYPE_SAFE_DETAIL_WRAP(integer, int_least64_t);
+    /// \module types
+    using uint_least8_t = TYPE_SAFE_DETAIL_WRAP(integer, uint_least8_t);
+    /// \module types
     using uint_least16_t = TYPE_SAFE_DETAIL_WRAP(integer, uint_least16_t);
+    /// \module types
     using uint_least32_t = TYPE_SAFE_DETAIL_WRAP(integer, uint_least32_t);
+    /// \module types
     using uint_least64_t = TYPE_SAFE_DETAIL_WRAP(integer, uint_least64_t);
 
-    using intmax_t  = TYPE_SAFE_DETAIL_WRAP(integer, intmax_t);
+    /// \module types
+    using intmax_t = TYPE_SAFE_DETAIL_WRAP(integer, intmax_t);
+    /// \module types
     using uintmax_t = TYPE_SAFE_DETAIL_WRAP(integer, uintmax_t);
-    using intptr_t  = TYPE_SAFE_DETAIL_WRAP(integer, intptr_t);
+    /// \module types
+    using intptr_t = TYPE_SAFE_DETAIL_WRAP(integer, intptr_t);
+    /// \module types
     using uintptr_t = TYPE_SAFE_DETAIL_WRAP(integer, uintptr_t);
 
     //=== special integer types ===//
+    /// \module types
     using ptrdiff_t = TYPE_SAFE_DETAIL_WRAP(integer, ptrdiff_t);
-    using size_t    = TYPE_SAFE_DETAIL_WRAP(integer, size_t);
+    /// \module types
+    using size_t = TYPE_SAFE_DETAIL_WRAP(integer, size_t);
 
-    using int_t      = TYPE_SAFE_DETAIL_WRAP(integer, int);
+    /// \module types
+    using int_t = TYPE_SAFE_DETAIL_WRAP(integer, int);
+    /// \module types
     using unsigned_t = TYPE_SAFE_DETAIL_WRAP(integer, unsigned);
 
     inline namespace literals
     {
+        /// \module types
         template <char... Digits>
         constexpr ptrdiff_t operator"" _isize()
         {
             return ptrdiff_t(detail::parse_signed<std::ptrdiff_t, Digits...>());
         }
 
+        /// \module types
         template <char... Digits>
         constexpr size_t operator"" _usize()
         {
             return size_t(detail::parse_unsigned<std::size_t, Digits...>());
         }
 
+        /// \module types
         template <char... Digits>
         constexpr int_t operator"" _i()
         {
@@ -342,6 +385,7 @@ namespace type_safe
             return int_t(detail::parse_signed<std::int16_t, Digits...>());
         }
 
+        /// \module types
         template <char... Digits>
         constexpr unsigned_t operator"" _u()
         {
@@ -351,16 +395,20 @@ namespace type_safe
     } // namespace literalse
 
     //=== floating point types ===//
-    using float_t  = TYPE_SAFE_DETAIL_WRAP(floating_point, std::float_t);
+    /// \module types
+    using float_t = TYPE_SAFE_DETAIL_WRAP(floating_point, std::float_t);
+    /// \module types
     using double_t = TYPE_SAFE_DETAIL_WRAP(floating_point, std::double_t);
 
     inline namespace literals
     {
+        /// \module types
         constexpr float_t operator"" _f(long double val)
         {
             return float_t(static_cast<std::float_t>(val));
         }
 
+        /// \module types
         constexpr double_t operator"" _d(long double val)
         {
             return double_t(static_cast<std::double_t>(val));
@@ -369,6 +417,7 @@ namespace type_safe
 
 //=== boolean ===//
 #if TYPE_SAFE_ENABLE_WRAPPER
+    /// \module types
     using bool_t = boolean;
 #else
     using bool_t = bool;

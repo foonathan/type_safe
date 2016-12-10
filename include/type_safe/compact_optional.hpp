@@ -32,11 +32,13 @@ namespace type_safe
     /// * `storage_type` - the actual type that is being stored
     /// * `storage_type invalid_value()` - returns the value that marks the optional as empty
     /// * `bool is_invalid(const storage_type&)` - returns `true` if the given value is invalid, `false` otherwise
+    ///
     /// In the cases where `value_type` and `storage_type` differ,
     /// the `get_value()` functions will not return references, but a copy instead.
     /// The implementation assumes that `invalid_value()` and `is_invalid()` are `noexcept` and cheap.
     /// \notes For a compact optional of pointer type,
     /// use [ts::optional_ref]().
+    /// \module optional
     template <class CompactPolicy>
     class compact_optional_storage
     {
@@ -159,6 +161,7 @@ namespace type_safe
     };
 
     /// An alias for [ts::basic_optional]() using [ts::compact_optional_storage]() with the given `CompactPolicy`.
+    /// \module optional
     template <class CompactPolicy>
     using compact_optional = basic_optional<compact_optional_storage<CompactPolicy>>;
 
@@ -166,6 +169,7 @@ namespace type_safe
     ///
     /// It is designed for either `bool` or [ts::boolean]().
     /// \notes It uses a different `storage_type` and thus cannot return a reference to the stored value.
+    /// \module optional
     template <typename Boolean>
     class compact_bool_policy
     {
@@ -210,6 +214,7 @@ namespace type_safe
     /// A `CompactPolicy` for [ts::compact_optional_storage]() for floating point types.
     ///
     /// `NaN` will be used to mark an empty optional.
+    /// \module optional
     template <typename FloatingPoint>
     class compact_floating_point_policy
     {
@@ -249,6 +254,7 @@ namespace type_safe
     ///
     /// It uses the given `Invalid` value of the underlying type to mark an empty optional.
     /// \notes It uses a different `storage_type` and thus cannot return a reference to the stored value.
+    /// \module optional
     template <typename Enum, detail::underlying_type<Enum> Invalid>
     class compact_enum_policy
     {
@@ -289,6 +295,7 @@ namespace type_safe
     /// and either an `empty()` member function or ADL function that returns `true` if the container is empty,
     /// `false` otherwise.
     /// An empty container will be marked as an empty optional.
+    /// \module optional
     template <class Container>
     class compact_container_policy
     {

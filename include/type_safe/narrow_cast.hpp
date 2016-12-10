@@ -64,6 +64,7 @@ namespace type_safe
     /// \returns An arithmetic type with the same value as in `source`,
     /// but converted to to a different type.
     /// \requires The value of `source` must be representable by the new target type.
+    /// \module types
     /// \param 2
     /// \exclude
     template <typename Target, typename Source,
@@ -80,6 +81,7 @@ namespace type_safe
     /// \requires The value of `source` must be representable by the new target type.
     /// \notes `Target` can either be a specialization of the `integer` template itself
     /// or a built-in integer type, the result will be wrapped if needed.
+    /// \module types
     template <typename Target, typename Source, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto narrow_cast(
         const integer<Source, Policy>& source) noexcept ->
@@ -94,6 +96,7 @@ namespace type_safe
     /// \requires The value of `source` must be representable by the new target type.
     /// \notes `Target` can either be a specialization of the `floating_point` template itself
     /// or a built-in floating point type, the result will be wrapped if needed.
+    /// \module types
     template <typename Target, typename Source>
     TYPE_SAFE_FORCE_INLINE constexpr auto narrow_cast(const floating_point<Source>& source) noexcept
         -> typename detail::get_target_floating_point<Target>::type

@@ -17,6 +17,7 @@ namespace type_safe
 {
     /// An `ArithmeticPolicy` that behaves like the default integer implementations:
     /// Signed under/overflow is UB, unsigned under/overflow wraps around.
+    /// \module types
     class default_arithmetic
     {
     public:
@@ -129,6 +130,7 @@ namespace type_safe
 
     /// An `ArithmeticPolicy` where under/overflow is always undefined behavior,
     /// albeit checked when assertions are enabled.
+    /// \module types
     class undefined_behavior_arithmetic
     {
     public:
@@ -183,6 +185,7 @@ namespace type_safe
     /// An `ArithmeticPolicy` where under/overflow throws an exception.
     /// \notes If exceptions are not supported,
     /// this is will assert.
+    /// \module types
     class checked_arithmetic
     {
     public:
@@ -239,6 +242,8 @@ namespace type_safe
     };
 
 #if TYPE_SAFE_ARITHMETIC_UB
+    /// The default `ArithmeticPolicy`
+    /// \module types
     using arithmetic_policy_default = undefined_behavior_arithmetic;
 #else
     using arithmetic_policy_default = default_arithmetic;

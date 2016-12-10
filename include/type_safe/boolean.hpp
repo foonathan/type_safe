@@ -42,6 +42,7 @@ namespace type_safe
     /// It is a tiny, no overhead wrapper over `bool`.
     /// It can only be constructed from `bool` values
     /// and does not implictly convert to integral types.
+    /// \module types
     class boolean
     {
     public:
@@ -89,6 +90,7 @@ namespace type_safe
     /// `false` otherwise.
     /// \notes (2)/(3) do not participate in overload resolution if `T` is not a boolean type.
     /// \group boolean_comp_equal
+    /// \module types
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const boolean& a, const boolean& b) noexcept
     {
         return static_cast<bool>(a) == static_cast<bool>(b);
@@ -117,6 +119,7 @@ namespace type_safe
     /// `true` otherwise.
     /// \notes (2)/(3) do not participate in overload resolution if `T` is not a boolean type.
     /// \group boolean_comp_unequal
+    /// \module types
     TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const boolean& a, const boolean& b) noexcept
     {
         return static_cast<bool>(a) != static_cast<bool>(b);
@@ -142,6 +145,7 @@ namespace type_safe
 
     //=== input/output ===/
     /// \effects Reads a `bool` from the [std::istream]() and assigns it to the given [ts::boolean]().
+    /// \module types
     template <typename Char, class CharTraits>
     std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
                                                      boolean& b)
@@ -153,6 +157,7 @@ namespace type_safe
     }
 
     /// \effects Converts the given [ts::boolean]() to `bool` and writes it to the [std::ostream]().
+    /// \module types
     template <typename Char, class CharTraits>
     std::basic_ostream<Char, CharTraits>& operator<<(std::basic_ostream<Char, CharTraits>& out,
                                                      const boolean& b)
@@ -184,6 +189,7 @@ namespace type_safe
     /// \notes These comparison functors are always transparent,
     /// i.e. can be used with two different types.
     /// \group comparison_functors Comparison function objects
+    /// \module types
     TYPE_SAFE_DETAIL_MAKE_PREDICATE(equal_to, ==)
     /// \group comparison_functors
     TYPE_SAFE_DETAIL_MAKE_PREDICATE(not_equal_to, !=)

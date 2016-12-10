@@ -73,6 +73,7 @@ namespace type_safe
     ///
     /// \requires `FloatT` must be a floating point type.
     /// \notes It intentionally does not provide equality or increment/decrement operators.
+    /// \module types
     template <typename FloatT>
     class floating_point
     {
@@ -176,9 +177,10 @@ namespace type_safe
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
     /** \group compound_assign
+     * \module types
      * \param 1
      * \exclude
-     */                             \
+     */        \
     template <typename T,                                                                          \
               typename = detail::enable_safe_floating_point_conversion<T, floating_point_type>>    \
     TYPE_SAFE_FORCE_INLINE floating_point& operator Op(const T& other) noexcept                    \
@@ -198,6 +200,7 @@ namespace type_safe
         /// \notes These functions do not participate in overload resolution,
         /// if `T` is not a floating point type safely convertible to this type.
         /// \group compound_assign Compound assignment
+        /// \module types
         /// \param 1
         /// \exclude
         template <typename T,
@@ -289,6 +292,7 @@ namespace type_safe
     /// \notes These functions do not participate in overload resolution
     /// unless `A` and `B` are both floating point types.
     /// \group float_comp Comparison operators
+    /// \module types
     /// \param 2
     /// \exclude
     template <typename A, typename B,
@@ -371,6 +375,7 @@ namespace type_safe
     /// The type is a [ts::floating_point]() of the bigger floating point type.
     /// \notes These functions do not participate in overload resolution,
     /// unless `A` and `B` are both floating point types.
+    /// \module types
     /// \group float_binary_op Binary operations
     template <typename A, typename B>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator+(const floating_point<A>& a,
@@ -415,6 +420,7 @@ namespace type_safe
 
     //=== input/output ===/
     /// \effects Reads a float from the [std::istream]() and assigns it to the given [ts::floating_point]().
+    /// \module types
     template <typename Char, class CharTraits, typename FloatT>
     std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
                                                      floating_point<FloatT>& f)
@@ -426,6 +432,7 @@ namespace type_safe
     }
 
     /// \effects Converts the given [ts::floating_point]() to the underlying floating point and writes it to the [std::ostream]().
+    /// \module types
     template <typename Char, class CharTraits, typename FloatT>
     std::basic_ostream<Char, CharTraits>& operator<<(std::basic_ostream<Char, CharTraits>& out,
                                                      const floating_point<FloatT>& f)

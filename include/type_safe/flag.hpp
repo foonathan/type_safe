@@ -47,6 +47,7 @@ namespace type_safe
     ///          do_sth(x); // no way to forget
     /// }
     /// ```
+    /// \module types
     class flag
     {
     public:
@@ -126,6 +127,7 @@ namespace type_safe
     /// (2)/(3) the flag is in the given state.
     /// \notes (2)/(3) do not participate in overload resolution unless `T` is a boolean type.
     /// \group flag_equal
+    /// \module types
     constexpr bool operator==(flag lhs, flag rhs) noexcept
     {
         return lhs.state_ == rhs.state_;
@@ -153,6 +155,7 @@ namespace type_safe
     /// (2)/(3) the flag is in the given state.
     /// \notes (2)/(3) do not participate in overload resolution unless `T` is a boolean type.
     /// \group flag_unequal
+    /// \module types
     constexpr bool operator!=(flag lhs, flag rhs) noexcept
     {
         return !(lhs == rhs);

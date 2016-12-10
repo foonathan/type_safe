@@ -96,6 +96,7 @@ namespace type_safe
     ///
     /// \requires `IntegerT` must be an integral type except `bool` and `char` (use `signed char`/`unsigned char`).
     /// \notes It intentionally does not provide the bitwise operations.
+    /// \module types
     template <typename IntegerT, class Policy /* = arithmetic_policy_default*/>
     class integer
     {
@@ -335,11 +336,13 @@ namespace type_safe
     } // namespace detail
 
     /// [std::make_signed]() for [ts::integer]().
+    /// \module types
     template <class Integer>
     using make_signed_t = typename detail::make_signed<Integer>::type;
 
     /// \returns A new integer of the corresponding signed integer type.
     /// \requires The value of `i` must fit into signed type.
+    /// \module types
     /// \param 1
     /// \exclude
     template <typename Integer,
@@ -357,6 +360,7 @@ namespace type_safe
 
     /// \returns A new [ts::integer]() of the corresponding signed integer type.
     /// \requires The value of `i` must fit into signed type.
+    /// \module types
     template <typename Integer, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr make_signed_t<integer<Integer, Policy>> make_signed(
         const integer<Integer, Policy>& i)
@@ -365,11 +369,13 @@ namespace type_safe
     }
 
     /// [std::make_unsigned]() for [ts::integer]().
+    /// \module types
     template <class Integer>
     using make_unsigned_t = typename detail::make_unsigned<Integer>::type;
 
     /// \returns A new integer of the corresponding unsigned integer type.
     /// \requires The value of `i` must not be negative.
+    /// \module types
     /// \param 1
     /// \exclude
     template <typename Integer,
@@ -385,6 +391,7 @@ namespace type_safe
 
     /// \returns A new [ts::integer]() of the corresponding unsigned integer type.
     /// \requires The value of `i` must not be negative.
+    /// \module types
     template <typename Integer, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<integer<Integer, Policy>> make_unsigned(
         const integer<Integer, Policy>& i)
@@ -394,6 +401,7 @@ namespace type_safe
 
     /// \returns The absolute value of a built-in signed integer.
     /// It will be changed to the unsigned return type as well.
+    /// \module types
     /// \param 1
     /// \exclude
     template <typename SignedInteger,
@@ -404,6 +412,7 @@ namespace type_safe
     }
 
     /// \returns The absolute value of an [ts::integer]().
+    /// \module types
     /// \param 1
     /// \exclude
     template <typename SignedInteger, class Policy,
@@ -416,6 +425,7 @@ namespace type_safe
 
     /// \returns `i` unchanged.
     /// \notes This is an optimization of `abs()` for unsigned integer types.
+    /// \module types
     /// \param 1
     /// \exclude
     template <typename UnsignedInteger,
@@ -427,6 +437,7 @@ namespace type_safe
 
     /// \returns `i` unchanged.
     /// \notes This is an optimization of `abs()` for unsigned integer types.
+    /// \module types
     /// \param 1
     /// \exclude
     template <typename UnsignedInteger, class Policy,
@@ -475,6 +486,7 @@ namespace type_safe
     /// \notes These functions do not participate in overload resolution
     /// unless `A` and `B` are both integer types.
     /// \group int_comp Comparison operators
+    /// \module types
     /// \param 3
     /// \exclude
     template <typename A, typename B, class Policy,
@@ -584,6 +596,7 @@ namespace type_safe
     /// \notes These functions do not participate in overload resolution,
     /// unless `A` and `B` are both integer types.
     /// \group int_binary_op Binary operations
+    /// \module types
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator+(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -642,6 +655,7 @@ namespace type_safe
 
     //=== input/output ===/
     /// \effects Reads an integer from the [std::istream]() and assigns it to the given [ts::integer]().
+    /// \module types
     template <typename Char, class CharTraits, typename IntegerT, class Policy>
     std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
                                                      integer<IntegerT, Policy>& i)
@@ -653,6 +667,7 @@ namespace type_safe
     }
 
     /// \effects Converts the given [ts::integer]() to the underlying integer type and writes it to th [std::ostream]().
+    /// \module types
     template <typename Char, class CharTraits, typename IntegerT, class Policy>
     std::basic_ostream<Char, CharTraits>& operator<<(std::basic_ostream<Char, CharTraits>& out,
                                                      const integer<IntegerT, Policy>& i)

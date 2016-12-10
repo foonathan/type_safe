@@ -29,6 +29,7 @@ namespace type_safe
     ///
     /// It is a [ts::strong_typedef]() for a `signed` integer type.
     /// It is comparable and you can add and subtract two differences.
+    /// \module types
     struct distance_t
         : strong_typedef<distance_t, detail::distance_t>,
           strong_typedef_op::equality_comparison<distance_t>,
@@ -55,6 +56,7 @@ namespace type_safe
     /// as well as adding/subtracing a [ts::distance_t]().
     /// \notes It has a similar interface to a `RandomAccessIterator`,
     /// but without the dereference functions.
+    /// \module types
     struct index_t : strong_typedef<index_t, detail::index_t>,
                      strong_typedef_op::equality_comparison<index_t>,
                      strong_typedef_op::mixed_equality_comparison<index_t, detail::index_t>,
@@ -91,6 +93,7 @@ namespace type_safe
     };
 
     /// \returns The given [ts::index_t]() advanced by the given [ts::distance_t]().
+    /// \module types
     /// \group index_distance_plus
     constexpr index_t operator+(const index_t& lhs, const distance_t& rhs) noexcept
     {
@@ -104,6 +107,7 @@ namespace type_safe
     }
 
     /// \returns The given [ts::index_t]() advanced backwards by the given [ts::distance_t]().
+    /// \module types
     constexpr index_t operator-(const index_t& lhs, const distance_t& rhs) noexcept
     {
         return index_t(make_unsigned(make_signed(get(lhs)) - get(rhs)));
@@ -112,6 +116,7 @@ namespace type_safe
     /// \returns Returns the distance between two indices.
     /// This is the number of steps you need to increment `lhs` to reach `rhs`,
     /// it is negative if `lhs > rhs`.
+    /// \module types
     constexpr distance_t operator-(const index_t& lhs, const index_t& rhs) noexcept
     {
         return distance_t(make_signed(get(lhs)) - make_signed(get(rhs)));
@@ -162,6 +167,7 @@ namespace type_safe
     /// \returns The `i`th element of `obj` by invoking its `operator[]` with the [ts::index_t]() converted to `std::size_t`.
     /// \requires `index` must be a valid index for `obj`,
     /// i.e. less than the size of `obj`.
+    /// \module types
     template <typename Indexable>
     auto at(Indexable&& obj, const index_t& index)
         -> decltype(std::forward<Indexable>(obj)[static_cast<std::size_t>(get(index))])
@@ -175,6 +181,7 @@ namespace type_safe
     /// \effects Increments the [ts::index_t]() by the specified distance.
     /// If the distance is negative, decrements the index instead.
     /// \notes This is the same as `index += dist` and the equivalent of [std::advance()]().
+    /// \module types
     void advance(index_t& index, const distance_t& dist)
     {
         index += dist;
@@ -183,6 +190,7 @@ namespace type_safe
     /// \returns The distance between two [ts::index_t]() objects,
     /// i.e. how often you'd have to increment `a` to reach `b`.
     /// \notes This is the same as `b - a` and the equivalent of [std::distance()]().
+    /// \module types
     constexpr distance_t distance(const index_t& a, const index_t& b)
     {
         return b - a;
@@ -190,6 +198,7 @@ namespace type_safe
 
     /// \returns The [ts::index_t]() that is `dist` greater than `index`.
     /// \notes This is the same as `index + dist` and the equivalent of [std::next()]().
+    /// \module types
     constexpr index_t next(const index_t& index, const distance_t& dist = distance_t(1))
     {
         return index + dist;
@@ -197,6 +206,7 @@ namespace type_safe
 
     /// \returns The [ts::index_t]() that is `dist` smaller than `index`.
     /// \notes This is the same as `index - dist` and the equivalent of [std::prev()]().
+    /// \module types
     constexpr index_t prev(const index_t& index, const distance_t& dist = distance_t(1))
     {
         return index - dist;

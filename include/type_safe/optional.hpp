@@ -89,6 +89,7 @@ namespace type_safe
 
     //=== basic_optional ===//
     /// Tag type to mark a [ts::basic_optional]() without a value.
+    /// \module optional
     struct nullopt_t
     {
         constexpr nullopt_t()
@@ -97,6 +98,7 @@ namespace type_safe
     };
 
     /// Tag object of type [ts::nullopt_t]().
+    /// \module optional
     constexpr nullopt_t nullopt;
 
     /// Selects the storage policy used when rebinding a [ts::basic_optional]().
@@ -105,6 +107,7 @@ namespace type_safe
     /// This traits controls which `StoragePolicy` is going to be used for the new optional.
     /// You can for example requests a [ts::compact_optional_storage]() for your type,
     /// simply specialize it and set a `type` typedef.
+    /// \module optional
     template <typename T>
     struct optional_storage_policy_for
     {
@@ -138,6 +141,7 @@ namespace type_safe
     /// * `U get_value() (const)& noexcept` - returns a reference to the stored value, U is one of the `XXX_reference` typedefs
     /// * `U get_value() (const)&& noexcept` - returns a reference to the stored value, U is one of the `XXX_reference` typedefs
     /// * `U get_value_or(T&& val) [const&/&&]` - returns either `get_value()` or `val`
+    /// \module optional
     template <class StoragePolicy>
     class basic_optional
     {
@@ -542,6 +546,7 @@ namespace type_safe
     /// if it has a value.
     /// Otherwise does nothing.
     /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
+    /// \module optional
     template <class Optional, typename Func>
     void with(Optional&& opt, Func&& f)
     {
@@ -682,6 +687,7 @@ namespace type_safe
     /// \returns The result of the chosen `operator()`,
     /// it's the type is the common type of all possible combinations.
     /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
+    /// \module optional
     template <typename Visitor, class... Optionals>
     auto visit(Visitor&& visitor, Optionals&&... optionals)
         -> decltype(detail::visit(std::forward<Visitor>(visitor),
@@ -709,6 +715,7 @@ namespace type_safe
     /// \returns If all optionals have a value, returns an optional with the value `f(optionals.value()...)` (perfectly forwarded).
     /// Otherwise returns an empty optional.
     /// \notes An `Optional` here is every type with functions named `has_value()` and `value()` and default constructor.
+    /// \module optional
     template <class ResultOptional, typename Func, class... Optionals>
     ResultOptional apply(Func&& f, Optionals&&... optionals)
     {
@@ -719,17 +726,17 @@ namespace type_safe
 
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \
-    /** \group optional_comp_null */                                                               \
-    template <class StoragePolicy>                                                                 \
-    bool operator Op(const basic_optional<StoragePolicy>& lhs, nullopt_t)                          \
-    {                                                                                              \
-        return (void)lhs, Expr;                                                                    \
-    }                                                                                              \
-    /** \group optional_comp_null */                                                               \
-    template <class StoragePolicy>                                                                 \
-    bool operator Op(nullopt_t, const basic_optional<StoragePolicy>& rhs)                          \
-    {                                                                                              \
-        return (void)rhs, Expr2;                                                                   \
+    /** \group optional_comp_null                                                               \
+      * \module optional */
+    template <class StoragePolicy>
+    bool operator Op(const basic_optional<StoragePolicy>& lhs, nullopt_t)
+    {
+        return (void)lhs, Expr;
+    } /** \group optional_comp_null */
+    template <class StoragePolicy>
+    bool operator Op(nullopt_t, const basic_optional<StoragePolicy>& rhs)
+    {
+        return (void)rhs, Expr2;
     }
 
     // equal to nullopt when empty
@@ -749,7 +756,8 @@ namespace type_safe
 
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \
-    /** \group optional_comp_value */                                                              \
+    /** \group optional_comp_value
+      * \module optional */                                     \
     template <class StoragePolicy>                                                                 \
     auto operator Op(const basic_optional<StoragePolicy>&      lhs,                                \
                      const typename StoragePolicy::value_type& rhs)                                \
@@ -791,7 +799,8 @@ namespace type_safe
 
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
-    /** \group optional_comp */                                                                    \
+    /** \group optional_comp
+      * \module optional */                                           \
     template <class StoragePolicy>                                                                 \
     auto operator Op(const basic_optional<StoragePolicy>& lhs,                                     \
                      const basic_optional<StoragePolicy>& rhs)                                     \
@@ -813,6 +822,7 @@ namespace type_safe
     /// A `StoragePolicy` for [ts::basic_optional]() that is similar to [std::optional<T>]()'s implementation.
     /// It uses [std::aligned_storage]() and a `bool` flag whether a value was created.
     /// \requires `T` must not be a reference.
+    /// \module optional
     template <typename T>
     class direct_optional_storage
     {
@@ -940,10 +950,12 @@ namespace type_safe
     };
 
     /// A [ts::basic_optional]() that use [ts::direct_optional_storage<T>]().
+    /// \module optional
     template <typename T>
     using optional = basic_optional<direct_optional_storage<T>>;
 
     /// \returns A new [ts::optional<T>]() storing a copy of `t`.
+    /// \module optional
     template <typename T>
     optional<typename std::decay<T>::type> make_optional(T&& t)
     {
@@ -951,6 +963,7 @@ namespace type_safe
     }
 
     /// \returns A new [ts::optional<T>]() with a value created by perfectly forwarding `args` to the constructor.
+    /// \module optional
     template <typename T, typename... Args>
     optional<T> make_optional(Args&&... args)
     {
@@ -969,6 +982,7 @@ namespace type_safe
     /// You cannot pass rvalues.
     ///
     /// Depending on the const-ness of `T` is the reference to `const` or non-const as well.
+    /// \module optional
     template <typename T>
     class reference_optional_storage
     {
@@ -1050,6 +1064,7 @@ namespace type_safe
     ///
     /// If a [ts::basic_optional]() rebinds to a reference,
     /// it will use the [ts::reference_optional_storage]() policy.
+    /// \module optional
     template <typename T>
     struct optional_storage_policy_for<T&>
     {
@@ -1059,10 +1074,12 @@ namespace type_safe
     /// A [ts::basic_optional]() that use [ts::reference_optional_storage<T>]().
     /// It is an optional reference.
     /// \notes `T` is the type without the reference, i.e. `optional_ref<int>`.
+    /// \module optional
     template <typename T>
     using optional_ref = basic_optional<reference_optional_storage<T>>;
 
     /// \returns A [ts::optional_ref<T>]() to the pointee of `ptr` or `nullopt`.
+    /// \module optional
     template <typename T>
     optional_ref<T> ref(T* ptr) noexcept
     {
@@ -1070,6 +1087,7 @@ namespace type_safe
     }
 
     /// \returns A [ts::optional_ref<T>]() to `const` to the pointee of `ptr` or `nullopt`.
+    /// \module optional
     template <typename T>
     optional_ref<const T> cref(const T* ptr) noexcept
     {
@@ -1079,6 +1097,7 @@ namespace type_safe
     /// \returns A [ts::optional<T>]() containing a copy of the value of `ref`
     /// if there is any value.
     /// \requires `T` must be copyable.
+    /// \module optional
     template <typename T>
     optional<typename std::remove_const<T>::type> copy(const optional_ref<T>& ref)
     {
@@ -1088,6 +1107,7 @@ namespace type_safe
     /// \returns A [ts::optional<T>]() containing a copy of the value of `ref` created by move constructing
     /// if ther is any value.
     /// \requires `T` must be moveable and `ref` must not be a reference to `const`.
+    /// \module optional
     template <typename T>
     optional<T> move(const optional_ref<T>& ref) noexcept(
         std::is_nothrow_move_constructible<T>::value)
@@ -1100,6 +1120,7 @@ namespace type_safe
 namespace std
 {
     /// Hash for [ts::basic_optional]().
+    /// \module optional
     template <class StoragePolicy>
     struct hash<type_safe::basic_optional<StoragePolicy>>
     {
