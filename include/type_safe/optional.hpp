@@ -726,17 +726,17 @@ namespace type_safe
 
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \
-    /** \group optional_comp_null                                                               \
-      * \module optional */
-    template <class StoragePolicy>
-    bool operator Op(const basic_optional<StoragePolicy>& lhs, nullopt_t)
-    {
-        return (void)lhs, Expr;
-    } /** \group optional_comp_null */
-    template <class StoragePolicy>
-    bool operator Op(nullopt_t, const basic_optional<StoragePolicy>& rhs)
-    {
-        return (void)rhs, Expr2;
+    /** \group optional_comp_null
+      * \module optional */                                      \
+    template <class StoragePolicy>                                                                 \
+    bool operator Op(const basic_optional<StoragePolicy>& lhs, nullopt_t)                          \
+    {                                                                                              \
+        return (void)lhs, Expr;                                                                    \
+    } /** \group optional_comp_null */                                                             \
+    template <class StoragePolicy>                                                                 \
+    bool operator Op(nullopt_t, const basic_optional<StoragePolicy>& rhs)                          \
+    {                                                                                              \
+        return (void)rhs, Expr2;                                                                   \
     }
 
     // equal to nullopt when empty
