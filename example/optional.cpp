@@ -7,6 +7,7 @@
 #include <string>
 
 #include <type_safe/optional.hpp>
+#include <type_safe/optional_ref.hpp>
 
 namespace ts = type_safe;
 

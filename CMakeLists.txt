@@ -49,6 +49,7 @@ set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/integer.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/narrow_cast.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/optional.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/optional_ref.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/output_parameter.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/strong_typedef.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/types.hpp)
