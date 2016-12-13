@@ -54,8 +54,14 @@
 
 #if TYPE_SAFE_USE_EXCEPTIONS
 #define TYPE_SAFE_THROW(Ex) throw Ex
+#define TYPE_SAFE_TRY try
+#define TYPE_SAFE_CATCH_ALL catch (...)
+#define TYPE_SAFE_RETHROW throw
 #else
 #define TYPE_SAFE_THROW(Ex) (Ex, std::abort())
+#define TYPE_SAFE_TRY if (true)
+#define TYPE_SAFE_CATCH_ALL if (false)
+#define TYPE_SAFE_RETHROW std::abort()
 #endif
 
 /// \entity type_safe
