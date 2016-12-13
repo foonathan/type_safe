@@ -10,6 +10,7 @@
 #include <type_traits>
 
 #include <type_safe/detail/assert.hpp>
+#include <type_safe/detail/assign_or_construct.hpp>
 #include <type_safe/detail/is_nothrow_swappable.hpp>
 
 namespace type_safe
@@ -20,26 +21,6 @@ namespace type_safe
     /// \exclude
     namespace detail
     {
-        // std::is_assignable but without user-defined conversions
-        template <typename T, typename Arg>
-        struct is_direct_assignable
-        {
-            template <typename U>
-            struct consume_udc
-            {
-                operator U() const;
-            };
-
-            template <typename U>
-            static std::true_type check(
-                decltype(std::declval<T&>() = std::declval<consume_udc<U>>(), 0) *);
-
-            template <typename U>
-            static std::false_type check(...);
-
-            static constexpr bool value = decltype(check<Arg>(0))::value;
-        };
-
         //=== is_optional ===//
         template <typename T>
         struct is_optional_impl : std::false_type
