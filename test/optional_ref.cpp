@@ -15,7 +15,6 @@ TEST_CASE("optional_ref")
     // only test stuff special for optional_ref
 
     int value = 0;
-
     SECTION("constructor")
     {
         optional_ref<int> a(nullptr);
@@ -85,9 +84,6 @@ TEST_CASE("optional_ref")
         optional<debugger_type>     b_res = copy(b);
         REQUIRE(b_res.has_value());
         REQUIRE(b_res.value().id == 0);
-#ifndef _MSC_VER
-        REQUIRE(b_res.value().copy_ctor());
-#endif
     }
 }
 

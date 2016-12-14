@@ -21,6 +21,115 @@ namespace type_safe
     /// \exclude
     namespace detail
     {
+        template <class StoragePolicy>
+        struct optional_storage
+        {
+            // needed to make every copy operation noexcept
+            StoragePolicy storage;
+
+            optional_storage() noexcept = default;
+
+            optional_storage(const optional_storage&) noexcept
+            {
+            }
+            optional_storage(optional_storage&&) noexcept
+            {
+            }
+
+            ~optional_storage() noexcept = default;
+
+            optional_storage& operator=(const optional_storage&) noexcept
+            {
+                return *this;
+            }
+            optional_storage& operator=(optional_storage&&) noexcept
+            {
+                return *this;
+            }
+        };
+
+        template <bool CopyConstructible, class Derived>
+        struct optional_copy;
+
+        template <class Derived>
+        struct optional_copy<true, Derived>
+        {
+            optional_copy() noexcept = default;
+
+            optional_copy(const optional_copy& rhs)
+            {
+                auto& cur   = static_cast<Derived&>(*this);
+                auto& other = static_cast<const Derived&>(rhs);
+                cur.get_storage().create_value(other.get_storage());
+            }
+
+            optional_copy& operator=(const optional_copy& rhs)
+            {
+                auto& cur   = static_cast<Derived&>(*this);
+                auto& other = static_cast<const Derived&>(rhs);
+                cur.get_storage().copy_value(other.get_storage());
+                return *this;
+            }
+
+            optional_copy(optional_copy&&) noexcept = default;
+            optional_copy& operator=(optional_copy&&) noexcept = default;
+        };
+
+        template <class Derived>
+        struct optional_copy<false, Derived>
+        {
+            optional_copy() noexcept = default;
+
+            optional_copy(const optional_copy&) = delete;
+            optional_copy& operator=(const optional_copy&) = delete;
+
+            optional_copy(optional_copy&&) noexcept = default;
+            optional_copy& operator=(optional_copy&&) noexcept = default;
+        };
+
+        template <bool MoveConstructible, class Derived>
+        struct optional_move;
+
+        template <class Derived>
+        struct optional_move<true, Derived>
+        {
+            optional_move() noexcept = default;
+
+            optional_move(optional_move&& rhs) noexcept(
+                std::is_nothrow_move_constructible<typename Derived::value_type>::value)
+            {
+                auto&  cur   = static_cast<Derived&>(*this);
+                auto&& other = static_cast<Derived&&>(rhs);
+                cur.get_storage().create_value(std::move(other).get_storage());
+            }
+
+            optional_move& operator=(optional_move&& rhs) noexcept(
+                std::is_nothrow_move_constructible<typename Derived::value_type>::value
+                && (!std::is_move_assignable<typename Derived::value_type>::value
+                    || std::is_nothrow_move_assignable<typename Derived::value_type>::value))
+            {
+                auto&  cur   = static_cast<Derived&>(*this);
+                auto&& other = static_cast<Derived&&>(rhs);
+                cur.get_storage().copy_value(std::move(other).get_storage());
+                return *this;
+            }
+
+            optional_move(const optional_move&) noexcept = default;
+            optional_move& operator=(const optional_move&) noexcept = default;
+        };
+
+        template <class Derived>
+        struct optional_move<false, Derived>
+        {
+            optional_move() noexcept = default;
+
+            optional_move(optional_move&&) noexcept = delete;
+            optional_move& operator=(optional_move&&) noexcept = delete;
+
+            optional_move(const optional_move&) noexcept = default;
+            optional_move& operator=(const optional_move&) noexcept = default;
+        };
+
         //=== is_optional ===//
         template <typename T>
         struct is_optional_impl : std::false_type
@@ -128,7 +237,21 @@ namespace type_safe
     /// \module optional
     template <class StoragePolicy>
     class basic_optional
+        : detail::optional_storage<StoragePolicy>,
+          detail::
+              optional_copy<std::is_copy_constructible<typename StoragePolicy::value_type>::value,
+                            basic_optional<StoragePolicy>>,
+          detail::
+              optional_move<std::is_move_constructible<typename StoragePolicy::value_type>::value,
+                            basic_optional<StoragePolicy>>
     {
+        friend detail::
+            optional_copy<std::is_copy_constructible<typename StoragePolicy::value_type>::value,
+                          basic_optional<StoragePolicy>>;
+        friend detail::
+            optional_move<std::is_move_constructible<typename StoragePolicy::value_type>::value,
+                          basic_optional<StoragePolicy>>;
+
     public:
         using storage    = StoragePolicy;
         using value_type = typename storage::value_type;
@@ -139,7 +262,28 @@ namespace type_safe
             typename StoragePolicy::template rebind<U>>>;
 
     private:
-        storage policy_;
+        storage& get_storage() TYPE_SAFE_LVALUE_REF noexcept
+        {
+            return static_cast<detail::optional_storage<StoragePolicy>&>(*this).storage;
+        }
+
+        const storage& get_storage() const TYPE_SAFE_LVALUE_REF noexcept
+        {
+            return static_cast<const detail::optional_storage<StoragePolicy>&>(*this).storage;
+        }
+
+#if TYPE_SAFE_USE_REF_QUALIFIERS
+        storage&& get_storage() && noexcept
+        {
+            return std::move(static_cast<detail::optional_storage<StoragePolicy>&>(*this).storage);
+        }
+
+        const storage&& get_storage() const && noexcept
+        {
+            return std::move(
+                static_cast<const detail::optional_storage<StoragePolicy>&>(*this).storage);
+        }
+#endif
 
     public:
         //=== constructors/destructors/assignment/swap ===//
@@ -156,20 +300,24 @@ namespace type_safe
         /// \requires The `create_value()` function of the `StoragePolicy` must accept `value`.
         /// \param 1
         /// \exclude
-        template <typename T>
-        basic_optional(T&& value, decltype(policy_.create_value(std::forward<T>(value)), 0) = 0)
+        template <typename T,
+                  typename = typename std::enable_if<!std::is_same<
+                      typename std::decay<T>::type, basic_optional<storage>>::value>::type>
+        basic_optional(T&& value,
+                       decltype(std::declval<basic_optional<storage>>().get_storage().create_value(
+                                    std::forward<T>(value)),
+                                0) = 0)
         {
-            policy_.create_value(std::forward<T>(value));
+            get_storage().create_value(std::forward<T>(value));
         }
 
         /// \effects Copy constructor:
         /// If `other` does not have a value, it will be created without a value as well.
         /// If `other` has a value, it will be created with a value by copying `other.value()`.
         /// \throws Anything thrown by the copy constructor of `value_type` if `other` has a value.
-        basic_optional(const basic_optional& other)
-        {
-            policy_.create_value(other.policy_);
-        }
+        /// \notes This constructor will not participate in overload resolution,
+        /// unless the `value_type` is copy constructible.
+        basic_optional(const basic_optional& other) = default;
 
         /// \effects Move constructor:
         /// If `other` does not have a value, it will be created without a value as well.
@@ -177,13 +325,10 @@ namespace type_safe
         /// \throws Anything thrown by the move constructor of `value_type` if `other` has a value.
         /// \notes `other` will still have a value after the move operation,
         /// it is just in a moved-from state./
-        /// \notes If reference qualifiers on member functions are not supported,
-        /// it will copy instead of move.
+        /// \notes This constructor will not participate in overload resolution,
+        /// unless the `value_type` is move constructible.
         basic_optional(basic_optional&& other) noexcept(
-            TYPE_SAFE_USE_REF_QUALIFIERS&& std::is_nothrow_move_constructible<value_type>::value)
-        {
-            policy_.create_value(std::move(other.policy_));
-        }
+            std::is_nothrow_move_constructible<value_type>::value) = default;
 
         /// \effects If it has a value, it will be destroyed.
         ~basic_optional() noexcept
@@ -201,35 +346,36 @@ namespace type_safe
         /// \effects Same as `emplace(std::forward<T>(t))`.
         /// \requires The call to `emplace()` must be well-formed.
         /// \synopsis template \<typename T\>\nbasic_optional& operator=(T&& value)
-        template <typename T>
+        template <typename T,
+                  typename = typename std::enable_if<!std::is_same<
+                      typename std::decay<T>::type, basic_optional<storage>>::value>::type>
         auto operator=(T&& value)
-            -> decltype(this->policy_.create_value(std::forward<T>(value)), *this)
+            -> decltype(std::declval<basic_optional<storage>>().get_storage().create_value(
+                            std::forward<T>(value)),
+                        *this)
         {
             emplace(std::forward<T>(value));
             return *this;
         }
 
         /// \effects Copy assignment operator:
-        /// If `other` has a value, calls `emplace(other.value())` (this will always trigger the single parameter version).
-        /// Otherwise calls `reset()`.
+        /// If `other` has a value, does something equivalent to `emplace(other.value())` (this will always trigger the single parameter version).
+        /// Otherwise will reset the optional to the empty state.
         /// \throws Anything thrown by the call to `emplace()`.
-        basic_optional& operator=(const basic_optional& other)
-        {
-            policy_.copy_value(other.policy_);
-            return *this;
-        }
+        /// \notes This operator will not participate in overload resolution,
+        /// unless the `value_type` is copy constructible.
+        basic_optional& operator=(const basic_optional& other) = default;
 
         /// \effects Move assignment operator:
-        /// If `other` has a value, calls `emplace(std::move(other).value())` (this will always trigger the single parameter version).
-        /// Otherwise calls `reset()`.
+        /// If `other` has a value, does something equivalent to `emplace(std::move(other).value())` (this will always trigger the single parameter version).
+        /// Otherwise will reset the optional to the empty state.
         /// \throws Anything thrown by the call to `emplace()`.
+        /// \notes This operator will not participate in overload resolution,
+        /// unless the `value_type` is copy constructible.
         basic_optional& operator=(basic_optional&& other) noexcept(
-            std::is_nothrow_move_constructible<value_type>::value&&
-                std::is_nothrow_move_assignable<value_type>::value)
-        {
-            policy_.copy_value(std::move(other.policy_));
-            return *this;
-        }
+            std::is_nothrow_move_constructible<value_type>::value
+            && (!std::is_move_assignable<value_type>::value
+                || std::is_nothrow_move_assignable<value_type>::value)) = default;
 
         /// \effects Swap.
         /// If both `a` and `b` have values, swaps the values with their swap function.
@@ -240,7 +386,7 @@ namespace type_safe
             std::is_nothrow_move_constructible<value_type>::value&&
                 detail::is_nothrow_swappable<value_type>::value)
         {
-            a.policy_.swap_value(b.policy_);
+            a.get_storage().swap_value(b.get_storage());
         }
 
         //=== modifiers ===//
@@ -249,7 +395,7 @@ namespace type_safe
         void reset() noexcept
         {
             if (has_value())
-                policy_.destroy_value();
+                get_storage().destroy_value();
         }
 
         /// \effects First destroys any old value like `reset()`.
@@ -262,10 +408,11 @@ namespace type_safe
         template <typename... Args>
         auto emplace(Args&&... args) noexcept(
             std::is_nothrow_constructible<value_type, Args...>::value)
-            -> decltype(this->policy_.create_value(std::forward<Args>(args)...))
+            -> decltype(std::declval<basic_optional<storage>>().get_storage().create_value(
+                std::forward<Args>(args)...))
         {
             reset();
-            policy_.create_value(std::forward<Args>(args)...);
+            get_storage().create_value(std::forward<Args>(args)...);
         }
 
         /// \effects If `has_value()` is `false` creates it by calling the constructor with `arg` perfectly forwarded.
@@ -281,10 +428,11 @@ namespace type_safe
                 typename std::enable_if<detail::is_direct_assignable<value_type, Arg>::value>::type>
         auto emplace(Arg&& arg) noexcept(std::is_nothrow_constructible<value_type, Arg>::value&&
                                              std::is_nothrow_assignable<value_type, Arg>::value)
-            -> decltype(this->policy_.create_value(std::forward<Arg>(arg)))
+            -> decltype(std::declval<basic_optional<storage>>().get_storage().create_value(
+                std::forward<Arg>(arg)))
         {
             if (!has_value())
-                policy_.create_value(std::forward<Arg>(arg));
+                get_storage().create_value(std::forward<Arg>(arg));
             else
                 value() = std::forward<Arg>(arg);
         }
@@ -299,40 +447,42 @@ namespace type_safe
         /// \returns Whether or not the optional has a value.
         bool has_value() const noexcept
         {
-            return policy_.has_value();
+            return get_storage().has_value();
         }
 
         /// \returns A reference to the stored value.
         /// \requires `has_value() == true`.
-        auto value() TYPE_SAFE_LVALUE_REF noexcept -> decltype(policy_.get_value())
+        auto value() TYPE_SAFE_LVALUE_REF noexcept
+            -> decltype(std::declval<basic_optional<storage>&>().get_storage().get_value())
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
-            return policy_.get_value();
+            return get_storage().get_value();
         }
 
         /// \returns A `const` reference to the stored value.
         /// \requires `has_value() == true`.
-        auto value() const TYPE_SAFE_LVALUE_REF noexcept -> decltype(policy_.get_value())
+        auto value() const TYPE_SAFE_LVALUE_REF noexcept
+            -> decltype(std::declval<const basic_optional<storage>&>().get_storage().get_value())
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
-            return policy_.get_value();
+            return get_storage().get_value();
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns An rvalue reference to the stored value.
         /// \requires `has_value() == true`.
-        auto value() && noexcept -> decltype(std::move(policy_).get_value())
+        auto value() && noexcept -> decltype(std::move(get_storage()).get_value())
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
-            return std::move(policy_).get_value();
+            return std::move(get_storage()).get_value();
         }
 
         /// \returns An rvalue reference to the stored value.
         /// \requires `has_value() == true`.
-        auto value() const && noexcept -> decltype(std::move(policy_).get_value())
+        auto value() const && noexcept -> decltype(std::move(get_storage()).get_value())
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
-            return std::move(policy_).get_value();
+            return std::move(get_storage()).get_value();
         }
 #endif
 
@@ -340,10 +490,10 @@ namespace type_safe
         /// \requires `u` must be valid argument to the `value_or()` function of the `StoragePolicy`.
         /// \notes Depending on the `StoragePolicy`, this either returns a decayed type or a reference.
         template <typename U>
-        auto value_or(U&& u) const TYPE_SAFE_LVALUE_REF
-            -> decltype(policy_.get_value_or(std::forward<U>(u)))
+        auto value_or(U&& u) const TYPE_SAFE_LVALUE_REF -> decltype(
+            std::declval<basic_optional<storage>>().get_storage().get_value_or(std::forward<U>(u)))
         {
-            return policy_.get_value_or(std::forward<U>(u));
+            return get_storage().get_value_or(std::forward<U>(u));
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
@@ -351,9 +501,10 @@ namespace type_safe
         /// \requires `u` must be valid argument to the `value_or()` function of the `StoragePolicy`.
         /// \notes Depending on the `StoragePolicy`, this either returns a decayed type or a reference.
         template <typename U>
-        auto value_or(U&& u) && -> decltype(std::move(policy_).get_value_or(std::forward<U>(u)))
+        auto value_or(U&& u) && -> decltype(
+            std::move(get_storage()).get_value_or(std::forward<U>(u)))
         {
-            return std::move(policy_).get_value_or(std::forward<U>(u));
+            return std::move(get_storage()).get_value_or(std::forward<U>(u));
         }
 #endif
 
@@ -623,7 +774,7 @@ namespace type_safe
         };
 
         template <typename Visitor, class... Optionals>
-        auto visit(Visitor&& visitor, Optionals&&... optionals)
+        auto visit_optional_impl(Visitor&& visitor, Optionals&&... optionals)
             -> decltype(detail::visit_optional<!visitor_allow_incomplete<Visitor>::value,
                                                decltype(std::forward<Visitor>(visitor)),
                                                decltype(std::forward<Optionals>(optionals))...>::
@@ -652,10 +803,11 @@ namespace type_safe
     /// \module optional
     template <typename Visitor, class... Optionals>
     auto visit(Visitor&& visitor, Optionals&&... optionals)
-        -> decltype(detail::visit(std::forward<Visitor>(visitor),
-                                  std::forward<Optionals>(optionals)...))
+        -> decltype(detail::visit_optional_impl(std::forward<Visitor>(visitor),
+                                                std::forward<Optionals>(optionals)...))
     {
-        return detail::visit(std::forward<Visitor>(visitor), std::forward<Optionals>(optionals)...);
+        return detail::visit_optional_impl(std::forward<Visitor>(visitor),
+                                           std::forward<Optionals>(optionals)...);
     }
 
     /// \exclude
