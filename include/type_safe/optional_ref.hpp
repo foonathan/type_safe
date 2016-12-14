@@ -17,11 +17,19 @@ namespace type_safe
     /// Assigning an optional will always change the target of the reference.
     /// You cannot pass rvalues.
     ///
-    /// Depending on the const-ness of `T` is the reference to `const` or non-const as well.
-    template <typename T>
+    /// If `XValue` is `true`, you still cannot pass rvalues,
+    /// but the result of `value()`/`value_or()` will return an rvalue reference,
+    /// to allow moving of the stored value into something else.
+    ///
+    /// Depending on the const-ness of `T` is the reference to `const` or non-const as well,
+    /// unless `XValue` is true`, in which case `T` must not be `const`.
+    template <typename T, bool XValue = false>
     class reference_optional_storage
     {
         static_assert(!std::is_reference<T>::value, "pass the type without reference");
+        static_assert(!XValue || !std::is_const<T>::value, "must not be const if xvalue reference");
+
+        using result_type = typename std::conditional<XValue, T&&, T&>::type;
 
         struct prevent_rvalues
         {
@@ -30,12 +38,12 @@ namespace type_safe
     public:
         using value_type             = std::reference_wrapper<T>;
         using lvalue_reference       = T&;
-        using const_lvalue_reference = T&;
+        using const_lvalue_reference = lvalue_reference;
         using rvalue_reference       = prevent_rvalues;
-        using const_rvalue_reference = prevent_rvalues;
+        using const_rvalue_reference = rvalue_reference;
 
         template <typename U>
-        using rebind = reference_optional_storage<U>;
+        using rebind = reference_optional_storage<U, XValue>;
 
         /// \effects Creates it without a bound reference.
         reference_optional_storage() noexcept : pointer_(nullptr)
@@ -48,13 +56,19 @@ namespace type_safe
             pointer_ = &obj;
         }
 
+        /// \effects Binds the reference to the same reference in `other`.
+        void create_value(const reference_optional_storage& other) noexcept
+        {
+            pointer_ = other.pointer_;
+        }
+
         /// \effects Binds the same target as `const_ref`.
         /// \param 1
         /// \exclude
         template <typename U,
                   typename = typename std::
                       enable_if<std::is_same<U, typename std::remove_const<T>::type>::value>::type>
-        void create_value(const basic_optional<reference_optional_storage<U>>& const_ref)
+        void create_value(const basic_optional<reference_optional_storage<U, XValue>>& const_ref)
         {
             pointer_ = const_ref.has_value() ? &const_ref.value() : nullptr;
         }
@@ -66,6 +80,19 @@ namespace type_safe
         }
 
         void create_value(T&&) = delete;
+
+        /// \effects Binds the reference to the same reference in `other`.
+        void copy_value(const reference_optional_storage& other) noexcept
+        {
+            pointer_ = other.pointer_;
+        }
+
+        /// \effects Swaps the reference with the reference in `other`,
+        /// i.e. rebinds them, no value change.
+        void swap_value(reference_optional_storage& other) noexcept
+        {
+            std::swap(pointer_, other.pointer_);
+        }
 
         /// \effects Unbinds the reference.
         void destroy_value() noexcept
@@ -80,22 +107,24 @@ namespace type_safe
         }
 
         /// \returns The target of the reference.
-        lvalue_reference get_value() const noexcept
+        /// Depending on `XValue`, this will either be `T&` or `T&&`.
+        result_type get_value() const noexcept
         {
-            return *pointer_;
+            return static_cast<result_type>(*pointer_);
         }
 
         /// \returns Either `get_value()` or `other`.
-        lvalue_reference get_value_or(lvalue_reference other) const
+        /// Depending on `XValue`, this will either be `T&` or `T&&`.
+        result_type get_value_or(lvalue_reference other) const
         {
-            return has_value() ? get_value() : other;
+            return has_value() ? get_value() : static_cast<result_type>(other);
         }
 
     private:
         T* pointer_;
     };
 
-    /// A [ts::basic_optional]() that use [ts::reference_optional_storage<T>]().
+    /// A [ts::basic_optional]() that uses [ts::reference_optional_storage]().
     /// It is an optional reference.
     /// \notes `T` is the type without the reference, i.e. `optional_ref<int>`.
     template <typename T>
@@ -115,6 +144,21 @@ namespace type_safe
         return ptr ? optional_ref<const T>(*ptr) : nullopt;
     }
 
+    /// A [ts::basic_optional]() that uses [ts::reference_optional_storage]() with `XValue` being `true`.
+    /// It is an optional reference to an xvalue,
+    /// i.e. an lvalue that can be moved from, like returned by `std::move()`.
+    /// \notes `T` is the type without the reference, i.e. `optional_xvalue_ref<int>`.
+    template <typename T>
+    using optional_xvalue_ref = basic_optional<reference_optional_storage<T, true>>;
+
+    /// \returns A [ts::optional_xvalue_ref<T>]() to the pointee of `ptr` or `nullopt`.
+    /// \notes The pointee will be moved from when you call `value()`.
+    template <typename T>
+    optional_xvalue_ref<T> xref(T* ptr) noexcept
+    {
+        return ptr ? optional_xvalue_ref<T>(*ptr) : nullopt;
+    }
+
     /// \returns A [ts::optional<T>]() containing a copy of the value of `ref`
     /// if there is any value.
     /// \requires `T` must be copyable.
@@ -125,14 +169,13 @@ namespace type_safe
     }
 
     /// \returns A [ts::optional<T>]() containing a copy of the value of `ref` created by move constructing
-    /// if ther is any value.
-    /// \requires `T` must be moveable and `ref` must not be a reference to `const`.
+    /// if there is any value.
+    /// \requires `T` must be moveable.
     template <typename T>
-    optional<T> move(const optional_ref<T>& ref) noexcept(
+    optional<T> move(const optional_xvalue_ref<T>& ref) noexcept(
         std::is_nothrow_move_constructible<T>::value)
     {
-        static_assert(!std::is_const<T>::value, "move() cannot be called on reference to const");
-        return ref.has_value() ? make_optional(std::move(ref.value())) : nullopt;
+        return ref.has_value() ? make_optional(ref.value()) : nullopt;
     }
 } // namespace type_safe
 

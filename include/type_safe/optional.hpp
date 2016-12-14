@@ -117,6 +117,9 @@ namespace type_safe
     /// * Template alias `rebind<U>` - the same policy for a different type
     /// * `StoragePolicy() noexcept` - a no-throw default constructor that initializes it in the "empty" state
     /// * `void create_value(Args&&... args)` - creates a value by forwarding the arguments to its constructor
+    /// * `void create_value(const StoragePolicy&/StoragePolicy&&)` - creates a value by using the value stored in the other policy
+    /// * `void copy_value(const StoragePolicy&/StoragePolicy&&)` - similar to above, but *this may contain a value already
+    /// * `void swap_value(StoragePolicy&)` - swaps the stored value (if any) with the one in the other policy
     /// * `void destroy_value() noexcept` - calls the destructor of the value, afterwards the storage is "empty"
     /// * `bool has_value() const noexcept` - returns whether or not there is a value, i.e. `create_value()` has been called but `destroy_value()` has not
     /// * `U get_value() (const)& noexcept` - returns a reference to the stored value, U is one of the `XXX_reference` typedefs
@@ -165,8 +168,7 @@ namespace type_safe
         /// \throws Anything thrown by the copy constructor of `value_type` if `other` has a value.
         basic_optional(const basic_optional& other)
         {
-            if (other.has_value())
-                policy_.create_value(other.value());
+            policy_.create_value(other.policy_);
         }
 
         /// \effects Move constructor:
@@ -180,8 +182,7 @@ namespace type_safe
         basic_optional(basic_optional&& other) noexcept(
             TYPE_SAFE_USE_REF_QUALIFIERS&& std::is_nothrow_move_constructible<value_type>::value)
         {
-            if (other.has_value())
-                policy_.create_value(std::move(other).value());
+            policy_.create_value(std::move(other.policy_));
         }
 
         /// \effects If it has a value, it will be destroyed.
@@ -214,10 +215,7 @@ namespace type_safe
         /// \throws Anything thrown by the call to `emplace()`.
         basic_optional& operator=(const basic_optional& other)
         {
-            if (other.has_value())
-                emplace(other.value());
-            else
-                reset();
+            policy_.copy_value(other.policy_);
             return *this;
         }
 
@@ -229,10 +227,7 @@ namespace type_safe
             std::is_nothrow_move_constructible<value_type>::value&&
                 std::is_nothrow_move_assignable<value_type>::value)
         {
-            if (other.has_value())
-                emplace(std::move(other).value());
-            else
-                reset();
+            policy_.copy_value(std::move(other.policy_));
             return *this;
         }
 
@@ -245,21 +240,7 @@ namespace type_safe
             std::is_nothrow_move_constructible<value_type>::value&&
                 detail::is_nothrow_swappable<value_type>::value)
         {
-            if (a.has_value() && b.has_value())
-            {
-                using std::swap;
-                swap(a.value(), b.value());
-            }
-            else if (a.has_value())
-            {
-                b.policy_.create_value(std::move(a.value()));
-                a.reset();
-            }
-            else if (b.has_value())
-            {
-                a.policy_.create_value(std::move(b.value()));
-                b.reset();
-            }
+            a.policy_.swap_value(b.policy_);
         }
 
         //=== modifiers ===//
@@ -837,6 +818,102 @@ namespace type_safe
         {
             ::new (as_void()) value_type(std::forward<Args>(args)...);
             empty_ = false;
+        }
+
+        /// \effects Creates a value by copy constructing from the value stored in `other`,
+        /// if there is any.
+        void create_value(const direct_optional_storage& other)
+        {
+            if (other.has_value())
+                create_value(other.get_value());
+        }
+
+        /// \effects Creates a value by move constructing from the value stored in `other`,
+        /// if there is any.
+        void create_value(direct_optional_storage&& other)
+        {
+            if (other.has_value())
+                create_value(std::move(other).get_value());
+        }
+
+        /// \effects Copies the policy from `other`, by copy-constructing or assigning the stored value,
+        /// if any.
+        /// \throws Anything thrown by the copy constructor or copy assignment operator of `other`.
+        template <typename Dummy = T,
+                  typename = typename std::enable_if<std::is_copy_assignable<Dummy>::value>::type>
+        void copy_value(const direct_optional_storage& other)
+        {
+            if (has_value())
+            {
+                if (other.has_value())
+                    get_value() = other.get_value();
+                else
+                    destroy_value();
+            }
+            else if (other.has_value())
+                create_value(other.get_value());
+        }
+
+        /// \effects Copies the policy from `other`, by copy-constructing the stored value,
+        /// if any.
+        /// \throws Anything thrown by the copy constructor of `other`.
+        template <typename Dummy = T,
+                  typename std::enable_if<!std::is_copy_assignable<Dummy>::value, int>::type = 0>
+        void copy_value(const direct_optional_storage& other)
+        {
+            if (has_value())
+                destroy_value();
+            create_value(other.get_value());
+        }
+
+        /// \effects Copies the policy from `other`, by move-constructing or assigning the stored value,
+        /// if any.
+        /// \throws Anything thrown by the move constructor or move assignment operator of `other`.
+        template <typename Dummy = T,
+                  typename = typename std::enable_if<std::is_move_assignable<Dummy>::value>::type>
+        void copy_value(direct_optional_storage&& other)
+        {
+            if (has_value())
+            {
+                if (other.has_value())
+                    get_value() = std::move(other).get_value();
+                else
+                    destroy_value();
+            }
+            else if (other.has_value())
+                create_value(std::move(other).get_value());
+        }
+
+        /// \effects Copies the policy from `other`, by move-constructing the stored value,
+        /// if any.
+        /// \throws Anything thrown by the move constructor of `other`.
+        template <typename Dummy = T,
+                  typename std::enable_if<!std::is_move_assignable<Dummy>::value, int>::type = 0>
+        void copy_value(direct_optional_storage&& other)
+        {
+            if (has_value())
+                destroy_value();
+            create_value(std::move(other).get_value());
+        }
+
+        /// \effects Swaps the value with the value in `other`.
+        void swap_value(direct_optional_storage& other)
+        {
+            if (has_value() && other.has_value())
+            {
+                using std::swap;
+                swap(get_value(), other.get_value());
+            }
+            else if (has_value())
+            {
+                other.create_value(std::move(get_value()));
+                destroy_value();
+            }
+            else if (other.has_value())
+            {
+                create_value(std::move(other).get_value());
+                other.destroy_value();
+            }
         }
 
         /// \effects Calls the destructor of `value_type`.
