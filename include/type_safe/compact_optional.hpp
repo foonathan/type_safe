@@ -42,12 +42,11 @@ namespace type_safe
     template <class CompactPolicy>
     class compact_optional_storage
     {
-        using storage_type = typename CompactPolicy::storage_type;
-
     public:
         using value_type = typename std::remove_cv<typename CompactPolicy::value_type>::type;
         static_assert(!std::is_reference<value_type>::value,
                       "value_type must not be a reference; use optional_ref<T> for that");
+        using storage_type = typename CompactPolicy::storage_type;
 
         using lvalue_reference = detail::storage_reference<storage_type, value_type, value_type&>;
         using const_lvalue_reference =
@@ -81,6 +80,37 @@ namespace type_safe
             storage_ = static_cast<storage_type>(value_type(std::forward<Args>(args)...));
             DEBUG_ASSERT(has_value(), detail::assert_handler{},
                          "create_value() called creating an invalid value");
+        }
+
+        /// \effects Copy assigns the `storage_type`.
+        void create_value(const compact_optional_storage& other)
+        {
+            storage_ = other.storage_;
+        }
+
+        /// \effects Move assigns the `storage_type`.
+        void create_value(compact_optional_storage&& other)
+        {
+            storage_ = std::move(other.storage_);
+        }
+
+        /// \effects Copy assigns the `storage_type`.
+        void copy_value(const compact_optional_storage& other)
+        {
+            storage_ = other.storage_;
+        }
+
+        /// \effects Move assigns the `storage_type`.
+        void copy_value(compact_optional_storage&& other)
+        {
+            storage_ = std::move(other.storage_);
+        }
+
+        /// \effects Swaps the `storage_type`.
+        void swap_value(compact_optional_storage& other)
+        {
+            using std::swap;
+            swap(storage_, other.storage_);
         }
 
         /// \effects Destroys the value by setting it to the invalid storage value.
