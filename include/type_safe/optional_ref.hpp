@@ -23,6 +23,7 @@ namespace type_safe
     ///
     /// Depending on the const-ness of `T` is the reference to `const` or non-const as well,
     /// unless `XValue` is true`, in which case `T` must not be `const`.
+    /// \module optional
     template <typename T, bool XValue = false>
     class reference_optional_storage
     {
@@ -127,10 +128,12 @@ namespace type_safe
     /// A [ts::basic_optional]() that uses [ts::reference_optional_storage]().
     /// It is an optional reference.
     /// \notes `T` is the type without the reference, i.e. `optional_ref<int>`.
+    /// \module optional
     template <typename T>
     using optional_ref = basic_optional<reference_optional_storage<T>>;
 
     /// \returns A [ts::optional_ref<T>]() to the pointee of `ptr` or `nullopt`.
+    /// \module optional
     template <typename T>
     optional_ref<T> ref(T* ptr) noexcept
     {
@@ -138,6 +141,7 @@ namespace type_safe
     }
 
     /// \returns A [ts::optional_ref<T>]() to `const` to the pointee of `ptr` or `nullopt`.
+    /// \module optional
     template <typename T>
     optional_ref<const T> cref(const T* ptr) noexcept
     {
@@ -148,11 +152,13 @@ namespace type_safe
     /// It is an optional reference to an xvalue,
     /// i.e. an lvalue that can be moved from, like returned by `std::move()`.
     /// \notes `T` is the type without the reference, i.e. `optional_xvalue_ref<int>`.
+    /// \module optional
     template <typename T>
     using optional_xvalue_ref = basic_optional<reference_optional_storage<T, true>>;
 
     /// \returns A [ts::optional_xvalue_ref<T>]() to the pointee of `ptr` or `nullopt`.
     /// \notes The pointee will be moved from when you call `value()`.
+    /// \module optional
     template <typename T>
     optional_xvalue_ref<T> xref(T* ptr) noexcept
     {
@@ -162,6 +168,7 @@ namespace type_safe
     /// \returns A [ts::optional<T>]() containing a copy of the value of `ref`
     /// if there is any value.
     /// \requires `T` must be copyable.
+    /// \module optional
     template <typename T>
     optional<typename std::remove_const<T>::type> copy(const optional_ref<T>& ref)
     {
@@ -171,6 +178,7 @@ namespace type_safe
     /// \returns A [ts::optional<T>]() containing a copy of the value of `ref` created by move constructing
     /// if there is any value.
     /// \requires `T` must be moveable.
+    /// \module optional
     template <typename T>
     optional<T> move(const optional_xvalue_ref<T>& ref) noexcept(
         std::is_nothrow_move_constructible<T>::value)
