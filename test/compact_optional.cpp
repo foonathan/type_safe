@@ -8,6 +8,8 @@
 
 using namespace type_safe;
 
+template class basic_optional<compact_optional_storage<compact_bool_policy<bool>>>;
+
 TEST_CASE("compact_bool")
 {
     using storage = compact_optional_storage<compact_bool_policy<bool>>;
@@ -26,6 +28,8 @@ TEST_CASE("compact_bool")
     REQUIRE(s.has_value());
     REQUIRE(s.get_value() == false);
 }
+
+template class basic_optional<compact_optional_storage<compact_integer_policy<int, -1>>>;
 
 TEST_CASE("compact_integer")
 {
@@ -46,6 +50,8 @@ TEST_CASE("compact_integer")
     REQUIRE(s.get_value() == 1);
 }
 
+template class basic_optional<compact_optional_storage<compact_floating_point_policy<float>>>;
+
 TEST_CASE("compact_floating_point")
 {
     using storage = compact_optional_storage<compact_floating_point_policy<float>>;
@@ -65,52 +71,57 @@ TEST_CASE("compact_floating_point")
     REQUIRE(s.get_value() == 1.0);
 }
 
+enum class test_compact_enum
+{
+    a,
+    b,
+};
+
+template class type_safe::
+    basic_optional<compact_optional_storage<compact_enum_policy<test_compact_enum, 2>>>;
+
 TEST_CASE("compact_enum")
 {
-    enum test
-    {
-        a,
-        b,
-    };
-
-    using storage = compact_optional_storage<compact_enum_policy<test, 2>>;
+    using storage = compact_optional_storage<compact_enum_policy<test_compact_enum, 2>>;
 
     storage s;
     REQUIRE(!s.has_value());
 
-    s.create_value(test::a);
+    s.create_value(test_compact_enum::a);
     REQUIRE(s.has_value());
-    REQUIRE(s.get_value() == test::a);
+    REQUIRE(s.get_value() == test_compact_enum::a);
 
     s.destroy_value();
     REQUIRE(!s.has_value());
 
-    s.create_value(test::b);
+    s.create_value(test_compact_enum::b);
     REQUIRE(s.has_value());
-    REQUIRE(s.get_value() == test::b);
+    REQUIRE(s.get_value() == test_compact_enum::b);
 }
+
+struct test_compact_container
+{
+    bool empty_ = true;
+
+    test_compact_container()
+    {
+    }
+
+    test_compact_container(int) : empty_(false)
+    {
+    }
+
+    bool empty() const
+    {
+        return empty_;
+    }
+};
+template class
+    basic_optional<compact_optional_storage<compact_container_policy<test_compact_container>>>;
 
 TEST_CASE("compact_container")
 {
-    struct container
-    {
-        bool empty_ = true;
-
-        container()
-        {
-        }
-
-        container(int) : empty_(false)
-        {
-        }
-
-        bool empty() const
-        {
-            return empty_;
-        }
-    };
-
-    using storage = compact_optional_storage<compact_container_policy<container>>;
+    using storage = compact_optional_storage<compact_container_policy<test_compact_container>>;
 
     storage s;
     REQUIRE(!s.has_value());
