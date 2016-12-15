@@ -115,10 +115,31 @@ namespace type_safe
         }
 
         /// \returns Either `get_value()` or `other`.
-        /// Depending on `XValue`, this will either be `T&` or `T&&`.
-        result_type get_value_or(lvalue_reference other) const
+        /// This must be given an lvalue of type `T` and it returns either an lvalue or an rvalue,
+        /// depending on `XValue`.
+        /// \param 1
+        /// \exclude
+        template <
+            typename U,
+            typename = typename std::enable_if<std::is_same<U&&, lvalue_reference>::value>::type>
+        result_type get_value_or(U&& other) const noexcept
         {
             return has_value() ? get_value() : static_cast<result_type>(other);
+        }
+
+        /// \returns Either `get_value()` or `other`.
+        /// The type of `other` must not be an lvalue of type `T`,
+        /// it will return a new `T` object created from `other` or by copying/moving `get_value()`.
+        /// \notes This function does not participate in overload resolution,
+        /// unless `T` is convertible from `U`.
+        /// \param 1
+        /// \exclude
+        template <typename U,
+                  typename = typename std::enable_if<!std::is_same<U&&, lvalue_reference>::value
+                                                     && std::is_convertible<U&&, T>::value>::type>
+        T get_value_or(U&& other) const
+        {
+            return has_value() ? get_value() : std::forward<U>(other);
         }
 
     private:
@@ -142,7 +163,9 @@ namespace type_safe
 
     /// \returns A [ts::optional_ref<T>]() to `obj`.
     /// \module optional
-    template <typename T>
+    /// \param 1
+    /// \exclude
+    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
     optional_ref<T> ref(T& obj) noexcept
     {
         return optional_ref<T>(obj);
@@ -158,7 +181,9 @@ namespace type_safe
 
     /// \returns A [ts::optional_ref<T>]() to `obj`.
     /// \module optional
-    template <typename T>
+    /// \param 1
+    /// \exclude
+    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
     optional_ref<const T> cref(const T& obj) noexcept
     {
         return optional_ref<const T>(obj);
@@ -184,7 +209,9 @@ namespace type_safe
     /// \returns A [ts::optional_xvalue_ref<T>]() to `obj`.
     /// \notes The object will be moved from when you call `value()`.
     /// \module optional
-    template <typename T>
+    /// \param 1
+    /// \exclude
+    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
     optional_xvalue_ref<T> xref(T& obj) noexcept
     {
         return optional_xvalue_ref<T>(obj);

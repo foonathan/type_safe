@@ -49,10 +49,16 @@ TEST_CASE("optional_ref")
         REQUIRE(v1 == 0);
         v2 = 0;
 
+        int res1 = a.value_or(3);
+        REQUIRE(res1 == 3);
+
         optional_ref<int> b(v1);
         b.value_or(v2) = 1;
         REQUIRE(v1 == 1);
         REQUIRE(v2 == 0);
+
+        int res2 = b.value_or(3);
+        REQUIRE(res2 == v1);
     }
     SECTION("ref")
     {
@@ -126,11 +132,17 @@ TEST_CASE("optional_xvalue_ref")
         REQUIRE(v1 == 0);
         v2 = 0;
 
+        int res3 = a.value_or(3);
+        REQUIRE(res3 == 3);
+
         optional_xvalue_ref<int> b(v1);
         int&&                    res2 = b.value_or(v2);
         res2                          = 1;
         REQUIRE(v1 == 1);
         REQUIRE(v2 == 0);
+
+        int res4 = b.value_or(3);
+        REQUIRE(res4 == v1);
     }
     SECTION("xref")
     {
