@@ -58,14 +58,24 @@ namespace type_safe
         {
         }
 
-        explicit operator T&() noexcept
+        explicit operator T&() & noexcept
         {
             return value_;
         }
 
-        explicit constexpr operator const T&() const noexcept
+        explicit constexpr operator const T&() const & noexcept
         {
             return value_;
+        }
+
+        explicit operator T&&() && noexcept
+        {
+            return std::move(value_);
+        }
+
+        explicit constexpr operator const T&&() const && noexcept
+        {
+            return std::move(value_);
         }
 
         friend void swap(strong_typedef& a, strong_typedef& b) noexcept
@@ -103,13 +113,13 @@ namespace type_safe
     template <class Tag, typename T>
     constexpr T&& get(strong_typedef<Tag, T>&& type) noexcept
     {
-        return static_cast<T&&>(type);
+        return static_cast<T&&>(std::move(type));
     }
 
     template <class Tag, typename T>
     constexpr const T&& get(const strong_typedef<Tag, T>&& type) noexcept
     {
-        return static_cast<const T&&>(type);
+        return static_cast<const T&&>(std::move(type));
     }
 
     namespace strong_typedef_op
