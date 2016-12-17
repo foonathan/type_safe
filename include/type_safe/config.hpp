@@ -38,6 +38,23 @@
 #define TYPE_SAFE_RVALUE_REF
 #endif
 
+#ifndef TYPE_SAFE_USE_NOEXCEPT_DEFAULT
+
+#if defined(__GNUC__) && __GNUC__ < 5
+// GCC before 5.0 doesn't handle noexcept and = default properly
+#define TYPE_SAFE_USE_NOEXCEPT_DEFAULT 0
+#else
+#define TYPE_SAFE_USE_NOEXCEPT_DEFAULT 1
+#endif
+
+#endif
+
+#if TYPE_SAFE_USE_NOEXCEPT_DEFAULT
+#define TYPE_SAFE_NOEXCEPT_DEFAULT(Val) noexcept(Val)
+#else
+#define TYPE_SAFE_NOEXCEPT_DEFAULT(Val)
+#endif
+
 #ifndef TYPE_SAFE_USE_EXCEPTIONS
 
 #if __cpp_exceptions

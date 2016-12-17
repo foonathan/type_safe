@@ -326,7 +326,7 @@ namespace type_safe
         /// it is just in a moved-from state./
         /// \notes This constructor will not participate in overload resolution,
         /// unless the `value_type` is move constructible.
-        basic_optional(basic_optional&& other) noexcept(
+        basic_optional(basic_optional&& other) TYPE_SAFE_NOEXCEPT_DEFAULT(
             std::is_nothrow_move_constructible<value_type>::value) = default;
 
         /// \effects If it has a value, it will be destroyed.
@@ -371,7 +371,7 @@ namespace type_safe
         /// \throws Anything thrown by the call to `emplace()`.
         /// \notes This operator will not participate in overload resolution,
         /// unless the `value_type` is copy constructible.
-        basic_optional& operator=(basic_optional&& other) noexcept(
+        basic_optional& operator=(basic_optional&& other) TYPE_SAFE_NOEXCEPT_DEFAULT(
             std::is_nothrow_move_constructible<value_type>::value
             && (!std::is_move_assignable<value_type>::value
                 || std::is_nothrow_move_assignable<value_type>::value)) = default;
