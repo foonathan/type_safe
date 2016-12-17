@@ -8,7 +8,12 @@
 
 using namespace type_safe;
 
-template class basic_optional<compact_optional_storage<compact_bool_policy<bool>>>;
+namespace type_safe
+{
+    template class basic_optional<compact_optional_storage<compact_bool_policy<bool>>>;
+    template class basic_optional<compact_optional_storage<compact_integer_policy<int, -1>>>;
+    template class basic_optional<compact_optional_storage<compact_floating_point_policy<float>>>;
+} // namespace type_safe
 
 TEST_CASE("compact_bool")
 {
@@ -29,8 +34,6 @@ TEST_CASE("compact_bool")
     REQUIRE(s.get_value() == false);
 }
 
-template class basic_optional<compact_optional_storage<compact_integer_policy<int, -1>>>;
-
 TEST_CASE("compact_integer")
 {
     using storage = compact_optional_storage<compact_integer_policy<int, -1>>;
@@ -49,8 +52,6 @@ TEST_CASE("compact_integer")
     REQUIRE(s.has_value());
     REQUIRE(s.get_value() == 1);
 }
-
-template class basic_optional<compact_optional_storage<compact_floating_point_policy<float>>>;
 
 TEST_CASE("compact_floating_point")
 {
@@ -116,7 +117,7 @@ struct test_compact_container
         return empty_;
     }
 };
-template class
+template class type_safe::
     basic_optional<compact_optional_storage<compact_container_policy<test_compact_container>>>;
 
 TEST_CASE("compact_container")

@@ -187,7 +187,6 @@ TEST_CASE("optional")
             REQUIRE_FALSE(a.has_value());
             REQUIRE(empty1.has_value());
             REQUIRE(empty1.value().id == 0);
-            REQUIRE(empty1.value().move_ctor());
             REQUIRE(empty1.value().not_assigned());
             REQUIRE_FALSE(empty1.value().swapped);
         }
@@ -587,4 +586,3 @@ TEST_CASE("optional")
         REQUIRE(b.value() == "a");
     }
 }
-

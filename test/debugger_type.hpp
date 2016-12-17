@@ -8,6 +8,7 @@
 struct debugger_type
 {
     int  id;
+    bool from_ctor         = false;
     bool from_move_ctor    = false;
     bool from_copy_ctor    = false;
     bool was_move_assigned = false;
@@ -16,6 +17,7 @@ struct debugger_type
 
     debugger_type(int id) : id(id)
     {
+        from_ctor = true;
     }
 
     debugger_type(debugger_type&& other) : debugger_type(other.id)
@@ -52,17 +54,17 @@ struct debugger_type
 
     bool ctor() const
     {
-        return !from_copy_ctor && !from_move_ctor;
+        return from_ctor;
     }
 
     bool move_ctor() const
     {
-        return from_move_ctor && !from_copy_ctor;
+        return !from_copy_ctor;
     }
 
     bool copy_ctor() const
     {
-        return from_copy_ctor && !from_move_ctor;
+        return !from_move_ctor;
     }
 
     bool not_assigned() const

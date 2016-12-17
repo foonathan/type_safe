@@ -9,6 +9,22 @@
 
 namespace type_safe
 {
+    /// \exclude
+    namespace detail
+    {
+        template <typename T>
+        T& move_if(std::false_type, T& obj) noexcept
+        {
+            return obj;
+        }
+
+        template <typename T>
+        T&& move_if(std::true_type, T& obj) noexcept
+        {
+            return std::move(obj);
+        }
+    }
+
     /// A `StoragePolicy` for [ts::basic_optional]() that allows optional references.
     ///
     /// The actual `value_type` passed to the optional is [std::reference_wrapper<T>](),
@@ -117,14 +133,11 @@ namespace type_safe
         /// \returns Either `get_value()` or `other`.
         /// This must be given an lvalue of type `T` and it returns either an lvalue or an rvalue,
         /// depending on `XValue`.
-        /// \param 1
-        /// \exclude
-        template <
-            typename U,
-            typename = typename std::enable_if<std::is_same<U&&, lvalue_reference>::value>::type>
-        result_type get_value_or(U&& other) const noexcept
+        result_type get_value_or(lvalue_reference other) const noexcept
         {
-            return has_value() ? get_value() : static_cast<result_type>(other);
+            if (has_value())
+                return get_value();
+            return detail::move_if(std::integral_constant<bool, XValue>{}, other);
         }
 
         /// \returns Either `get_value()` or `other`.
@@ -134,9 +147,13 @@ namespace type_safe
         /// unless `T` is convertible from `U`.
         /// \param 1
         /// \exclude
-        template <typename U,
-                  typename = typename std::enable_if<!std::is_same<U&&, lvalue_reference>::value
-                                                     && std::is_convertible<U&&, T>::value>::type>
+        template <
+            typename U,
+            typename =
+                typename std::enable_if<!(std::is_reference<U>::value
+                                          && std::is_same<typename std::remove_reference<U>::type&,
+                                                          lvalue_reference>::value)
+                                        && std::is_convertible<U&&, T>::value>::type>
         T get_value_or(U&& other) const
         {
             return has_value() ? get_value() : std::forward<U>(other);
