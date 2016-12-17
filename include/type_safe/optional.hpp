@@ -87,16 +87,16 @@ namespace type_safe
             optional_copy& operator=(optional_copy&&) noexcept = default;
         };
 
-        template <bool MoveConstructible, class Derived>
+        template <bool MoveConstructible, class Derived, typename ValueType>
         struct optional_move;
 
-        template <class Derived>
-        struct optional_move<true, Derived>
+        template <class Derived, typename ValueType>
+        struct optional_move<true, Derived, ValueType>
         {
             optional_move() noexcept = default;
 
             optional_move(optional_move&& rhs) noexcept(
-                std::is_nothrow_move_constructible<typename Derived::value_type>::value)
+                std::is_nothrow_move_constructible<ValueType>::value)
             {
                 auto&  cur   = static_cast<Derived&>(*this);
                 auto&& other = static_cast<Derived&&>(rhs);
@@ -104,9 +104,9 @@ namespace type_safe
             }
 
             optional_move& operator=(optional_move&& rhs) noexcept(
-                std::is_nothrow_move_constructible<typename Derived::value_type>::value
-                && (!std::is_move_assignable<typename Derived::value_type>::value
-                    || std::is_nothrow_move_assignable<typename Derived::value_type>::value))
+                std::is_nothrow_move_constructible<ValueType>::value
+                && (!std::is_move_assignable<ValueType>::value
+                    || std::is_nothrow_move_assignable<ValueType>::value))
             {
                 auto&  cur   = static_cast<Derived&>(*this);
                 auto&& other = static_cast<Derived&&>(rhs);
@@ -118,8 +118,8 @@ namespace type_safe
             optional_move& operator=(const optional_move&) noexcept = default;
         };
 
-        template <class Derived>
-        struct optional_move<false, Derived>
+        template <class Derived, typename ValueType>
+        struct optional_move<false, Derived, ValueType>
         {
             optional_move() noexcept = default;
 
@@ -243,14 +243,14 @@ namespace type_safe
                             basic_optional<StoragePolicy>>,
           detail::
               optional_move<std::is_move_constructible<typename StoragePolicy::value_type>::value,
-                            basic_optional<StoragePolicy>>
+                            basic_optional<StoragePolicy>, typename StoragePolicy::value_type>
     {
         friend detail::
             optional_copy<std::is_copy_constructible<typename StoragePolicy::value_type>::value,
                           basic_optional<StoragePolicy>>;
         friend detail::
             optional_move<std::is_move_constructible<typename StoragePolicy::value_type>::value,
-                          basic_optional<StoragePolicy>>;
+                          basic_optional<StoragePolicy>, typename StoragePolicy::value_type>;
 
     public:
         using storage    = StoragePolicy;
