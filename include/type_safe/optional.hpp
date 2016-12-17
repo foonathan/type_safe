@@ -451,8 +451,7 @@ namespace type_safe
 
         /// \returns A reference to the stored value.
         /// \requires `has_value() == true`.
-        auto value() TYPE_SAFE_LVALUE_REF noexcept
-            -> decltype(std::declval<basic_optional<storage>&>().get_storage().get_value())
+        auto value() TYPE_SAFE_LVALUE_REF noexcept -> decltype(std::declval<storage&>().get_value())
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return get_storage().get_value();
@@ -461,7 +460,7 @@ namespace type_safe
         /// \returns A `const` reference to the stored value.
         /// \requires `has_value() == true`.
         auto value() const TYPE_SAFE_LVALUE_REF noexcept
-            -> decltype(std::declval<const basic_optional<storage>&>().get_storage().get_value())
+            -> decltype(std::declval<const storage&>().get_value())
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return get_storage().get_value();
@@ -470,7 +469,7 @@ namespace type_safe
 #if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \returns An rvalue reference to the stored value.
         /// \requires `has_value() == true`.
-        auto value() && noexcept -> decltype(std::move(get_storage()).get_value())
+        auto value() && noexcept -> decltype(std::declval<storage&&>().get_value())
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return std::move(get_storage()).get_value();
@@ -478,7 +477,7 @@ namespace type_safe
 
         /// \returns An rvalue reference to the stored value.
         /// \requires `has_value() == true`.
-        auto value() const && noexcept -> decltype(std::move(get_storage()).get_value())
+        auto value() const && noexcept -> decltype(std::declval<const storage&&>().get_value())
         {
             DEBUG_ASSERT(has_value(), detail::assert_handler{});
             return std::move(get_storage()).get_value();
@@ -489,8 +488,8 @@ namespace type_safe
         /// \requires `u` must be valid argument to the `value_or()` function of the `StoragePolicy`.
         /// \notes Depending on the `StoragePolicy`, this either returns a decayed type or a reference.
         template <typename U>
-        auto value_or(U&& u) const TYPE_SAFE_LVALUE_REF -> decltype(
-            std::declval<basic_optional<storage>>().get_storage().get_value_or(std::forward<U>(u)))
+        auto value_or(U&& u) const TYPE_SAFE_LVALUE_REF
+            -> decltype(std::declval<const storage&>().get_value_or(std::forward<U>(u)))
         {
             return get_storage().get_value_or(std::forward<U>(u));
         }
@@ -501,7 +500,7 @@ namespace type_safe
         /// \notes Depending on the `StoragePolicy`, this either returns a decayed type or a reference.
         template <typename U>
         auto value_or(U&& u) && -> decltype(
-            std::move(get_storage()).get_value_or(std::forward<U>(u)))
+            std::declval<storage&&>().get_value_or(std::forward<U>(u)))
         {
             return std::move(get_storage()).get_value_or(std::forward<U>(u));
         }
