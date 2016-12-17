@@ -304,8 +304,7 @@ namespace type_safe
                   typename = typename std::enable_if<!std::is_same<
                       typename std::decay<T>::type, basic_optional<storage>>::value>::type>
         basic_optional(T&& value,
-                       decltype(std::declval<basic_optional<storage>>().get_storage().create_value(
-                                    std::forward<T>(value)),
+                       decltype(std::declval<storage>().create_value(std::forward<T>(value)),
                                 0) = 0)
         {
             get_storage().create_value(std::forward<T>(value));
