@@ -33,6 +33,7 @@ endif()
 set(detail_header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/assert.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/assign_or_construct.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/copy_move_control.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/force_inline.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/is_nothrow_swappable.hpp)
 set(header_files

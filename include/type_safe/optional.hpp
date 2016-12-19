@@ -11,6 +11,7 @@
 
 #include <type_safe/detail/assert.hpp>
 #include <type_safe/detail/assign_or_construct.hpp>
+#include <type_safe/detail/copy_move_control.hpp>
 #include <type_safe/detail/is_nothrow_swappable.hpp>
 
 namespace type_safe
@@ -24,111 +25,48 @@ namespace type_safe
         template <class StoragePolicy>
         struct optional_storage
         {
-            // needed to make every copy operation noexcept
             StoragePolicy storage;
 
             optional_storage() noexcept = default;
 
-            optional_storage(const optional_storage&) noexcept
+            optional_storage(const optional_storage& other)
             {
-            }
-            optional_storage(optional_storage&&) noexcept
-            {
+                storage.create_value(other.storage);
             }
 
-            ~optional_storage() noexcept = default;
-
-            optional_storage& operator=(const optional_storage&) noexcept
+            optional_storage(optional_storage&& other) noexcept(
+                std::is_nothrow_move_constructible<typename StoragePolicy::value_type>::value)
             {
-                return *this;
-            }
-            optional_storage& operator=(optional_storage&&) noexcept
-            {
-                return *this;
-            }
-        };
-
-        template <bool CopyConstructible, class Derived>
-        struct optional_copy;
-
-        template <class Derived>
-        struct optional_copy<true, Derived>
-        {
-            optional_copy() noexcept = default;
-
-            optional_copy(const optional_copy& rhs)
-            {
-                auto& cur   = static_cast<Derived&>(*this);
-                auto& other = static_cast<const Derived&>(rhs);
-                cur.get_storage().create_value(other.get_storage());
+                storage.create_value(std::move(other.storage));
             }
 
-            optional_copy& operator=(const optional_copy& rhs)
+            ~optional_storage() noexcept
             {
-                auto& cur   = static_cast<Derived&>(*this);
-                auto& other = static_cast<const Derived&>(rhs);
-                cur.get_storage().copy_value(other.get_storage());
+                if (storage.has_value())
+                    storage.destroy_value();
+            }
+
+            optional_storage& operator=(const optional_storage& other)
+            {
+                storage.copy_value(other.storage);
                 return *this;
             }
 
-            optional_copy(optional_copy&&) noexcept = default;
-            optional_copy& operator=(optional_copy&&) noexcept = default;
-        };
-
-        template <class Derived>
-        struct optional_copy<false, Derived>
-        {
-            optional_copy() noexcept = default;
-
-            optional_copy(const optional_copy&) = delete;
-            optional_copy& operator=(const optional_copy&) = delete;
-
-            optional_copy(optional_copy&&) noexcept = default;
-            optional_copy& operator=(optional_copy&&) noexcept = default;
-        };
-
-        template <bool MoveConstructible, class Derived, typename ValueType>
-        struct optional_move;
-
-        template <class Derived, typename ValueType>
-        struct optional_move<true, Derived, ValueType>
-        {
-            optional_move() noexcept = default;
-
-            optional_move(optional_move&& rhs) noexcept(
-                std::is_nothrow_move_constructible<ValueType>::value)
+            optional_storage& operator=(optional_storage&& other) noexcept(
+                std::is_nothrow_move_constructible<typename StoragePolicy::value_type>::value
+                && (!std::is_move_assignable<typename StoragePolicy::value_type>::value
+                    || std::is_nothrow_move_assignable<typename StoragePolicy::value_type>::value))
             {
-                auto&  cur   = static_cast<Derived&>(*this);
-                auto&& other = static_cast<Derived&&>(rhs);
-                cur.get_storage().create_value(std::move(other).get_storage());
-            }
-
-            optional_move& operator=(optional_move&& rhs) noexcept(
-                std::is_nothrow_move_constructible<ValueType>::value
-                && (!std::is_move_assignable<ValueType>::value
-                    || std::is_nothrow_move_assignable<ValueType>::value))
-            {
-                auto&  cur   = static_cast<Derived&>(*this);
-                auto&& other = static_cast<Derived&&>(rhs);
-                cur.get_storage().copy_value(std::move(other).get_storage());
+                storage.copy_value(std::move(other.storage));
                 return *this;
             }
-
-            optional_move(const optional_move&) noexcept = default;
-            optional_move& operator=(const optional_move&) noexcept = default;
         };
 
-        template <class Derived, typename ValueType>
-        struct optional_move<false, Derived, ValueType>
-        {
-            optional_move() noexcept = default;
+        template <typename T>
+        using optional_copy = copy_control<std::is_copy_constructible<T>::value>;
 
-            optional_move(optional_move&&) noexcept = delete;
-            optional_move& operator=(optional_move&&) noexcept = delete;
-
-            optional_move(const optional_move&) noexcept = default;
-            optional_move& operator=(const optional_move&) noexcept = default;
-        };
+        template <typename T>
+        using optional_move = move_control<std::is_move_constructible<T>::value>;
 
         //=== is_optional ===//
         template <typename T>
@@ -236,22 +174,10 @@ namespace type_safe
     /// * `U get_value_or(T&& val) [const&/&&]` - returns either `get_value()` or `val`
     /// \module optional
     template <class StoragePolicy>
-    class basic_optional
-        : detail::optional_storage<StoragePolicy>,
-          detail::
-              optional_copy<std::is_copy_constructible<typename StoragePolicy::value_type>::value,
-                            basic_optional<StoragePolicy>>,
-          detail::
-              optional_move<std::is_move_constructible<typename StoragePolicy::value_type>::value,
-                            basic_optional<StoragePolicy>, typename StoragePolicy::value_type>
+    class basic_optional : detail::optional_storage<StoragePolicy>,
+                           detail::optional_copy<typename StoragePolicy::value_type>,
+                           detail::optional_move<typename StoragePolicy::value_type>
     {
-        friend detail::
-            optional_copy<std::is_copy_constructible<typename StoragePolicy::value_type>::value,
-                          basic_optional<StoragePolicy>>;
-        friend detail::
-            optional_move<std::is_move_constructible<typename StoragePolicy::value_type>::value,
-                          basic_optional<StoragePolicy>, typename StoragePolicy::value_type>;
-
     public:
         using storage    = StoragePolicy;
         using value_type = typename storage::value_type;
@@ -330,10 +256,7 @@ namespace type_safe
             std::is_nothrow_move_constructible<value_type>::value) = default;
 
         /// \effects If it has a value, it will be destroyed.
-        ~basic_optional() noexcept
-        {
-            reset();
-        }
+        ~basic_optional() noexcept = default;
 
         /// \effects Same as `reset()`.
         basic_optional& operator=(nullopt_t) noexcept
