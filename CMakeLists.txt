@@ -31,6 +31,7 @@ endif()
 
 # interface target
 set(detail_header_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/aligned_union.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/assert.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/assign_or_construct.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/copy_move_control.hpp
@@ -53,6 +54,7 @@ set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/optional_ref.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/output_parameter.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/strong_typedef.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/tagged_union.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/types.hpp)
 
 add_library(type_safe INTERFACE)
