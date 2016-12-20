@@ -121,6 +121,8 @@ namespace type_safe
 
         //=== modifiers ===//
         /// \effects Creates a new object of given type by perfectly forwarding `args`.
+        /// \throws Anything thrown by `T`s constructor,
+        /// in which case the union will stay empty.
         /// \requires The union must currently be empty.
         /// and `T` must be a valid type and constructible from the arguments.
         template <typename T, typename... Args>
@@ -223,6 +225,132 @@ namespace type_safe
     /// \exclude
     template <typename... Types>
     constexpr typename tagged_union<Types...>::type_id tagged_union<Types...>::invalid_type;
+
+    /// \exclude
+    namespace detail
+    {
+        template <class Union>
+        class destroy_union;
+
+        template <typename... Types>
+        class destroy_union<tagged_union<Types...>>
+        {
+        public:
+            static void destroy(tagged_union<Types...>& u) noexcept
+            {
+                auto idx = static_cast<std::size_t>(u.type());
+                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
+                callbacks[idx](u);
+            }
+
+        private:
+            template <typename T>
+            static void destroy_impl(tagged_union<Types...>& u) noexcept
+            {
+                u.destroy(union_type<T>{});
+            }
+
+            using callback_type                        = void (*)(tagged_union<Types...>&);
+            static constexpr callback_type callbacks[] = {&destroy_impl<Types>...};
+        };
+        template <typename... Types>
+        constexpr typename destroy_union<tagged_union<Types...>>::callback_type
+            destroy_union<tagged_union<Types...>>::callbacks[];
+
+        template <class Union>
+        class copy_union;
+
+        template <typename... Types>
+        class copy_union<tagged_union<Types...>>
+        {
+        public:
+            static void copy(tagged_union<Types...>& dest, const tagged_union<Types...>& org)
+            {
+                DEBUG_ASSERT(!dest.has_value(), detail::assert_handler{});
+
+                auto idx = static_cast<std::size_t>(org.type());
+                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
+                callbacks[idx](dest, org);
+            }
+
+        private:
+            template <typename T>
+            static void copy_impl(tagged_union<Types...>& dest, const tagged_union<Types...>& org)
+            {
+                dest.emplace(union_type<T>{}, org.value(union_type<T>{}));
+            }
+
+            using callback_type = void (*)(tagged_union<Types...>&, const tagged_union<Types...>&);
+            static constexpr callback_type callbacks[] = {&copy_impl<Types>...};
+        };
+        template <typename... Types>
+        constexpr typename copy_union<tagged_union<Types...>>::callback_type
+            copy_union<tagged_union<Types...>>::callbacks[];
+
+        template <class Union>
+        class move_union;
+
+        template <typename... Types>
+        class move_union<tagged_union<Types...>>
+        {
+        public:
+            static void move(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
+            {
+                DEBUG_ASSERT(!dest.has_value(), detail::assert_handler{});
+
+                auto idx = static_cast<std::size_t>(org.type());
+                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
+                callbacks[idx](dest, std::move(org));
+            }
+
+        private:
+            template <typename T>
+            static void move_impl(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
+            {
+                dest.emplace(union_type<T>{}, std::move(org).value(union_type<T>{}));
+            }
+
+            using callback_type = void (*)(tagged_union<Types...>&, tagged_union<Types...>&&);
+            static constexpr callback_type callbacks[] = {&move_impl<Types>...};
+        };
+        template <typename... Types>
+        constexpr typename move_union<tagged_union<Types...>>::callback_type
+            move_union<tagged_union<Types...>>::callbacks[];
+    } // namespace detail
+
+    /// \effects Destroys the type currently stored in the [ts::tagged_union](),
+    /// by calling `u.destroy(union_type<T>{})`.
+    /// \requires The union must currently store a type,
+    /// i.e. `has_value()` must return `true`.
+    /// \module variant
+    template <typename... Types>
+    void destroy(tagged_union<Types...>& u) noexcept
+    {
+        detail::destroy_union<tagged_union<Types...>>::destroy(u);
+    }
+
+    /// \effects Copies the type currently stored in one [ts::tagged_union]() to another.
+    /// This is equivalent to calling `dest.emplace(union_type<T>{}, org.value(union_type<T>{}))` (1)/
+    /// `dest.emplace(union_type<T>{}, std::move(org).value(union_type<T>{}))` (2),
+    /// where `T` is the type currently stored in the union.
+    /// \throws Anything by the copy/move constructor in which case nothing has changed.
+    /// \requires `dest` must not store a type, but `org` must have one,
+    /// and all types must be copyable/moveable.
+    /// \group union_copy_move
+    /// \module variant
+    template <typename... Types>
+    void copy(tagged_union<Types...>& dest, const tagged_union<Types...>& org)
+    {
+        detail::copy_union<tagged_union<Types...>>::copy(dest, org);
+    }
+
+    /// \group union_copy_move
+    /// \module variant
+    template <typename... Types>
+    void move(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
+    {
+        detail::move_union<tagged_union<Types...>>::move(dest, std::move(org));
+    }
 } // namespace type_safe
 
 #endif // TYPE_SAFE_TAGGED_UNION_HPP_INCLUDED

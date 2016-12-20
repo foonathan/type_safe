@@ -26,7 +26,24 @@ TEST_CASE("tagged_union")
         REQUIRE(tunion.type() == union_t::type_id(union_type<int>{}));
         REQUIRE(tunion.value(union_type<int>{}) == 5);
 
-        tunion.destroy(union_type<int>{});
+        union_t other;
+        copy(other, tunion);
+        REQUIRE(other.has_value());
+        REQUIRE(other.type() == union_t::type_id(union_type<int>{}));
+        REQUIRE(other.value(union_type<int>{}) == 5);
+
+        SECTION("member")
+        {
+            tunion.destroy(union_type<int>{});
+            REQUIRE(!tunion.has_value());
+            REQUIRE(tunion.type() == union_t::invalid_type);
+        }
+        SECTION("non-member")
+        {
+            destroy(tunion);
+            REQUIRE(!tunion.has_value());
+            REQUIRE(tunion.type() == union_t::invalid_type);
+        }
     }
     SECTION("emplace float")
     {
@@ -35,7 +52,24 @@ TEST_CASE("tagged_union")
         REQUIRE(tunion.type() == union_t::type_id(union_type<float>{}));
         REQUIRE(tunion.value(union_type<float>{}) == 3.0);
 
-        tunion.destroy(union_type<float>{});
+        union_t other;
+        copy(other, tunion);
+        REQUIRE(other.has_value());
+        REQUIRE(other.type() == union_t::type_id(union_type<float>{}));
+        REQUIRE(other.value(union_type<float>{}) == 3.0);
+
+        SECTION("member")
+        {
+            tunion.destroy(union_type<float>{});
+            REQUIRE(!tunion.has_value());
+            REQUIRE(tunion.type() == union_t::invalid_type);
+        }
+        SECTION("non-member")
+        {
+            destroy(tunion);
+            REQUIRE(!tunion.has_value());
+            REQUIRE(tunion.type() == union_t::invalid_type);
+        }
     }
     SECTION("emplace debugger_type")
     {
@@ -47,9 +81,40 @@ TEST_CASE("tagged_union")
         REQUIRE(val.id == 42);
         REQUIRE(val.ctor());
 
-        tunion.destroy(union_type<debugger_type>{});
-    }
+        SECTION("copy")
+        {
+            union_t other;
+            copy(other, tunion);
+            REQUIRE(other.has_value());
+            REQUIRE(other.type() == union_t::type_id(union_type<debugger_type>{}));
 
-    REQUIRE(!tunion.has_value());
-    REQUIRE(tunion.type() == union_t::invalid_type);
+            auto& otherval = other.value(union_type<debugger_type>{});
+            REQUIRE(otherval.id == 42);
+            REQUIRE(otherval.copy_ctor());
+        }
+        SECTION("move")
+        {
+            union_t other;
+            move(other, std::move(tunion));
+            REQUIRE(other.has_value());
+            REQUIRE(other.type() == union_t::type_id(union_type<debugger_type>{}));
+
+            auto& otherval = other.value(union_type<debugger_type>{});
+            REQUIRE(otherval.id == 42);
+            REQUIRE(otherval.move_ctor());
+        }
+
+        SECTION("member")
+        {
+            tunion.destroy(union_type<debugger_type>{});
+            REQUIRE(!tunion.has_value());
+            REQUIRE(tunion.type() == union_t::invalid_type);
+        }
+        SECTION("non-member")
+        {
+            destroy(tunion);
+            REQUIRE(!tunion.has_value());
+            REQUIRE(tunion.type() == union_t::invalid_type);
+        }
+    }
 }
