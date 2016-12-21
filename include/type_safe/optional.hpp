@@ -344,10 +344,9 @@ namespace type_safe
         /// unless there is an `operator=` that takes `arg` without an implicit user-defined conversion
         /// and the `create_value()` function of the `StoragePolicy` accepts the argument.
         /// \synopsis template \<typename Arg\>\nvoid emplace(Arg&& arg);
-        template <
-            typename Arg,
-            typename =
-                typename std::enable_if<detail::is_direct_assignable<value_type, Arg>::value>::type>
+        template <typename Arg,
+                  typename = typename std::
+                      enable_if<detail::is_direct_assignable<value_type, Arg&&>::value>::type>
         auto emplace(Arg&& arg) noexcept(std::is_nothrow_constructible<value_type, Arg>::value&&
                                              std::is_nothrow_assignable<value_type, Arg>::value)
             -> decltype(std::declval<basic_optional<storage>>().get_storage().create_value(
@@ -581,8 +580,11 @@ namespace type_safe
     /// Otherwise does nothing.
     /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
     /// \module optional
+    /// \param 2
+    /// \exclude
     template <class Optional, typename Func>
-    void with(Optional&& opt, Func&& f)
+    void with(Optional&& opt, Func&& f,
+              decltype(opt.has_value(), std::forward<Optional>(opt).value(), 0) = 0)
     {
         if (opt.has_value())
             std::forward<Func>(f)(std::forward<Optional>(opt).value());
@@ -719,7 +721,7 @@ namespace type_safe
     /// unelss the `Visitor` provides a member named `incomplete_visitor`,
     /// then `visit()` does not do anything instead of the error.
     /// \returns The result of the chosen `operator()`,
-    /// it's the type is the common type of all possible combinations.
+    /// its the type is the common type of all possible combinations.
     /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
     /// \module optional
     template <typename Visitor, class... Optionals>
