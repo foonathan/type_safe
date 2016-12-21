@@ -442,31 +442,6 @@ TEST_CASE("optional")
         b = 32;
         visit(visitor{32}, a, b);
     }
-    SECTION("apply")
-    {
-        auto called = false;
-        auto func1  = [&](int a, int b) {
-            REQUIRE(called);
-            REQUIRE(a == 0);
-            REQUIRE(b == 1);
-            return 2;
-        };
-
-        optional<int> a, b;
-
-        optional<int> res = apply<optional<int>>(func1, a, b);
-        REQUIRE(!res.has_value());
-
-        a   = 0;
-        res = apply<optional<int>>(func1, a, b);
-        REQUIRE(!res.has_value());
-
-        b      = 1;
-        called = true;
-        res    = apply<optional<int>>(func1, a, b);
-        REQUIRE(res.has_value());
-        REQUIRE(res.value() == 2);
-    }
     SECTION("comparision")
     {
         optional<int> a;
