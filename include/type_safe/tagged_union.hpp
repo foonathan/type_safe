@@ -27,8 +27,13 @@ namespace type_safe
         template <typename T, typename... Ts>
         struct get_type_index_impl;
 
+        template <typename T>
+        struct get_type_index_impl<T> : std::integral_constant<std::size_t, 9>
+        {
+        };
+
         template <typename T, typename... Tail>
-        struct get_type_index_impl<T, T, Tail...> : std::integral_constant<std::size_t, 0>
+        struct get_type_index_impl<T, T, Tail...> : std::integral_constant<std::size_t, 1>
         {
         };
 
@@ -80,7 +85,8 @@ namespace type_safe
         {
         public:
             /// \effects Initializes it to an invalid value.
-            constexpr type_id() noexcept : strong_typedef<type_id, std::size_t>(sizeof...(Types))
+            /// \notes The invalid value compares less than all valid values.
+            constexpr type_id() noexcept : strong_typedef<type_id, std::size_t>(0u)
             {
             }
 
@@ -238,7 +244,7 @@ namespace type_safe
         public:
             static void destroy(tagged_union<Types...>& u) noexcept
             {
-                auto idx = static_cast<std::size_t>(u.type());
+                auto idx = static_cast<std::size_t>(u.type()) - 1u;
                 DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
                 callbacks[idx](u);
             }
@@ -268,7 +274,7 @@ namespace type_safe
             {
                 DEBUG_ASSERT(!dest.has_value(), detail::assert_handler{});
 
-                auto idx = static_cast<std::size_t>(org.type());
+                auto idx = static_cast<std::size_t>(org.type()) - 1u;
                 DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
                 callbacks[idx](dest, org);
             }
@@ -298,7 +304,7 @@ namespace type_safe
             {
                 DEBUG_ASSERT(!dest.has_value(), detail::assert_handler{});
 
-                auto idx = static_cast<std::size_t>(org.type());
+                auto idx = static_cast<std::size_t>(org.type()) - 1u;
                 DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
                 callbacks[idx](dest, std::move(org));
             }
@@ -338,6 +344,7 @@ namespace type_safe
     /// and all types must be copyable/moveable.
     /// \group union_copy_move
     /// \module variant
+    /// \unique_name copy_union
     template <typename... Types>
     void copy(tagged_union<Types...>& dest, const tagged_union<Types...>& org)
     {
@@ -346,6 +353,7 @@ namespace type_safe
 
     /// \group union_copy_move
     /// \module variant
+    /// \unique_name move_union
     template <typename... Types>
     void move(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
     {
