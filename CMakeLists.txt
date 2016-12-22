@@ -55,7 +55,8 @@ set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/output_parameter.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/strong_typedef.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/tagged_union.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/types.hpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/types.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/visitor.hpp)
 
 add_library(type_safe INTERFACE)
 target_sources(type_safe INTERFACE ${detail_header_files} ${header_files})

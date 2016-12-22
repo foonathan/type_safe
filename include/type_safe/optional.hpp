@@ -575,164 +575,6 @@ namespace type_safe
 #endif
     };
 
-    /// \effects Calls the `operator()` of `f` passing it the value of `opt`,
-    /// if it has a value.
-    /// Otherwise does nothing.
-    /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
-    /// \module optional
-    /// \param 2
-    /// \exclude
-    template <class Optional, typename Func>
-    void with(Optional&& opt, Func&& f,
-              decltype(opt.has_value(), std::forward<Optional>(opt).value(), 0) = 0)
-    {
-        if (opt.has_value())
-            std::forward<Func>(f)(std::forward<Optional>(opt).value());
-    }
-
-    /// \exclude
-    namespace detail
-    {
-        template <typename A, typename B>
-        struct common_type
-        {
-            using type = typename std::common_type<A, B>::type;
-        };
-
-        template <typename A>
-        struct common_type<A, void>
-        {
-            using type = typename std::common_type<A>::type;
-        };
-
-        template <typename A>
-        struct common_type<void, A>
-        {
-            using type = typename std::common_type<A>::type;
-        };
-
-        template <>
-        struct common_type<void, void>
-        {
-            using type = void;
-        };
-
-        template <bool Save, typename Visitor, typename... Optional>
-        struct visit_optional;
-
-        template <bool Save, typename Visitor, typename Optional>
-        struct visit_optional<Save, Visitor, Optional>
-        {
-            template <typename... Args>
-            static auto call_visitor(int, Visitor&& visitor, Args&&... args)
-                -> decltype(std::forward<Visitor>(visitor)(std::forward<Args>(args)...))
-            {
-                return std::forward<Visitor>(visitor)(std::forward<Args>(args)...);
-            }
-
-            template <typename... Args>
-            static void call_visitor(short, Visitor&&, Args&&...)
-            {
-                static_assert(!Save, "call to visitor does not cover all possible combinations");
-            }
-
-            template <typename... Args>
-            static auto call(Visitor&& visitor, Optional&& opt, Args&&... args) ->
-                typename common_type<decltype(call_visitor(0, std::forward<Visitor>(visitor),
-                                                           std::forward<Args>(args)..., nullopt)),
-                                     decltype(
-                                         call_visitor(0, std::forward<Visitor>(visitor),
-                                                      std::forward<Args>(args)...,
-                                                      std::forward<Optional>(opt).value()))>::type
-            {
-                return opt.has_value() ? call_visitor(0, std::forward<Visitor>(visitor),
-                                                      std::forward<Args>(args)...,
-                                                      std::forward<Optional>(opt).value()) :
-                                         call_visitor(0, std::forward<Visitor>(visitor),
-                                                      std::forward<Args>(args)..., nullopt);
-            }
-        };
-
-        template <bool Save, typename Visitor, typename Optional, typename... Rest>
-        struct visit_optional<Save, Visitor, Optional, Rest...>
-        {
-            template <typename... Args>
-            static auto call(Visitor&& visitor, Optional&& opt, Rest&&... rest, Args&&... args) ->
-                typename common_type<decltype(visit_optional<Save, Visitor, Rest...>::call(
-                                         std::forward<Visitor>(visitor),
-                                         std::forward<Rest>(rest)..., std::forward<Args>(args)...,
-                                         std::forward<Optional>(opt).value())),
-                                     decltype(visit_optional<Save, Visitor, Rest...>::call(
-                                         std::forward<Visitor>(visitor),
-                                         std::forward<Rest>(rest)..., std::forward<Args>(args)...,
-                                         nullopt))>::type
-            {
-                return opt.has_value() ?
-                           visit_optional<Save, Visitor,
-                                          Rest...>::call(std::forward<Visitor>(visitor),
-                                                         std::forward<Rest>(rest)...,
-                                                         std::forward<Args>(args)...,
-                                                         std::forward<Optional>(opt).value()) :
-                           visit_optional<Save, Visitor, Rest...>::call(std::forward<Visitor>(
-                                                                            visitor),
-                                                                        std::forward<Rest>(rest)...,
-                                                                        std::forward<Args>(args)...,
-                                                                        nullopt);
-            }
-        };
-
-        template <typename T>
-        struct visitor_allow_incomplete
-        {
-            template <typename U, typename = typename U::incomplete_visitor>
-            static std::true_type test(int);
-
-            template <typename U>
-            static std::true_type test(int, decltype(U::incomplete_visitor));
-
-            template <typename U>
-            static std::false_type test(short);
-
-            static const bool value = decltype(test<typename std::decay<T>::type>(0))::value;
-        };
-
-        template <typename Visitor, class... Optionals>
-        auto visit_optional_impl(Visitor&& visitor, Optionals&&... optionals)
-            -> decltype(detail::visit_optional<!visitor_allow_incomplete<Visitor>::value,
-                                               decltype(std::forward<Visitor>(visitor)),
-                                               decltype(std::forward<Optionals>(optionals))...>::
-                            call(std::forward<Visitor>(visitor),
-                                 std::forward<Optionals>(optionals)...))
-        {
-            return detail::visit_optional<!visitor_allow_incomplete<Visitor>::value,
-                                          decltype(std::forward<Visitor>(visitor)),
-                                          decltype(std::forward<Optionals>(
-                                              optionals))...>::call(std::forward<Visitor>(visitor),
-                                                                    std::forward<Optionals>(
-                                                                        optionals)...);
-        }
-    } // namespace detail
-
-    /// \effects Effectively calls `visitor((optionals.has_value() ? optionals.value() : nullopt)...)`,
-    /// i.e. the `operator()` of `visitor` passing it `sizeof...(Optionals)` arguments,
-    /// where the `i`th argument is the `value()` of the `i`th optional or `nullopt`, if it has none.
-    /// If the particular combination of types is not overloaded,
-    /// the program is ill-formed,
-    /// unelss the `Visitor` provides a member named `incomplete_visitor`,
-    /// then `visit()` does not do anything instead of the error.
-    /// \returns The result of the chosen `operator()`,
-    /// its the type is the common type of all possible combinations.
-    /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
-    /// \module optional
-    template <typename Visitor, class... Optionals>
-    auto visit(Visitor&& visitor, Optionals&&... optionals)
-        -> decltype(detail::visit_optional_impl(std::forward<Visitor>(visitor),
-                                                std::forward<Optionals>(optionals)...))
-    {
-        return detail::visit_optional_impl(std::forward<Visitor>(visitor),
-                                           std::forward<Optionals>(optionals)...);
-    }
-
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \
     /** \group optional_comp_null
@@ -826,6 +668,21 @@ namespace type_safe
     TYPE_SAFE_DETAIL_MAKE_OP(>=)
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
+
+    /// \effects Calls the `operator()` of `f` passing it the value of `opt`,
+    /// if it has a value.
+    /// Otherwise does nothing.
+    /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
+    /// \module optional
+    /// \param 2
+    /// \exclude
+    template <class Optional, typename Func>
+    void with(Optional&& opt, Func&& f,
+              decltype(opt.has_value(), std::forward<Optional>(opt).value(), 0) = 0)
+    {
+        if (opt.has_value())
+            std::forward<Func>(f)(std::forward<Optional>(opt).value());
+    }
 
     //=== optional ===//
     /// A `StoragePolicy` for [ts::basic_optional]() that is similar to [std::optional<T>]()'s implementation.
