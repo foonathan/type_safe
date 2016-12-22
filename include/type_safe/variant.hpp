@@ -5,356 +5,11 @@
 #ifndef TYPE_SAFE_VARIANT_HPP_INCLUDED
 #define TYPE_SAFE_VARIANT_HPP_INCLUDED
 
-#include <type_safe/detail/all_of.hpp>
-#include <type_safe/detail/assign_or_construct.hpp>
-#include <type_safe/detail/common_type.hpp>
-#include <type_safe/detail/copy_move_control.hpp>
-#include <type_safe/detail/is_nothrow_swappable.hpp>
+#include <type_safe/detail/variant_impl.hpp>
 #include <type_safe/optional_ref.hpp>
-#include <type_safe/tagged_union.hpp>
 
 namespace type_safe
 {
-    /// \exclude
-    namespace detail
-    {
-        template <typename... Types>
-        struct traits_impl
-        {
-            using copy_constructible = all_of<std::is_copy_constructible<Types>::value...>;
-            using move_constructible = all_of<std::is_move_constructible<Types>::value...>;
-            using nothrow_move_constructible =
-                all_of<std::is_nothrow_move_constructible<Types>::value...>;
-            using nothrow_move_assignable =
-                all_of<nothrow_move_constructible::value,
-                       (std::is_move_assignable<Types>::value ?
-                            std::is_nothrow_move_assignable<Types>::value :
-                            true)...>;
-            using nothrow_swappable =
-                all_of<nothrow_move_constructible::value, is_nothrow_swappable<Types>::value...>;
-        };
-
-        template <typename... Types>
-        using traits = traits_impl<typename std::decay<Types>::type...>;
-
-        template <class VariantPolicy, class Union>
-        class copy_assign_union_value;
-
-        template <class VariantPolicy, typename... Types>
-        class copy_assign_union_value<VariantPolicy, tagged_union<Types...>>
-        {
-        public:
-            static void assign(tagged_union<Types...>& dest, const tagged_union<Types...>& org)
-            {
-                auto idx = static_cast<std::size_t>(org.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
-                callbacks[idx](dest, org);
-            }
-
-        private:
-            template <typename T,
-                      typename = typename std::enable_if<std::is_copy_assignable<T>::value>::type>
-            static void do_assign(union_type<T> type, tagged_union<Types...>& dest,
-                                  const tagged_union<Types...>& org)
-            {
-                dest.value(type) = org.value(type);
-            }
-
-            template <typename T,
-                      typename std::enable_if<!std::is_copy_assignable<T>::value, int>::type = 0>
-            static void do_assign(union_type<T> type, tagged_union<Types...>& dest,
-                                  const tagged_union<Types...>& org)
-            {
-                VariantPolicy::change_value(type, dest, org.value(type));
-            }
-
-            template <typename T>
-            static void assign_impl(tagged_union<Types...>& dest, const tagged_union<Types...>& org)
-            {
-                constexpr auto id = tagged_union<Types...>::type_id(union_type<T>{});
-                DEBUG_ASSERT(org.type() == id, detail::assert_handler{});
-
-                if (dest.type() == id)
-                    do_assign(union_type<T>{}, dest, org);
-                else
-                    VariantPolicy::change_value(union_type<T>{}, dest, org.value(union_type<T>{}));
-            }
-
-            using callback_type = void (*)(tagged_union<Types...>&, const tagged_union<Types...>&);
-            static constexpr callback_type callbacks[] = {&assign_impl<Types>...};
-        };
-        template <class VariantPolicy, typename... Types>
-        constexpr
-            typename copy_assign_union_value<VariantPolicy, tagged_union<Types...>>::callback_type
-                copy_assign_union_value<VariantPolicy, tagged_union<Types...>>::callbacks[];
-
-        template <class VariantPolicy, class Union>
-        class move_assign_union_value;
-
-        template <class VariantPolicy, typename... Types>
-        class move_assign_union_value<VariantPolicy, tagged_union<Types...>>
-        {
-        public:
-            static void assign(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
-            {
-                auto idx = static_cast<std::size_t>(org.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
-                callbacks[idx](dest, std::move(org));
-            }
-
-        private:
-            template <typename T,
-                      typename = typename std::enable_if<std::is_move_assignable<T>::value>::type>
-            static void do_assign(union_type<T> type, tagged_union<Types...>& dest,
-                                  tagged_union<Types...>&& org)
-            {
-                dest.value(type) = std::move(org).value(type);
-            }
-
-            template <typename T,
-                      typename std::enable_if<!std::is_move_assignable<T>::value, int>::type = 0>
-            static void do_assign(union_type<T> type, tagged_union<Types...>& dest,
-                                  tagged_union<Types...>&& org)
-            {
-                VariantPolicy::change_value(type, dest, std::move(org).value(type));
-            }
-
-            template <typename T>
-            static void assign_impl(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
-            {
-                constexpr auto id = tagged_union<Types...>::type_id(union_type<T>{});
-                DEBUG_ASSERT(org.type() == id, detail::assert_handler{});
-
-                if (dest.type() == id)
-                    do_assign(union_type<T>{}, dest, std::move(org));
-                else
-                    VariantPolicy::change_value(union_type<T>{}, dest,
-                                                std::move(org).value(union_type<T>{}));
-            }
-
-            using callback_type = void (*)(tagged_union<Types...>&, tagged_union<Types...>&&);
-            static constexpr callback_type callbacks[] = {&assign_impl<Types>...};
-        };
-        template <class VariantPolicy, typename... Types>
-        constexpr
-            typename move_assign_union_value<VariantPolicy, tagged_union<Types...>>::callback_type
-                move_assign_union_value<VariantPolicy, tagged_union<Types...>>::callbacks[];
-
-        template <class VariantPolicy, class Union>
-        class swap_union;
-
-        template <class VariantPolicy, typename... Types>
-        class swap_union<VariantPolicy, tagged_union<Types...>>
-        {
-        public:
-            static void swap(tagged_union<Types...>& a, tagged_union<Types...>& b)
-            {
-                auto idx = static_cast<std::size_t>(a.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
-                callbacks[idx](a, b);
-            }
-
-        private:
-            template <typename T>
-            static void swap_impl(tagged_union<Types...>& a, tagged_union<Types...>& b)
-            {
-                constexpr auto id = tagged_union<Types...>::type_id(union_type<T>{});
-                DEBUG_ASSERT(a.type() == id, detail::assert_handler{});
-
-                if (b.type() == id)
-                {
-                    using std::swap;
-                    swap(a.value(union_type<T>{}), b.value(union_type<T>{}));
-                }
-                else
-                {
-                    T tmp(std::move(a).value(union_type<T>{})); // save old value from a
-                    // assign a to value in b
-                    move_assign_union_value<VariantPolicy, Types...>::assign(a, std::move(b));
-                    // change value in b to tmp
-                    VariantPolicy::change_value(union_type<T>{}, b, std::move(tmp));
-                }
-            }
-
-            using callback_type = void (*)(tagged_union<Types...>&, tagged_union<Types...>&);
-            static constexpr callback_type callbacks[] = {&swap_impl<Types>...};
-        };
-        template <class VariantPolicy, typename... Types>
-        constexpr typename swap_union<VariantPolicy, tagged_union<Types...>>::callback_type
-            swap_union<VariantPolicy, tagged_union<Types...>>::callbacks[];
-
-        template <typename Functor, class Union>
-        class map_union;
-
-        template <typename Functor, typename... Types>
-        class map_union<Functor, tagged_union<Types...>>
-        {
-        public:
-            static void map(tagged_union<Types...>& res, const tagged_union<Types...>& tunion,
-                            Functor&& f)
-            {
-                DEBUG_ASSERT(!res.has_value(), assert_handler{});
-                auto idx = static_cast<std::size_t>(tunion.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
-                copy_callbacks[idx](res, tunion, std::forward<Functor>(f));
-            }
-            static void map(tagged_union<Types...>& res, tagged_union<Types...>&& tunion,
-                            Functor&& f)
-            {
-                DEBUG_ASSERT(!res.has_value(), assert_handler{});
-                auto idx = static_cast<std::size_t>(tunion.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
-                move_callbacks[idx](res, std::move(tunion), std::forward<Functor>(f));
-            }
-
-        private:
-            template <typename T, typename Result =
-                                      decltype(std::declval<Functor&&>()(std::declval<const T&>()))>
-            static void call(int, tagged_union<Types...>& res, const tagged_union<Types...>& tunion,
-                             Functor&& f)
-            {
-                auto&& result = std::forward<Functor>(f)(tunion.value(union_type<T>{}));
-                res.emplace(union_type<typename std::decay<Result>::type>{},
-                            std::forward<Result>(result));
-            }
-            template <typename T,
-                      typename Result = decltype(std::declval<Functor&&>()(std::declval<T&&>()))>
-            static void call(int, tagged_union<Types...>& res, tagged_union<Types...>&& tunion,
-                             Functor&& f)
-            {
-                auto&& result = std::forward<Functor>(f)(std::move(tunion).value(union_type<T>{}));
-                res.emplace(union_type<typename std::decay<Result>::type>{},
-                            std::forward<Result>(result));
-            }
-
-            template <typename T>
-            static void call(short, tagged_union<Types...>& res,
-                             const tagged_union<Types...>& tunion, Functor&&)
-            {
-                res.emplace(union_type<T>{}, tunion.value(union_type<T>{}));
-            }
-            template <typename T>
-            static void call(short, tagged_union<Types...>& res, tagged_union<Types...>&& tunion,
-                             Functor&&)
-            {
-                res.emplace(union_type<T>{}, std::move(tunion).value(union_type<T>{}));
-            }
-
-            template <typename T>
-            static void map_impl_copy(tagged_union<Types...>&       res,
-                                      const tagged_union<Types...>& tunion, Functor&& f)
-            {
-                call(0, res, tunion, std::forward<Functor>(f));
-            }
-            template <typename T>
-            static void map_impl_move(tagged_union<Types...>& res, tagged_union<Types...>&& tunion,
-                                      Functor&& f)
-            {
-                call(0, res, std::move(tunion), std::forward<Functor>(f));
-            }
-
-            using copy_callback_type = void (*)(tagged_union<Types...>&,
-                                                const tagged_union<Types...>&, Functor&&);
-            using move_callback_type = void (*)(tagged_union<Types...>&, tagged_union<Types...>&&,
-                                                Functor&&);
-
-            static constexpr copy_callback_type copy_callbacks[] = {&map_impl_copy<Types>...};
-            static constexpr move_callback_type move_callbacks[] = {&map_impl_move<Types>...};
-        };
-        template <typename Functor, typename... Types>
-        constexpr typename map_union<Functor, tagged_union<Types...>>::copy_callback_type
-            map_union<Functor, tagged_union<Types...>>::copy_callbacks[];
-        template <typename Functor, typename... Types>
-        constexpr typename map_union<Functor, tagged_union<Types...>>::move_callback_type
-            map_union<Functor, tagged_union<Types...>>::move_callbacks[];
-
-        template <class VariantPolicy, typename... Types>
-        class variant_storage
-        {
-            using traits = detail::traits<Types...>;
-
-        public:
-            variant_storage() noexcept = default;
-
-            variant_storage(const variant_storage& other)
-            {
-                if (other.storage_.has_value())
-                    copy(storage_, other.storage_);
-            }
-
-            variant_storage(variant_storage&& other) noexcept(
-                traits::nothrow_move_constructible::value)
-            {
-                if (other.storage_.has_value())
-                    move(storage_, std::move(other.storage_));
-            }
-
-            ~variant_storage() noexcept
-            {
-                if (storage_.has_value())
-                    destroy(storage_);
-            }
-
-            variant_storage& operator=(const variant_storage& other)
-            {
-                if (storage_.has_value() && other.storage_.has_value())
-                    copy_assign_union_value<VariantPolicy,
-                                            tagged_union<Types...>>::assign(storage_,
-                                                                            other.storage_);
-                else if (storage_.has_value() && !other.storage_.has_value())
-                    destroy(storage_);
-                else if (!storage_.has_value() && other.storage_.has_value())
-                    copy(storage_, other.storage_);
-
-                return *this;
-            }
-
-            variant_storage& operator=(variant_storage&& other) noexcept(
-                traits::nothrow_move_assignable::value)
-            {
-                if (storage_.has_value() && other.storage_.has_value())
-                    copy_assign_union_value<VariantPolicy,
-                                            tagged_union<Types...>>::assign(storage_,
-                                                                            other.storage_);
-                else if (storage_.has_value() && !other.storage_.has_value())
-                    destroy(storage_);
-                else if (!storage_.has_value() && other.storage_.has_value())
-                    copy(storage_, other.storage_);
-
-                return *this;
-            }
-
-            tagged_union<Types...>& get_union() noexcept
-            {
-                return storage_;
-            }
-
-            const tagged_union<Types...>& get_union() const noexcept
-            {
-                return storage_;
-            }
-
-        private:
-            tagged_union<Types...> storage_;
-        };
-
-        template <typename... Types>
-        using variant_copy = copy_control<traits<Types...>::copy_constructible::value>;
-
-        template <typename... Types>
-        using variant_move = move_control<traits<Types...>::move_constructible::value>;
-
-        template <typename Type, class Union, typename T, typename... Args>
-        using enable_variant_type_impl =
-            typename std::enable_if<typename Union::type_id(union_type<T>{}) != Union::invalid_type
-                                        && std::is_constructible<T, Args...>::value,
-                                    Type>::type;
-
-        template <typename Type, class Union, typename T, typename... Args>
-        using enable_variant_type =
-            enable_variant_type_impl<Type, Union, typename std::decay<T>::type, Args...>;
-    } // namespace detail
-
     /// Convenience alias for [ts::union_type]().
     /// \module variant
     template <typename T>
@@ -378,6 +33,20 @@ namespace type_safe
     /// \module variant
     constexpr nullvar_t nullvar;
 
+    /// An improved `union` storing at most one of the given types at a time (or possibly none).
+    ///
+    /// It is an improved version of [std::variant]().
+    /// A big problem with variant is implementing the operation that changes the type.
+    /// It has to destroy the old value and then create the new one.
+    /// But how to handle an exception when creating the new type?
+    /// There are multiple ways of handling this, so it is outsourced in a policy.
+    /// The variant policy is a class that must have the following members:
+    /// * `allow_empty` - either [std::true_type]() or [std::false_type]().
+    /// If it is "true", the variant can be put in the empty state explictly.
+    /// * `void change_value(variant_type<T>, tagged_union<Types...>&, Args&&... args)` - changes the value and type.
+    /// It will be called when the variant already contains an object of a different type.
+    /// It must destroy the old type and create a new one with the given type and arguments.
+    /// \module variant
     template <class VariantPolicy, typename HeadT, typename... TailT>
     class basic_variant : detail::variant_copy<HeadT, TailT...>,
                           detail::variant_move<HeadT, TailT...>
@@ -439,11 +108,11 @@ namespace type_safe
         /// \throws Anything thrown by `T`s constructor.
         /// \notes This constructor does not participate in overload resolution,
         /// unless `T` is a valid type for the variant and constructible from the arguments.
-        /// \signature template <typename T, typename ... Args>\nbasic_variant(variant_type<T>, Args&&... args);
-        template <typename T, typename... Args>
-        explicit basic_variant(
-            detail::enable_variant_type<variant_type<T>, union_t, T, Args&&...> type,
-            Args&&... args)
+        /// \param 2
+        /// \exclude
+        template <typename T, typename... Args,
+                  typename = detail::enable_variant_type<union_t, T, Args&&...>>
+        explicit basic_variant(variant_type<T> type, Args&&... args)
         {
             storage_.get_union().emplace(type, std::forward<Args>(args)...);
         }
@@ -456,7 +125,7 @@ namespace type_safe
         /// unless `T` is a valid type for the variant and copy/move constructible.
         /// \param 1
         /// \exclude
-        template <typename T, typename = detail::enable_variant_type<void, union_t, T, T&&>>
+        template <typename T, typename = detail::enable_variant_type<union_t, T, T&&>>
         basic_variant(T&& obj)
         : basic_variant(variant_type<typename std::decay<T>::type>{}, std::forward<T>(obj))
         {
@@ -481,10 +150,37 @@ namespace type_safe
         /// unless all types are copy (1)/move (2) constructible.
         /// \group copy_move_assign
         basic_variant& operator=(const basic_variant&) = default;
-        /// \signature template <typename T, typename ... Args>\nvoid emplace(variant_type<T> type, Args&&... args);
         /// \group copy_move_assign
         basic_variant& operator=(basic_variant&&) noexcept(traits::nothrow_move_assignable::value) =
             default;
+
+        /// Alias for [*reset()]().
+        /// \param Dummy
+        /// \exclude
+        /// \param 1
+        /// \exclude
+        template <
+            typename Dummy = void,
+            typename = typename std::enable_if<VariantPolicy::allow_empty::value, Dummy>::type>
+        basic_variant& operator=(nullvar_t) noexcept
+        {
+            reset();
+            return *this;
+        }
+
+        /// Same as the single argument `emplace()`.
+        /// \effects Changes the value to a copy of `obj`.
+        /// \throws Anything thrown by `T`s copy/move constructor.
+        /// \notes This function does not participate in overload resolution,
+        /// unless `T` is a valid type for the variant and copy/move constructible.
+        /// \param 1
+        /// \exclude
+        template <typename T, typename = detail::enable_variant_type<union_t, T, T&&>>
+        basic_variant& operator=(T&& obj)
+        {
+            emplace(variant_type<typename std::decay<T>::type>{}, std::forward<T>(obj));
+            return *this;
+        }
 
         /// Swaps two variants.
         /// \effects There are four cases:
@@ -506,7 +202,9 @@ namespace type_safe
             auto& a_union = a.storage_.get_union();
             auto& b_union = b.storage_.get_union();
 
-            if (a_union.has_value() && !b_union.has_value())
+            if (a_union.has_value() && b_union.has_value())
+                detail::swap_union<VariantPolicy, union_t>::swap(a_union, b_union);
+            else if (a_union.has_value() && !b_union.has_value())
             {
                 b = std::move(a);
                 a.reset();
@@ -516,8 +214,6 @@ namespace type_safe
                 a = std::move(b);
                 b.reset();
             }
-            else if (a_union.type() == b_union.type())
-                detail::swap_union<VariantPolicy, union_t>::swap(a_union, b_union);
         }
 
         //=== modifiers ===//
@@ -549,14 +245,17 @@ namespace type_safe
         /// \notes This function does not participate in overload resolution,
         /// unless `T` is a valid type for the variant and assignable from the argument
         /// without creating an additional temporary.
-        /// \signature template <typename T, typename Arg>\nvoid emplace(variant_type<T> type, Arg&& args);
+        /// \param 2
+        /// \exclude
+        /// \param 3
+        /// \exclude
         template <
             typename T, typename Arg,
-            typename = typename std::enable_if<detail::is_direct_assignable<T, Arg&&>::value>::type>
-        auto emplace(variant_type<T> type, Arg&& arg)
-            -> detail::enable_variant_type<void, union_t, T, Arg&&>
+            typename = typename std::enable_if<detail::is_direct_assignable<T, Arg&&>::value>::type,
+            typename = detail::enable_variant_type<union_t, T, Arg&&>>
+        void emplace(variant_type<T> type, Arg&& arg)
         {
-            constexpr auto idx = union_t::type_id(type);
+            constexpr auto idx = typename union_t::type_id(type);
             if (storage_.get_union().type() == idx)
                 storage_.get_union().value(type) = std::forward<Arg>(arg);
             else
@@ -572,10 +271,11 @@ namespace type_safe
         /// Otherwise the state depends on the policy.
         /// \notes This function does not participate in overload resolution,
         /// unless `T` is a valid type for the variant and constructible from the arguments.
-        /// \signature template <typename T, typename ... Args>\nvoid emplace(variant_type<T> type, Args&&... args);
-        template <typename T, typename... Args>
-        auto emplace(variant_type<T> type, Args&&... args)
-            -> detail::enable_variant_type<void, union_t, T, Args&&...>
+        /// \param 2
+        /// \exclude
+        template <typename T, typename... Args,
+                  typename = detail::enable_variant_type<union_t, T, Args&&...>>
+        void emplace(variant_type<T> type, Args&&... args)
         {
             emplace_impl(type, std::forward<Args>(args)...);
         }
@@ -619,7 +319,7 @@ namespace type_safe
         /// \group has_value
         bool has_value(variant_type<nullvar_t>) const noexcept
         {
-            return has_value();
+            return !has_value();
         }
 
         /// \returns `true` if the variant currently stores an object of type `T`,
@@ -628,7 +328,15 @@ namespace type_safe
         template <typename T>
         bool has_value(variant_type<T> type) const noexcept
         {
-            return type() == type_id(type);
+            return this->type() == type_id(type);
+        }
+
+        /// \returns A copy of [ts::nullvar]().
+        /// \requires The variant must be empty.
+        nullvar_t value(variant_type<nullvar_t>) const noexcept
+        {
+            DEBUG_ASSERT(!has_value(), detail::assert_handler{});
+            return nullvar;
         }
 
         /// \returns A (`const`) lvalue (1, 2)/rvalue (3, 4) reference to the stored object of the given type.
@@ -675,6 +383,13 @@ namespace type_safe
             return std::move(storage_.get_union()).value(type);
         }
 #endif
+
+        /// \returns A [ts::optional_ref]() to [ts::nullvar]().
+        /// If the variant is not empty, returns a null reference.
+        optional_ref<const nullvar_t> optional_value(variant_type<nullvar_t>) const noexcept
+        {
+            return has_value() ? nullptr : type_safe::ref(nullvar);
+        }
 
         /// \returns A (`const`) [ts::optional_ref]() (1, 2)/[ts::optional_xvalue_ref]() to the stored value of given type.
         /// If it stores a different type, returns a null reference.
@@ -725,8 +440,7 @@ namespace type_safe
                                                && std::is_convertible<U&&, T>::value,
                                            int>::type = 0) const TYPE_SAFE_LVALUE_REF
         {
-            return has_value(type) ? storage_.get_union().value(type) :
-                                     static_cast<T>(std::forward<U>(other));
+            return has_value(type) ? value(type) : static_cast<T>(std::forward<U>(other));
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
@@ -739,7 +453,7 @@ namespace type_safe
                                                && std::is_convertible<U&&, T>::value,
                                            int>::type = 0) &&
         {
-            return has_value(type) ? std::move(storage_.get_union()).value(type) :
+            return has_value(type) ? std::move(value(type)) :
                                      static_cast<T>(std::forward<U>(other));
         }
 #endif
@@ -763,8 +477,11 @@ namespace type_safe
         /// \group map
         /// \param 1
         /// \exclude
-        template <typename Functor,
-                  typename = typename std::enable_if<traits::copy_constructible::value>::type>
+        /// \param 2
+        /// \exclude
+        template <
+            typename Functor, typename Dummy = void,
+            typename = typename std::enable_if<traits::copy_constructible::value, Dummy>::type>
         basic_variant map(Functor&& f) const TYPE_SAFE_LVALUE_REF
         {
             basic_variant result(force_empty{});
@@ -781,8 +498,11 @@ namespace type_safe
         /// \group map
         /// \param 1
         /// \exclude
-        template <typename Functor,
-                  typename = typename std::enable_if<traits::move_constructible::value>::type>
+        /// \param 2
+        /// \exclude
+        template <
+            typename Functor, typename Dummy = void,
+            typename = typename std::enable_if<traits::move_constructible::value, Dummy>::type>
         basic_variant map(Functor&& f) &&
         {
             basic_variant result(force_empty{});
@@ -862,7 +582,7 @@ namespace type_safe
     template <class VariantPolicy, typename... Types, typename T>
     bool operator==(const basic_variant<VariantPolicy, Types...>& lhs, const T& rhs)
     {
-        return lhs.value(variant_type<T>{}) == rhs;
+        return lhs.has_value(variant_type<T>{}) && lhs.value(variant_type<T>{}) == rhs;
     }
     /// \group variant_comp_t
     template <class VariantPolicy, typename... Types, typename T>
@@ -888,7 +608,8 @@ namespace type_safe
     template <class VariantPolicy, typename... Types, typename T>
     bool operator<(const basic_variant<VariantPolicy, Types...>& lhs, const T& rhs)
     {
-        constexpr auto id = basic_variant<VariantPolicy, Types...>::type_id(variant_type<T>{});
+        constexpr auto id =
+            typename basic_variant<VariantPolicy, Types...>::type_id(variant_type<T>{});
         if (lhs.type() != id)
             return lhs.type() < id;
         return lhs.value(variant_type<T>{}) < rhs;
@@ -897,7 +618,8 @@ namespace type_safe
     template <class VariantPolicy, typename... Types, typename T>
     bool operator<(const T& lhs, const basic_variant<VariantPolicy, Types...>& rhs)
     {
-        constexpr auto id = basic_variant<VariantPolicy, Types...>::type_id(variant_type<T>{});
+        constexpr auto id =
+            typename basic_variant<VariantPolicy, Types...>::type_id(variant_type<T>{});
         if (id != rhs.type())
             return id < rhs.type();
         return lhs < rhs.value(variant_type<T>{});
@@ -941,69 +663,6 @@ namespace type_safe
     {
         return !(lhs < rhs);
     }
-
-    /// \exclude
-    namespace detail
-    {
-        template <class Variant>
-        class compare_variant;
-
-        template <class VariantPolicy, typename... Types>
-        class compare_variant<basic_variant<VariantPolicy, Types...>>
-        {
-        public:
-            static bool compare_equal(const basic_variant<VariantPolicy, Types...>& a,
-                                      const basic_variant<VariantPolicy, Types...>& b)
-            {
-                if (!a.has_value())
-                    // to be equal, b must not have value as well
-                    return !b.has_value();
-                auto idx = static_cast<std::size_t>(a.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
-                return equal_callbacks[idx](a, b);
-            }
-
-            static bool compare_less(const basic_variant<VariantPolicy, Types...>& a,
-                                     const basic_variant<VariantPolicy, Types...>& b)
-            {
-                if (!a.has_value())
-                    // for a to be less than b,
-                    // b must have a value
-                    return b.has_value();
-                auto idx = static_cast<std::size_t>(a.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
-                return less_callbacks[idx](a, b);
-            }
-
-        private:
-            template <typename T>
-            static bool compare_equal_impl(const basic_variant<VariantPolicy, Types...>& a,
-                                           const basic_variant<VariantPolicy, Types...>& b)
-            {
-                DEBUG_ASSERT(a.has_value(variant_type<T>{}), assert_handler{});
-                return a.value(variant_type<T>{}) == b;
-            }
-
-            template <typename T>
-            static bool compare_less_impl(const basic_variant<VariantPolicy, Types...>& a,
-                                          const basic_variant<VariantPolicy, Types...>& b)
-            {
-                DEBUG_ASSERT(a.has_value(variant_type<T>{}), assert_handler{});
-                return a.value(variant_type<T>{}) < b;
-            }
-
-            using callback_type = bool (*)(const basic_variant<VariantPolicy, Types...>&,
-                                           const basic_variant<VariantPolicy, Types...>&);
-            static constexpr callback_type equal_callbacks[] = {&compare_equal_impl<Types>...};
-            static constexpr callback_type less_callbacks[]  = {&compare_less_impl<Types>...};
-        };
-        template <class VariantPolicy, typename... Types>
-        constexpr typename compare_variant<basic_variant<VariantPolicy, Types...>>::callback_type
-            compare_variant<basic_variant<VariantPolicy, Types...>>::equal_callbacks[];
-        template <class VariantPolicy, typename... Types>
-        constexpr typename compare_variant<basic_variant<VariantPolicy, Types...>>::callback_type
-            compare_variant<basic_variant<VariantPolicy, Types...>>::less_callbacks[];
-    } // namespace detail
 
     /// Compares two [ts::basic_variant]()s.
     ///
@@ -1062,112 +721,189 @@ namespace type_safe
         return !(lhs < rhs);
     }
 
+    /// A variant policy for [ts::basic_variant]() that uses a fallback type.
+    ///
+    /// When changing the type of the variant throws an exception,
+    /// the variant will create an object of the fallback type instead.
+    /// The variant will never be empty.
+    /// \requires `Fallback` must be nothrow default constructible
+    /// and a type that can be stored in the variant.
+    /// \module variant
+    template <typename Fallback>
+    class fallback_variant_policy
+    {
+        static_assert(std::is_nothrow_default_constructible<Fallback>::value,
+                      "fallback must be nothrow default constructible");
+
+    public:
+        using allow_empty = std::false_type;
+
+        template <typename T, typename... Types, typename... Args>
+        static void change_value(union_type<T> type, tagged_union<Types...>& storage,
+                                 Args&&... args)
+        {
+            change_value_impl(type, storage, std::forward<Args>(args)...);
+        }
+
+    private:
+        template <typename T, typename... Types, typename... Args>
+        static auto change_value_impl(union_type<T> type, tagged_union<Types...>& storage,
+                                      Args&&... args) ->
+            typename std::enable_if<std::is_nothrow_constructible<T, Args&&...>::value>::type
+        {
+            destroy(storage);
+            // won't throw
+            storage.emplace(type, std::forward<Args>(args)...);
+        }
+
+        template <typename T, typename... Types, typename... Args>
+        static auto change_value_impl(union_type<T> type, tagged_union<Types...>& storage,
+                                      Args&&... args) ->
+            typename std::enable_if<!std::is_nothrow_constructible<T, Args&&...>::value>::type
+        {
+            destroy(storage);
+            TYPE_SAFE_TRY
+            {
+                // might throw
+                storage.emplace(type, std::forward<Args>(args)...);
+            }
+            TYPE_SAFE_CATCH_ALL
+            {
+                // won't throw
+                storage.emplace(union_type<Fallback>{});
+                TYPE_SAFE_RETHROW;
+            }
+        }
+    };
+
+    /// A [ts::basic_variant]() using the [ts::fallback_variant_policy]().
+    ///
+    /// This is a variant that is never empty, where exceptions on changing the type
+    /// leaves it with a default-constructed object of the `Fallback` type.
+    /// \requires `Fallback` must be nothrow default constructible.
+    /// \module variant
+    template <typename Fallback, typename... OtherTypes>
+    using fallback_variant =
+        basic_variant<fallback_variant_policy<Fallback>, Fallback, OtherTypes...>;
+
+    /// A variant policy for [ts::basic_variant]() that creates a variant with explicit empty state.
+    ///
+    /// It allows an empty variant explicitly.
+    /// When changing the type of the variant throws an exception,
+    /// the variant will be left in that empty state.
+    /// \module variant
+    class optional_variant_policy
+    {
+    public:
+        using allow_empty = std::true_type;
+
+        template <typename T, typename... Types, typename... Args>
+        static void change_value(union_type<T> type, tagged_union<Types...>& storage,
+                                 Args&&... args)
+        {
+            destroy(storage);
+            storage.emplace(type, std::forward<Args>(args)...);
+        }
+    };
+
     /// \exclude
     namespace detail
     {
-        template <bool AllowIncomplete, typename Visitor, class... Variants>
-        class visit_variant_impl;
-
-        template <bool AllowIncomplete, typename Visitor>
-        class visit_variant_impl<AllowIncomplete, Visitor>
+        template <bool ForceNonEmpty>
+        class non_empty_variant_policy
         {
         public:
-            template <typename... Args>
-            static auto call(Visitor&& visitor, Args&&... args)
-                -> decltype(call_impl(0, std::forward<Visitor>(visitor),
-                                      std::forward<Args>(args)...))
+            using allow_empty = std::false_type;
+
+            template <typename T, typename... Types, typename... Args>
+            static void change_value(union_type<T> type, tagged_union<Types...>& storage,
+                                     Args&&... args)
             {
-                return call_impl(0, std::forward<Visitor>(visitor), std::forward<Args>(args)...);
+                change_value_impl(type, storage, std::forward<Args>(args)...);
             }
 
         private:
-            template <typename... Args>
-            static auto call_impl(int, Visitor&& visitor, Args&&... args)
-                -> decltype(std::forward<Visitor>(visitor)(std::forward<Args>(args)...))
+            template <typename T, typename... Types>
+            static void move_emplace(union_type<T> type, tagged_union<Types...>& storage,
+                                     T&& obj) noexcept(ForceNonEmpty)
             {
-                return std::forward<Visitor>(visitor)(std::forward<Args>(args)...);
+                // if this throws, there's nothing we can do
+                storage.emplace(type, std::move(obj));
             }
 
-            template <typename... Args>
-            static void call_impl(short, Visitor&& visitor, Args&&... args)
+            template <typename T, typename... Types>
+            static void change_value_impl(union_type<T> type, tagged_union<Types...>& storage,
+                                          T&& obj)
             {
-                static_assert(AllowIncomplete, "visitor does not cover all possible combinations");
-            }
-        };
-
-        template <bool AllowIncomplete, typename Visitor, class Variant, class... Rest>
-        class visit_variant_impl<AllowIncomplete, Visitor, Variant, Rest...>
-        {
-        public:
-            template <typename... Args>
-            static auto call(Visitor&& visitor, Variant&& variant, Rest&&... rest, Args&&... args)
-                -> decltype(call_type(std::forward<Visitor>(visitor), typename Variant::types{},
-                                      std::forward<Variant>(variant), std::forward<Rest>(rest)...,
-                                      std::forward<Args>(args)...))
-            {
-                return call_type(std::forward<Visitor>(visitor), typename Variant::types{},
-                                 std::forward<Variant>(variant), std::forward<Rest>(rest)...,
-                                 std::forward<Args>(args)...);
+                destroy(storage);
+                move_emplace(type, storage, std::move(obj)); // throw handled
             }
 
-        private:
-            template <typename... Args>
-            static auto call_type(Visitor&& visitor, variant_types<>, Variant&& variant,
-                                  Rest&&... rest, Args&&... args)
-                -> decltype(visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
-                    std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
-                    std::forward<Args>(args)..., nullvar))
+            template <typename T, typename... Types, typename... Args>
+            static auto change_value_impl(union_type<T> type, tagged_union<Types...>& storage,
+                                          Args&&... args) ->
+                typename std::enable_if<std::is_nothrow_constructible<T, Args&&...>::value>::type
             {
-                DEBUG_ASSERT(!variant.has_value(), assert_handler{});
-                return visit_variant_impl<AllowIncomplete, Visitor,
-                                          Rest...>::call(std::forward<Visitor>(visitor),
-                                                         std::forward<Rest>(rest)...,
-                                                         std::forward<Args>(args)..., nullvar);
+                destroy(storage);
+                // won't throw
+                storage.emplace(type, std::forward<Args>(args)...);
             }
 
-            template <typename T, typename... Args>
-            static auto call_type_impl(Visitor&& visitor, Variant&& variant, Rest&&... rest,
-                                       Args&&... args)
-                -> decltype(visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
-                    std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
-                    std::forward<Args>(args)...,
-                    std::forward<Variant>(variant).value(variant_type<T>{})))
+            template <typename T, typename... Types, typename... Args>
+            static auto change_value_impl(union_type<T> type, tagged_union<Types...>& storage,
+                                          Args&&... args) ->
+                typename std::enable_if<!std::is_nothrow_constructible<T, Args&&...>::value>::type
             {
-                return visit_variant_impl<AllowIncomplete, Visitor,
-                                          Rest...>::call(std::forward<Visitor>(visitor),
-                                                         std::forward<Rest>(rest)...,
-                                                         std::forward<Args>(args)...,
-                                                         std::forward<Variant>(variant).value(
-                                                             variant_type<T>{}));
-            }
-
-            template <typename Head, typename... Tail, typename... Args>
-            static auto call_type(Visitor&& visitor, variant_types<Head, Tail...>,
-                                  Variant&& variant, Rest&&... rest, Args&&... args)
-                -> common_type_t<decltype(call_type_impl<Head>(
-                                     std::forward<Visitor>(visitor), std::forward<Variant>(variant),
-                                     std::forward<Rest>(rest)..., std::forward<Args>(args)...)),
-                                 decltype(
-                                     visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
-                                         std::forward<Visitor>(visitor),
-                                         std::forward<Rest>(rest)..., std::forward<Args>(args)...,
-                                         std::forward<Variant>(variant).value(
-                                             variant_type<Head>{})))>
-            {
-                if (variant.has_value(variant_type<Head>{}))
-                    return visit_variant_impl<AllowIncomplete, Visitor,
-                                              Rest...>::call(std::forward<Visitor>(visitor),
-                                                             std::forward<Rest>(rest)...,
-                                                             std::forward<Args>(args)...,
-                                                             std::forward<Variant>(variant).value(
-                                                                 variant_type<Head>{}));
-                else
-                    return call_type(std::forward<Visitor>(visitor), variant_types<Tail...>{},
-                                     std::forward<Variant>(variant), std::forward<Rest>(rest)...,
-                                     std::forward<Args>(args)...);
+                T tmp(std::forward<Args>(args)...); // might throw
+                destroy(storage);
+                move_emplace(type, storage, std::move(tmp)); // throw handled
             }
         };
     } // namespace detail
+
+    /// A variant policy for [ts::basic_variant]() that creates a variant which is rarely empty.
+    ///
+    /// When changing the type of the variant, it will use a the move constructor with a temporary.
+    /// If the move constructor throws, the variant will be left in the empty state.
+    /// Putting it into the empty state explictly is not allowed.
+    /// \module variant
+    using rarely_empty_variant_policy = detail::non_empty_variant_policy<false>;
+
+    /// A variant policy for [ts::basic_variant]() that creates a variant which is never empty.
+    ///
+    /// Similar to [ts::rarely_empty_variant_policy]() but when the move constructor throws,
+    /// it calls [std::terminate()]().
+    /// \module variant
+    using never_empty_variant_policy = detail::non_empty_variant_policy<true>;
+
+    /// \exclude
+    namespace detail
+    {
+        template <typename... Types>
+        struct select_variant_policy
+        {
+            using type = basic_variant<rarely_empty_variant_policy, Types...>;
+        };
+
+        template <typename... Types>
+        struct select_variant_policy<nullvar_t, Types...>
+        {
+            using type = basic_variant<optional_variant_policy, Types...>;
+        };
+    } // namespace detail
+
+    /// A [ts::basic_variant]() with the recommended default semantics.
+    ///
+    /// If the first type is [ts::nullvar_t]() it will use the [ts::optional_variant_policy](),
+    /// which explicitly allows the empty state.
+    /// Otherwise it will use the [ts::rarely_empty_variant_policy]()
+    /// where it tries to avoid the empty state as good as possible.
+    /// \notes If you pass [ts::nullvar_t]() as the first type,
+    /// it is not actually one of the types that can be stored in the variant,
+    /// but a tag to enable the empty state.
+    /// \module variant
+    template <typename... Types>
+    using variant = typename detail::select_variant_policy<Types...>::type;
 } // namespace type_safe
 
 #endif // TYPE_SAFE_VARIANT_HPP_INCLUDED

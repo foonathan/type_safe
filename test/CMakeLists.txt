@@ -36,7 +36,8 @@ set(source_files test.cpp
                  output_parameter.cpp
                  strong_typedef.cpp
                  tagged_union.cpp
-                 types.cpp)
+                 types.cpp
+                 variant.cpp)
 add_executable(type_safe_test debugger_type.hpp ${source_files})
 target_link_libraries(type_safe_test PUBLIC type_safe)
 target_include_directories(type_safe_test PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
