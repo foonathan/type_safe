@@ -18,12 +18,14 @@ TEST_CASE("tagged_union")
     union_t tunion;
     REQUIRE(!tunion.has_value());
     REQUIRE(tunion.type() == union_t::invalid_type);
+    REQUIRE(static_cast<std::size_t>(tunion.type()) == 0u);
 
     SECTION("emplace int")
     {
         tunion.emplace(union_type<int>{}, 5);
         REQUIRE(tunion.has_value());
         REQUIRE(tunion.type() == union_t::type_id(union_type<int>{}));
+        REQUIRE(static_cast<std::size_t>(tunion.type()) == 1u);
         REQUIRE(tunion.value(union_type<int>{}) == 5);
 
         union_t other;
@@ -50,6 +52,7 @@ TEST_CASE("tagged_union")
         tunion.emplace(union_type<float>{}, 3.0);
         REQUIRE(tunion.has_value());
         REQUIRE(tunion.type() == union_t::type_id(union_type<float>{}));
+        REQUIRE(static_cast<std::size_t>(tunion.type()) == 2u);
         REQUIRE(tunion.value(union_type<float>{}) == 3.0);
 
         union_t other;
@@ -76,6 +79,7 @@ TEST_CASE("tagged_union")
         tunion.emplace(union_type<debugger_type>{}, 42);
         REQUIRE(tunion.has_value());
         REQUIRE(tunion.type() == union_t::type_id(union_type<debugger_type>{}));
+        REQUIRE(static_cast<std::size_t>(tunion.type()) == 3u);
 
         auto& val = tunion.value(union_type<debugger_type>{});
         REQUIRE(val.id == 42);

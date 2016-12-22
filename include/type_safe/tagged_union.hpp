@@ -27,19 +27,24 @@ namespace type_safe
         template <typename T, typename... Ts>
         struct get_type_index_impl;
 
+        // type not found at all
         template <typename T>
-        struct get_type_index_impl<T> : std::integral_constant<std::size_t, 9>
+        struct get_type_index_impl<T> : std::integral_constant<std::size_t, 0>
         {
         };
 
+        // found type at the beginning
         template <typename T, typename... Tail>
         struct get_type_index_impl<T, T, Tail...> : std::integral_constant<std::size_t, 1>
         {
         };
 
+        // type not in the beginning
         template <typename T, typename Head, typename... Tail>
         struct get_type_index_impl<T, Head, Tail...>
-            : std::integral_constant<std::size_t, 1 + get_type_index_impl<T, Tail...>::value>
+            : std::integral_constant<std::size_t, get_type_index_impl<T, Tail...>::value == 0u ?
+                                                      0u :
+                                                      1 + get_type_index_impl<T, Tail...>::value>
         {
         };
 
