@@ -13,6 +13,7 @@ using namespace type_safe;
 // use optional variant to be able to test all functions
 // test policies separately
 using variant_t = variant<nullvar_t, int, float, debugger_type>;
+using union_t   = tagged_union<int, float, debugger_type>;
 
 template <class Variant>
 void check_variant_empty(const Variant& var)
@@ -97,6 +98,44 @@ TEST_CASE("basic_variant")
         variant_t c(variant_type<debugger_type>{}, 42);
         check_variant_value(c, debugger_type(42));
         REQUIRE(c.value(variant_type<debugger_type>{}).ctor());
+    }
+    SECTION("constructor - union copy")
+    {
+        union_t u;
+
+        variant_t a(u);
+        check_variant_empty(a);
+
+        u.emplace(union_type<int>{}, 5);
+
+        variant_t b(u);
+        check_variant_value(b, 5);
+
+        u.destroy(union_type<int>{});
+        u.emplace(union_type<debugger_type>{}, debugger_type(42));
+
+        variant_t c(u);
+        check_variant_value(c, debugger_type(42));
+        REQUIRE(c.value(variant_type<debugger_type>{}).copy_ctor());
+    }
+    SECTION("constructor - union move")
+    {
+        union_t u;
+
+        variant_t a(std::move(u));
+        check_variant_empty(a);
+
+        u.emplace(union_type<int>{}, 5);
+
+        variant_t b(std::move(u));
+        check_variant_value(b, 5);
+
+        u.destroy(union_type<int>{});
+        u.emplace(union_type<debugger_type>{}, debugger_type(42));
+
+        variant_t c(std::move(u));
+        check_variant_value(c, debugger_type(42));
+        REQUIRE(c.value(variant_type<debugger_type>{}).move_ctor());
     }
     SECTION("constructor - copy")
     {

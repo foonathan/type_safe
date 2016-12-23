@@ -133,6 +133,28 @@ namespace type_safe
         {
         }
 
+        /// Initializes it from a [ts::tagged_union]().
+        /// \effects Copies the currently stored type of the union
+        /// into the variant by calling the copy (1)/move (2) constructor of the stored type.
+        /// \throws Anything thrown by the selected copy (1)/move (2) constructor.
+        /// \requires If the variant policy does not allow the empty state,
+        /// the union must not be empty.
+        /// \group ctor_union
+        explicit basic_variant(const tagged_union<HeadT, TailT...>& u)
+        {
+            DEBUG_ASSERT(allow_empty::value || u.has_value(), detail::assert_handler{});
+            if (u.has_value())
+                copy(storage_.get_union(), u);
+        }
+
+        /// \group ctor_union
+        explicit basic_variant(tagged_union<HeadT, TailT...>&& u)
+        {
+            DEBUG_ASSERT(allow_empty::value || u.has_value(), detail::assert_handler{});
+            if (u.has_value())
+                move(storage_.get_union(), std::move(u));
+        }
+
         /// \effects Destroys the currently stored value,
         /// if there is any.
         ~basic_variant() noexcept = default;
