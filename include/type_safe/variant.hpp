@@ -58,6 +58,8 @@ namespace type_safe
         using types   = typename union_t::types;
         using type_id = typename union_t::type_id;
 
+        using allow_empty = typename VariantPolicy::allow_empty;
+
         static constexpr type_id invalid_type = union_t::invalid_type;
 
         //=== constructors/destructors/assignment/swap ===//

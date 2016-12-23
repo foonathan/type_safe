@@ -402,47 +402,6 @@ TEST_CASE("optional")
         REQUIRE(a.has_value());
         REQUIRE(a.value() == 1);
     }
-    SECTION("visit")
-    {
-        struct visitor
-        {
-            using incomplete_visitor = void;
-
-            int value;
-
-            void operator()(nullopt_t) const
-            {
-                REQUIRE(value == -1);
-            }
-
-            void operator()(int i) const
-            {
-                REQUIRE(value == i);
-            }
-
-            void operator()(int, nullopt_t) const
-            {
-                REQUIRE(value == -1);
-            }
-
-            void operator()(int, int b) const
-            {
-                REQUIRE(value == b);
-            }
-        };
-
-        optional<int> a;
-        visit(visitor{-1}, a);
-
-        a = 42;
-        visit(visitor{42}, a);
-
-        optional<int> b;
-        visit(visitor{-1}, a, b);
-
-        b = 32;
-        visit(visitor{32}, a, b);
-    }
     SECTION("comparision")
     {
         optional<int> a;
