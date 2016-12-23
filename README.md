@@ -34,8 +34,9 @@ I highly suggest that you check out [the first](https://foonathan.github.io/blog
 * `ts::flag` - an improved flag type, better than a regular `bool` or `ts::boolean`
 * `ts::index_t` and `ts::distance_t` - index and distance integer types with only a subset of operations available
 * `ts::basic_optional<StoragePolicy>` - a generic, improved `std::optional` that is fully monadic,
-  also `ts::optional<T>` and `ts::optional_ref<T>` aliases
+  also `ts::optional<T>` and `ts::optional_ref<T>` implementations
 * `ts::compact_optional` implementation for no space overhead optionals
+* `ts::basic_variant<VariantPolicy, Types...>` - a generic, improved `std::variant`, also `ts::variant` and `ts::fallback_variant` implementations
 * `ts::constrained_type<T, Constraint, Verifier>` - a wrapper over some type that verifies that a certain constraint is always fulfilled
     * `ts::constraints::*` - predefined constraints like `non_null`, `non_empty`, ...
     * `ts::tagged_type<T, Constraint>` - constrained type without checking, useful for tagging
