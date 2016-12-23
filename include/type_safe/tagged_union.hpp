@@ -8,6 +8,7 @@
 #include <new>
 
 #include <type_safe/detail/aligned_union.hpp>
+#include <type_safe/detail/all_of.hpp>
 #include <type_safe/config.hpp>
 #include <type_safe/strong_typedef.hpp>
 
@@ -50,6 +51,13 @@ namespace type_safe
 
         template <typename T, typename... Types>
         using get_type_index = get_type_index_impl<T, typename std::decay<Types>::type...>;
+
+        template <class Union>
+        class destroy_union;
+        template <class Union>
+        class copy_union;
+        template <class Union>
+        class move_union;
     } // namespace detail
 
     /// Tag type so no explicit template instantiation of function parameters is required.
@@ -77,6 +85,15 @@ namespace type_safe
     template <typename... Types>
     class tagged_union
     {
+        using trivial = detail::all_of<std::is_trivially_copyable<Types>::value...>;
+
+        template <class Union>
+        friend class detail::destroy_union;
+        template <class Union>
+        friend class detail::copy_union;
+        template <class Union>
+        friend class detail::move_union;
+
     public:
         using types = union_types<typename std::decay<Types>::type...>;
 
@@ -249,9 +266,12 @@ namespace type_safe
         public:
             static void destroy(tagged_union<Types...>& u) noexcept
             {
-                auto idx = static_cast<std::size_t>(u.type()) - 1u;
-                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
-                callbacks[idx](u);
+                if (!tagged_union<Types...>::trivial::value)
+                {
+                    auto idx = static_cast<std::size_t>(u.type()) - 1u;
+                    DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
+                    callbacks[idx](u);
+                }
             }
 
         private:
@@ -279,9 +299,14 @@ namespace type_safe
             {
                 DEBUG_ASSERT(!dest.has_value(), detail::assert_handler{});
 
-                auto idx = static_cast<std::size_t>(org.type()) - 1u;
-                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
-                callbacks[idx](dest, org);
+                if (tagged_union<Types...>::trivial::value)
+                    dest.storage_ = org.storage_;
+                else
+                {
+                    auto idx = static_cast<std::size_t>(org.type()) - 1u;
+                    DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
+                    callbacks[idx](dest, org);
+                }
             }
 
         private:
@@ -309,9 +334,14 @@ namespace type_safe
             {
                 DEBUG_ASSERT(!dest.has_value(), detail::assert_handler{});
 
-                auto idx = static_cast<std::size_t>(org.type()) - 1u;
-                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
-                callbacks[idx](dest, std::move(org));
+                if (tagged_union<Types...>::trivial::value)
+                    dest.storage_ = org.storage_;
+                else
+                {
+                    auto idx = static_cast<std::size_t>(org.type()) - 1u;
+                    DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
+                    callbacks[idx](dest, std::move(org));
+                }
             }
 
         private:
