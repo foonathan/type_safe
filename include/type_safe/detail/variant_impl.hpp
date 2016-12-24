@@ -24,8 +24,8 @@ namespace type_safe
         {
         };
 
-        template <class VariantPolicy, typename... Types>
-        struct is_variant_impl<basic_variant<VariantPolicy, Types...>> : std::true_type
+        template <class VariantPolicy, typename Head, typename... Types>
+        struct is_variant_impl<basic_variant<VariantPolicy, Head, Types...>> : std::true_type
         {
         };
 
@@ -124,7 +124,7 @@ namespace type_safe
             static void do_assign(union_type<T> type, tagged_union<Types...>& dest,
                                   tagged_union<Types...>&& org)
             {
-                dest.value(type) = std::move(org).value(type);
+                dest.value(type) = std::move(org.value(type));
             }
 
             template <typename T,
@@ -132,7 +132,7 @@ namespace type_safe
             static void do_assign(union_type<T> type, tagged_union<Types...>& dest,
                                   tagged_union<Types...>&& org)
             {
-                VariantPolicy::change_value(type, dest, std::move(org).value(type));
+                VariantPolicy::change_value(type, dest, std::move(org.value(type)));
             }
 
             template <typename T>
@@ -145,7 +145,7 @@ namespace type_safe
                     do_assign(union_type<T>{}, dest, std::move(org));
                 else
                     VariantPolicy::change_value(union_type<T>{}, dest,
-                                                std::move(org).value(union_type<T>{}));
+                                                std::move(org.value(union_type<T>{})));
             }
 
             using callback_type = void (*)(tagged_union<Types...>&, tagged_union<Types...>&&);
@@ -291,61 +291,65 @@ namespace type_safe
         template <class Variant>
         class compare_variant;
 
-        template <class VariantPolicy, typename... Types>
-        class compare_variant<basic_variant<VariantPolicy, Types...>>
+        template <class VariantPolicy, typename Head, typename... Types>
+        class compare_variant<basic_variant<VariantPolicy, Head, Types...>>
         {
         public:
-            static bool compare_equal(const basic_variant<VariantPolicy, Types...>& a,
-                                      const basic_variant<VariantPolicy, Types...>& b)
+            static bool compare_equal(const basic_variant<VariantPolicy, Head, Types...>& a,
+                                      const basic_variant<VariantPolicy, Head, Types...>& b)
             {
                 if (!a.has_value())
                     // to be equal, b must not have value as well
                     return !b.has_value();
                 auto idx = static_cast<std::size_t>(a.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
+                DEBUG_ASSERT(idx < sizeof...(Types) + 1, assert_handler{});
                 return equal_callbacks[idx](a, b);
             }
 
-            static bool compare_less(const basic_variant<VariantPolicy, Types...>& a,
-                                     const basic_variant<VariantPolicy, Types...>& b)
+            static bool compare_less(const basic_variant<VariantPolicy, Head, Types...>& a,
+                                     const basic_variant<VariantPolicy, Head, Types...>& b)
             {
                 if (!a.has_value())
                     // for a to be less than b,
                     // b must have a value
                     return b.has_value();
                 auto idx = static_cast<std::size_t>(a.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
+                DEBUG_ASSERT(idx < sizeof...(Types) + 1, assert_handler{});
                 return less_callbacks[idx](a, b);
             }
 
         private:
             template <typename T>
-            static bool compare_equal_impl(const basic_variant<VariantPolicy, Types...>& a,
-                                           const basic_variant<VariantPolicy, Types...>& b)
+            static bool compare_equal_impl(const basic_variant<VariantPolicy, Head, Types...>& a,
+                                           const basic_variant<VariantPolicy, Head, Types...>& b)
             {
                 DEBUG_ASSERT(a.has_value(union_type<T>{}), assert_handler{});
                 return a.value(union_type<T>{}) == b;
             }
 
             template <typename T>
-            static bool compare_less_impl(const basic_variant<VariantPolicy, Types...>& a,
-                                          const basic_variant<VariantPolicy, Types...>& b)
+            static bool compare_less_impl(const basic_variant<VariantPolicy, Head, Types...>& a,
+                                          const basic_variant<VariantPolicy, Head, Types...>& b)
             {
                 DEBUG_ASSERT(a.has_value(union_type<T>{}), assert_handler{});
                 return a.value(union_type<T>{}) < b;
             }
 
-            using callback_type = bool (*)(const basic_variant<VariantPolicy, Types...>&,
-                                           const basic_variant<VariantPolicy, Types...>&);
-            static constexpr callback_type equal_callbacks[] = {&compare_equal_impl<Types>...};
-            static constexpr callback_type less_callbacks[]  = {&compare_less_impl<Types>...};
+            using callback_type = bool (*)(const basic_variant<VariantPolicy, Head, Types...>&,
+                                           const basic_variant<VariantPolicy, Head, Types...>&);
+            static constexpr callback_type equal_callbacks[] = {&compare_equal_impl<Head>,
+                                                                &compare_equal_impl<Types>...};
+            static constexpr callback_type less_callbacks[] = {&compare_less_impl<Head>,
+                                                               &compare_less_impl<Types>...};
         };
-        template <class VariantPolicy, typename... Types>
-        constexpr typename compare_variant<basic_variant<VariantPolicy, Types...>>::callback_type
-            compare_variant<basic_variant<VariantPolicy, Types...>>::equal_callbacks[];
-        template <class VariantPolicy, typename... Types>
-        constexpr typename compare_variant<basic_variant<VariantPolicy, Types...>>::callback_type
-            compare_variant<basic_variant<VariantPolicy, Types...>>::less_callbacks[];
+        template <class VariantPolicy, typename Head, typename... Types>
+        constexpr
+            typename compare_variant<basic_variant<VariantPolicy, Head, Types...>>::callback_type
+                compare_variant<basic_variant<VariantPolicy, Head, Types...>>::equal_callbacks[];
+        template <class VariantPolicy, typename Head, typename... Types>
+        constexpr
+            typename compare_variant<basic_variant<VariantPolicy, Head, Types...>>::callback_type
+                compare_variant<basic_variant<VariantPolicy, Head, Types...>>::less_callbacks[];
 
         //=== with variant ===//
         template <typename Func, class Variant, class Types>
@@ -473,7 +477,7 @@ namespace type_safe
 
         template <class Union, typename T, typename... Args>
         using enable_variant_type_impl =
-            typename std::enable_if<typename Union::type_id(union_type<T>{}) != Union::invalid_type
+            typename std::enable_if<Union::type_id::template is_valid<T>()
                                     && std::is_constructible<T, Args...>::value>::type;
 
         template <class Union, typename T, typename... Args>

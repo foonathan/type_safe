@@ -65,6 +65,9 @@ namespace type_safe
     template <typename T>
     struct union_type
     {
+        constexpr union_type()
+        {
+        }
     };
 
     /// Very basic typelist.
@@ -85,7 +88,12 @@ namespace type_safe
     template <typename... Types>
     class tagged_union
     {
+#if !defined(__clang__) && defined(__GNUC__) && __GNUC__ < 5
+        // does not have is_trivially_copyable
+        using trivial = detail::all_of<std::is_trivial<Types>::value...>;
+#else
         using trivial = detail::all_of<std::is_trivially_copyable<Types>::value...>;
+#endif
 
         template <class Union>
         friend class detail::destroy_union;
@@ -106,6 +114,13 @@ namespace type_safe
                         public strong_typedef_op::relational_comparison<type_id, bool>
         {
         public:
+            /// \returns `true` if `T` is a valid type, `false` otherwise.
+            template <typename T>
+            static constexpr bool is_valid()
+            {
+                return detail::get_type_index<T, Types...>::value != 0u;
+            }
+
             /// \effects Initializes it to an invalid value.
             /// \notes The invalid value compares less than all valid values.
             constexpr type_id() noexcept : strong_typedef<type_id, std::size_t>(0u)
@@ -141,7 +156,7 @@ namespace type_safe
         //=== constructors/destructors/assignment ===//
         tagged_union() noexcept = default;
 
-        /// \notes Does not destroy the currently xtored type.
+        /// \notes Does not destroy the currently stored type.
         ~tagged_union() noexcept = default;
 
         tagged_union(const tagged_union&) = delete;
@@ -348,7 +363,7 @@ namespace type_safe
             template <typename T>
             static void move_impl(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
             {
-                dest.emplace(union_type<T>{}, std::move(org).value(union_type<T>{}));
+                dest.emplace(union_type<T>{}, std::move(org.value(union_type<T>{})));
             }
 
             using callback_type = void (*)(tagged_union<Types...>&, tagged_union<Types...>&&);

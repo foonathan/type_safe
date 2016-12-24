@@ -70,6 +70,10 @@ target_compile_definitions(type_safe INTERFACE
                                      TYPE_SAFE_ARITHMETIC_UB=${_type_safe_arithmetic_ub})
 target_link_libraries(type_safe INTERFACE debug_assert)
 
+if(MSVC)
+   target_compile_options(type_safe INTERFACE /wd4800) # truncation to bool warning
+endif()
+
 # other subdirectories
 # only add if not inside add_subdirectory()
 option(TYPE_SAFE_BUILD_TEST_EXAMPLE "build test and example" OFF)

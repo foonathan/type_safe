@@ -5,6 +5,8 @@
 #ifndef TYPE_SAFE_DETAIL_ALIGNED_UNION_HPP_INCLUDED
 #define TYPE_SAFE_DETAIL_ALIGNED_UNION_HPP_INCLUDED
 
+#include <type_traits>
+
 namespace type_safe
 {
     namespace detail

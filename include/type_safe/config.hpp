@@ -61,7 +61,7 @@
 #define TYPE_SAFE_USE_EXCEPTIONS 1
 #elif defined(__GNUC__) && defined(__EXCEPTIONS)
 #define TYPE_SAFE_USE_EXCEPTIONS 1
-#elif defined(_MSC_VER) && defined(__CPPUNWIND)
+#elif defined(_MSC_VER) && defined(_CPPUNWIND)
 #define TYPE_SAFE_USE_EXCEPTIONS 1
 #else
 #define TYPE_SAFE_USE_EXCEPTIONS 0

@@ -54,7 +54,7 @@ namespace type_safe
 
         explicit constexpr strong_typedef(T&& value) noexcept(
             std::is_nothrow_move_constructible<T>::value)
-        : value_(std::move(value))
+        : value_(static_cast<T&&>(value)) // std::move() might not be constexpr
         {
         }
 

@@ -29,7 +29,7 @@ void use_handle(handle h)
     std::cout << *h << '\n';
 
     // and compare it
-    h == handle(nullptr);
+    (void)(h == handle(nullptr));
 
     // and reassign
     int a;

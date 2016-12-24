@@ -102,8 +102,8 @@ namespace type_safe
         basic_variant(const basic_variant&) = default;
 
         /// \group copy_move_ctor
-        basic_variant(basic_variant&&) noexcept(traits::nothrow_move_constructible::value) =
-            default;
+        basic_variant(basic_variant&&)
+            TYPE_SAFE_NOEXCEPT_DEFAULT(traits::nothrow_move_constructible::value) = default;
 
         /// Initializes it containing a new object of the given type.
         /// \effects Creates it by calling `T`s constructor with the perfectly forwarded arguments.
@@ -175,8 +175,8 @@ namespace type_safe
         /// \group copy_move_assign
         basic_variant& operator=(const basic_variant&) = default;
         /// \group copy_move_assign
-        basic_variant& operator=(basic_variant&&) noexcept(traits::nothrow_move_assignable::value) =
-            default;
+        basic_variant& operator                                                =(basic_variant&&)
+            TYPE_SAFE_NOEXCEPT_DEFAULT(traits::nothrow_move_assignable::value) = default;
 
         /// Alias for [*reset()]().
         /// \param Dummy
@@ -279,8 +279,7 @@ namespace type_safe
             typename = detail::enable_variant_type<union_t, T, Arg&&>>
         void emplace(variant_type<T> type, Arg&& arg)
         {
-            constexpr auto idx = typename union_t::type_id(type);
-            if (storage_.get_union().type() == idx)
+            if (storage_.get_union().type() == typename union_t::type_id(type))
                 storage_.get_union().value(type) = std::forward<Arg>(arg);
             else
                 emplace_impl(type, std::forward<Arg>(arg));
@@ -369,8 +368,8 @@ namespace type_safe
         /// \group value
         /// \param 1
         /// \exclude
-        template <typename T, typename = typename std::enable_if<type_id(variant_type<T>{})
-                                                                 != invalid_type>::type>
+        template <typename T,
+                  typename = typename std::enable_if<type_id::template is_valid<T>()>::type>
         T& value(variant_type<T> type) TYPE_SAFE_LVALUE_REF noexcept
         {
             return storage_.get_union().value(type);
@@ -379,8 +378,8 @@ namespace type_safe
         /// \group value
         /// \param 1
         /// \exclude
-        template <typename T, typename = typename std::enable_if<type_id(variant_type<T>{})
-                                                                 != invalid_type>::type>
+        template <typename T,
+                  typename = typename std::enable_if<type_id::template is_valid<T>()>::type>
         const T& value(variant_type<T> type) const TYPE_SAFE_LVALUE_REF noexcept
         {
             return storage_.get_union().value(type);
@@ -390,8 +389,8 @@ namespace type_safe
         /// \group value
         /// \param 1
         /// \exclude
-        template <typename T, typename = typename std::enable_if<type_id(variant_type<T>{})
-                                                                 != invalid_type>::type>
+        template <typename T,
+                  typename = typename std::enable_if<type_id::template is_valid<T>()>::type>
             T&& value(variant_type<T> type) && noexcept
         {
             return std::move(storage_.get_union()).value(type);
@@ -400,8 +399,8 @@ namespace type_safe
         /// \group value
         /// \param 1
         /// \exclude
-        template <typename T, typename = typename std::enable_if<type_id(variant_type<T>{})
-                                                                 != invalid_type>::type>
+        template <typename T,
+                  typename = typename std::enable_if<type_id::template is_valid<T>()>::type>
         const T&& value(variant_type<T> type) const && noexcept
         {
             return std::move(storage_.get_union()).value(type);
@@ -560,14 +559,14 @@ namespace type_safe
 //=== comparison ===//
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \
-    template <class VariantPolicy, typename... Types>                                              \
-    bool operator Op(const basic_variant<VariantPolicy, Types...>& lhs, nullvar_t)                 \
+    template <class VariantPolicy, typename Head, typename... Types>                               \
+    bool operator Op(const basic_variant<VariantPolicy, Head, Types...>& lhs, nullvar_t)           \
     {                                                                                              \
         return (void)lhs, Expr;                                                                    \
     }                                                                                              \
     /** \group variant_comp_null */                                                                \
-    template <class VariantPolicy, typename... Types>                                              \
-    bool operator Op(nullvar_t, const basic_variant<VariantPolicy, Types...>& rhs)                 \
+    template <class VariantPolicy, typename Head, typename... Types>                               \
+    bool operator Op(nullvar_t, const basic_variant<VariantPolicy, Head, Types...>& rhs)           \
     {                                                                                              \
         return (void)rhs, Expr2;                                                                   \
     }
@@ -603,87 +602,87 @@ namespace type_safe
     /// \notes The value must not necessarily have a type that can be stored in the variant.
     /// \group variant_comp_t
     /// \module variant
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator==(const basic_variant<VariantPolicy, Types...>& lhs, const T& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator==(const basic_variant<VariantPolicy, Head, Types...>& lhs, const T& rhs)
     {
         return lhs.has_value(variant_type<T>{}) && lhs.value(variant_type<T>{}) == rhs;
     }
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator==(const T& lhs, const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator==(const T& lhs, const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
         return rhs == lhs;
     }
 
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator!=(const basic_variant<VariantPolicy, Types...>& lhs, const T& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator!=(const basic_variant<VariantPolicy, Head, Types...>& lhs, const T& rhs)
     {
         return !(lhs == rhs);
     }
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator!=(const T& lhs, const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator!=(const T& lhs, const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
         return !(rhs == lhs);
     }
 
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator<(const basic_variant<VariantPolicy, Types...>& lhs, const T& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator<(const basic_variant<VariantPolicy, Head, Types...>& lhs, const T& rhs)
     {
         constexpr auto id =
-            typename basic_variant<VariantPolicy, Types...>::type_id(variant_type<T>{});
+            typename basic_variant<VariantPolicy, Head, Types...>::type_id(variant_type<T>{});
         if (lhs.type() != id)
             return lhs.type() < id;
         return lhs.value(variant_type<T>{}) < rhs;
     }
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator<(const T& lhs, const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator<(const T& lhs, const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
         constexpr auto id =
-            typename basic_variant<VariantPolicy, Types...>::type_id(variant_type<T>{});
+            typename basic_variant<VariantPolicy, Head, Types...>::type_id(variant_type<T>{});
         if (id != rhs.type())
             return id < rhs.type();
         return lhs < rhs.value(variant_type<T>{});
     }
 
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator<=(const basic_variant<VariantPolicy, Types...>& lhs, const T& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator<=(const basic_variant<VariantPolicy, Head, Types...>& lhs, const T& rhs)
     {
         return !(rhs < lhs);
     }
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator<=(const T& lhs, const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator<=(const T& lhs, const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
         return !(rhs < lhs);
     }
 
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator>(const basic_variant<VariantPolicy, Types...>& lhs, const T& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator>(const basic_variant<VariantPolicy, Head, Types...>& lhs, const T& rhs)
     {
         return rhs < lhs;
     }
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator>(const T& lhs, const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator>(const T& lhs, const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
         return rhs < lhs;
     }
 
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator>=(const basic_variant<VariantPolicy, Types...>& lhs, const T& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator>=(const basic_variant<VariantPolicy, Head, Types...>& lhs, const T& rhs)
     {
         return !(lhs < rhs);
     }
     /// \group variant_comp_t
-    template <class VariantPolicy, typename... Types, typename T>
-    bool operator>=(const T& lhs, const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types, typename T>
+    bool operator>=(const T& lhs, const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
         return !(lhs < rhs);
     }
@@ -696,51 +695,51 @@ namespace type_safe
     /// The other comparisons behave accordingly.
     /// \module variant
     /// \group variant_comp
-    template <class VariantPolicy, typename... Types>
-    bool operator==(const basic_variant<VariantPolicy, Types...>& lhs,
-                    const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types>
+    bool operator==(const basic_variant<VariantPolicy, Head, Types...>& lhs,
+                    const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
-        return detail::compare_variant<basic_variant<VariantPolicy, Types...>>::compare_equal(lhs,
-                                                                                              rhs);
+        return detail::compare_variant<basic_variant<VariantPolicy, Head,
+                                                     Types...>>::compare_equal(lhs, rhs);
     }
 
     /// \group variant_comp
-    template <class VariantPolicy, typename... Types>
-    bool operator!=(const basic_variant<VariantPolicy, Types...>& lhs,
-                    const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types>
+    bool operator!=(const basic_variant<VariantPolicy, Head, Types...>& lhs,
+                    const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
         return !(lhs == rhs);
     }
 
     /// \group variant_comp
-    template <class VariantPolicy, typename... Types>
-    bool operator<(const basic_variant<VariantPolicy, Types...>& lhs,
-                   const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types>
+    bool operator<(const basic_variant<VariantPolicy, Head, Types...>& lhs,
+                   const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
-        return detail::compare_variant<basic_variant<VariantPolicy, Types...>>::compare_less(lhs,
-                                                                                             rhs);
+        return detail::compare_variant<basic_variant<VariantPolicy, Head,
+                                                     Types...>>::compare_less(lhs, rhs);
     }
 
     /// \group variant_comp
-    template <class VariantPolicy, typename... Types>
-    bool operator<=(const basic_variant<VariantPolicy, Types...>& lhs,
-                    const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types>
+    bool operator<=(const basic_variant<VariantPolicy, Head, Types...>& lhs,
+                    const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
         return !(rhs < lhs);
     }
 
     /// \group variant_comp
-    template <class VariantPolicy, typename... Types>
-    bool operator>(const basic_variant<VariantPolicy, Types...>& lhs,
-                   const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types>
+    bool operator>(const basic_variant<VariantPolicy, Head, Types...>& lhs,
+                   const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
         return rhs < lhs;
     }
 
     /// \group variant_comp
-    template <class VariantPolicy, typename... Types>
-    bool operator>=(const basic_variant<VariantPolicy, Types...>& lhs,
-                    const basic_variant<VariantPolicy, Types...>& rhs)
+    template <class VariantPolicy, typename Head, typename... Types>
+    bool operator>=(const basic_variant<VariantPolicy, Head, Types...>& lhs,
+                    const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
         return !(lhs < rhs);
     }
@@ -787,7 +786,7 @@ namespace type_safe
     private:
         template <typename T, typename... Types, typename... Args>
         static auto change_value_impl(union_type<T> type, tagged_union<Types...>& storage,
-                                      Args&&... args) ->
+                                      Args&&... args) noexcept ->
             typename std::enable_if<std::is_nothrow_constructible<T, Args&&...>::value>::type
         {
             destroy(storage);
