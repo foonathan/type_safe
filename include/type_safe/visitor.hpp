@@ -318,19 +318,6 @@ namespace type_safe
                                       Variants&&...>::call(std::forward<Visitor>(visitor),
                                                            std::forward<Variants>(variants)...);
         }
-
-        template <typename T>
-        struct is_variant_impl : std::false_type
-        {
-        };
-
-        template <class VariantPolicy, typename... Types>
-        struct is_variant_impl<basic_variant<VariantPolicy, Types...>> : std::true_type
-        {
-        };
-
-        template <typename T>
-        using is_variant = is_variant_impl<typename std::decay<T>::type>;
     } // namespace detail
 
     /// Visits a [ts::basic_variant]().

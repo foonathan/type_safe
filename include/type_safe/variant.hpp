@@ -745,6 +745,21 @@ namespace type_safe
         return !(lhs < rhs);
     }
 
+    /// \effects If the variant is empty, does nothing.
+    /// Otherwise let the variant contain an object of type `T`.
+    /// If the functor is callable for the `T`, calls its `operator()` passing it the stored object.
+    /// Else does nothing.
+    /// \module variant
+    /// \param 2
+    /// \exclude
+    template <class Variant, typename Func,
+              typename std::enable_if<detail::is_variant<Variant>::value, int>::type = 0>
+    void with(Variant&& variant, Func&& func)
+    {
+        detail::with_variant<Func, Variant, typename std::decay<Variant>::type::types>::
+            with(std::forward<Variant>(variant), std::forward<Func>(func));
+    }
+
     /// A variant policy for [ts::basic_variant]() that uses a fallback type.
     ///
     /// When changing the type of the variant throws an exception,

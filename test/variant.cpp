@@ -534,6 +534,41 @@ TEST_CASE("basic_variant")
         REQUIRE(non_empty2 >= variant_t(4));
         REQUIRE_FALSE(variant_t(4) >= non_empty2);
     }
+    SECTION("with")
+    {
+        struct visitor
+        {
+            int i;
+
+            void operator()(int val) const
+            {
+                REQUIRE(i == 1);
+                REQUIRE(val == 5);
+            }
+
+            void operator()(float f) const
+            {
+                REQUIRE(i == 2);
+                REQUIRE(f == 3.14f);
+            }
+        } v;
+
+        variant_t a;
+        v.i = 0;
+        with(a, v);
+
+        variant_t b(5);
+        v.i = 1;
+        with(b, v);
+
+        variant_t c(3.14f);
+        v.i = 2;
+        with(c, v);
+
+        variant_t d(5);
+        with(d, [](int& i) { ++i; });
+        check_variant_value(d, 6);
+    }
 }
 
 struct evil_variant_test_type

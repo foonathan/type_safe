@@ -672,13 +672,12 @@ namespace type_safe
     /// \effects Calls the `operator()` of `f` passing it the value of `opt`,
     /// if it has a value.
     /// Otherwise does nothing.
-    /// \notes An `Optional` here is every type with functions named `has_value()` and `value()`.
     /// \module optional
     /// \param 2
     /// \exclude
-    template <class Optional, typename Func>
-    void with(Optional&& opt, Func&& f,
-              decltype(opt.has_value(), std::forward<Optional>(opt).value(), 0) = 0)
+    template <class Optional, typename Func,
+              typename = typename std::enable_if<detail::is_optional<Optional>::value>::type>
+    void with(Optional&& opt, Func&& f)
     {
         if (opt.has_value())
             std::forward<Func>(f)(std::forward<Optional>(opt).value());
