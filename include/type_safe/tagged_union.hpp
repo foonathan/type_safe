@@ -256,7 +256,7 @@ namespace type_safe
         template <typename T>
         void check(union_type<T> type) const noexcept
         {
-            DEBUG_ASSERT(cur_type_ == type, detail::assert_handler{},
+            DEBUG_ASSERT(cur_type_ == type, detail::precondition_error_handler{},
                          "different type stored in union");
         }
 

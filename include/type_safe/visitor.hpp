@@ -207,7 +207,7 @@ namespace type_safe
                     std::forward<Visitor>(visitor), std::forward<Args>(args)..., nullvar))
             {
                 DEBUG_ASSERT(std::decay<Variant>::type::allow_empty::value && !variant.has_value(),
-                             assert_handler{}, "variant in invalid state for visitor");
+                             precondition_error_handler{}, "variant in invalid state for visitor");
                 return visit_variant_impl<AllowIncomplete, Visitor>::call(std::forward<Visitor>(
                                                                               visitor),
                                                                           std::forward<Args>(
@@ -265,7 +265,7 @@ namespace type_safe
                     std::forward<Args>(args)..., nullvar))
             {
                 DEBUG_ASSERT(std::decay<Variant>::type::allow_empty::value && !variant.has_value(),
-                             assert_handler{}, "variant in invalid state for visitor");
+                             precondition_error_handler{}, "variant in invalid state for visitor");
                 return visit_variant_impl<AllowIncomplete, Visitor,
                                           Rest...>::call(std::forward<Visitor>(visitor),
                                                          std::forward<Rest>(rest)...,

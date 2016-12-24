@@ -72,7 +72,8 @@ namespace type_safe
     TYPE_SAFE_FORCE_INLINE constexpr Target narrow_cast(const Source& source) noexcept
     {
         return detail::is_narrowing<Target>(source) ?
-                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion would truncate value"),
+                   (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
+                                      "conversion would truncate value"),
                     Target()) :
                    static_cast<Target>(source);
     }

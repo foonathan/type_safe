@@ -142,7 +142,7 @@ namespace type_safe
         /// \group ctor_union
         explicit basic_variant(const tagged_union<HeadT, TailT...>& u)
         {
-            DEBUG_ASSERT(allow_empty::value || u.has_value(), detail::assert_handler{});
+            DEBUG_ASSERT(allow_empty::value || u.has_value(), detail::precondition_error_handler{});
             if (u.has_value())
                 copy(storage_.get_union(), u);
         }
@@ -150,7 +150,7 @@ namespace type_safe
         /// \group ctor_union
         explicit basic_variant(tagged_union<HeadT, TailT...>&& u)
         {
-            DEBUG_ASSERT(allow_empty::value || u.has_value(), detail::assert_handler{});
+            DEBUG_ASSERT(allow_empty::value || u.has_value(), detail::precondition_error_handler{});
             if (u.has_value())
                 move(storage_.get_union(), std::move(u));
         }
@@ -358,7 +358,7 @@ namespace type_safe
         /// \requires The variant must be empty.
         nullvar_t value(variant_type<nullvar_t>) const noexcept
         {
-            DEBUG_ASSERT(!has_value(), detail::assert_handler{});
+            DEBUG_ASSERT(!has_value(), detail::precondition_error_handler{});
             return nullvar;
         }
 

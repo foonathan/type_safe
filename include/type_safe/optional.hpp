@@ -375,7 +375,7 @@ namespace type_safe
         /// \requires `has_value() == true`.
         auto value() TYPE_SAFE_LVALUE_REF noexcept -> decltype(std::declval<storage&>().get_value())
         {
-            DEBUG_ASSERT(has_value(), detail::assert_handler{});
+            DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});
             return get_storage().get_value();
         }
 
@@ -384,7 +384,7 @@ namespace type_safe
         auto value() const TYPE_SAFE_LVALUE_REF noexcept
             -> decltype(std::declval<const storage&>().get_value())
         {
-            DEBUG_ASSERT(has_value(), detail::assert_handler{});
+            DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});
             return get_storage().get_value();
         }
 
@@ -393,7 +393,7 @@ namespace type_safe
         /// \requires `has_value() == true`.
         auto value() && noexcept -> decltype(std::declval<storage&&>().get_value())
         {
-            DEBUG_ASSERT(has_value(), detail::assert_handler{});
+            DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});
             return std::move(get_storage()).get_value();
         }
 
@@ -401,7 +401,7 @@ namespace type_safe
         /// \requires `has_value() == true`.
         auto value() const && noexcept -> decltype(std::declval<const storage&&>().get_value())
         {
-            DEBUG_ASSERT(has_value(), detail::assert_handler{});
+            DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});
             return std::move(get_storage()).get_value();
         }
 #endif

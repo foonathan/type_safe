@@ -138,7 +138,7 @@ namespace type_safe
         TYPE_SAFE_FORCE_INLINE static constexpr T do_addition(const T& a, const T& b) noexcept
         {
             return detail::will_addition_error(detail::arithmetic_tag_for<T>{}, a, b) ?
-                       (DEBUG_UNREACHABLE(detail::assert_handler{},
+                       (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
                                           "addition will result in overflow"),
                         a) :
                        a + b;
@@ -148,7 +148,7 @@ namespace type_safe
         TYPE_SAFE_FORCE_INLINE static constexpr T do_subtraction(const T& a, const T& b) noexcept
         {
             return detail::will_subtraction_error(detail::arithmetic_tag_for<T>{}, a, b) ?
-                       (DEBUG_UNREACHABLE(detail::assert_handler{},
+                       (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
                                           "subtraction will result in underflow"),
                         a) :
                        a - b;
@@ -158,7 +158,7 @@ namespace type_safe
         TYPE_SAFE_FORCE_INLINE static constexpr T do_multiplication(const T& a, const T& b) noexcept
         {
             return detail::will_multiplication_error(detail::arithmetic_tag_for<T>{}, a, b) ?
-                       (DEBUG_UNREACHABLE(detail::assert_handler{},
+                       (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
                                           "multiplication will result in overflow"),
                         a) :
                        a * b;
@@ -168,7 +168,8 @@ namespace type_safe
         TYPE_SAFE_FORCE_INLINE static constexpr T do_division(const T& a, const T& b) noexcept
         {
             return detail::will_division_error(detail::arithmetic_tag_for<T>{}, a, b) ?
-                       (DEBUG_UNREACHABLE(detail::assert_handler{}, "division by zero/overflow"),
+                       (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
+                                          "division by zero/overflow"),
                         a) :
                        a / b;
         }
@@ -177,7 +178,8 @@ namespace type_safe
         TYPE_SAFE_FORCE_INLINE static constexpr T do_modulo(const T& a, const T& b) noexcept
         {
             return detail::will_modulo_error(detail::arithmetic_tag_for<T>{}, a, b) ?
-                       (DEBUG_UNREACHABLE(detail::assert_handler{}, "modulo by zero"), a) :
+                       (DEBUG_UNREACHABLE(detail::precondition_error_handler{}, "modulo by zero"),
+                        a) :
                        a % b;
         }
     };
@@ -195,7 +197,7 @@ namespace type_safe
             error(const char* msg) : std::range_error(msg)
             {
 #if !TYPE_SAFE_USE_EXCEPTIONS
-                DEBUG_UNREACHABLE(detail::assert_handler{}, msg);
+                DEBUG_UNREACHABLE(detail::precondition_error_handler{}, msg);
 #endif
             }
         };

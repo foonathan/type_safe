@@ -21,7 +21,8 @@ namespace type_safe
         template <typename Value, typename Predicate>
         static void verify(const Value& val, const Predicate& p)
         {
-            DEBUG_ASSERT(p(val), detail::assert_handler{}, "value does not fulfill constraint");
+            DEBUG_ASSERT(p(val), detail::precondition_error_handler{},
+                         "value does not fulfill constraint");
         }
     };
 
@@ -185,7 +186,7 @@ namespace type_safe
             /// \requires It must not be in the moved-from state.
             value_type& get() noexcept
             {
-                DEBUG_ASSERT(value_, detail::assert_handler{});
+                DEBUG_ASSERT(value_, detail::precondition_error_handler{});
                 return value_->value_;
             }
 

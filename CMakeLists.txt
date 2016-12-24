@@ -8,11 +8,24 @@ project(TYPE_SAFE)
 include(external/external.cmake)
 
 # options
-option(TYPE_SAFE_ENABLE_ASSERTIONS "whether or not to enable assertions for the type_safe library" ON)
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    set(_type_safe_default_assertions ON)
+else()
+    set(_type_safe_default_assertions OFF)
+endif()
+
+option(TYPE_SAFE_ENABLE_ASSERTIONS "whether or not to enable internal assertions for the type_safe library" ${_type_safe_default_assertions})
 if(${TYPE_SAFE_ENABLE_ASSERTIONS})
     set(_type_safe_enable_assertions 1)
 else()
     set(_type_safe_enable_assertions 0)
+endif()
+
+option(TYPE_SAFE_ENABLE_PRECONDITION_CHECKS "whether or not to enable precondition checks" ON)
+if(${TYPE_SAFE_ENABLE_PRECONDITION_CHECKS})
+    set(_type_safe_enable_precondition_checks 1)
+else()
+    set(_type_safe_enable_precondition_checks 0)
 endif()
 
 option(TYPE_SAFE_ENABLE_WRAPPER "whether or not the wrappers in types.hpp are used" ON)
@@ -66,6 +79,7 @@ target_sources(type_safe INTERFACE ${detail_header_files} ${header_files})
 target_include_directories(type_safe INTERFACE include/)
 target_compile_definitions(type_safe INTERFACE
                                      TYPE_SAFE_ENABLE_ASSERTIONS=${_type_safe_enable_assertions}
+                                     TYPE_SAFE_ENABLE_PRECONDITION_CHECKS=${_type_safe_enable_precondition_checks}
                                      TYPE_SAFE_ENABLE_WRAPPER=${_type_safe_enable_wrapper}
                                      TYPE_SAFE_ARITHMETIC_UB=${_type_safe_arithmetic_ub})
 target_link_libraries(type_safe INTERFACE debug_assert)

@@ -78,7 +78,7 @@ namespace type_safe
             typename std::enable_if<std::is_constructible<value_type, Args&&...>::value>::type
         {
             storage_ = static_cast<storage_type>(value_type(std::forward<Args>(args)...));
-            DEBUG_ASSERT(has_value(), detail::assert_handler{},
+            DEBUG_ASSERT(has_value(), detail::precondition_error_handler{},
                          "create_value() called creating an invalid value");
         }
 

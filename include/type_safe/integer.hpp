@@ -352,9 +352,9 @@ namespace type_safe
         using result_type = make_signed_t<Integer>;
         return i <= Integer(std::numeric_limits<result_type>::max()) ?
                    static_cast<result_type>(i) :
-                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion "
-                                                                "would "
-                                                                "overflow"),
+                   (DEBUG_UNREACHABLE(detail::precondition_error_handler{}, "conversion "
+                                                                            "would "
+                                                                            "overflow"),
                     result_type());
     }
 
@@ -383,10 +383,10 @@ namespace type_safe
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<Integer> make_unsigned(const Integer& i)
     {
         using result_type = make_unsigned_t<Integer>;
-        return i >= Integer(0) ?
-                   static_cast<result_type>(i) :
-                   (DEBUG_UNREACHABLE(detail::assert_handler{}, "conversion would underflow"),
-                    result_type(0));
+        return i >= Integer(0) ? static_cast<result_type>(i) :
+                                 (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
+                                                    "conversion would underflow"),
+                                  result_type(0));
     }
 
     /// \returns A new [ts::integer]() of the corresponding unsigned integer type.

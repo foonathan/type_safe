@@ -174,7 +174,7 @@ namespace type_safe
     {
         DEBUG_ASSERT(detail::index_valid(detail::member_size{}, obj,
                                          static_cast<std::size_t>(get(index))),
-                     detail::assert_handler{});
+                     detail::precondition_error_handler{});
         return std::forward<Indexable>(obj)[static_cast<std::size_t>(get(index))];
     }
 

@@ -78,7 +78,7 @@ namespace type_safe
         template <typename T, typename = detail::enable_boolean<T>>
         void change(T new_state) noexcept
         {
-            DEBUG_ASSERT(state_ != new_state, detail::assert_handler{});
+            DEBUG_ASSERT(state_ != new_state, detail::precondition_error_handler{});
             state_ = new_state;
         }
 

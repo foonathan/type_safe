@@ -17,6 +17,12 @@ namespace type_safe
                                 debug_assert::default_handler
         {
         };
+
+        struct precondition_error_handler
+            : debug_assert::set_level<TYPE_SAFE_ENABLE_PRECONDITION_CHECKS>,
+              debug_assert::default_handler
+        {
+        };
     } // namespace detail
 } // namespace type_safe
 
