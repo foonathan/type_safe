@@ -26,7 +26,7 @@ namespace type_safe
     /// ```cpp
     /// struct my_handle
     /// : strong_typedef<my_handle, void*>,
-    ///   strong_typedef_op::equality_comparision<my_handle>
+    ///   strong_typedef_op::equality_comparison<my_handle>
     /// {
     ///     using strong_typedef::strong_typedef;
     /// };
@@ -34,8 +34,8 @@ namespace type_safe
     /// struct my_int
     /// : strong_typedef<my_int, int>,
     ///   strong_typedef_op::integer_arithmetic<my_int>,
-    ///   strong_typedef_op::equality_comparision<my_int>,
-    ///   strong_typedef_op::relational_comparision<my_int>
+    ///   strong_typedef_op::equality_comparison<my_int>,
+    ///   strong_typedef_op::relational_comparison<my_int>
     /// {
     ///     using strong_typedef::strong_typedef;
     /// };
