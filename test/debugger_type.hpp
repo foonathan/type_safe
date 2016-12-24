@@ -15,7 +15,7 @@ struct debugger_type
     bool was_copy_assigned = false;
     bool swapped           = false;
 
-    debugger_type(int id) : id(id)
+    debugger_type(int id, float = 0., char = 0) : id(id)
     {
         from_ctor = true;
     }
@@ -82,5 +82,15 @@ struct debugger_type
         return was_copy_assigned && !was_move_assigned;
     }
 };
+
+inline bool operator==(const debugger_type& a, const debugger_type& b)
+{
+    return a.id == b.id;
+}
+
+inline bool operator<(const debugger_type& a, const debugger_type& b)
+{
+    return a.id < b.id;
+}
 
 #endif // TYPE_SAFE_TEST_DEBUGGER_TYPE_HPP_INCLUDED

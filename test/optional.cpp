@@ -3,6 +3,7 @@
 // found in the top-level directory of this distribution.
 
 #include <type_safe/optional.hpp>
+#include <type_safe/visitor.hpp>
 
 #include <catch.hpp>
 
@@ -400,72 +401,6 @@ TEST_CASE("optional")
         });
         REQUIRE(a.has_value());
         REQUIRE(a.value() == 1);
-    }
-    SECTION("visit")
-    {
-        struct visitor
-        {
-            using incomplete_visitor = void;
-
-            int value;
-
-            void operator()(nullopt_t) const
-            {
-                REQUIRE(value == -1);
-            }
-
-            void operator()(int i) const
-            {
-                REQUIRE(value == i);
-            }
-
-            void operator()(int, nullopt_t) const
-            {
-                REQUIRE(value == -1);
-            }
-
-            void operator()(int, int b) const
-            {
-                REQUIRE(value == b);
-            }
-        };
-
-        optional<int> a;
-        visit(visitor{-1}, a);
-
-        a = 42;
-        visit(visitor{42}, a);
-
-        optional<int> b;
-        visit(visitor{-1}, a, b);
-
-        b = 32;
-        visit(visitor{32}, a, b);
-    }
-    SECTION("apply")
-    {
-        auto called = false;
-        auto func1  = [&](int a, int b) {
-            REQUIRE(called);
-            REQUIRE(a == 0);
-            REQUIRE(b == 1);
-            return 2;
-        };
-
-        optional<int> a, b;
-
-        optional<int> res = apply<optional<int>>(func1, a, b);
-        REQUIRE(!res.has_value());
-
-        a   = 0;
-        res = apply<optional<int>>(func1, a, b);
-        REQUIRE(!res.has_value());
-
-        b      = 1;
-        called = true;
-        res    = apply<optional<int>>(func1, a, b);
-        REQUIRE(res.has_value());
-        REQUIRE(res.value() == 2);
     }
     SECTION("comparision")
     {

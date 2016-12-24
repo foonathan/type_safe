@@ -22,6 +22,8 @@ namespace type_safe
             static auto adl_swap(short, U& a, U& b) noexcept(noexcept(std::swap(a, b)))
                 -> decltype(std::swap(a, b));
 
+            static void adl_swap(...) noexcept(false);
+
             static constexpr bool value =
                 noexcept(adl_swap(0, std::declval<T&>(), std::declval<T&>()));
         };

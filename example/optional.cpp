@@ -8,6 +8,7 @@
 
 #include <type_safe/optional.hpp>
 #include <type_safe/optional_ref.hpp>
+#include <type_safe/visitor.hpp>
 
 namespace ts = type_safe;
 

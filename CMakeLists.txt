@@ -31,11 +31,14 @@ endif()
 
 # interface target
 set(detail_header_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/aligned_union.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/all_of.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/assert.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/assign_or_construct.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/copy_move_control.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/force_inline.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/is_nothrow_swappable.hpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/is_nothrow_swappable.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/variant_impl.hpp)
 set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/config.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/arithmetic_policy.hpp
@@ -53,7 +56,10 @@ set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/optional_ref.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/output_parameter.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/strong_typedef.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/types.hpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/tagged_union.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/types.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/variant.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/visitor.hpp)
 
 add_library(type_safe INTERFACE)
 target_sources(type_safe INTERFACE ${detail_header_files} ${header_files})
@@ -63,6 +69,10 @@ target_compile_definitions(type_safe INTERFACE
                                      TYPE_SAFE_ENABLE_WRAPPER=${_type_safe_enable_wrapper}
                                      TYPE_SAFE_ARITHMETIC_UB=${_type_safe_arithmetic_ub})
 target_link_libraries(type_safe INTERFACE debug_assert)
+
+if(MSVC)
+   target_compile_options(type_safe INTERFACE /wd4800) # truncation to bool warning
+endif()
 
 # other subdirectories
 # only add if not inside add_subdirectory()
