@@ -669,18 +669,19 @@ namespace type_safe
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
-    /// \effects Calls the `operator()` of `f` passing it the value of `opt`,
+    /// \effects Calls the `operator()` of `f` passing it the value of `opt` and additional arguments,
     /// if it has a value.
     /// Otherwise does nothing.
     /// \module optional
-    /// \param 2
+    /// \param 3
     /// \exclude
-    template <class Optional, typename Func,
+    template <class Optional, typename Func, typename... Args,
               typename = typename std::enable_if<detail::is_optional<Optional>::value>::type>
-    void with(Optional&& opt, Func&& f)
+    void with(Optional&& opt, Func&& f, Args&&... additional_args)
     {
         if (opt.has_value())
-            std::forward<Func>(f)(std::forward<Optional>(opt).value());
+            std::forward<Func>(f)(std::forward<Optional>(opt).value(),
+                                  std::forward<Args>(additional_args)...);
     }
 
     //=== optional ===//

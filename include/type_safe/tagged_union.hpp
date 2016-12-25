@@ -381,49 +381,53 @@ namespace type_safe
         constexpr typename move_union<tagged_union<Types...>>::callback_type
             move_union<tagged_union<Types...>>::callbacks[];
 
-        template <typename Func, class Union, class Types>
+        template <typename Func, class Union, class Types, typename... Args>
         class with_union;
 
-        template <typename Func, class Union, typename... Types>
-        class with_union<Func, Union, union_types<Types...>>
+        template <typename Func, class Union, typename... Types, typename... Args>
+        class with_union<Func, Union, union_types<Types...>, Args...>
         {
         public:
-            static void with(Union&& u, Func&& func)
+            static void with(Union&& u, Func&& func, Args&&... args)
             {
                 if (u.type() != tagged_union<Types...>::invalid_type)
                 {
                     auto idx = static_cast<std::size_t>(u.type()) - 1;
                     DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
-                    callbacks[idx](std::forward<Union>(u), std::forward<Func>(func));
+                    callbacks[idx](std::forward<Union>(u), std::forward<Func>(func),
+                                   std::forward<Args>(args)...);
                 }
             }
 
         private:
             template <typename T>
-            static auto call(int, Union&& u, Func&& func)
-                -> decltype(std::forward<Func>(func)(std::forward<Union>(u).value(union_type<T>{})))
+            static auto call(int, Union&& u, Func&& func, Args&&... args)
+                -> decltype(std::forward<Func>(func)(std::forward<Union>(u).value(union_type<T>{}),
+                                                     std::forward<Args>(args)...))
             {
-                return std::forward<Func>(func)(std::forward<Union>(u).value(union_type<T>{}));
+                return std::forward<Func>(func)(std::forward<Union>(u).value(union_type<T>{}),
+                                                std::forward<Args>(args)...);
             }
 
             template <typename T>
-            static void call(short, Union&&, Func&&)
+            static void call(short, Union&&, Func&&, Args&&...)
             {
             }
 
             template <typename T>
-            static void with_impl(Union&& u, Func&& func)
+            static void with_impl(Union&& u, Func&& func, Args&&... args)
             {
-                call<T>(0, std::forward<Union>(u), std::forward<Func>(func));
+                call<T>(0, std::forward<Union>(u), std::forward<Func>(func),
+                        std::forward<Args>(args)...);
             }
 
-            using callback_type                        = void (*)(Union&&, Func&&);
+            using callback_type                        = void (*)(Union&&, Func&&, Args&&...);
             static constexpr callback_type callbacks[] = {&with_impl<Types>...};
         };
 
-        template <typename Func, class Union, typename... Types>
-        constexpr typename with_union<Func, Union, union_types<Types...>>::callback_type
-            with_union<Func, Union, union_types<Types...>>::callbacks[];
+        template <typename Func, class Union, typename... Types, typename... Args>
+        constexpr typename with_union<Func, Union, union_types<Types...>, Args...>::callback_type
+            with_union<Func, Union, union_types<Types...>, Args...>::callbacks[];
     } // namespace detail
 
     /// \effects Destroys the type currently stored in the [ts::tagged_union](),
@@ -468,35 +472,39 @@ namespace type_safe
     /// Else does nothing.
     /// \group union_with
     /// \module variant
-    template <typename... Types, typename Func>
-    void with(tagged_union<Types...>& u, Func&& f)
+    template <typename... Types, typename Func, typename... Args>
+    void with(tagged_union<Types...>& u, Func&& f, Args&&... additional_args)
     {
-        detail::with_union<Func&&, decltype(u),
-                           typename tagged_union<Types...>::types>::with(u, std::forward<Func>(f));
+        detail::with_union<Func&&, decltype(u), typename tagged_union<Types...>::types,
+                           Args&&...>::with(u, std::forward<Func>(f),
+                                            std::forward<Args>(additional_args)...);
     }
 
     /// \group union_with
-    template <typename... Types, typename Func>
-    void with(const tagged_union<Types...>& u, Func&& f)
+    template <typename... Types, typename Func, typename... Args>
+    void with(const tagged_union<Types...>& u, Func&& f, Args&&... additional_args)
     {
-        detail::with_union<Func&&, decltype(u),
-                           typename tagged_union<Types...>::types>::with(u, std::forward<Func>(f));
+        detail::with_union<Func&&, decltype(u), typename tagged_union<Types...>::types,
+                           Args&&...>::with(u, std::forward<Func>(f),
+                                            std::forward<Args>(additional_args)...);
     }
 
     /// \group union_with
-    template <typename... Types, typename Func>
-    void with(tagged_union<Types...>&& u, Func&& f)
+    template <typename... Types, typename Func, typename... Args>
+    void with(tagged_union<Types...>&& u, Func&& f, Args&&... additional_args)
     {
-        detail::with_union<Func&&, decltype(u),
-                           typename tagged_union<Types...>::types>::with(u, std::forward<Func>(f));
+        detail::with_union<Func&&, decltype(u), typename tagged_union<Types...>::types,
+                           Args&&...>::with(u, std::forward<Func>(f),
+                                            std::forward<Args>(additional_args)...);
     }
 
     /// \group union_with
-    template <typename... Types, typename Func>
-    void with(const tagged_union<Types...>&& u, Func&& f)
+    template <typename... Types, typename Func, typename... Args>
+    void with(const tagged_union<Types...>&& u, Func&& f, Args&&... additional_args)
     {
-        detail::with_union<Func&&, decltype(u),
-                           typename tagged_union<Types...>::types>::with(u, std::forward<Func>(f));
+        detail::with_union<Func&&, decltype(u), typename tagged_union<Types...>::types,
+                           Args&&...>::with(u, std::forward<Func>(f),
+                                            std::forward<Args>(additional_args)...);
     }
 } // namespace type_safe
 

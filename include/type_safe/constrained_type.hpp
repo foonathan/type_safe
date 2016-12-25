@@ -297,11 +297,11 @@ namespace type_safe
     /// \effects Calls `f` with a non-`const` reference to the stored value of the [ts::constrained_type]().
     /// It checks that `f` does not change the validity of the object.
     /// \notes The same behavior can be accomplished by using the `modify()` member function.
-    template <typename T, typename Constraint, class Verifier, typename Func>
-    void with(constrained_type<T, Constraint, Verifier>& value, Func&& f)
+    template <typename T, typename Constraint, class Verifier, typename Func, typename... Args>
+    void with(constrained_type<T, Constraint, Verifier>& value, Func&& f, Args&&... additional_args)
     {
         auto modifier = value.modify();
-        std::forward<Func>(f)(modifier.get());
+        std::forward<Func>(f)(modifier.get(), std::forward<Args>(additional_args)...);
     }
 
     //=== tagged_type ===//

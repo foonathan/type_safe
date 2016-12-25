@@ -752,31 +752,43 @@ namespace type_safe
     /// Else does nothing.
     /// \module variant
     /// \group variant_with
-    template <class VariantPolicy, typename Head, typename... Types, typename Func>
-    void with(basic_variant<VariantPolicy, Head, Types...>& variant, Func&& func)
+    template <class VariantPolicy, typename Head, typename... Types, typename Func,
+              typename... Args>
+    void with(basic_variant<VariantPolicy, Head, Types...>& variant, Func&& func,
+              Args&&... additional_args)
     {
-        with(detail::storage_access::get(variant).get_union(), std::forward<Func>(func));
+        with(detail::storage_access::get(variant).get_union(), std::forward<Func>(func),
+             std::forward<Args>(additional_args)...);
     }
 
     /// \group variant_with
-    template <class VariantPolicy, typename Head, typename... Types, typename Func>
-    void with(const basic_variant<VariantPolicy, Head, Types...>& variant, Func&& func)
+    template <class VariantPolicy, typename Head, typename... Types, typename Func,
+              typename... Args>
+    void with(const basic_variant<VariantPolicy, Head, Types...>& variant, Func&& func,
+              Args&&... additional_args)
     {
-        with(detail::storage_access::get(variant).get_union(), std::forward<Func>(func));
+        with(detail::storage_access::get(variant).get_union(), std::forward<Func>(func),
+             std::forward<Args>(additional_args)...);
     }
 
     /// \group variant_with
-    template <class VariantPolicy, typename Head, typename... Types, typename Func>
-    void with(basic_variant<VariantPolicy, Head, Types...>&& variant, Func&& func)
+    template <class VariantPolicy, typename Head, typename... Types, typename Func,
+              typename... Args>
+    void with(basic_variant<VariantPolicy, Head, Types...>&& variant, Func&& func,
+              Args&&... additional_args)
     {
-        with(std::move(detail::storage_access::get(variant).get_union()), std::forward<Func>(func));
+        with(std::move(detail::storage_access::get(variant).get_union()), std::forward<Func>(func),
+             std::forward<Args>(additional_args)...);
     }
 
     /// \group variant_with
-    template <class VariantPolicy, typename Head, typename... Types, typename Func>
-    void with(const basic_variant<VariantPolicy, Head, Types...>&& variant, Func&& func)
+    template <class VariantPolicy, typename Head, typename... Types, typename Func,
+              typename... Args>
+    void with(const basic_variant<VariantPolicy, Head, Types...>&& variant, Func&& func,
+              Args&&... additional_args)
     {
-        with(std::move(detail::storage_access::get(variant).get_union()), std::forward<Func>(func));
+        with(std::move(detail::storage_access::get(variant).get_union()), std::forward<Func>(func),
+             std::forward<Args>(additional_args)...);
     }
 
     /// A variant policy for [ts::basic_variant]() that uses a fallback type.
