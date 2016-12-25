@@ -351,52 +351,6 @@ namespace type_safe
             typename compare_variant<basic_variant<VariantPolicy, Head, Types...>>::callback_type
                 compare_variant<basic_variant<VariantPolicy, Head, Types...>>::less_callbacks[];
 
-        //=== with variant ===//
-        template <typename Func, class Variant, class Types>
-        class with_variant;
-
-        template <typename Func, class Variant, typename... Types>
-        class with_variant<Func, Variant, union_types<Types...>>
-        {
-        public:
-            static void with(Variant&& variant, Func&& func)
-            {
-                if (variant.has_value())
-                {
-                    auto idx = static_cast<std::size_t>(variant.type()) - 1;
-                    DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
-                    callbacks[idx](std::forward<Variant>(variant), std::forward<Func>(func));
-                }
-            }
-
-        private:
-            template <typename T>
-            static auto call(int, Variant&& variant, Func&& func) -> decltype(
-                std::forward<Func>(func)(std::forward<Variant>(variant).value(union_type<T>{})))
-            {
-                return std::forward<Func>(func)(
-                    std::forward<Variant>(variant).value(union_type<T>{}));
-            }
-
-            template <typename T>
-            static void call(short, Variant&&, Func&&)
-            {
-            }
-
-            template <typename T>
-            static void with_impl(Variant&& variant, Func&& func)
-            {
-                call<T>(0, std::forward<Variant>(variant), std::forward<Func>(func));
-            }
-
-            using callback_type                        = void (*)(Variant&&, Func&&);
-            static constexpr callback_type callbacks[] = {&with_impl<Types>...};
-        };
-
-        template <typename Func, class Variant, typename... Types>
-        constexpr typename with_variant<Func, Variant, union_types<Types...>>::callback_type
-            with_variant<Func, Variant, union_types<Types...>>::callbacks[];
-
         //=== variant_storage ===//
         template <class VariantPolicy, typename... Types>
         class variant_storage
@@ -467,6 +421,15 @@ namespace type_safe
 
         private:
             tagged_union<Types...> storage_;
+        };
+
+        struct storage_access
+        {
+            template <class Variant>
+            static auto get(Variant& var) -> decltype(var.storage_) &
+            {
+                return var.storage_;
+            }
         };
 
         template <typename... Types>

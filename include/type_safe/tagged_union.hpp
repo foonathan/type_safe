@@ -380,6 +380,50 @@ namespace type_safe
         template <typename... Types>
         constexpr typename move_union<tagged_union<Types...>>::callback_type
             move_union<tagged_union<Types...>>::callbacks[];
+
+        template <typename Func, class Union, class Types>
+        class with_union;
+
+        template <typename Func, class Union, typename... Types>
+        class with_union<Func, Union, union_types<Types...>>
+        {
+        public:
+            static void with(Union&& u, Func&& func)
+            {
+                if (u.type() != tagged_union<Types...>::invalid_type)
+                {
+                    auto idx = static_cast<std::size_t>(u.type()) - 1;
+                    DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
+                    callbacks[idx](std::forward<Union>(u), std::forward<Func>(func));
+                }
+            }
+
+        private:
+            template <typename T>
+            static auto call(int, Union&& u, Func&& func)
+                -> decltype(std::forward<Func>(func)(std::forward<Union>(u).value(union_type<T>{})))
+            {
+                return std::forward<Func>(func)(std::forward<Union>(u).value(union_type<T>{}));
+            }
+
+            template <typename T>
+            static void call(short, Union&&, Func&&)
+            {
+            }
+
+            template <typename T>
+            static void with_impl(Union&& u, Func&& func)
+            {
+                call<T>(0, std::forward<Union>(u), std::forward<Func>(func));
+            }
+
+            using callback_type                        = void (*)(Union&&, Func&&);
+            static constexpr callback_type callbacks[] = {&with_impl<Types>...};
+        };
+
+        template <typename Func, class Union, typename... Types>
+        constexpr typename with_union<Func, Union, union_types<Types...>>::callback_type
+            with_union<Func, Union, union_types<Types...>>::callbacks[];
     } // namespace detail
 
     /// \effects Destroys the type currently stored in the [ts::tagged_union](),
@@ -416,6 +460,43 @@ namespace type_safe
     void move(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
     {
         detail::move_union<tagged_union<Types...>>::move(dest, std::move(org));
+    }
+
+    /// \effects If the union is empty, does nothing.
+    /// Otherwise let the union contain an object of type `T`.
+    /// If the functor is callable for the `T`, calls its `operator()` passing it the stored object.
+    /// Else does nothing.
+    /// \group union_with
+    /// \module variant
+    template <typename... Types, typename Func>
+    void with(tagged_union<Types...>& u, Func&& f)
+    {
+        detail::with_union<Func&&, decltype(u),
+                           typename tagged_union<Types...>::types>::with(u, std::forward<Func>(f));
+    }
+
+    /// \group union_with
+    template <typename... Types, typename Func>
+    void with(const tagged_union<Types...>& u, Func&& f)
+    {
+        detail::with_union<Func&&, decltype(u),
+                           typename tagged_union<Types...>::types>::with(u, std::forward<Func>(f));
+    }
+
+    /// \group union_with
+    template <typename... Types, typename Func>
+    void with(tagged_union<Types...>&& u, Func&& f)
+    {
+        detail::with_union<Func&&, decltype(u),
+                           typename tagged_union<Types...>::types>::with(u, std::forward<Func>(f));
+    }
+
+    /// \group union_with
+    template <typename... Types, typename Func>
+    void with(const tagged_union<Types...>&& u, Func&& f)
+    {
+        detail::with_union<Func&&, decltype(u),
+                           typename tagged_union<Types...>::types>::with(u, std::forward<Func>(f));
     }
 } // namespace type_safe
 
