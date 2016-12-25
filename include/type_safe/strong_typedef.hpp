@@ -58,16 +58,17 @@ namespace type_safe
         {
         }
 
-        explicit operator T&() & noexcept
+        explicit operator T&() TYPE_SAFE_LVALUE_REF noexcept
         {
             return value_;
         }
 
-        explicit constexpr operator const T&() const & noexcept
+        explicit constexpr operator const T&() const TYPE_SAFE_LVALUE_REF noexcept
         {
             return value_;
         }
 
+#if TYPE_SAFE_USE_REF_QUALIFIERS
         explicit operator T&&() && noexcept
         {
             return std::move(value_);
@@ -77,6 +78,7 @@ namespace type_safe
         {
             return std::move(value_);
         }
+#endif
 
         friend void swap(strong_typedef& a, strong_typedef& b) noexcept
         {
