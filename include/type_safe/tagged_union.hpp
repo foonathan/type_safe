@@ -281,7 +281,9 @@ namespace type_safe
         public:
             static void destroy(tagged_union<Types...>& u) noexcept
             {
-                if (!tagged_union<Types...>::trivial::value)
+                if (tagged_union<Types...>::trivial::value)
+                    u.cur_type_ = tagged_union<Types...>::invalid_type;
+                else
                 {
                     auto idx = static_cast<std::size_t>(u.type()) - 1u;
                     DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
@@ -315,7 +317,10 @@ namespace type_safe
                 DEBUG_ASSERT(!dest.has_value(), detail::assert_handler{});
 
                 if (tagged_union<Types...>::trivial::value)
-                    dest.storage_ = org.storage_;
+                {
+                    dest.storage_  = org.storage_;
+                    dest.cur_type_ = org.cur_type_;
+                }
                 else
                 {
                     auto idx = static_cast<std::size_t>(org.type()) - 1u;
@@ -350,7 +355,10 @@ namespace type_safe
                 DEBUG_ASSERT(!dest.has_value(), detail::assert_handler{});
 
                 if (tagged_union<Types...>::trivial::value)
-                    dest.storage_ = org.storage_;
+                {
+                    dest.storage_  = org.storage_;
+                    dest.cur_type_ = org.cur_type_;
+                }
                 else
                 {
                     auto idx = static_cast<std::size_t>(org.type()) - 1u;
