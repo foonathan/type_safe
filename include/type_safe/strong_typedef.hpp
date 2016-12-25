@@ -113,13 +113,13 @@ namespace type_safe
     template <class Tag, typename T>
     constexpr T&& get(strong_typedef<Tag, T>&& type) noexcept
     {
-        return static_cast<T&&>(std::move(type));
+        return static_cast<T&&>(type);
     }
 
     template <class Tag, typename T>
     constexpr const T&& get(const strong_typedef<Tag, T>&& type) noexcept
     {
-        return static_cast<const T&&>(std::move(type));
+        return static_cast<const T&&>(type);
     }
 
     namespace strong_typedef_op
