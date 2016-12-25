@@ -58,15 +58,27 @@ namespace type_safe
         {
         }
 
-        explicit operator T&() noexcept
+        explicit operator T&() TYPE_SAFE_LVALUE_REF noexcept
         {
             return value_;
         }
 
-        explicit constexpr operator const T&() const noexcept
+        explicit constexpr operator const T&() const TYPE_SAFE_LVALUE_REF noexcept
         {
             return value_;
         }
+
+#if TYPE_SAFE_USE_REF_QUALIFIERS
+        explicit operator T&&() && noexcept
+        {
+            return std::move(value_);
+        }
+
+        explicit constexpr operator const T&&() const && noexcept
+        {
+            return std::move(value_);
+        }
+#endif
 
         friend void swap(strong_typedef& a, strong_typedef& b) noexcept
         {
@@ -103,13 +115,13 @@ namespace type_safe
     template <class Tag, typename T>
     constexpr T&& get(strong_typedef<Tag, T>&& type) noexcept
     {
-        return static_cast<T&&>(type);
+        return static_cast<T&&>(static_cast<T&>(type));
     }
 
     template <class Tag, typename T>
     constexpr const T&& get(const strong_typedef<Tag, T>&& type) noexcept
     {
-        return static_cast<const T&&>(type);
+        return static_cast<const T&&>(static_cast<const T&>(type));
     }
 
     namespace strong_typedef_op
@@ -232,16 +244,47 @@ namespace type_safe
     {                                                                                              \
         friend StrongTypedef& operator Op##=(StrongTypedef& lhs, const StrongTypedef& rhs)         \
         {                                                                                          \
-            using type                   = underlying_type<StrongTypedef>;                         \
-            static_cast<type&>(lhs) Op## = static_cast<const type&>(rhs);                          \
+            get(lhs) Op## = get(rhs);                                                              \
             return lhs;                                                                            \
+        }                                                                                          \
+                                                                                                   \
+        friend StrongTypedef& operator Op##=(StrongTypedef& lhs, StrongTypedef&& rhs)              \
+        {                                                                                          \
+            get(lhs) Op## = get(std::move(rhs));                                                   \
+            return lhs;                                                                            \
+        }                                                                                          \
+                                                                                                   \
+        friend StrongTypedef&& operator Op##=(StrongTypedef&& lhs, const StrongTypedef& rhs)       \
+        {                                                                                          \
+            get(lhs) Op## = get(rhs);                                                              \
+            return std::move(lhs);                                                                 \
+        }                                                                                          \
+                                                                                                   \
+        friend StrongTypedef&& operator Op##=(StrongTypedef&& lhs, StrongTypedef&& rhs)            \
+        {                                                                                          \
+            get(lhs) Op## = get(std::move(rhs));                                                   \
+            return std::move(lhs);                                                                 \
         }                                                                                          \
                                                                                                    \
         friend constexpr StrongTypedef operator Op(const StrongTypedef& lhs,                       \
                                                    const StrongTypedef& rhs)                       \
         {                                                                                          \
-            using type = underlying_type<StrongTypedef>;                                           \
-            return StrongTypedef(static_cast<const type&>(lhs) Op static_cast<const type&>(rhs));  \
+            return StrongTypedef(get(lhs) Op get(rhs));                                            \
+        }                                                                                          \
+                                                                                                   \
+        friend constexpr StrongTypedef operator Op(StrongTypedef&& lhs, const StrongTypedef& rhs)  \
+        {                                                                                          \
+            return StrongTypedef(get(std::move(lhs)) Op get(rhs));                                 \
+        }                                                                                          \
+                                                                                                   \
+        friend constexpr StrongTypedef operator Op(const StrongTypedef& lhs, StrongTypedef&& rhs)  \
+        {                                                                                          \
+            return StrongTypedef(get(lhs) Op get(std::move(rhs)));                                 \
+        }                                                                                          \
+                                                                                                   \
+        friend constexpr StrongTypedef operator Op(StrongTypedef&& lhs, StrongTypedef&& rhs)       \
+        {                                                                                          \
+            return StrongTypedef(get(std::move(lhs)) Op get(std::move(rhs)));                      \
         }                                                                                          \
     };                                                                                             \
                                                                                                    \
@@ -250,21 +293,40 @@ namespace type_safe
     {                                                                                              \
         friend StrongTypedef& operator Op##=(StrongTypedef& lhs, const Other& other)               \
         {                                                                                          \
-            using type                   = underlying_type<StrongTypedef>;                         \
-            static_cast<type&>(lhs) Op## = static_cast<const type&>(other);                        \
+            using type    = underlying_type<StrongTypedef>;                                        \
+            get(lhs) Op## = static_cast<const type&>(other);                                       \
             return lhs;                                                                            \
+        }                                                                                          \
+                                                                                                   \
+        friend StrongTypedef&& operator Op##=(StrongTypedef&& lhs, const Other& other)             \
+        {                                                                                          \
+            using type    = underlying_type<StrongTypedef>;                                        \
+            get(lhs) Op## = static_cast<const type&>(other);                                       \
+            return std::move(lhs);                                                                 \
         }                                                                                          \
                                                                                                    \
         friend constexpr StrongTypedef operator Op(const StrongTypedef& lhs, const Other& rhs)     \
         {                                                                                          \
             using type = underlying_type<StrongTypedef>;                                           \
-            return StrongTypedef(static_cast<const type&>(lhs) Op rhs);                            \
+            return StrongTypedef(get(lhs) Op static_cast<const type&>(rhs));                       \
+        }                                                                                          \
+                                                                                                   \
+        friend constexpr StrongTypedef operator Op(StrongTypedef&& lhs, const Other& rhs)          \
+        {                                                                                          \
+            using type = underlying_type<StrongTypedef>;                                           \
+            return StrongTypedef(get(std::move(lhs)) Op static_cast<const type&>(rhs));            \
         }                                                                                          \
                                                                                                    \
         friend constexpr StrongTypedef operator Op(const Other& lhs, const StrongTypedef& rhs)     \
         {                                                                                          \
             using type = underlying_type<StrongTypedef>;                                           \
-            return StrongTypedef(lhs Op static_cast<const type&>(rhs));                            \
+            return StrongTypedef(static_cast<const type&>(lhs) Op get(rhs));                       \
+        }                                                                                          \
+                                                                                                   \
+        friend constexpr StrongTypedef operator Op(const Other& lhs, StrongTypedef&& rhs)          \
+        {                                                                                          \
+            using type = underlying_type<StrongTypedef>;                                           \
+            return StrongTypedef(static_cast<const type&>(lhs) Op get(std::move(rhs)));            \
         }                                                                                          \
     };
 
