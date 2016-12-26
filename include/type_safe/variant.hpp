@@ -143,16 +143,14 @@ namespace type_safe
         explicit basic_variant(const tagged_union<HeadT, TailT...>& u)
         {
             DEBUG_ASSERT(allow_empty::value || u.has_value(), detail::precondition_error_handler{});
-            if (u.has_value())
-                copy(storage_.get_union(), u);
+            copy(storage_.get_union(), u);
         }
 
         /// \group ctor_union
         explicit basic_variant(tagged_union<HeadT, TailT...>&& u)
         {
             DEBUG_ASSERT(allow_empty::value || u.has_value(), detail::precondition_error_handler{});
-            if (u.has_value())
-                move(storage_.get_union(), std::move(u));
+            move(storage_.get_union(), std::move(u));
         }
 
         /// \effects Destroys the currently stored value,
@@ -253,8 +251,7 @@ namespace type_safe
             typename = typename std::enable_if<VariantPolicy::allow_empty::value, Dummy>::type>
         void reset() noexcept
         {
-            if (storage_.get_union().has_value())
-                destroy(storage_.get_union());
+            destroy(storage_.get_union());
         }
 
         /// Changes the value to a new object of the given type.

@@ -53,303 +53,203 @@ namespace type_safe
 
         //=== copy_assign_union_value ===//
         template <class VariantPolicy, class Union>
-        class copy_assign_union_value;
-
-        template <class VariantPolicy, typename... Types>
-        class copy_assign_union_value<VariantPolicy, tagged_union<Types...>>
+        struct copy_assign_union_value
         {
-        public:
-            static void assign(tagged_union<Types...>& dest, const tagged_union<Types...>& org)
+            struct visitor
             {
-                auto idx = static_cast<std::size_t>(org.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
-                callbacks[idx](dest, org);
-            }
+                template <
+                    typename T,
+                    typename = typename std::enable_if<std::is_copy_assignable<T>::value>::type>
+                void do_assign(Union& dest, const T& value)
+                {
+                    dest.value(union_type<T>{}) = value;
+                }
 
-        private:
-            template <typename T,
-                      typename = typename std::enable_if<std::is_copy_assignable<T>::value>::type>
-            static void do_assign(union_type<T> type, tagged_union<Types...>& dest,
-                                  const tagged_union<Types...>& org)
+                template <typename T, typename std::enable_if<!std::is_copy_assignable<T>::value,
+                                                              int>::type = 0>
+                void do_assign(Union& dest, const T& value)
+                {
+                    VariantPolicy::change_value(union_type<T>{}, dest, value);
+                }
+
+                template <typename T>
+                void operator()(const T& value, Union& dest)
+                {
+                    constexpr auto id = typename Union::type_id(union_type<T>{});
+                    if (dest.type() == id)
+                        do_assign(dest, value);
+                    else
+                        VariantPolicy::change_value(union_type<T>{}, dest, value);
+                }
+            };
+
+            static void assign(Union& dest, const Union& org)
             {
-                dest.value(type) = org.value(type);
+                with(org, visitor{}, dest);
             }
-
-            template <typename T,
-                      typename std::enable_if<!std::is_copy_assignable<T>::value, int>::type = 0>
-            static void do_assign(union_type<T> type, tagged_union<Types...>& dest,
-                                  const tagged_union<Types...>& org)
-            {
-                VariantPolicy::change_value(type, dest, org.value(type));
-            }
-
-            template <typename T>
-            static void assign_impl(tagged_union<Types...>& dest, const tagged_union<Types...>& org)
-            {
-                constexpr auto id = typename tagged_union<Types...>::type_id(union_type<T>{});
-                DEBUG_ASSERT(org.type() == id, detail::assert_handler{});
-
-                if (dest.type() == id)
-                    do_assign(union_type<T>{}, dest, org);
-                else
-                    VariantPolicy::change_value(union_type<T>{}, dest, org.value(union_type<T>{}));
-            }
-
-            using callback_type = void (*)(tagged_union<Types...>&, const tagged_union<Types...>&);
-            static constexpr callback_type callbacks[] = {&assign_impl<Types>...};
         };
-        template <class VariantPolicy, typename... Types>
-        constexpr
-            typename copy_assign_union_value<VariantPolicy, tagged_union<Types...>>::callback_type
-                copy_assign_union_value<VariantPolicy, tagged_union<Types...>>::callbacks[];
 
         //==== move_assign_union_value ===//
         template <class VariantPolicy, class Union>
-        class move_assign_union_value;
-
-        template <class VariantPolicy, typename... Types>
-        class move_assign_union_value<VariantPolicy, tagged_union<Types...>>
+        struct move_assign_union_value
         {
-        public:
-            static void assign(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
+            struct visitor
             {
-                auto idx = static_cast<std::size_t>(org.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
-                callbacks[idx](dest, std::move(org));
-            }
+                template <
+                    typename T,
+                    typename = typename std::enable_if<std::is_move_assignable<T>::value>::type>
+                void do_assign(Union& dest, T&& value)
+                {
+                    dest.value(union_type<T>{}) = std::move(value);
+                }
 
-        private:
-            template <typename T,
-                      typename = typename std::enable_if<std::is_move_assignable<T>::value>::type>
-            static void do_assign(union_type<T> type, tagged_union<Types...>& dest,
-                                  tagged_union<Types...>&& org)
+                template <typename T, typename std::enable_if<!std::is_move_assignable<T>::value,
+                                                              int>::type = 0>
+                void do_assign(Union& dest, T&& value)
+                {
+                    VariantPolicy::change_value(union_type<T>{}, dest, std::move(value));
+                }
+
+                template <typename T>
+                void operator()(T&& value, Union& dest)
+                {
+                    constexpr auto id = typename Union::type_id(union_type<T>{});
+                    if (dest.type() == id)
+                        do_assign(dest, std::move(value));
+                    else
+                        VariantPolicy::change_value(union_type<T>{}, dest, std::move(value));
+                }
+            };
+
+            static void assign(Union& dest, Union&& org)
             {
-                dest.value(type) = std::move(org.value(type));
+                with(std::move(org), visitor{}, dest);
             }
-
-            template <typename T,
-                      typename std::enable_if<!std::is_move_assignable<T>::value, int>::type = 0>
-            static void do_assign(union_type<T> type, tagged_union<Types...>& dest,
-                                  tagged_union<Types...>&& org)
-            {
-                VariantPolicy::change_value(type, dest, std::move(org.value(type)));
-            }
-
-            template <typename T>
-            static void assign_impl(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
-            {
-                constexpr auto id = typename tagged_union<Types...>::type_id(union_type<T>{});
-                DEBUG_ASSERT(org.type() == id, detail::assert_handler{});
-
-                if (dest.type() == id)
-                    do_assign(union_type<T>{}, dest, std::move(org));
-                else
-                    VariantPolicy::change_value(union_type<T>{}, dest,
-                                                std::move(org.value(union_type<T>{})));
-            }
-
-            using callback_type = void (*)(tagged_union<Types...>&, tagged_union<Types...>&&);
-            static constexpr callback_type callbacks[] = {&assign_impl<Types>...};
         };
-        template <class VariantPolicy, typename... Types>
-        constexpr
-            typename move_assign_union_value<VariantPolicy, tagged_union<Types...>>::callback_type
-                move_assign_union_value<VariantPolicy, tagged_union<Types...>>::callbacks[];
 
         //=== swap_union ===//
         template <class VariantPolicy, class Union>
-        class swap_union;
-
-        template <class VariantPolicy, typename... Types>
-        class swap_union<VariantPolicy, tagged_union<Types...>>
+        struct swap_union
         {
-        public:
-            static void swap(tagged_union<Types...>& a, tagged_union<Types...>& b)
+            struct visitor
             {
-                auto idx = static_cast<std::size_t>(a.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), detail::assert_handler{});
-                callbacks[idx](a, b);
-            }
+                template <typename T>
+                void operator()(T&, Union& a, Union& b)
+                {
+                    constexpr auto id = typename Union::type_id(union_type<T>{});
+                    DEBUG_ASSERT(a.type() == id, detail::assert_handler{});
 
-        private:
-            template <typename T>
-            static void swap_impl(tagged_union<Types...>& a, tagged_union<Types...>& b)
+                    if (b.type() == id)
+                    {
+                        using std::swap;
+                        swap(a.value(union_type<T>{}), b.value(union_type<T>{}));
+                    }
+                    else
+                    {
+                        T tmp(std::move(a).value(union_type<T>{})); // save old value from a
+                        // assign a to value in b
+                        move_assign_union_value<VariantPolicy, Union>::assign(a, std::move(b));
+                        // change value in b to tmp
+                        VariantPolicy::change_value(union_type<T>{}, b, std::move(tmp));
+                    }
+                }
+            };
+
+            static void swap(Union& a, Union& b)
             {
-                constexpr auto id = typename tagged_union<Types...>::type_id(union_type<T>{});
-                DEBUG_ASSERT(a.type() == id, detail::assert_handler{});
-
-                if (b.type() == id)
-                {
-                    using std::swap;
-                    swap(a.value(union_type<T>{}), b.value(union_type<T>{}));
-                }
-                else
-                {
-                    T tmp(std::move(a).value(union_type<T>{})); // save old value from a
-                    // assign a to value in b
-                    move_assign_union_value<VariantPolicy,
-                                            tagged_union<Types...>>::assign(a, std::move(b));
-                    // change value in b to tmp
-                    VariantPolicy::change_value(union_type<T>{}, b, std::move(tmp));
-                }
+                with(a, visitor{}, a, b);
             }
-
-            using callback_type = void (*)(tagged_union<Types...>&, tagged_union<Types...>&);
-            static constexpr callback_type callbacks[] = {&swap_impl<Types>...};
         };
-        template <class VariantPolicy, typename... Types>
-        constexpr typename swap_union<VariantPolicy, tagged_union<Types...>>::callback_type
-            swap_union<VariantPolicy, tagged_union<Types...>>::callbacks[];
 
         //=== map_union ===//
         template <typename Functor, class Union>
-        class map_union;
-
-        template <typename Functor, typename... Types>
-        class map_union<Functor, tagged_union<Types...>>
+        struct map_union
         {
-        public:
-            static void map(tagged_union<Types...>& res, const tagged_union<Types...>& tunion,
-                            Functor&& f)
+            struct visitor
             {
-                DEBUG_ASSERT(!res.has_value(), assert_handler{});
-                auto idx = static_cast<std::size_t>(tunion.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
-                copy_callbacks[idx](res, tunion, std::forward<Functor>(f));
-            }
-            static void map(tagged_union<Types...>& res, tagged_union<Types...>&& tunion,
-                            Functor&& f)
+                template <typename T, typename Result =
+                                          decltype(std::declval<Functor&&>()(std::declval<T&&>()))>
+                void call(int, Union& res, Functor&& f, T&& value)
+                {
+                    res.emplace(union_type<typename std::decay<Result>::type>{},
+                                std::forward<Functor>(f)(std::forward<T>(value)));
+                }
+
+                template <typename T>
+                void call(short, Union& res, Functor&&, T&& value)
+                {
+                    res.emplace(union_type<typename std::decay<T>::type>{}, std::forward<T>(value));
+                }
+
+                template <typename T>
+                void operator()(T&& value, Union& res, Functor&& f)
+                {
+                    call(0, res, std::forward<Functor>(f), std::forward<T>(value));
+                }
+            };
+
+            static void map(Union& res, const Union& u, Functor&& f)
             {
-                DEBUG_ASSERT(!res.has_value(), assert_handler{});
-                auto idx = static_cast<std::size_t>(tunion.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types), assert_handler{});
-                move_callbacks[idx](res, std::move(tunion), std::forward<Functor>(f));
+                DEBUG_ASSERT(!res.has_value(), precondition_error_handler{});
+                with(u, visitor{}, res, std::forward<Functor>(f));
             }
 
-        private:
-            template <typename T, typename Result =
-                                      decltype(std::declval<Functor&&>()(std::declval<const T&>()))>
-            static void call(int, tagged_union<Types...>& res, const tagged_union<Types...>& tunion,
-                             Functor&& f)
+            static void map(Union& res, Union&& u, Functor&& f)
             {
-                auto&& result = std::forward<Functor>(f)(tunion.value(union_type<T>{}));
-                res.emplace(union_type<typename std::decay<Result>::type>{},
-                            std::forward<Result>(result));
+                DEBUG_ASSERT(!res.has_value(), precondition_error_handler{});
+                with(std::move(u), visitor{}, res, std::forward<Functor>(f));
             }
-            template <typename T,
-                      typename Result = decltype(std::declval<Functor&&>()(std::declval<T&&>()))>
-            static void call(int, tagged_union<Types...>& res, tagged_union<Types...>&& tunion,
-                             Functor&& f)
-            {
-                auto&& result = std::forward<Functor>(f)(std::move(tunion).value(union_type<T>{}));
-                res.emplace(union_type<typename std::decay<Result>::type>{},
-                            std::forward<Result>(result));
-            }
-
-            template <typename T>
-            static void call(short, tagged_union<Types...>& res,
-                             const tagged_union<Types...>& tunion, Functor&&)
-            {
-                res.emplace(union_type<T>{}, tunion.value(union_type<T>{}));
-            }
-            template <typename T>
-            static void call(short, tagged_union<Types...>& res, tagged_union<Types...>&& tunion,
-                             Functor&&)
-            {
-                res.emplace(union_type<T>{}, std::move(tunion).value(union_type<T>{}));
-            }
-
-            template <typename T>
-            static void map_impl_copy(tagged_union<Types...>&       res,
-                                      const tagged_union<Types...>& tunion, Functor&& f)
-            {
-                call<T>(0, res, tunion, std::forward<Functor>(f));
-            }
-            template <typename T>
-            static void map_impl_move(tagged_union<Types...>& res, tagged_union<Types...>&& tunion,
-                                      Functor&& f)
-            {
-                call<T>(0, res, std::move(tunion), std::forward<Functor>(f));
-            }
-
-            using copy_callback_type = void (*)(tagged_union<Types...>&,
-                                                const tagged_union<Types...>&, Functor&&);
-            using move_callback_type = void (*)(tagged_union<Types...>&, tagged_union<Types...>&&,
-                                                Functor&&);
-
-            static constexpr copy_callback_type copy_callbacks[] = {&map_impl_copy<Types>...};
-            static constexpr move_callback_type move_callbacks[] = {&map_impl_move<Types>...};
         };
-        template <typename Functor, typename... Types>
-        constexpr typename map_union<Functor, tagged_union<Types...>>::copy_callback_type
-            map_union<Functor, tagged_union<Types...>>::copy_callbacks[];
-        template <typename Functor, typename... Types>
-        constexpr typename map_union<Functor, tagged_union<Types...>>::move_callback_type
-            map_union<Functor, tagged_union<Types...>>::move_callbacks[];
 
         //=== compare_variant ===//
         template <class Variant>
-        class compare_variant;
-
-        template <class VariantPolicy, typename Head, typename... Types>
-        class compare_variant<basic_variant<VariantPolicy, Head, Types...>>
+        struct compare_variant
         {
-        public:
-            static bool compare_equal(const basic_variant<VariantPolicy, Head, Types...>& a,
-                                      const basic_variant<VariantPolicy, Head, Types...>& b)
+            struct equal_visitor
+            {
+                bool result;
+
+                template <typename T>
+                void operator()(const T& value, const Variant& other)
+                {
+                    result = (value == other);
+                }
+            };
+
+            struct less_visitor
+            {
+                bool result;
+
+                template <typename T>
+                void operator()(const T& value, const Variant& other)
+                {
+                    result = (value < other);
+                }
+            };
+
+            static bool compare_equal(const Variant& a, const Variant& b)
             {
                 if (!a.has_value())
                     // to be equal, b must not have value as well
                     return !b.has_value();
-                auto idx = static_cast<std::size_t>(a.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types) + 1, assert_handler{});
-                return equal_callbacks[idx](a, b);
+
+                equal_visitor v;
+                with(a, v, b);
+                return v.result;
             }
 
-            static bool compare_less(const basic_variant<VariantPolicy, Head, Types...>& a,
-                                     const basic_variant<VariantPolicy, Head, Types...>& b)
+            static bool compare_less(const Variant& a, const Variant& b)
             {
                 if (!a.has_value())
                     // for a to be less than b,
                     // b must have a value
                     return b.has_value();
-                auto idx = static_cast<std::size_t>(a.type()) - 1;
-                DEBUG_ASSERT(idx < sizeof...(Types) + 1, assert_handler{});
-                return less_callbacks[idx](a, b);
-            }
 
-        private:
-            template <typename T>
-            static bool compare_equal_impl(const basic_variant<VariantPolicy, Head, Types...>& a,
-                                           const basic_variant<VariantPolicy, Head, Types...>& b)
-            {
-                DEBUG_ASSERT(a.has_value(union_type<T>{}), assert_handler{});
-                return a.value(union_type<T>{}) == b;
+                less_visitor v;
+                with(a, v, b);
+                return v.result;
             }
-
-            template <typename T>
-            static bool compare_less_impl(const basic_variant<VariantPolicy, Head, Types...>& a,
-                                          const basic_variant<VariantPolicy, Head, Types...>& b)
-            {
-                DEBUG_ASSERT(a.has_value(union_type<T>{}), assert_handler{});
-                return a.value(union_type<T>{}) < b;
-            }
-
-            using callback_type = bool (*)(const basic_variant<VariantPolicy, Head, Types...>&,
-                                           const basic_variant<VariantPolicy, Head, Types...>&);
-            static constexpr callback_type equal_callbacks[] = {&compare_equal_impl<Head>,
-                                                                &compare_equal_impl<Types>...};
-            static constexpr callback_type less_callbacks[] = {&compare_less_impl<Head>,
-                                                               &compare_less_impl<Types>...};
         };
-        template <class VariantPolicy, typename Head, typename... Types>
-        constexpr
-            typename compare_variant<basic_variant<VariantPolicy, Head, Types...>>::callback_type
-                compare_variant<basic_variant<VariantPolicy, Head, Types...>>::equal_callbacks[];
-        template <class VariantPolicy, typename Head, typename... Types>
-        constexpr
-            typename compare_variant<basic_variant<VariantPolicy, Head, Types...>>::callback_type
-                compare_variant<basic_variant<VariantPolicy, Head, Types...>>::less_callbacks[];
 
         //=== variant_storage ===//
         template <class VariantPolicy, typename... Types>
@@ -362,21 +262,18 @@ namespace type_safe
 
             variant_storage(const variant_storage& other)
             {
-                if (other.storage_.has_value())
-                    copy(storage_, other.storage_);
+                copy(storage_, other.storage_);
             }
 
             variant_storage(variant_storage&& other) noexcept(
                 traits::nothrow_move_constructible::value)
             {
-                if (other.storage_.has_value())
-                    move(storage_, std::move(other.storage_));
+                move(storage_, std::move(other.storage_));
             }
 
             ~variant_storage() noexcept
             {
-                if (storage_.has_value())
-                    destroy(storage_);
+                destroy(storage_);
             }
 
             variant_storage& operator=(const variant_storage& other)
@@ -404,7 +301,7 @@ namespace type_safe
                 else if (storage_.has_value() && !other.storage_.has_value())
                     destroy(storage_);
                 else if (!storage_.has_value() && other.storage_.has_value())
-                    copy(storage_, other.storage_);
+                    move(storage_, std::move(other.storage_));
 
                 return *this;
             }
@@ -427,6 +324,12 @@ namespace type_safe
         {
             template <class Variant>
             static auto get(Variant& var) -> decltype(var.storage_) &
+            {
+                return var.storage_;
+            }
+
+            template <class Variant>
+            static auto get(const Variant& var) -> const decltype(var.storage_) &
             {
                 return var.storage_;
             }
