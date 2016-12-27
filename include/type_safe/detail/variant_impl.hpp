@@ -107,17 +107,20 @@ namespace type_safe
                                                               int>::type = 0>
                 void do_assign(Union& dest, T&& value)
                 {
-                    VariantPolicy::change_value(union_type<T>{}, dest, std::move(value));
+                    VariantPolicy::change_value(union_type<typename std::decay<T>::type>{}, dest,
+                                                std::move(value));
                 }
 
                 template <typename T>
                 void operator()(T&& value, Union& dest)
                 {
-                    constexpr auto id = typename Union::type_id(union_type<T>{});
+                    constexpr auto id =
+                        typename Union::type_id(union_type<typename std::decay<T>::type>{});
                     if (dest.type() == id)
                         do_assign(dest, std::move(value));
                     else
-                        VariantPolicy::change_value(union_type<T>{}, dest, std::move(value));
+                        VariantPolicy::change_value(union_type<typename std::decay<T>::type>{},
+                                                    dest, std::move(value));
                 }
             };
 

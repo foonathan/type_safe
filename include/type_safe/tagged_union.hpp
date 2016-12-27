@@ -415,7 +415,7 @@ namespace type_safe
                 template <typename T>
                 void operator()(T&& value, Union& dest)
                 {
-                    dest.emplace(union_type<T>{}, std::move(value));
+                    dest.emplace(union_type<typename std::decay<T>::type>{}, std::move(value));
                 }
             };
 
