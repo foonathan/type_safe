@@ -56,6 +56,7 @@ namespace type_safe
         using value_type             = std::reference_wrapper<T>;
         using lvalue_reference       = T&;
         using const_lvalue_reference = lvalue_reference;
+        /// \exclude target
         using rvalue_reference       = prevent_rvalues;
         using const_rvalue_reference = rvalue_reference;
 
@@ -125,6 +126,7 @@ namespace type_safe
 
         /// \returns The target of the reference.
         /// Depending on `XValue`, this will either be `T&` or `T&&`.
+        /// \exclude return
         result_type get_value() const noexcept
         {
             return static_cast<result_type>(*pointer_);
@@ -133,6 +135,7 @@ namespace type_safe
         /// \returns Either `get_value()` or `other`.
         /// This must be given an lvalue of type `T` and it returns either an lvalue or an rvalue,
         /// depending on `XValue`.
+        /// \exclude return
         result_type get_value_or(lvalue_reference other) const noexcept
         {
             if (has_value())

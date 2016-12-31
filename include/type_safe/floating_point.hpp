@@ -174,6 +174,7 @@ namespace type_safe
         }
 
 //=== compound assignment ====//
+/// \entity TYPE_SAFE_DETAIL_MAKE_OP
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
     /** \group compound_assign
