@@ -193,7 +193,7 @@ namespace type_safe
 
         //=== accessors ===//
         /// \returns The [*type_id]() of the type currently stored,
-        /// or [*invalid_type_id]() if there is none.
+        /// or [*invalid_type]() if there is none.
         const type_id& type() const noexcept
         {
             return cur_type_;
@@ -450,7 +450,7 @@ namespace type_safe
     /// and all types must be copyable/moveable.
     /// \group union_copy_move
     /// \module variant
-    /// \unique_name copy_union
+    /// \unique_name *copy_union
     template <typename... Types>
     void copy(tagged_union<Types...>& dest, const tagged_union<Types...>& org)
     {
@@ -460,7 +460,7 @@ namespace type_safe
 
     /// \group union_copy_move
     /// \module variant
-    /// \unique_name move_union
+    /// \unique_name *move_union
     template <typename... Types>
     void move(tagged_union<Types...>& dest, tagged_union<Types...>&& org)
     {

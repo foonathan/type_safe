@@ -69,12 +69,12 @@ namespace type_safe
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        explicit operator T&&() && noexcept
+        explicit operator T &&() && noexcept
         {
             return std::move(value_);
         }
 
-        explicit constexpr operator const T&&() const && noexcept
+        explicit constexpr operator const T &&() const && noexcept
         {
             return std::move(value_);
         }

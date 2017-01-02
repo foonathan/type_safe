@@ -465,6 +465,7 @@ namespace type_safe
         /// If `has_value()` is `true`, returns the new optional with result of `std::forward<Func>(f)(std::move(value))`,
         /// otherwise returns an empty optional.
         /// \requires `f` must be callable with `const value_type&`.
+        /// \unique_name *map
         template <typename Func>
         auto map(Func&& f) const TYPE_SAFE_LVALUE_REF
             -> rebind<decltype(std::forward<Func>(f)(this->value()))>
@@ -481,6 +482,7 @@ namespace type_safe
         /// otherwise returns an empty optional.
         /// \notes It will move the `value()` to the function.
         /// \requires `f` must be callable with `value_type&&`.
+        /// \unique_name *map_rvalue
         template <typename Func>
         auto map(Func&& f) && -> rebind<decltype(std::forward<Func>(f)(std::move(this->value())))>
         {
@@ -523,6 +525,7 @@ namespace type_safe
         /// \requires `f` must be callable with `const value_type&`.
         /// \notes This is similar to `map()` but does not wrap the resulting type in an optional.
         /// Hence a fallback value must be provided.
+        /// \exclude return
         template <typename T, typename Func>
         auto transform(T&& t, Func&& f) const TYPE_SAFE_LVALUE_REF -> remove_cv_ref<T>
         {
@@ -537,6 +540,7 @@ namespace type_safe
         /// \requires `f` must be callable with `value_type&&`.
         /// \notes This is similar to `map()` but does not wrap the resulting type in an optional.
         /// Hence a fallback value must be provided.
+        /// \exclude return
         template <typename T, typename Func>
         auto transform(T&& t, Func&& f) && -> remove_cv_ref<T>
         {
@@ -743,6 +747,7 @@ namespace type_safe
         /// \effects Copies the policy from `other`, by copy-constructing or assigning the stored value,
         /// if any.
         /// \throws Anything thrown by the copy constructor or copy assignment operator of `other`.
+        /// \unique_name copy_value_assign
         template <typename Dummy = T,
                   typename = typename std::enable_if<std::is_copy_assignable<Dummy>::value>::type>
         void copy_value(const direct_optional_storage& other)
@@ -761,6 +766,7 @@ namespace type_safe
         /// \effects Copies the policy from `other`, by copy-constructing the stored value,
         /// if any.
         /// \throws Anything thrown by the copy constructor of `other`.
+        /// \unique_name copy_value_construct
         template <typename Dummy = T,
                   typename std::enable_if<!std::is_copy_assignable<Dummy>::value, int>::type = 0>
         void copy_value(const direct_optional_storage& other)
@@ -773,6 +779,7 @@ namespace type_safe
         /// \effects Copies the policy from `other`, by move-constructing or assigning the stored value,
         /// if any.
         /// \throws Anything thrown by the move constructor or move assignment operator of `other`.
+        /// \unique_name copy_value_move_assign
         template <typename Dummy = T,
                   typename = typename std::enable_if<std::is_move_assignable<Dummy>::value>::type>
         void copy_value(direct_optional_storage&& other)
@@ -791,6 +798,7 @@ namespace type_safe
         /// \effects Copies the policy from `other`, by move-constructing the stored value,
         /// if any.
         /// \throws Anything thrown by the move constructor of `other`.
+        /// \unique_name copy_value_move_construct
         template <typename Dummy = T,
                   typename std::enable_if<!std::is_move_assignable<Dummy>::value, int>::type = 0>
         void copy_value(direct_optional_storage&& other)
