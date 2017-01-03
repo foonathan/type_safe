@@ -337,6 +337,7 @@ namespace type_safe
 
     /// [std::make_signed]() for [ts::integer]().
     /// \module types
+    /// \exclude target
     template <class Integer>
     using make_signed_t = typename detail::make_signed<Integer>::type;
 
@@ -370,6 +371,7 @@ namespace type_safe
 
     /// [std::make_unsigned]() for [ts::integer]().
     /// \module types
+    /// \exclude target
     template <class Integer>
     using make_unsigned_t = typename detail::make_unsigned<Integer>::type;
 
@@ -413,7 +415,7 @@ namespace type_safe
 
     /// \returns The absolute value of an [ts::integer]().
     /// \module types
-    /// \param 1
+    /// \param 2
     /// \exclude
     template <typename SignedInteger, class Policy,
               typename = typename std::enable_if<std::is_signed<SignedInteger>::value>::type>
@@ -438,7 +440,7 @@ namespace type_safe
     /// \returns `i` unchanged.
     /// \notes This is an optimization of `abs()` for unsigned integer types.
     /// \module types
-    /// \param 1
+    /// \param 2
     /// \exclude
     template <typename UnsignedInteger, class Policy,
               typename = typename std::enable_if<std::is_unsigned<UnsignedInteger>::value>::type>
@@ -564,14 +566,16 @@ namespace type_safe
 /// \entity TYPE_SAFE_DETAIL_MAKE_OP
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
-    /** \group int_binary_op */                                                                    \
+    /** \exclude return
+      * \group int_binary_op */                                            \
     template <typename A, typename B, class Policy>                                                \
     TYPE_SAFE_FORCE_INLINE constexpr auto operator Op(const A& a, const integer<B, Policy>& b)     \
         ->integer<detail::integer_result_t<A, B>, Policy>                                          \
     {                                                                                              \
         return integer<A, Policy>(a) Op b;                                                         \
     }                                                                                              \
-    /** \group int_binary_op */                                                                    \
+    /** \exclude return
+      * \group int_binary_op */                                            \
     template <typename A, class Policy, typename B>                                                \
     TYPE_SAFE_FORCE_INLINE constexpr auto operator Op(const integer<A, Policy>& a, const B& b)     \
         ->integer<detail::integer_result_t<A, B>, Policy>                                          \
@@ -597,6 +601,7 @@ namespace type_safe
     /// unless `A` and `B` are both integer types.
     /// \group int_binary_op Binary operations
     /// \module types
+    /// \exclude return
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator+(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -608,6 +613,7 @@ namespace type_safe
     TYPE_SAFE_DETAIL_MAKE_OP(+)
 
     /// \group int_binary_op
+    /// \exclude return
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator-(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -619,6 +625,7 @@ namespace type_safe
     TYPE_SAFE_DETAIL_MAKE_OP(-)
 
     /// \group int_binary_op
+    /// \exclude return
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator*(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -630,6 +637,7 @@ namespace type_safe
     TYPE_SAFE_DETAIL_MAKE_OP(*)
 
     /// \group int_binary_op
+    /// \exclude return
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator/(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -641,6 +649,7 @@ namespace type_safe
     TYPE_SAFE_DETAIL_MAKE_OP(/)
 
     /// \group int_binary_op
+    /// \exclude return
     template <typename A, typename B, class Policy>
     TYPE_SAFE_FORCE_INLINE constexpr auto operator%(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
@@ -656,6 +665,7 @@ namespace type_safe
     //=== input/output ===/
     /// \effects Reads an integer from the [std::istream]() and assigns it to the given [ts::integer]().
     /// \module types
+    /// \output_section Input/output
     template <typename Char, class CharTraits, typename IntegerT, class Policy>
     std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
                                                      integer<IntegerT, Policy>& i)
