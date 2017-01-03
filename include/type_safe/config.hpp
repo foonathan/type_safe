@@ -9,23 +9,36 @@
 #include <cstdlib>
 
 #ifndef TYPE_SAFE_ENABLE_ASSERTIONS
+/// Controls whether internal assertions are enabled.
+///
+/// It is disabled by default.
 #define TYPE_SAFE_ENABLE_ASSERTIONS 0
 #endif
 
 #ifndef TYPE_SAFE_ENABLE_PRECONDITION_CHECKS
+/// Controls whether preconditions are checked.
+///
+/// It is enabled by default.
 #define TYPE_SAFE_ENABLE_PRECONDITION_CHECKS 1
 #endif
 
 #ifndef TYPE_SAFE_ENABLE_WRAPPER
+/// Controls whether the typedefs in [types.hpp]() use the type safe wrapper types.
+///
+/// It is enabled by default.
 #define TYPE_SAFE_ENABLE_WRAPPER 1
 #endif
 
 #ifndef TYPE_SAFE_ARITHMETIC_UB
+/// Controls whether [ts::arithmetic_policy_default]() is [ts::undefined_behavior_arithmetic]() or [ts::default_arithmetic]().
+///
+/// It is [ts::undefined_behavior_arithmetic]() by default.
 #define TYPE_SAFE_ARITHMETIC_UB 1
 #endif
 
 #ifndef TYPE_SAFE_USE_REF_QUALIFIERS
 #if defined(__cpp_ref_qualifiers) && __cpp_ref_qualifiers >= 200710
+/// \exclude
 #define TYPE_SAFE_USE_REF_QUALIFIERS 1
 #elif defined(_MSC_VER) && _MSC_VER >= 1900
 #define TYPE_SAFE_USE_REF_QUALIFIERS 1
@@ -35,7 +48,9 @@
 #endif
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
+/// \exclude
 #define TYPE_SAFE_LVALUE_REF &
+/// \exclude
 #define TYPE_SAFE_RVALUE_REF &&
 #else
 #define TYPE_SAFE_LVALUE_REF
@@ -46,37 +61,49 @@
 
 #if defined(__GNUC__) && __GNUC__ < 5
 // GCC before 5.0 doesn't handle noexcept and = default properly
+/// \exclude
 #define TYPE_SAFE_USE_NOEXCEPT_DEFAULT 0
 #else
+/// \exclude
 #define TYPE_SAFE_USE_NOEXCEPT_DEFAULT 1
 #endif
 
 #endif
 
 #if TYPE_SAFE_USE_NOEXCEPT_DEFAULT
+/// \exclude
 #define TYPE_SAFE_NOEXCEPT_DEFAULT(Val) noexcept(Val)
 #else
+/// \exclude
 #define TYPE_SAFE_NOEXCEPT_DEFAULT(Val)
 #endif
 
 #ifndef TYPE_SAFE_USE_EXCEPTIONS
 
 #if __cpp_exceptions
+/// \exclude
 #define TYPE_SAFE_USE_EXCEPTIONS 1
 #elif defined(__GNUC__) && defined(__EXCEPTIONS)
+/// \exclude
 #define TYPE_SAFE_USE_EXCEPTIONS 1
 #elif defined(_MSC_VER) && defined(_CPPUNWIND)
+/// \exclude
 #define TYPE_SAFE_USE_EXCEPTIONS 1
 #else
+/// \exclude
 #define TYPE_SAFE_USE_EXCEPTIONS 0
 #endif
 
 #endif
 
 #if TYPE_SAFE_USE_EXCEPTIONS
+/// \exclude
 #define TYPE_SAFE_THROW(Ex) throw Ex
+/// \exclude
 #define TYPE_SAFE_TRY try
+/// \exclude
 #define TYPE_SAFE_CATCH_ALL catch (...)
+/// \exclude
 #define TYPE_SAFE_RETHROW throw
 #else
 #define TYPE_SAFE_THROW(Ex) (Ex, std::abort())
