@@ -85,11 +85,12 @@ namespace type_safe
     };
 
     //=== comparision ===//
+    /// [ts::boolean]() equality comparison.
     /// \returns `true` if (1) both [ts::boolean]() objects have the same value,
     /// (2)/(3) the boolean has the same value as the given value,
     /// `false` otherwise.
     /// \notes (2)/(3) do not participate in overload resolution if `T` is not a boolean type.
-    /// \group boolean_comp_equal
+    /// \group boolean_comp_equal Boolean comparisons
     /// \module types
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const boolean& a, const boolean& b) noexcept
     {
@@ -114,6 +115,7 @@ namespace type_safe
         return static_cast<bool>(a) == static_cast<bool>(b);
     }
 
+    /// [ts::boolean]() in-equality comparison.
     /// \returns `false` if (1) both [ts::boolean]() objects have the same value,
     /// (2)/(3) the boolean has the same value as the given value,
     /// `true` otherwise.
@@ -144,7 +146,9 @@ namespace type_safe
     }
 
     //=== input/output ===/
+    /// [ts::boolean]() input operator.
     /// \effects Reads a `bool` from the [std::istream]() and assigns it to the given [ts::boolean]().
+    /// \output_section Boolean input/output
     /// \module types
     template <typename Char, class CharTraits>
     std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
@@ -156,6 +160,7 @@ namespace type_safe
         return in;
     }
 
+    /// [ts::boolean]() output operator.
     /// \effects Converts the given [ts::boolean]() to `bool` and writes it to the [std::ostream]().
     /// \module types
     template <typename Char, class CharTraits>
