@@ -90,7 +90,7 @@ namespace type_safe
     /// (2)/(3) the boolean has the same value as the given value,
     /// `false` otherwise.
     /// \notes (2)/(3) do not participate in overload resolution if `T` is not a boolean type.
-    /// \group boolean_comp_equal Boolean comparisons
+    /// \group boolean_comp_equal
     /// \module types
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const boolean& a, const boolean& b) noexcept
     {

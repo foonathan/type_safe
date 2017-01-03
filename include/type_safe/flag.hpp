@@ -123,6 +123,7 @@ namespace type_safe
         friend constexpr bool operator==(flag lhs, T rhs) noexcept;
     };
 
+    /// [ts::flag]() equality comparison.
     /// \returns `true` if (1) both [ts::flag]() objects are in the same state,
     /// (2)/(3) the flag is in the given state.
     /// \notes (2)/(3) do not participate in overload resolution unless `T` is a boolean type.
@@ -151,6 +152,7 @@ namespace type_safe
         return rhs == lhs;
     }
 
+    /// [ts::flag]() in-equality comparison.
     /// \returns `true` if (1) both [ts::flag]() objects are in the same state,
     /// (2)/(3) the flag is in the given state.
     /// \notes (2)/(3) do not participate in overload resolution unless `T` is a boolean type.
