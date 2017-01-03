@@ -148,7 +148,7 @@ namespace type_safe
     //=== input/output ===/
     /// [ts::boolean]() input operator.
     /// \effects Reads a `bool` from the [std::istream]() and assigns it to the given [ts::boolean]().
-    /// \output_section Boolean input/output
+    /// \output_section Input/output
     /// \module types
     template <typename Char, class CharTraits>
     std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
