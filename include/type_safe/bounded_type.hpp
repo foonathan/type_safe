@@ -13,6 +13,7 @@ namespace type_safe
 {
     namespace constraints
     {
+        /// Tag type to enable a dynamic bound.
         struct dynamic_bound
         {
         };
@@ -56,6 +57,7 @@ namespace type_safe
             using base = typename select_bound<is_dynamic<Bound>::value, T, Bound>::type;
         } // detail namespace
 
+// clang-format off
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE(Name, Op)                                                            \
     template <typename T, typename Bound = dynamic_bound>                                          \
@@ -70,18 +72,41 @@ namespace type_safe
         using value_type = T;                                                                      \
         using bound_type = Bound;                                                                  \
                                                                                                    \
+        /** Initializes it with a static bound.
+          * \effects Does nothing, a static bound is not stored.
+          * It will use `Bound::value` as the bound.
+          * \notes This constructor only participates in overload resolution,
+          * if a static bound is used, i.e. `Bound` is not [ts::constraints::dynamic_bound]().
+          * \param Condition
+          * \exclude
+          * \param 1
+          * \exclude */     \
         template <bool Condition = !is_dynamic,                                                    \
                   typename       = typename std::enable_if<Condition>::type>                       \
         Name(Bound = {})                                                                           \
         {                                                                                          \
         }                                                                                          \
                                                                                                    \
+        /** Initializes it with a dynamic bound.
+          * \effects Copies (1)/moves (2) the object and uses that as bound.
+          * \notes These constructors only participate in overload resoltuion,
+          * if a dynamic bound is used, i.e. `Bound` is [ts::constraints::dynamic_bound]().
+          * \group dynamic_ctor
+          * \param Condition
+          * \exclude
+          * \param 1
+          * \exclude */     \
         template <bool Condition = is_dynamic,                                                     \
                   typename       = typename std::enable_if<Condition>::type>                       \
         explicit Name(const T& bound) : base{bound}                                                \
         {                                                                                          \
         }                                                                                          \
                                                                                                    \
+        /** \group dynamic_ctor
+          * \param Condition
+          * \exclude
+          * \param 1
+          * \exclude */     \
         template <bool Condition = is_dynamic,                                                     \
                   typename       = typename std::enable_if<Condition>::type>                       \
         explicit Name(T&& bound) noexcept(std::is_nothrow_move_constructible<T>::value)            \
@@ -89,31 +114,38 @@ namespace type_safe
         {                                                                                          \
         }                                                                                          \
                                                                                                    \
+        /** Does the actual bounds check.*/                                                        \
         template <typename U>                                                                      \
         bool operator()(const U& u) const                                                          \
         {                                                                                          \
             return u Op get_bound();                                                               \
         }                                                                                          \
                                                                                                    \
+        /** \returns The bound.*/                                                                  \
         const T& get_bound() const noexcept                                                        \
         {                                                                                          \
             return base::value;                                                                    \
         }                                                                                          \
     };
+        // clang-format on
 
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value is valid if it is less than some given value.
         TYPE_SAFE_DETAIL_MAKE(less, <)
 
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value is valid if it is less than or equal to some given value.
         TYPE_SAFE_DETAIL_MAKE(less_equal, <=)
 
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value is valid if it is greater than some given value.
         TYPE_SAFE_DETAIL_MAKE(greater, >)
 
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value is valid if it is greater than or equal to some given value.
         TYPE_SAFE_DETAIL_MAKE(greater_equal, >=)
 
@@ -133,15 +165,16 @@ namespace type_safe
                                                             greater<T, Bound>>::type;
         } // namespace detail
 
-        constexpr bool open   = false;
+        /// Tag objects to specify bounds for [ts::constraints::bounded]().
+        /// \group open_closed Open/Closed Tags
+        constexpr bool open = false;
+        /// \group open_closed
         constexpr bool closed = true;
 
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value is valid if it is between two given bounds,
         /// `LowerInclusive`/`UpperInclusive` control whether the lower/upper bound itself is valid too.
-        /// `LowerBound`/`UpperBound` control whether the lower/upper bound is specified statically or dynamically.
-        /// When one is `dynamic_bound`, its bound is specified at runtime. Otherwise, it must match
-        /// the interface and semantics of `std::integral_constant<T>`, in which case its `value` is the bound.
         template <typename T, bool LowerInclusive, bool UpperInclusive,
                   typename LowerBound = dynamic_bound, typename UpperBound = dynamic_bound>
         class bounded : detail::lower_bound_t<LowerInclusive, T, LowerBound>,
@@ -173,12 +206,32 @@ namespace type_safe
             static constexpr auto lower_inclusive = LowerInclusive;
             static constexpr auto upper_inclusive = UpperInclusive;
 
+            /// Initializes it with static bounds.
+            /// \effects Does nothing, a static bound is not stored.
+            /// It will use `LowerBound::value` as lower bound and `UpperBound::value` as upper bound.
+            /// \notes This constructor does not participate in overload resolution,
+            /// unless both bounds are static,
+            /// i.e. not [ts::constraints::dynamic_bound]().
+            /// \param Condition
+            /// \exclude
+            /// \param 1
+            /// \exclude
             template <bool Condition = !lower_is_dynamic && !upper_is_dynamic,
                       typename       = typename std::enable_if<Condition>::type>
             bounded()
             {
             }
 
+            /// Initializes it with (mixed) dynamic bounds.
+            /// \effects Perfectly forwards the arguments to the bounds.
+            /// If a bound is static, the static member `value` will be used as bound,
+            /// if it is dynamic, a copy created by perfectly forwarding will be stored and used as bound.
+            /// \notes This constructor does not participate in overload resolution,
+            /// unless the arguments are convertible to the bounds.
+            /// \param 2
+            /// \exclude
+            /// \param 3
+            /// \exclude
             template <typename U1, typename U2>
             explicit bounded(U1&& lower, U2&& upper,
                              decltype(lower_type(std::forward<U1>(lower)), 0) = 0,
@@ -187,17 +240,20 @@ namespace type_safe
             {
             }
 
+            /// Does the bounds check.
             template <typename U>
             bool operator()(const U& u) const
             {
                 return lower()(u) && upper()(u);
             }
 
+            /// \returns The value of the lower bound.
             const T& get_lower_bound() const noexcept
             {
                 return lower().get_bound();
             }
 
+            /// \returns The value of the upper bound.
             const T& get_upper_bound() const noexcept
             {
                 return upper().get_bound();
@@ -205,12 +261,14 @@ namespace type_safe
         };
 
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value is valid if it is between two given bounds but not the bounds themselves.
         template <typename T, typename LowerBound = dynamic_bound,
                   typename UpperBound = dynamic_bound>
         using open_interval           = bounded<T, open, open, LowerBound, UpperBound>;
 
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value is valid if it is between two given bounds or the bounds themselves.
         template <typename T, typename LowerBound = dynamic_bound,
                   typename UpperBound = dynamic_bound>
@@ -310,6 +368,7 @@ namespace type_safe
                                                                   LowerBound, UpperBound>,
                                           assertion_verifier>;
 
+    /// Creates a [ts::bounded_type]() to a specified [ts::constraints::closed_interval]().
     /// \returns A [ts::bounded_type]() with the given `value` and lower and upper bounds,
     /// where the bounds are valid values as well.
     /// \notes If this function is passed in dynamic values of the same type as `value`,
@@ -325,6 +384,7 @@ namespace type_safe
                                                                       std::forward<U2>(upper)));
     }
 
+    /// Creates a [ts::bounded_type]() to a specified [ts::constraints::open_interval]().
     /// \returns A [ts::bounded_type]() with the given `value` and lower and upper bounds,
     /// where the bounds are not valid values.
     /// \notes If this function is passed in dynamic values of the same type as `value`,
@@ -340,8 +400,8 @@ namespace type_safe
                                                                       std::forward<U2>(upper)));
     }
 
-    /// \effects Changes `val` so that it is in the interval.
-    /// If it is not in the interval, assigns the bound that is closer to the value.
+    /// Changes `val` so that it is in the given [ts::constraints::closed_interval]().
+    /// \effects If it is not in the interval, assigns the bound that is closer to the value.
     template <typename T, typename LowerBound, typename UpperBound, typename U>
     void clamp(const constraints::closed_interval<T, LowerBound, UpperBound>& interval, U& val)
     {
@@ -352,6 +412,7 @@ namespace type_safe
     }
 
     /// A `Verifier` for [ts::constrained_type]() that clamps the value to make it valid.
+    ///
     /// It must be used together with [ts::constraints::less_equal](), [ts::constraints::greater_equal]() or [ts::constraints::closed_interval]().
     struct clamping_verifier
     {
@@ -393,6 +454,7 @@ namespace type_safe
         constrained_type<T, constraints::closed_interval<T, LowerBound, UpperBound>,
                          clamping_verifier>;
 
+    /// Creates a [ts::clamped_type]() from the specified [ts::constraints::closed_interval]().
     /// \returns A [ts::clamped_type]() with the given `value` and lower and upper bounds,
     /// where the bounds are valid values.
     /// \notes If this function is passed in dynamic values of the same type as `value`,
