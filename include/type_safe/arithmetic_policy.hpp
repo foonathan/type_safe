@@ -191,7 +191,7 @@ namespace type_safe
     class checked_arithmetic
     {
     public:
-        class error : std::range_error
+        class error : public std::range_error
         {
         public:
             error(const char* msg) : std::range_error(msg)
@@ -244,7 +244,11 @@ namespace type_safe
     };
 
 #if TYPE_SAFE_ARITHMETIC_UB
-    /// The default `ArithmeticPolicy`
+    /// The default `ArithmeticPolicy`.
+    ///
+    /// It depends on the [TYPE_SAFE_ARITHMETIC_UB]() macro,
+    /// and is either [ts::undefined_behavior_arithmetic]() or [ts::default_arithmetic]().
+    /// \exclude target
     /// \module types
     using arithmetic_policy_default = undefined_behavior_arithmetic;
 #else
