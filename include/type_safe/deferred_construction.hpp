@@ -1,4 +1,4 @@
-// Copyright (C) 2016 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -26,10 +26,6 @@ namespace type_safe
     /// For consistency with [ts::basic_optional]() it provides a similar interface,
     /// yet it is not as flexible and does not allow to reset it to the uninitialized state,
     /// once initialized.
-    ///
-    /// \notes Because of the interface similarities,
-    /// you can use it with the free functions declared in `optional.hpp`,
-    /// such as `with()`, `visit()` and `apply()`.
     template <typename T>
     class deferred_construction
     {
@@ -37,13 +33,14 @@ namespace type_safe
         using value_type = T;
 
         //=== constructors/assignment/destructor ===//
+        /// Default constructor.
         /// \effects Creates it in the un-initialized state.
         deferred_construction() noexcept : initialized_(false)
         {
         }
 
-        /// \effects Copy constructor:
-        /// If `other` is un-initialized, it will be un-initialized as well.
+        /// Copy constructor:
+        /// \effects If `other` is un-initialized, it will be un-initialized as well.
         /// If `other` is initialized, it will copy the stored value.
         /// \throws Anything thrown by the copy constructor of `value_type` if `other` is initialized.
         deferred_construction(const deferred_construction& other) : initialized_(other.initialized_)
@@ -52,8 +49,8 @@ namespace type_safe
                 ::new (as_void()) value_type(other.value());
         }
 
-        /// \effects Move constructor:
-        /// If `other` is un-initialized, it will be un-initialized as well.
+        /// Move constructor:
+        /// \effects If `other` is un-initialized, it will be un-initialized as well.
         /// If `other` is initialized, it will copy the stored value.
         /// \throws Anything thrown by the move constructor of `value_type` if `other` is initialized.
         /// \notes `other` will still be initialized after the move operation,
@@ -87,7 +84,7 @@ namespace type_safe
         /// \requires `value_type` must be constructible from `U`.
         /// \notes You must not use this function to actually "assign" the value,
         /// like `emplace()`, the object must not be initialized.
-        /// \synopsis template \<typename U\>\ndeferred_construction& operator=(U&& u);
+        /// \synopsis_return deferred_construction&
         template <typename U>
         auto operator=(U&& u) ->
             typename std::enable_if<std::is_constructible<T, decltype(std::forward<U>(u))>::value,
@@ -104,6 +101,7 @@ namespace type_safe
         /// \notes You must only call this function once,
         /// after the object has been initialized,
         /// you can use `value()` to assign to it.
+        /// \output_section Modifiers
         template <typename... Args>
         void emplace(Args&&... args)
         {
@@ -113,28 +111,30 @@ namespace type_safe
         }
 
         //=== observers ===//
+        /// \returns `true` if the object is initialized, `false` otherwise.
+        /// \output_section Observers
+        bool has_value() const noexcept
+        {
+            return initialized_;
+        }
+
         /// \returns The same as `has_value()`.
         explicit operator bool() const noexcept
         {
             return has_value();
         }
 
-        /// \returns `true` if the object is initialized, `false` otherwise.
-        bool has_value() const noexcept
-        {
-            return initialized_;
-        }
-
-        /// \returns A reference to the stored value.
+        /// Access the stored value.
+        /// \returns A (`const`) (rvalue) reference to the stored value.
         /// \requires `has_value() == true`.
+        /// \group value
         value_type& value() TYPE_SAFE_LVALUE_REF noexcept
         {
             DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});
             return *static_cast<value_type*>(as_void());
         }
 
-        /// \returns A `const` reference to the stored value.
-        /// \requires `has_value() == true`.
+        /// \group value
         const value_type& value() const TYPE_SAFE_LVALUE_REF noexcept
         {
             DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});
@@ -142,16 +142,14 @@ namespace type_safe
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \returns An rvalue reference to the stored value.
-        /// \requires `has_value() == true`.
+        /// \group value
         value_type&& value() && noexcept
         {
             DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});
             return std::move(*static_cast<value_type*>(as_void()));
         }
 
-        /// \returns An rvalue reference to the stored value.
-        /// \requires `has_value() == true`.
+        /// \group value
         const value_type&& value() const && noexcept
         {
             DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});

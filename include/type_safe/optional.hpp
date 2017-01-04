@@ -1,4 +1,4 @@
-// Copyright (C) 2016 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -118,6 +118,7 @@ namespace type_safe
     //=== basic_optional ===//
     /// Tag type to mark a [ts::basic_optional]() without a value.
     /// \module optional
+    /// \output_section Basic optional
     struct nullopt_t
     {
         constexpr nullopt_t()
@@ -182,6 +183,10 @@ namespace type_safe
         using storage    = StoragePolicy;
         using value_type = typename storage::value_type;
 
+        /// Rebinds the current optional to the type `U`.
+        ///
+        /// It will use [ts::optional_storage_policy_for]() to determine whether a change of storage policy is needed.
+        /// \exclude target
         template <typename U>
         using rebind = basic_optional<detail::select_optional_storage_policy<
             typename optional_storage_policy_for<U>::type,
@@ -214,9 +219,10 @@ namespace type_safe
     public:
         //=== constructors/destructors/assignment/swap ===//
         /// \effects Creates it without a value.
+        /// \group empty
         basic_optional() noexcept = default;
 
-        /// \effects Same as the default constructor.
+        /// \group empty
         basic_optional(nullopt_t) noexcept
         {
         }
@@ -236,16 +242,16 @@ namespace type_safe
             get_storage().create_value(std::forward<T>(value));
         }
 
-        /// \effects Copy constructor:
-        /// If `other` does not have a value, it will be created without a value as well.
+        /// Copy constructor.
+        /// \effects If `other` does not have a value, it will be created without a value as well.
         /// If `other` has a value, it will be created with a value by copying `other.value()`.
         /// \throws Anything thrown by the copy constructor of `value_type` if `other` has a value.
         /// \notes This constructor will not participate in overload resolution,
         /// unless the `value_type` is copy constructible.
         basic_optional(const basic_optional& other) = default;
 
-        /// \effects Move constructor:
-        /// If `other` does not have a value, it will be created without a value as well.
+        /// Move constructor.
+        /// \effects If `other` does not have a value, it will be created without a value as well.
         /// If `other` has a value, it will be created with a value by moving `other.value()`.
         /// \throws Anything thrown by the move constructor of `value_type` if `other` has a value.
         /// \notes `other` will still have a value after the move operation,
@@ -255,6 +261,7 @@ namespace type_safe
         basic_optional(basic_optional&& other) TYPE_SAFE_NOEXCEPT_DEFAULT(
             std::is_nothrow_move_constructible<value_type>::value) = default;
 
+        /// Destructor.
         /// \effects If it has a value, it will be destroyed.
         ~basic_optional() noexcept = default;
 
@@ -267,7 +274,9 @@ namespace type_safe
 
         /// \effects Same as `emplace(std::forward<T>(t))`.
         /// \requires The call to `emplace()` must be well-formed.
-        /// \synopsis template \<typename T\>\nbasic_optional& operator=(T&& value)
+        /// \param 1
+        /// \exclude
+        /// \synopsis_return basic_optional&
         template <typename T,
                   typename = typename std::enable_if<!std::is_same<
                       typename std::decay<T>::type, basic_optional<storage>>::value>::type>
@@ -280,16 +289,16 @@ namespace type_safe
             return *this;
         }
 
-        /// \effects Copy assignment operator:
-        /// If `other` has a value, does something equivalent to `emplace(other.value())` (this will always trigger the single parameter version).
+        /// Copy assignment operator.
+        /// \effects If `other` has a value, does something equivalent to `emplace(other.value())` (this will always trigger the single parameter version).
         /// Otherwise will reset the optional to the empty state.
         /// \throws Anything thrown by the call to `emplace()`.
         /// \notes This operator will not participate in overload resolution,
         /// unless the `value_type` is copy constructible.
         basic_optional& operator=(const basic_optional& other) = default;
 
-        /// \effects Move assignment operator:
-        /// If `other` has a value, does something equivalent to `emplace(std::move(other).value())` (this will always trigger the single parameter version).
+        /// Move assignment operator.
+        /// \effects If `other` has a value, does something equivalent to `emplace(std::move(other).value())` (this will always trigger the single parameter version).
         /// Otherwise will reset the optional to the empty state.
         /// \throws Anything thrown by the call to `emplace()`.
         /// \notes This operator will not participate in overload resolution,
@@ -314,6 +323,7 @@ namespace type_safe
         //=== modifiers ===//
         /// \effects Destroys the value by calling its destructor, if there is any stored.
         /// Afterwards `has_value()` will return `false`.
+        /// \output_section Modifiers
         void reset() noexcept
         {
             if (has_value())
@@ -326,7 +336,7 @@ namespace type_safe
         /// If this function is left by an exception, the optional will be empty.
         /// \notes If the `create_value()` function of the `StoragePolicy` does not accept the arguments,
         /// this function will not participate in overload resolution.
-        /// \synopsis template \<typename ... Args\>\nvoid emplace(Args&&... args);
+        /// \synopsis_return void
         template <typename... Args>
         auto emplace(Args&&... args) noexcept(
             std::is_nothrow_constructible<value_type, Args...>::value)
@@ -343,7 +353,7 @@ namespace type_safe
         /// \notes This function does not participate in overload resolution
         /// unless there is an `operator=` that takes `arg` without an implicit user-defined conversion
         /// and the `create_value()` function of the `StoragePolicy` accepts the argument.
-        /// \synopsis template \<typename Arg\>\nvoid emplace(Arg&& arg);
+        /// \synopsis_return void
         template <typename Arg,
                   typename = typename std::
                       enable_if<detail::is_direct_assignable<value_type, Arg&&>::value>::type>
@@ -360,6 +370,7 @@ namespace type_safe
 
         //=== observers ===//
         /// \returns The same as `has_value()`.
+        /// \output_section Observers
         explicit operator bool() const noexcept
         {
             return has_value();
@@ -371,16 +382,18 @@ namespace type_safe
             return get_storage().has_value();
         }
 
+        /// Access to the stored value.
         /// \returns A reference to the stored value.
+        /// The exact type depends on the `StoragePolicy`.
         /// \requires `has_value() == true`.
+        /// \group value
         auto value() TYPE_SAFE_LVALUE_REF noexcept -> decltype(std::declval<storage&>().get_value())
         {
             DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});
             return get_storage().get_value();
         }
 
-        /// \returns A `const` reference to the stored value.
-        /// \requires `has_value() == true`.
+        /// \group value
         auto value() const TYPE_SAFE_LVALUE_REF noexcept
             -> decltype(std::declval<const storage&>().get_value())
         {
@@ -389,16 +402,14 @@ namespace type_safe
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \returns An rvalue reference to the stored value.
-        /// \requires `has_value() == true`.
+        /// \group value
         auto value() && noexcept -> decltype(std::declval<storage&&>().get_value())
         {
             DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});
             return std::move(get_storage()).get_value();
         }
 
-        /// \returns An rvalue reference to the stored value.
-        /// \requires `has_value() == true`.
+        /// \group value
         auto value() const && noexcept -> decltype(std::declval<const storage&&>().get_value())
         {
             DEBUG_ASSERT(has_value(), detail::precondition_error_handler{});
@@ -409,6 +420,7 @@ namespace type_safe
         /// \returns If it has a value, `value()`, otherwise `u` converted to the same type as `value()`.
         /// \requires `u` must be valid argument to the `value_or()` function of the `StoragePolicy`.
         /// \notes Depending on the `StoragePolicy`, this either returns a decayed type or a reference.
+        /// \group value_or
         template <typename U>
         auto value_or(U&& u) const TYPE_SAFE_LVALUE_REF
             -> decltype(std::declval<const storage&>().get_value_or(std::forward<U>(u)))
@@ -417,9 +429,7 @@ namespace type_safe
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \returns If it has a value, `value()`, otherwise `u` converted to the same type as `value()`.
-        /// \requires `u` must be valid argument to the `value_or()` function of the `StoragePolicy`.
-        /// \notes Depending on the `StoragePolicy`, this either returns a decayed type or a reference.
+        /// \group value_or
         template <typename U>
         auto value_or(U&& u) && -> decltype(
             std::declval<storage&&>().get_value_or(std::forward<U>(u)))
@@ -429,10 +439,11 @@ namespace type_safe
 #endif
 
         //=== factories ===//
-        /// \returns If `value_type` is a `basic_optional` itself, returns a copy of that optional
+        /// \returns If `value_type` is a `basic_optional` itself, returns a copy of that optional (by moving in (2))
         /// or a null optional of that type if `has_value()` is `false`.
         /// Otherwise returns a copy of `*this`.
         /// \requires `value_type` must be copy constructible.
+        /// \group unwrap -Factories
         /// \param T
         /// \exclude
         /// \param 1
@@ -445,10 +456,7 @@ namespace type_safe
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \returns If `value_type` is a `basic_optional` itself, returns a copy of that optional by moving
-        /// or a null optional of that type if `has_value()` is `false`.
-        /// Otherwise returns a copy of `*this` by moving.
-        /// \requires `value_type` must be move constructible.
+        /// \group unwrap
         /// \param T
         /// \exclude
         /// \param 1
@@ -461,11 +469,14 @@ namespace type_safe
         }
 #endif
 
-        /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `const value_type&`.
-        /// If `has_value()` is `true`, returns the new optional with result of `std::forward<Func>(f)(std::move(value))`,
+        /// Maps an optional.
+        /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `const value_type&` (1)/`value_type&&` (2).
+        /// If `has_value()` is `true`, returns the new optional with result of the value passed to the function.
         /// otherwise returns an empty optional.
-        /// \requires `f` must be callable with `const value_type&`.
+        /// \requires `f` must be callable with `const value_type&` (1)/`value_type&&` (2).
         /// \unique_name *map
+        /// \group map
+        /// \exclude return
         template <typename Func>
         auto map(Func&& f) const TYPE_SAFE_LVALUE_REF
             -> rebind<decltype(std::forward<Func>(f)(this->value()))>
@@ -477,12 +488,9 @@ namespace type_safe
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `value_type&&`.
-        /// If `has_value()` is `true`, returns the new optional with result of `std::forward<Func>(f)(std::move(value))`,
-        /// otherwise returns an empty optional.
-        /// \notes It will move the `value()` to the function.
-        /// \requires `f` must be callable with `value_type&&`.
         /// \unique_name *map_rvalue
+        /// \group map
+        /// \exclude return
         template <typename Func>
         auto map(Func&& f) && -> rebind<decltype(std::forward<Func>(f)(std::move(this->value())))>
         {
@@ -496,6 +504,8 @@ namespace type_safe
         /// \returns The same as `map(std::forward<Func>(f)).unwrap()`.
         /// \notes This is useful for functions that return an optional type itself,
         /// the optional will be "flattened" properly.
+        /// \group bind
+        /// \exclude return
         template <typename Func>
         auto bind(Func&& f) const TYPE_SAFE_LVALUE_REF
             -> decltype(this->map(std::forward<Func>(f)).unwrap())
@@ -504,9 +514,8 @@ namespace type_safe
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \returns The same as `map(std::forward<Func>(f)).unwrap()`.
-        /// \notes This is useful for functions that return an optional type itself,
-        /// the optional will be "flattened" properly.
+        /// \group bind
+        /// \exclude return
         template <typename Func>
         auto bind(Func&& f) && -> decltype(this->map(std::forward<Func>(f)).unwrap())
         {
@@ -520,12 +529,13 @@ namespace type_safe
             typename std::remove_cv<typename std::remove_reference<T>::type>::type;
 
     public:
-        /// \returns If the optional is not empty, `std::forward<Func>(f)(value())` converted to the type `T` without cv or references.
+        /// \returns If the optional is not empty, returns the result of the function called with its value converted to the type `T` without cv or references.
         /// Otherwise returns `std::forward<T>(t)`.
         /// \requires `f` must be callable with `const value_type&`.
         /// \notes This is similar to `map()` but does not wrap the resulting type in an optional.
         /// Hence a fallback value must be provided.
         /// \exclude return
+        /// \group transform
         template <typename T, typename Func>
         auto transform(T&& t, Func&& f) const TYPE_SAFE_LVALUE_REF -> remove_cv_ref<T>
         {
@@ -535,12 +545,8 @@ namespace type_safe
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \returns If the optional is not empty, `std::forward<Func>(f)(std::move(value()))` converted to the type `T` without cv or references.
-        /// Otherwise returns `std::forward<T>(t)`.
-        /// \requires `f` must be callable with `value_type&&`.
-        /// \notes This is similar to `map()` but does not wrap the resulting type in an optional.
-        /// Hence a fallback value must be provided.
         /// \exclude return
+        /// \group transform
         template <typename T, typename Func>
         auto transform(T&& t, Func&& f) && -> remove_cv_ref<T>
         {
@@ -555,6 +561,8 @@ namespace type_safe
         /// i.e. it calls `unwrap()`.
         /// \requires `f` must be callable with `decltype(*this)`,
         /// i.e. a `const` lvalue reference to the type of this optional.
+        /// \group then
+        /// \exclude return
         template <typename Func>
         auto then(Func&& f) const TYPE_SAFE_LVALUE_REF
             -> detail::unwrap_optional_t<rebind<decltype(std::forward<Func>(f)(*this))>>
@@ -564,11 +572,8 @@ namespace type_safe
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \returns A `basic_optional` with the value of `std::forward<Func>(f)(std::move(*this))`.
-        /// If the result of `f` is a `basic_optional` itself, it will be returned instead,
-        /// i.e. it calls `unwrap()`.
-        /// \requires `f` must be callable with `decltype(std::move(*this))`,
-        /// i.e. an rvalue reference to the type of this optional.
+        /// \group then
+        /// \exclude return
         template <typename Func>
         auto then(Func&& f) && -> detail::
             unwrap_optional_t<rebind<decltype(std::forward<Func>(f)(std::move(*this)))>>
@@ -579,10 +584,11 @@ namespace type_safe
 #endif
     };
 
+/// \entity TYPE_SAFE_DETAIL_MAKE_OP
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \
-    /** \group optional_comp_null
-      * \module optional */                                      \
+    /** \group optional_comp_null Optional null comparison
+      * \module optional */             \
     template <class StoragePolicy>                                                                 \
     bool operator Op(const basic_optional<StoragePolicy>& lhs, nullopt_t)                          \
     {                                                                                              \
@@ -609,24 +615,27 @@ namespace type_safe
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
+/// \entity TYPE_SAFE_DETAIL_MAKE_OP
 /// \exclude
-#define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \
-    /** \group optional_comp_value
-      * \module optional */                                     \
-    template <class StoragePolicy>                                                                 \
-    auto operator Op(const basic_optional<StoragePolicy>&      lhs,                                \
-                     const typename StoragePolicy::value_type& rhs)                                \
-        ->decltype(lhs.value() Op rhs)                                                             \
-    {                                                                                              \
-        return Expr;                                                                               \
-    }                                                                                              \
-    /** \group optional_comp_value */                                                              \
-    template <class StoragePolicy>                                                                 \
-    auto operator Op(const typename StoragePolicy::value_type& lhs,                                \
-                     const basic_optional<StoragePolicy>&      rhs)                                \
-        ->decltype(lhs Op rhs.value())                                                             \
-    {                                                                                              \
-        return Expr2;                                                                              \
+#define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                                      \
+    /** \group optional_comp_value Optional value comparison
+      * \synopsis_return bool
+      * \module optional */ \
+    template <class StoragePolicy>                                                                                     \
+    auto operator Op(const basic_optional<StoragePolicy>&      lhs,                                                    \
+                     const typename StoragePolicy::value_type& rhs)                                                    \
+        ->decltype(lhs.value() Op rhs)                                                                                 \
+    {                                                                                                                  \
+        return Expr;                                                                                                   \
+    }                                                                                                                  \
+    /** \synopsis_return bool
+      * \group optional_comp_value */                                                    \
+    template <class StoragePolicy>                                                                                     \
+    auto operator Op(const typename StoragePolicy::value_type& lhs,                                                    \
+                     const basic_optional<StoragePolicy>&      rhs)                                                    \
+        ->decltype(lhs Op rhs.value())                                                                                 \
+    {                                                                                                                  \
+        return Expr2;                                                                                                  \
     }
 
     // equal iff optional has value and value matches
@@ -652,16 +661,18 @@ namespace type_safe
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
+/// \entity TYPE_SAFE_DETAIL_MAKE_OP
 /// \exclude
-#define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
-    /** \group optional_comp
-      * \module optional */                                           \
-    template <class StoragePolicy>                                                                 \
-    auto operator Op(const basic_optional<StoragePolicy>& lhs,                                     \
-                     const basic_optional<StoragePolicy>& rhs)                                     \
-        ->decltype(lhs.value() Op rhs.value())                                                     \
-    {                                                                                              \
-        return lhs.has_value() ? lhs.value() Op rhs : nullopt Op rhs;                              \
+#define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                                       \
+    /** \group optional_comp Optional comparison
+      * \synopsis_return bool
+      * \module optional */ \
+    template <class StoragePolicy>                                                                         \
+    auto operator Op(const basic_optional<StoragePolicy>& lhs,                                             \
+                     const basic_optional<StoragePolicy>& rhs)                                             \
+        ->decltype(lhs.value() Op rhs.value())                                                             \
+    {                                                                                                      \
+        return lhs.has_value() ? lhs.value() Op rhs : nullopt Op rhs;                                      \
     }
 
     TYPE_SAFE_DETAIL_MAKE_OP(==)
@@ -673,6 +684,7 @@ namespace type_safe
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
+    /// With operation for [ts::optional]().
     /// \effects Calls the `operator()` of `f` passing it the value of `opt` and additional arguments,
     /// if it has a value.
     /// Otherwise does nothing.
@@ -690,9 +702,11 @@ namespace type_safe
 
     //=== optional ===//
     /// A `StoragePolicy` for [ts::basic_optional]() that is similar to [std::optional<T>]()'s implementation.
+    ///
     /// It uses [std::aligned_storage]() and a `bool` flag whether a value was created.
     /// \requires `T` must not be a reference.
     /// \module optional
+    /// \output_section Optional
     template <typename T>
     class direct_optional_storage
     {
@@ -719,7 +733,7 @@ namespace type_safe
         /// \throws Anything thrown by the constructor of `value_type` in which case `has_value()` is still `false`.
         /// \requires `has_value() == false`.
         /// \notes This function does not participate in overload resolution unless `value_type` is constructible from `args`.
-        /// \synopsis template \<typename ... Args\>\nvoid create_value(Args&&... args);
+        /// \synopsis_return void
         template <typename... Args>
         auto create_value(Args&&... args) ->
             typename std::enable_if<std::is_constructible<value_type, Args&&...>::value>::type
@@ -728,16 +742,16 @@ namespace type_safe
             empty_ = false;
         }
 
-        /// \effects Creates a value by copy constructing from the value stored in `other`,
+        /// \effects Creates a value by copy(1)/move(2) constructing from the value stored in `other`,
         /// if there is any.
+        /// \group create_value
         void create_value(const direct_optional_storage& other)
         {
             if (other.has_value())
                 create_value(other.get_value());
         }
 
-        /// \effects Creates a value by move constructing from the value stored in `other`,
-        /// if there is any.
+        /// \group create_value
         void create_value(direct_optional_storage&& other)
         {
             if (other.has_value())
@@ -747,7 +761,12 @@ namespace type_safe
         /// \effects Copies the policy from `other`, by copy-constructing or assigning the stored value,
         /// if any.
         /// \throws Anything thrown by the copy constructor or copy assignment operator of `other`.
+        /// \group copy_value
         /// \unique_name copy_value_assign
+        /// \param Dummy
+        /// \exclude
+        /// \param 1
+        /// \exclude
         template <typename Dummy = T,
                   typename = typename std::enable_if<std::is_copy_assignable<Dummy>::value>::type>
         void copy_value(const direct_optional_storage& other)
@@ -763,10 +782,12 @@ namespace type_safe
                 create_value(other.get_value());
         }
 
-        /// \effects Copies the policy from `other`, by copy-constructing the stored value,
-        /// if any.
-        /// \throws Anything thrown by the copy constructor of `other`.
         /// \unique_name copy_value_construct
+        /// \group copy_value
+        /// \param Dummy
+        /// \exclude
+        /// \param 1
+        /// \exclude
         template <typename Dummy = T,
                   typename std::enable_if<!std::is_copy_assignable<Dummy>::value, int>::type = 0>
         void copy_value(const direct_optional_storage& other)
@@ -780,6 +801,11 @@ namespace type_safe
         /// if any.
         /// \throws Anything thrown by the move constructor or move assignment operator of `other`.
         /// \unique_name copy_value_move_assign
+        /// \group copy_value_move
+        /// \param Dummy
+        /// \exclude
+        /// \param 1
+        /// \exclude
         template <typename Dummy = T,
                   typename = typename std::enable_if<std::is_move_assignable<Dummy>::value>::type>
         void copy_value(direct_optional_storage&& other)
@@ -795,10 +821,11 @@ namespace type_safe
                 create_value(std::move(other).get_value());
         }
 
-        /// \effects Copies the policy from `other`, by move-constructing the stored value,
-        /// if any.
-        /// \throws Anything thrown by the move constructor of `other`.
-        /// \unique_name copy_value_move_construct
+        /// \group copy_value_move
+        /// \param Dummy
+        /// \exclude
+        /// \param 1
+        /// \exclude
         template <typename Dummy = T,
                   typename std::enable_if<!std::is_move_assignable<Dummy>::value, int>::type = 0>
         void copy_value(direct_optional_storage&& other)
@@ -843,30 +870,28 @@ namespace type_safe
             return !empty_;
         }
 
-        /// \returns A reference to the stored value.
+        /// \returns A (`const`) (rvalue) reference to the stored value.
         /// \requires `has_value() == true`.
+        /// \group value
         lvalue_reference get_value() TYPE_SAFE_LVALUE_REF noexcept
         {
             return *static_cast<value_type*>(as_void());
         }
 
-        /// \returns A `const` reference to the stored value.
-        /// \requires `has_value() == true`.
+        /// \group value
         const_lvalue_reference get_value() const TYPE_SAFE_LVALUE_REF noexcept
         {
             return *static_cast<const value_type*>(as_void());
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \returns A reference to the stored value.
-        /// \requires `has_value() == true`.
+        /// \group value
         rvalue_reference get_value() && noexcept
         {
             return std::move(*static_cast<value_type*>(as_void()));
         }
 
-        /// \returns A `const` reference to the stored value.
-        /// \requires `has_value() == true`.
+        /// \group value
         const_rvalue_reference get_value() const && noexcept
         {
             return std::move(*static_cast<const value_type*>(as_void()));
@@ -874,7 +899,8 @@ namespace type_safe
 #endif
 
         /// \returns Either `get_value()` or `u` converted to `value_type`.
-        /// \requires `value_type` must be copy constructible and `u` convertible to `value_type`.
+        /// \requires `value_type` must be copy(1)/move(2) constructible and `u` convertible to `value_type`.
+        /// \group get_value_or
         /// \param 1
         /// \exclude
         template <typename U,
@@ -887,8 +913,7 @@ namespace type_safe
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \returns Either `std::move(get_value())` or `u` converted to `value_type`.
-        /// \requires `value_type` must be move constructible and `u` convertible to `value_type`.
+        /// \group get_value_or
         /// \param 1
         /// \exclude
         template <typename U,
@@ -919,7 +944,7 @@ namespace type_safe
         bool      empty_;
     };
 
-    /// A [ts::basic_optional]() that use [ts::direct_optional_storage<T>]().
+    /// A [ts::basic_optional]() that uses [ts::direct_optional_storage<T>]().
     /// \module optional
     template <typename T>
     using optional = basic_optional<direct_optional_storage<T>>;

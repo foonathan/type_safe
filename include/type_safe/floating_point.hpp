@@ -1,4 +1,4 @@
-// Copyright (C) 2016 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -344,6 +344,7 @@ namespace type_safe
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
 //=== binary operations ===//
+/// \entity TYPE_SAFE_DETAIL_MAKE_OP
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
     /** \group float_binary_op */                                                                  \
@@ -422,6 +423,7 @@ namespace type_safe
     //=== input/output ===/
     /// \effects Reads a float from the [std::istream]() and assigns it to the given [ts::floating_point]().
     /// \module types
+    /// \output_section Input/output
     template <typename Char, class CharTraits, typename FloatT>
     std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
                                                      floating_point<FloatT>& f)

@@ -1,4 +1,4 @@
-// Copyright (C) 2016 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -151,6 +151,7 @@ namespace type_safe
     /// \returns The result of the chosen `operator()`,
     /// its the type is the common type of all possible combinations.
     /// \module optional
+    /// \exclude return
     /// \param 2
     /// \exclude
     template <
@@ -345,6 +346,7 @@ namespace type_safe
     /// then `visit()` does not do anything instead of the error.
     /// \returns The result of the chosen `operator()`,
     /// its the type is the common type of all possible combinations.
+    /// \exclude return
     /// \module variant
     template <class Visitor, class... Variants,
               typename = typename std::

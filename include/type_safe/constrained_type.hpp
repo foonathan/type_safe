@@ -1,4 +1,4 @@
-// Copyright (C) 2016 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -14,8 +14,9 @@
 
 namespace type_safe
 {
-    //=== verifiers ===//
+    //=== constrained_type ===//
     /// A `Verifier` for [ts::constrained_type]() that `DEBUG_ASSERT`s the constraint.
+    /// \output_section Constrained type
     struct assertion_verifier
     {
         template <typename Value, typename Predicate>
@@ -26,7 +27,6 @@ namespace type_safe
         }
     };
 
-    //=== constrained_type ===//
     /// \exclude
     namespace detail
     {
@@ -43,6 +43,7 @@ namespace type_safe
     } // namespace detail
 
     /// A value of type `T` that always fulfills the predicate `Constraint`.
+    ///
     /// The `Constraint` is checked by the `Verifier`.
     /// The `Constraint` can also provide a nested template `is_valid<T>` to statically check types.
     /// Those will be checked regardless of the `Verifier`.
@@ -65,19 +66,17 @@ namespace type_safe
         using constraint_predicate = Constraint;
 
         /// \effects Creates it giving it a valid `value` and a `predicate`.
-        /// The `value` will be copied and verified.
-        /// \throws Anything thrown by the copy constructor of `value_type`
+        /// The `value` will be copied(1)/moved(2) and verified.
+        /// \throws Anything thrown by the copy(1)/move(2) constructor of `value_type`
         /// or the `Verifier` if the `value` is invalid.
+        /// \group value_ctor
         explicit constrained_type(const value_type& value, constraint_predicate predicate = {})
         : Constraint(std::move(predicate)), value_(value)
         {
             verify();
         }
 
-        /// \effects Creates it giving it a valid `value` and a `predicate`.
-        /// The `value` will be moved and verified.
-        /// \throws Anything thrown by the the move constructor of `value_type`
-        /// or the `Verifier` if the `value` is invalid.
+        /// \group value_ctor
         explicit constrained_type(value_type&& value, constraint_predicate predicate = {}) noexcept(
             std::is_nothrow_constructible<value_type>::value&& nothrow_verifier::value)
         : Constraint(std::move(predicate)), value_(std::move(value))
@@ -101,10 +100,11 @@ namespace type_safe
         /// \effects Destroys the value.
         ~constrained_type() noexcept = default;
 
-        /// \effects Copy assigns the stored value to the valid value `other`.
+        /// \effects Copy(1)/move(2) assigns the stored value to the valid value `other`.
         /// It will also verify the new value prior to assigning.
-        /// \throws Anything thrown by the copy assignment operator of `value_type`,
+        /// \throws Anything thrown by the copy(1)/move(2) assignment operator of `value_type`,
         /// or the `Verifier` if the `value` is invalid.
+        /// \group assign_value
         constrained_type& operator=(const value_type& other)
         {
             Verifier::verify(other, get_constraint());
@@ -112,10 +112,7 @@ namespace type_safe
             return *this;
         }
 
-        /// \effects Move assigns the stored value to the valid value `other`.
-        /// It will also verify the new value prior to assigning.
-        /// \throws Anything thrown by the move assignment operator of `value_type`
-        /// or the `Verifier` if the `value` is invalid.
+        /// \group assign_value
         constrained_type& operator=(value_type&& other) noexcept(
             std::is_nothrow_move_assignable<value_type>::value&& nothrow_verifier::value)
         {
@@ -155,6 +152,7 @@ namespace type_safe
         }
 
         /// A proxy class to provide write access to the stored value.
+        ///
         /// The destructor will verify the value again.
         class modifier
         {
@@ -257,22 +255,32 @@ namespace type_safe
         return lhs.get_value() Op rhs.get_value();                                                 \
     }
 
+    /// Compares a [ts::constrained_type]().
     /// \returns The result of the comparison of the underlying value.
-    /// \group constrained_comp
+    /// \notes The comparison operators do not participate in overload resolution,
+    /// unless the stored type provides them as well.
+    /// \synopsis_return bool
+    /// \group constrained_comp -Constrained type comparison
     TYPE_SAFE_DETAIL_MAKE_OP(==)
+    /// \synopsis_return bool
     /// \group constrained_comp
     TYPE_SAFE_DETAIL_MAKE_OP(!=)
+    /// \synopsis_return bool
     /// \group constrained_comp
     TYPE_SAFE_DETAIL_MAKE_OP(<)
+    /// \synopsis_return bool
     /// \group constrained_comp
     TYPE_SAFE_DETAIL_MAKE_OP(<=)
+    /// \synopsis_return bool
     /// \group constrained_comp
     TYPE_SAFE_DETAIL_MAKE_OP(>)
+    /// \synopsis_return bool
     /// \group constrained_comp
     TYPE_SAFE_DETAIL_MAKE_OP(>=)
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
+    /// Creates a [ts::constrained_type]().
     /// \returns A [ts::constrained_type]() with the given `value` and `Constraint`.
     /// \unique_name constrain
     template <typename T, typename Constraint>
@@ -283,6 +291,7 @@ namespace type_safe
                                                                           std::move(c));
     }
 
+    /// Creates a [ts::constrained_type]().
     /// \returns A [ts::constrained_type]() with the given `value`,  `Constraint` and `Verifier`.
     /// \unique_name constrain_verifier
     template <class Verifier, typename T, typename Constraint>
@@ -294,6 +303,7 @@ namespace type_safe
                                                                                     std::move(c));
     }
 
+    /// With operation for [ts::constrained_type]().
     /// \effects Calls `f` with a non-`const` reference to the stored value of the [ts::constrained_type]().
     /// It checks that `f` does not change the validity of the object.
     /// \notes The same behavior can be accomplished by using the `modify()` member function.
@@ -307,6 +317,7 @@ namespace type_safe
     //=== tagged_type ===//
     /// A `Verifier` for [ts::constrained_type]() that doesn't check the constraint.
     /// \notes It does not impose any additional requirements on the `Predicate`.
+    /// \output_section Tagged type
     struct null_verifier
     {
         template <typename Value, typename Predicate>
@@ -316,6 +327,7 @@ namespace type_safe
     };
 
     /// An alias for [ts::constrained_type]() that never checks the constraint.
+    ///
     /// It is useful for creating tagged types:
     /// The `Constraint` - which does not need to be a predicate anymore - is a "tag" to differentiate a type in different states.
     /// For example, you could have a "sanitized" value and a "non-sanitized" value
@@ -326,6 +338,7 @@ namespace type_safe
     template <typename T, typename Constraint>
     using tagged_type = constrained_type<T, Constraint, null_verifier>;
 
+    /// Creates a new [ts::tagged_type]().
     /// \returns A [ts::tagged_type]() with the given `value` and `Constraint`.
     template <typename T, typename Constraint>
     auto tag(T&& value, Constraint c) -> tagged_type<typename std::decay<T>::type, Constraint>
@@ -338,6 +351,7 @@ namespace type_safe
     namespace constraints
     {
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value of a pointer type is valid if it is not equal to `nullptr`.
         /// This is borrowed from GSL's [non_null](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#a-namess-viewsagslview-views).
         struct non_null
@@ -360,6 +374,7 @@ namespace type_safe
         };
 
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value of a container type is valid if it is not empty.
         /// Empty-ness is determined with either a member or non-member function.
         class non_empty
@@ -386,6 +401,7 @@ namespace type_safe
         };
 
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value is valid if it not equal to the default constructed value.
         struct non_default
         {
@@ -397,6 +413,7 @@ namespace type_safe
         };
 
         /// A `Constraint` for the [ts::constrained_type]().
+        ///
         /// A value of a pointer-like type is valid if the expression `!value` is `false`.
         struct non_invalid
         {
@@ -408,6 +425,7 @@ namespace type_safe
         };
 
         /// A `Constraint` for the [ts::tagged_type]().
+        ///
         /// It marks an owning pointer.
         /// It is borrowed from GSL's [non_null](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#a-namess-viewsagslview-views).
         /// \notes This is not actually a predicate.

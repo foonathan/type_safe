@@ -1,4 +1,4 @@
-// Copyright (C) 2016 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -28,7 +28,7 @@ namespace type_safe
     /// The creation is explicit, you cannot read the value,
     /// and it works with [ts::deferred_construction]().
     ///
-    /// \notes While you could use this class in other locations besides paramaters,
+    /// \notes While you could use this class in other locations besides parameters,
     /// this is not recommended.
     template <typename T>
     class output_parameter
@@ -44,8 +44,11 @@ namespace type_safe
         {
         }
 
-        output_parameter(const T&)  = delete;
-        output_parameter(T&&)       = delete;
+        /// \group delete_val
+        output_parameter(const T&) = delete;
+        /// \group delete_val
+        output_parameter(T&&) = delete;
+        /// \group delete_val
         output_parameter(const T&&) = delete;
 
         /// \effects Creates it from a [ts::deferred_construction]() object.
@@ -66,8 +69,11 @@ namespace type_safe
             }
         }
 
-        output_parameter(const deferred_construction<T>&)  = delete;
-        output_parameter(deferred_construction<T>&&)       = delete;
+        /// \group delete_deferred
+        output_parameter(const deferred_construction<T>&) = delete;
+        /// \group delete_deferred
+        output_parameter(deferred_construction<T>&&) = delete;
+        /// \group delete_deferred
         output_parameter(const deferred_construction<T>&&) = delete;
 
         /// \effects Moves an output parameter.
@@ -83,13 +89,16 @@ namespace type_safe
 
         ~output_parameter() noexcept = default;
 
+        /// \group delete_assign
         output_parameter& operator=(const output_parameter&) = delete;
+        /// \group delete_assign
         output_parameter& operator=(output_parameter&&) = delete;
 
         //=== modifiers ===//
         /// \effects Same as `assign(std::forward<U>(u))`.
         /// \returns A reference to the value that was assigned, *not* `*this` as normal "assignment" operators.
         /// \requires `value_type` must be constructible from `U`.
+        /// \synopsis_return parameter_type&
         template <typename U>
         auto operator=(U&& u) ->
             typename std::enable_if<std::is_constructible<T, decltype(std::forward<U>(u))>::value,
