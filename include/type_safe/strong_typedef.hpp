@@ -44,36 +44,45 @@ namespace type_safe
     class strong_typedef
     {
     public:
+        /// \effects Value initializes the underlying value.
         constexpr strong_typedef() : value_()
         {
         }
 
+        /// \effects Copy (1)/moves (2) the underlying value.
+        /// \group value_ctor
         explicit constexpr strong_typedef(const T& value) : value_(value)
         {
         }
 
+        /// \group value_ctor
         explicit constexpr strong_typedef(T&& value) noexcept(
             std::is_nothrow_move_constructible<T>::value)
         : value_(static_cast<T&&>(value)) // std::move() might not be constexpr
         {
         }
 
+        /// \returns A reference to the stored underlying value.
+        /// \group value_conv
         explicit operator T&() TYPE_SAFE_LVALUE_REF noexcept
         {
             return value_;
         }
 
+        /// \group value_conv
         explicit constexpr operator const T&() const TYPE_SAFE_LVALUE_REF noexcept
         {
             return value_;
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
+        /// \group value_conv
         explicit operator T &&() && noexcept
         {
             return std::move(value_);
         }
 
+        /// \group value_conv
         explicit constexpr operator const T &&() const && noexcept
         {
             return std::move(value_);
@@ -97,33 +106,45 @@ namespace type_safe
         T underlying_type(strong_typedef<Tag, T>);
     } // namespace detail
 
+    /// The underlying type of the [ts::strong_typedef]().
+    /// \exclude target
     template <class StrongTypedef>
     using underlying_type = decltype(detail::underlying_type(std::declval<StrongTypedef>()));
 
+    /// Accesses the underlying value.
+    /// \returns A reference to the underlying value.
+    /// \group strong_typedef_get
     template <class Tag, typename T>
     constexpr T& get(strong_typedef<Tag, T>& type) noexcept
     {
         return static_cast<T&>(type);
     }
 
+    /// \group strong_typedef_get
     template <class Tag, typename T>
     constexpr const T& get(const strong_typedef<Tag, T>& type) noexcept
     {
         return static_cast<const T&>(type);
     }
 
+    /// \group strong_typedef_get
     template <class Tag, typename T>
     constexpr T&& get(strong_typedef<Tag, T>&& type) noexcept
     {
         return static_cast<T&&>(static_cast<T&>(type));
     }
 
+    /// \group strong_typedef_get
     template <class Tag, typename T>
     constexpr const T&& get(const strong_typedef<Tag, T>&& type) noexcept
     {
         return static_cast<const T&&>(static_cast<const T&>(type));
     }
 
+    /// Some operations for [ts::strong_typedef]().
+    ///
+    /// They all generate operators forwarding to the underlying type,
+    /// inherit from then in the typedef definition.
     namespace strong_typedef_op
     {
         template <class StrongTypedef, typename Result = bool_t>
@@ -144,22 +165,26 @@ namespace type_safe
         template <class StrongTypedef, typename Other, typename Result = bool_t>
         struct mixed_equality_comparison
         {
+            /// \group equal
             friend constexpr Result operator==(const StrongTypedef& lhs, const Other& rhs)
             {
                 using type = underlying_type<StrongTypedef>;
                 return static_cast<const type&>(lhs) == static_cast<const type&>(rhs);
             }
 
+            /// \group equal
             friend constexpr Result operator==(const Other& lhs, const StrongTypedef& rhs)
             {
                 return rhs == lhs;
             }
 
+            /// \group not_equal
             friend constexpr Result operator!=(const StrongTypedef& lhs, const Other& rhs)
             {
                 return !(lhs == rhs);
             }
 
+            /// \group not_equal
             friend constexpr Result operator!=(const Other& lhs, const StrongTypedef& rhs)
             {
                 return !(rhs == lhs);
@@ -194,43 +219,51 @@ namespace type_safe
         template <class StrongTypedef, typename Other, typename Result = bool_t>
         struct mixed_relational_comparison
         {
+            /// \group less
             friend constexpr Result operator<(const StrongTypedef& lhs, const Other& rhs)
             {
                 using type = underlying_type<StrongTypedef>;
                 return static_cast<const type&>(lhs) < static_cast<const type&>(rhs);
             }
 
+            /// \group less
             friend constexpr Result operator<(const Other& lhs, const StrongTypedef& rhs)
             {
                 using type = underlying_type<StrongTypedef>;
                 return static_cast<const type&>(lhs) < static_cast<const type&>(rhs);
             }
 
+            /// \group greater
             friend constexpr Result operator>(const StrongTypedef& lhs, const Other& rhs)
             {
                 return rhs < lhs;
             }
 
+            /// \group greater
             friend constexpr Result operator>(const Other& lhs, const StrongTypedef& rhs)
             {
                 return rhs < lhs;
             }
 
+            /// \group less_eq
             friend constexpr Result operator<=(const StrongTypedef& lhs, const Other& rhs)
             {
                 return !(rhs < lhs);
             }
 
+            /// \group less_eq
             friend constexpr Result operator<=(const Other& lhs, const StrongTypedef& rhs)
             {
                 return !(rhs < lhs);
             }
 
+            /// \group greater_equal
             friend constexpr Result operator>=(const StrongTypedef& lhs, const Other& rhs)
             {
                 return !(lhs < rhs);
             }
 
+            /// \group greater_equal
             friend constexpr Result operator>=(const Other& lhs, const StrongTypedef& rhs)
             {
                 return !(lhs < rhs);
@@ -423,24 +456,28 @@ namespace type_safe
                   typename ResultConstPtr = const Result*>
         struct dereference
         {
+            /// \group deref
             Result& operator*()
             {
                 using type = underlying_type<StrongTypedef>;
                 return *static_cast<type&>(static_cast<StrongTypedef&>(*this));
             }
 
+            /// \group deref
             const Result& operator*() const
             {
                 using type = underlying_type<StrongTypedef>;
                 return *static_cast<const type&>(static_cast<const StrongTypedef&>(*this));
             }
 
+            /// \group pointer
             ResultPtr operator->()
             {
                 using type = underlying_type<StrongTypedef>;
                 return static_cast<type&>(static_cast<StrongTypedef&>(*this));
             }
 
+            /// \group pointer
             ResultConstPtr operator->() const
             {
                 using type = underlying_type<StrongTypedef>;
@@ -451,12 +488,14 @@ namespace type_safe
         template <class StrongTypedef, typename Result, typename Index = std::size_t>
         struct array_subscript
         {
+            /// \group access
             Result& operator[](const Index& i)
             {
                 using type = underlying_type<StrongTypedef>;
                 return static_cast<type&>(static_cast<StrongTypedef&>(*this))[i];
             }
 
+            /// \group access
             const Result& operator[](const Index& i) const
             {
                 using type = underlying_type<StrongTypedef>;
@@ -520,12 +559,14 @@ namespace type_safe
                 return static_cast<StrongTypedef&>(*this);
             }
 
+            /// \group plus_dist
             friend StrongTypedef operator+(const StrongTypedef& iter, const Distance& n)
             {
                 using type = underlying_type<StrongTypedef>;
                 return StrongTypedef(static_cast<const type&>(iter) + n);
             }
 
+            /// \group plus_dist
             friend StrongTypedef operator+(const Distance& n, const StrongTypedef& iter)
             {
                 return iter + n;
