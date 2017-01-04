@@ -96,11 +96,11 @@ namespace type_safe
 #endif
 
         template <class Union>
-        friend class detail::destroy_union;
+        friend struct detail::destroy_union;
         template <class Union>
-        friend class detail::copy_union;
+        friend struct detail::copy_union;
         template <class Union>
-        friend class detail::move_union;
+        friend struct detail::move_union;
 
     public:
         using types = union_types<typename std::decay<Types>::type...>;

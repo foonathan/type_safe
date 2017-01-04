@@ -970,9 +970,6 @@ namespace type_safe
 
 namespace std
 {
-    template <typename T>
-    struct hash;
-
     /// Hash for [ts::basic_optional]().
     /// \module optional
     template <class StoragePolicy>
