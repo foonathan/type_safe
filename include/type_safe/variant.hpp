@@ -408,7 +408,7 @@ namespace type_safe
         /// If the variant is not empty, returns a null reference.
         optional_ref<const nullvar_t> optional_value(variant_type<nullvar_t>) const noexcept
         {
-            return has_value() ? nullptr : type_safe::ref(nullvar);
+            return has_value() ? nullptr : type_safe::ref(&nullvar);
         }
 
         /// \returns A (`const`) [ts::optional_ref]() (1, 2)/[ts::optional_xvalue_ref]() to the stored value of given type.
@@ -417,7 +417,7 @@ namespace type_safe
         template <typename T>
         optional_ref<T> optional_value(variant_type<T> type) TYPE_SAFE_LVALUE_REF noexcept
         {
-            return has_value(type) ? type_safe::ref(storage_.get_union().value(type)) : nullptr;
+            return has_value(type) ? type_safe::ref(&storage_.get_union().value(type)) : nullptr;
         }
 
         /// \group optional_value
@@ -425,7 +425,7 @@ namespace type_safe
         optional_ref<const T> optional_value(variant_type<T> type) const TYPE_SAFE_LVALUE_REF
             noexcept
         {
-            return has_value(type) ? type_safe::ref(storage_.get_union().value(type)) : nullptr;
+            return has_value(type) ? type_safe::ref(&storage_.get_union().value(type)) : nullptr;
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
@@ -433,14 +433,14 @@ namespace type_safe
         template <typename T>
             optional_xvalue_ref<T> optional_value(variant_type<T> type) && noexcept
         {
-            return has_value(type) ? type_safe::xref(storage_.get_union().value(type)) : nullptr;
+            return has_value(type) ? type_safe::xref(&storage_.get_union().value(type)) : nullptr;
         }
 
         /// \group optional_value
         template <typename T>
         optional_xvalue_ref<const T> optional_value(variant_type<T> type) const && noexcept
         {
-            return has_value(type) ? type_safe::xref(storage_.get_union().value(type)) : nullptr;
+            return has_value(type) ? type_safe::xref(&storage_.get_union().value(type)) : nullptr;
         }
 #endif
 

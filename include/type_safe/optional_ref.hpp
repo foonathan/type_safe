@@ -181,32 +181,12 @@ namespace type_safe
         return ptr ? optional_ref<T>(*ptr) : nullopt;
     }
 
-    /// \returns A [ts::optional_ref<T>]() to `obj`.
-    /// \module optional
-    /// \param 1
-    /// \exclude
-    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
-    optional_ref<T> ref(T& obj) noexcept
-    {
-        return optional_ref<T>(obj);
-    }
-
     /// \returns A [ts::optional_ref<T>]() to `const` to the pointee of `ptr` or `nullopt`.
     /// \module optional
     template <typename T>
     optional_ref<const T> cref(const T* ptr) noexcept
     {
         return ptr ? optional_ref<const T>(*ptr) : nullopt;
-    }
-
-    /// \returns A [ts::optional_ref<T>]() to `obj`.
-    /// \module optional
-    /// \param 1
-    /// \exclude
-    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
-    optional_ref<const T> cref(const T& obj) noexcept
-    {
-        return optional_ref<const T>(obj);
     }
 
     /// A [ts::basic_optional]() that uses [ts::reference_optional_storage]() with `XValue` being `true`.
@@ -224,17 +204,6 @@ namespace type_safe
     optional_xvalue_ref<T> xref(T* ptr) noexcept
     {
         return ptr ? optional_xvalue_ref<T>(*ptr) : nullopt;
-    }
-
-    /// \returns A [ts::optional_xvalue_ref<T>]() to `obj`.
-    /// \notes The object will be moved from when you call `value()`.
-    /// \module optional
-    /// \param 1
-    /// \exclude
-    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
-    optional_xvalue_ref<T> xref(T& obj) noexcept
-    {
-        return optional_xvalue_ref<T>(obj);
     }
 
     /// \returns A [ts::optional<T>]() containing a copy of the value of `ref`
