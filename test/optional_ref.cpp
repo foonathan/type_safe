@@ -10,9 +10,30 @@
 
 using namespace type_safe;
 
+template <typename A, typename B, typename Value>
+void test_optional_ref_conversion(Value)
+{
+    static_assert(std::is_constructible<optional_ref<A>, B>::value == Value::value, "");
+    static_assert(std::is_assignable<optional_ref<A>, B>::value == Value::value, "");
+}
+
 TEST_CASE("optional_ref")
 {
     // only test stuff special for optional_ref
+    struct base
+    {
+    };
+    struct derived : base
+    {
+    };
+
+    test_optional_ref_conversion<int, int&&>(std::false_type{});
+    test_optional_ref_conversion<int, const int&>(std::false_type{});
+    test_optional_ref_conversion<int, optional_ref<const int>>(std::false_type{});
+    test_optional_ref_conversion<const int, int&>(std::true_type{});
+    test_optional_ref_conversion<const int, optional_ref<int>>(std::true_type{});
+    test_optional_ref_conversion<base, derived&>(std::true_type{});
+    test_optional_ref_conversion<base, optional_ref<derived>>(std::true_type{});
 
     int value = 0;
     SECTION("constructor")
@@ -23,8 +44,6 @@ TEST_CASE("optional_ref")
         optional_ref<int> b(value);
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
-
-        static_assert(!std::is_constructible<optional_ref<int>, int&&>::value, "");
     }
     SECTION("assignment")
     {
@@ -36,8 +55,6 @@ TEST_CASE("optional_ref")
         b = value;
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
-
-        static_assert(!std::is_assignable<optional_ref<int>, int&&>::value, "");
     }
     SECTION("value_or")
     {
@@ -128,8 +145,6 @@ TEST_CASE("optional_xvalue_ref")
         optional_xvalue_ref<int> b(value);
         REQUIRE(b.has_value());
         REQUIRE(b.value() == value);
-
-        static_assert(!std::is_constructible<optional_xvalue_ref<int>, int&&>::value, "");
     }
     SECTION("assignment")
     {
@@ -141,8 +156,6 @@ TEST_CASE("optional_xvalue_ref")
         b = value;
         REQUIRE(b.has_value());
         REQUIRE(b.value() == value);
-
-        static_assert(!std::is_assignable<optional_xvalue_ref<int>, int&&>::value, "");
     }
     SECTION("value_or")
     {

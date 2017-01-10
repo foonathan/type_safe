@@ -70,26 +70,29 @@ namespace type_safe
         }
 
         /// \effects Binds the reference to `obj`.
-        void create_value(lvalue_reference obj) noexcept
+        /// \notes This function only participates in overload resolution, if `U` is a reference compatible with `T`.
+        /// \param 1
+        /// \exclude
+        template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
+        void create_value(U& obj) noexcept
         {
             pointer_ = &obj;
+        }
+
+        /// \effects Binds the same reference as sstored in the optional.
+        /// \notes This function only participates in overload resolution, if `U` is a reference compatible with `T`.
+        /// \param 1
+        /// \exclude
+        template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
+        void create_value(const basic_optional<reference_optional_storage<U, XValue>>& ref)
+        {
+            pointer_ = ref.has_value() ? &ref.value() : nullptr;
         }
 
         /// \effects Binds the reference to the same reference in `other`.
         void create_value(const reference_optional_storage& other) noexcept
         {
             pointer_ = other.pointer_;
-        }
-
-        /// \effects Binds the same target as `const_ref`.
-        /// \param 1
-        /// \exclude
-        template <typename U,
-                  typename = typename std::
-                      enable_if<std::is_same<U, typename std::remove_const<T>::type>::value>::type>
-        void create_value(const basic_optional<reference_optional_storage<U, XValue>>& const_ref)
-        {
-            pointer_ = const_ref.has_value() ? &const_ref.value() : nullptr;
         }
 
         /// \effects Same as `destroy_value()`.
