@@ -6,6 +6,7 @@
 #define TYPE_SAFE_OPTIONAL_REF_HPP_INCLUDED
 
 #include <type_safe/optional.hpp>
+#include <type_safe/reference.hpp>
 
 namespace type_safe
 {
@@ -27,7 +28,7 @@ namespace type_safe
 
     /// A `StoragePolicy` for [ts::basic_optional]() that allows optional references.
     ///
-    /// The actual `value_type` passed to the optional is [std::reference_wrapper<T>](),
+    /// The actual `value_type` passed to the optional is [ts::object_ref](),
     /// but the reference types are normal references, so `value()` will return a `T&`
     /// and `value_or()` takes a fallback reference of the same type and returns one of them.
     /// Assigning an optional will always change the target of the reference.
@@ -53,7 +54,7 @@ namespace type_safe
         };
 
     public:
-        using value_type             = std::reference_wrapper<T>;
+        using value_type             = object_ref<T, XValue>;
         using lvalue_reference       = T&;
         using const_lvalue_reference = lvalue_reference;
         /// \exclude target
@@ -176,7 +177,7 @@ namespace type_safe
     /// \returns A [ts::optional_ref<T>]() to the pointee of `ptr` or `nullopt`.
     /// \module optional
     template <typename T>
-    optional_ref<T> ref(T* ptr) noexcept
+    optional_ref<T> opt_ref(T* ptr) noexcept
     {
         return ptr ? optional_ref<T>(*ptr) : nullopt;
     }
@@ -184,7 +185,7 @@ namespace type_safe
     /// \returns A [ts::optional_ref<T>]() to `const` to the pointee of `ptr` or `nullopt`.
     /// \module optional
     template <typename T>
-    optional_ref<const T> cref(const T* ptr) noexcept
+    optional_ref<const T> opt_cref(const T* ptr) noexcept
     {
         return ptr ? optional_ref<const T>(*ptr) : nullopt;
     }
@@ -201,7 +202,7 @@ namespace type_safe
     /// \notes The pointee will be moved from when you call `value()`.
     /// \module optional
     template <typename T>
-    optional_xvalue_ref<T> xref(T* ptr) noexcept
+    optional_xvalue_ref<T> opt_xref(T* ptr) noexcept
     {
         return ptr ? optional_xvalue_ref<T>(*ptr) : nullopt;
     }

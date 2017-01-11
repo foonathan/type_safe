@@ -587,8 +587,6 @@ namespace type_safe
 /// \entity TYPE_SAFE_DETAIL_MAKE_OP
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \
-    /** \group optional_comp_null Optional null comparison
-      * \module optional */             \
     template <class StoragePolicy>                                                                 \
     bool operator Op(const basic_optional<StoragePolicy>& lhs, nullopt_t)                          \
     {                                                                                              \
@@ -600,86 +598,123 @@ namespace type_safe
         return (void)rhs, Expr2;                                                                   \
     }
 
-    // equal to nullopt when empty
+    /// Comparison of [ts::basic_optional]() with [ts::nullopt]().
+    ///
+    /// An optional is equal to [ts::nullopt]() if it does not have a value.
+    /// Nothing is less than [ts::nullopt](), it is only less than an optional,
+    /// A optional compares equal to `nullopt`, when it does not have a value.
+    /// A optional compares never less to `nullopt`, `nullopt` compares less only if the optional has a value.
+    /// The other comparisons behave accordingly.
+    /// \group optional_comp_null Optional null comparison
+    /// \module optional
     TYPE_SAFE_DETAIL_MAKE_OP(==, !lhs.has_value(), !rhs.has_value())
-    // unequal to nullopt when has a value
+    /// \group optional_comp_null
     TYPE_SAFE_DETAIL_MAKE_OP(!=, lhs.has_value(), rhs.has_value())
-    // nothing is less than nullopt, nullopt only less then rhs if rhs has a value
+    /// \group optional_comp_null
     TYPE_SAFE_DETAIL_MAKE_OP(<, false, rhs.has_value())
-    // lhs <= nullopt iff lhs empty, nullopt <= rhs is always true
+    /// \group optional_comp_null
     TYPE_SAFE_DETAIL_MAKE_OP(<=, !lhs.has_value(), true)
-    // lhs > nullopt iff lhs not empty, nullopt > rhs is always false
+    /// \group optional_comp_null
     TYPE_SAFE_DETAIL_MAKE_OP(>, lhs.has_value(), false)
-    // lhs >= nullopt is always true, nullopt >= rhs iff rhs empty
+    /// \group optional_comp_null
     TYPE_SAFE_DETAIL_MAKE_OP(>=, true, !rhs.has_value())
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
 /// \entity TYPE_SAFE_DETAIL_MAKE_OP
 /// \exclude
-#define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                                      \
-    /** \group optional_comp_value Optional value comparison
-      * \synopsis_return bool
-      * \module optional */ \
-    template <class StoragePolicy>                                                                                     \
-    auto operator Op(const basic_optional<StoragePolicy>&      lhs,                                                    \
-                     const typename StoragePolicy::value_type& rhs)                                                    \
-        ->decltype(lhs.value() Op rhs)                                                                                 \
-    {                                                                                                                  \
-        return Expr;                                                                                                   \
-    }                                                                                                                  \
+#define TYPE_SAFE_DETAIL_MAKE_OP(Op, Expr, Expr2)                                                  \
+    template <class StoragePolicy, typename U>                                                     \
+    auto operator Op(const basic_optional<StoragePolicy>& lhs, const U& rhs)                       \
+        ->decltype(typename StoragePolicy::value_type(lhs.value()) Op rhs)                         \
+    {                                                                                              \
+        using value_type = typename StoragePolicy::value_type;                                     \
+        return Expr;                                                                               \
+    }                                                                                              \
     /** \synopsis_return bool
-      * \group optional_comp_value */                                                    \
-    template <class StoragePolicy>                                                                                     \
-    auto operator Op(const typename StoragePolicy::value_type& lhs,                                                    \
-                     const basic_optional<StoragePolicy>&      rhs)                                                    \
-        ->decltype(lhs Op rhs.value())                                                                                 \
-    {                                                                                                                  \
-        return Expr2;                                                                                                  \
+      * \group optional_comp_value */                                \
+    template <class StoragePolicy, typename U>                                                     \
+    auto operator Op(const U& lhs, const basic_optional<StoragePolicy>& rhs)                       \
+        ->decltype(lhs Op typename StoragePolicy::value_type(rhs.value()))                         \
+    {                                                                                              \
+        using value_type = typename StoragePolicy::value_type;                                     \
+        return Expr2;                                                                              \
     }
 
-    // equal iff optional has value and value matches
-    TYPE_SAFE_DETAIL_MAKE_OP(==, lhs.has_value() && lhs.value() == rhs,
-                             rhs.has_value() && lhs == rhs.value())
-    // unequal if optional does not have value or value does not match
-    TYPE_SAFE_DETAIL_MAKE_OP(!=, !lhs.has_value() || lhs.value() != rhs,
-                             !rhs.has_value() || lhs != rhs.value())
-    // opt < value if opt empty or opt.value() < value
-    // value < opt iff opt not empty and value < opt.value()
-    TYPE_SAFE_DETAIL_MAKE_OP(<, !lhs.has_value() || lhs.value() < rhs,
-                             rhs.has_value() && lhs < rhs.value())
-    // same as above but with <=
-    TYPE_SAFE_DETAIL_MAKE_OP(<=, !lhs.has_value() || lhs.value() <= rhs,
-                             rhs.has_value() && lhs <= rhs.value())
-    // opt > value iff opt not empty and opt.value() > value
-    // value > opt if opt empty or value > opt.value()
-    TYPE_SAFE_DETAIL_MAKE_OP(>, lhs.has_value() && lhs.value() > rhs,
-                             !rhs.has_value() || lhs > rhs.value())
-    // same as above but with >=
-    TYPE_SAFE_DETAIL_MAKE_OP(>=, lhs.has_value() && lhs.value() >= rhs,
-                             !rhs.has_value() || lhs >= rhs.value())
+    /// Compares a [ts::basic_optional]() with a value.
+    ///
+    /// An optional compares equal to a value if it has a value
+    /// and the value compares equal.
+    /// An optional compares less to a value if it does not have a value
+    /// or the value compares less.
+    /// A value compares less to an optional if the optional has a value
+    /// and the value compares less than the optional.
+    /// The other comparisons behave accordingly.
+    ///
+    /// Value comparison is done by the comparison operator of the `value_type`,
+    /// a function only participates in overload resolution if the `value_type`,
+    /// has that comparison function.
+    /// \synopsis_return bool
+    /// \group optional_comp_value Optional value comparison
+    /// \module optional
+    TYPE_SAFE_DETAIL_MAKE_OP(==, lhs.has_value() && value_type(lhs.value()) == rhs,
+                             rhs.has_value() && lhs == value_type(rhs.value()))
+    /// \synopsis_return bool
+    /// \group optional_comp_value
+    TYPE_SAFE_DETAIL_MAKE_OP(!=, !lhs.has_value() || value_type(lhs.value()) != rhs,
+                             !rhs.has_value() || lhs != value_type(rhs.value()))
+    /// \synopsis_return bool
+    /// \group optional_comp_value
+    TYPE_SAFE_DETAIL_MAKE_OP(<, !lhs.has_value() || value_type(lhs.value()) < rhs,
+                             rhs.has_value() && lhs < value_type(rhs.value()))
+    /// \synopsis_return bool
+    /// \group optional_comp_value
+    TYPE_SAFE_DETAIL_MAKE_OP(<=, !lhs.has_value() || value_type(lhs.value()) <= rhs,
+                             rhs.has_value() && lhs <= value_type(rhs.value()))
+    /// \synopsis_return bool
+    /// \group optional_comp_value
+    TYPE_SAFE_DETAIL_MAKE_OP(>, lhs.has_value() && value_type(lhs.value()) > rhs,
+                             !rhs.has_value() || lhs > value_type(rhs.value()))
+    /// \synopsis_return bool
+    /// \group optional_comp_value
+    TYPE_SAFE_DETAIL_MAKE_OP(>=, lhs.has_value() && value_type(lhs.value()) >= rhs,
+                             !rhs.has_value() || lhs >= value_type(rhs.value()))
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
 /// \entity TYPE_SAFE_DETAIL_MAKE_OP
 /// \exclude
-#define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                                       \
-    /** \group optional_comp Optional comparison
-      * \synopsis_return bool
-      * \module optional */ \
-    template <class StoragePolicy>                                                                         \
-    auto operator Op(const basic_optional<StoragePolicy>& lhs,                                             \
-                     const basic_optional<StoragePolicy>& rhs)                                             \
-        ->decltype(lhs.value() Op rhs.value())                                                             \
-    {                                                                                                      \
-        return lhs.has_value() ? lhs.value() Op rhs : nullopt Op rhs;                                      \
+#define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
+    template <class StoragePolicy>                                                                 \
+    auto operator Op(const basic_optional<StoragePolicy>& lhs,                                     \
+                     const basic_optional<StoragePolicy>& rhs)                                     \
+        ->decltype(lhs.value() Op rhs.value())                                                     \
+    {                                                                                              \
+        return lhs.has_value() ? lhs.value() Op rhs : nullopt Op rhs;                              \
     }
 
+    /// Compares two [ts::basic_optional]() objects.
+    ///
+    /// If `lhs` has a value, forwards to `lhs.value() <op> rhs`.
+    /// Else forwards to `nullopt <op> rhs`.
+    /// \synopsis_return bool
+    /// \group optional_comp Optional comparison
+    /// \module optional
     TYPE_SAFE_DETAIL_MAKE_OP(==)
+    /// \synopsis_return bool
+    /// \group optional_comp
     TYPE_SAFE_DETAIL_MAKE_OP(!=)
+    /// \synopsis_return bool
+    /// \group optional_comp
     TYPE_SAFE_DETAIL_MAKE_OP(<)
+    /// \synopsis_return bool
+    /// \group optional_comp
     TYPE_SAFE_DETAIL_MAKE_OP(<=)
+    /// \synopsis_return bool
+    /// \group optional_comp
     TYPE_SAFE_DETAIL_MAKE_OP(>)
+    /// \synopsis_return bool
+    /// \group optional_comp
     TYPE_SAFE_DETAIL_MAKE_OP(>=)
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
