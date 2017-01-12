@@ -20,18 +20,24 @@ namespace type_safe
     /// \module types
     struct distance_t : strong_typedef<distance_t, ptrdiff_t>,
                         strong_typedef_op::equality_comparison<distance_t>,
-                        strong_typedef_op::mixed_equality_comparison<distance_t, ptrdiff_t>,
                         strong_typedef_op::relational_comparison<distance_t>,
-                        strong_typedef_op::mixed_relational_comparison<distance_t, ptrdiff_t>,
                         strong_typedef_op::unary_plus<distance_t>,
                         strong_typedef_op::unary_minus<distance_t>,
                         strong_typedef_op::addition<distance_t>,
                         strong_typedef_op::subtraction<distance_t>
     {
-        using strong_typedef::strong_typedef;
-
         /// \effects Initializes it to `0`.
         constexpr distance_t() noexcept : strong_typedef(0)
+        {
+        }
+
+        /// \effects Initializes it from a valid `signed` integer type.
+        /// \notes This constructor does not participate in overload resolution,
+        /// if `T` is not safely convertible to [ts::ptrdiff_t]().
+        /// \param 1
+        /// \exclude
+        template <typename T, typename = decltype(ptrdiff_t(T(0)))>
+        constexpr distance_t(T i) noexcept : strong_typedef(i)
         {
         }
     };
@@ -46,17 +52,23 @@ namespace type_safe
     /// \module types
     struct index_t : strong_typedef<index_t, size_t>,
                      strong_typedef_op::equality_comparison<index_t>,
-                     strong_typedef_op::mixed_equality_comparison<index_t, size_t>,
                      strong_typedef_op::relational_comparison<index_t>,
-                     strong_typedef_op::mixed_relational_comparison<index_t, size_t>,
                      strong_typedef_op::increment<index_t>,
                      strong_typedef_op::decrement<index_t>,
                      strong_typedef_op::unary_plus<index_t>
     {
-        using strong_typedef::strong_typedef;
-
         /// \effects Initializes it to `0`.
         constexpr index_t() noexcept : strong_typedef(0u)
+        {
+        }
+
+        /// \effects Initializes it from a valid `unsigned` integer type.
+        /// \notes This constructor does not participate in overload resolution,
+        /// if `T` is not safely convertible to [ts::size_t]().
+        /// \param 1
+        /// \exclude
+        template <typename T, typename = decltype(size_t(T(0u)))>
+        constexpr index_t(T i) noexcept : strong_typedef(i)
         {
         }
 
