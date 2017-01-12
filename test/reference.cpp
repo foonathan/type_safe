@@ -100,3 +100,64 @@ TEST_CASE("object_ref")
     REQUIRE(value3.id == value.id);
     REQUIRE(value3.move_ctor());
 }
+
+TEST_CASE("array_ref")
+{
+    int array[3]  = {1, 2, 3};
+    int array2[1] = {1};
+
+    array_ref<int> ref(array);
+    REQUIRE(ref.data() == array);
+    REQUIRE((ref.size() == 3u));
+
+    REQUIRE(ref[0u] == 1);
+    REQUIRE(ref[1u] == 2);
+    REQUIRE(ref[2u] == 3);
+
+    ref[0u] = 100;
+    REQUIRE(array[0] == 100);
+
+    SECTION("ctor")
+    {
+        array_ref<int> a(array, array + 3);
+        REQUIRE(a.data() == array);
+        REQUIRE((a.size() == 3u));
+
+        array_ref<int> b(array, 3u);
+        REQUIRE(b.data() == array);
+        REQUIRE((b.size() == 3u));
+
+        array_ref<int> c(array);
+        REQUIRE(c.data() == array);
+        REQUIRE((c.size() == 3u));
+    }
+    SECTION("operator=")
+    {
+        ref = array2;
+        REQUIRE(ref.data() == array2);
+        REQUIRE((ref.size() == 1u));
+    }
+    SECTION("assign range")
+    {
+        ref.assign(array2, array2 + 1);
+        REQUIRE(ref.data() == array2);
+        REQUIRE((ref.size() == 1u));
+    }
+    SECTION("assign size")
+    {
+        ref.assign(array2, 1u);
+        REQUIRE(ref.data() == array2);
+        REQUIRE((ref.size() == 1u));
+    }
+    SECTION("assign array")
+    {
+        ref.assign(array2);
+        REQUIRE(ref.data() == array2);
+        REQUIRE((ref.size() == 1u));
+    }
+    SECTION("begin()/end()")
+    {
+        REQUIRE(ref.begin() == array);
+        REQUIRE(ref.end() == array + 3);
+    }
+}
