@@ -170,6 +170,16 @@ namespace type_safe
         T* pointer_;
     };
 
+    /// Sets the [ts::basic_optional]() storage policy for [ts::object_ref]() to [ts::reference_optional_storage]().
+    ///
+    /// It will be used when the optional is rebound.
+    /// \module optional
+    template <typename T, bool XValue>
+    struct optional_storage_policy_for<object_ref<T, XValue>>
+    {
+        using type = reference_optional_storage<T, XValue>;
+    };
+
     /// A [ts::basic_optional]() that uses [ts::reference_optional_storage]().
     /// It is an optional reference.
     /// \notes `T` is the type without the reference, i.e. `optional_ref<int>`.
