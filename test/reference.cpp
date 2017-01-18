@@ -161,3 +161,135 @@ TEST_CASE("array_ref")
         REQUIRE(ref.end() == array + 3);
     }
 }
+
+// fake polymorphic lambda, due to C++11 requirement
+struct lambda
+{
+    template <typename T>
+    void operator()(T obj) const
+    {
+        REQUIRE(obj == 0);
+    }
+
+    template <typename T>
+    using ptr_type = void (*)(T);
+
+    template <typename T>
+    operator ptr_type<T>() const
+    {
+        return [](T obj) { REQUIRE(obj == 0); };
+    }
+};
+
+TEST_CASE("function_ref")
+{
+    SECTION("functor")
+    {
+        struct functor
+        {
+            int operator()(int a, int b)
+            {
+                return a + b;
+            }
+
+            void operator()(int& i)
+            {
+                REQUIRE(i == 0);
+                i = 1;
+            }
+        } f;
+
+        function_ref<int(int, int)> a(f);
+        REQUIRE(a(1, 3) == 4);
+
+        function_ref<int(int, float)> b(f);
+        REQUIRE(b(1, 3.14) == 4);
+
+        auto var = 0;
+        function_ref<void(int, int&)> c(f);
+        c(1, var);
+
+        function_ref<void(int&)> d(f);
+        d(var);
+        REQUIRE(var == 1);
+    }
+    SECTION("function pointer")
+    {
+        auto f = static_cast<int (*)(int, int)>([](int a, int b) { return a + b; });
+
+        function_ref<int(int, int)> a(f);
+        REQUIRE(a(1, 3) == 4);
+
+        function_ref<int(int, float)> b(f);
+        REQUIRE(a(1, 3.14) == 4);
+
+        function_ref<void(int, int)> c(f);
+        c(1, 3);
+    }
+    SECTION("lambda")
+    {
+        auto f = [](int a, int b) { return a + b; };
+
+        function_ref<int(int, int)> a(f);
+        REQUIRE(a(1, 3) == 4);
+
+        function_ref<int(int, float)> b(f);
+        REQUIRE(a(1, 3.14) == 4);
+
+        function_ref<void(int, int)> c(f);
+        c(1, 3);
+    }
+    SECTION("polymorphic lambda")
+    {
+        function_ref<void(int)> a(lambda{});
+        a(0);
+
+        function_ref<void(short)> b(lambda{});
+        b(0);
+    }
+    SECTION("member function")
+    {
+        struct foo
+        {
+            void func(int i)
+            {
+                REQUIRE(i == 0);
+            }
+        };
+
+        function_ref<void(foo, int)> a([](foo f, int i) { f.func(i); });
+        a(foo{}, 0);
+
+        auto fnc = std::mem_fn(&foo::func);
+        function_ref<void(foo, int)> b(fnc);
+        b(foo{}, 0);
+    }
+    SECTION("ref conversion")
+    {
+        function_ref<int(int, int)> a([](int a, int b) { return a + b; });
+        REQUIRE(a(1, 3) == 4);
+
+        function_ref<int(int, float)> b(a);
+        REQUIRE(b(1, 3.14) == 4);
+
+        function_ref<void(int, int)> c(a);
+        c(1, 3);
+    }
+    SECTION("assignment")
+    {
+        auto f = [] { return 0; };
+        auto g = [] { return 1; };
+
+        function_ref<int()> a(f);
+        REQUIRE(a() == 0);
+
+        function_ref<int()> b(g);
+        REQUIRE(g() == 1);
+
+        b = a;
+        REQUIRE(b() == 0);
+
+        a = g;
+        REQUIRE(a() == 1);
+    }
+}
