@@ -14,6 +14,8 @@ I highly suggest that you check out [the first](https://foonathan.github.io/blog
 
 ## Features
 
+### Improved built-in types
+
 * `ts::integer<T>` - a zero overhead wrapper over a built-in integer type
     * no default constructor to force meaningful initialization
     * no "lossy" conversions (i.e. from a bigger type or a type with a different signedness)
@@ -31,12 +33,25 @@ I highly suggest that you check out [the first](https://foonathan.github.io/blog
     * no arithmetic operators
 * aliases like `ts::uint32_t` or `ts::size_t` that are either wrapper or built-in type depending on macro
 * literal operators for those aliases like `342_u32` or `0_usize`
-* `ts::flag` - an improved flag type, better than a regular `bool` or `ts::boolean`
+
+### Vocabulary types
+
+* `ts::object_ref<T>` - a non-null pointer
 * `ts::index_t` and `ts::distance_t` - index and distance integer types with only a subset of operations available
+* `ts::array_ref<T>` - non-null reference to contigous storage
+* `ts::function_ref<T>` - non-null reference to a function
+* `ts::flag` - an improved flag type, better than a regular `bool` or `ts::boolean`
+* `ts::output_parameter<T>` - an improved output parameter compared to the naive lvalue reference
+
+### Optional & Variant
+
 * `ts::basic_optional<StoragePolicy>` - a generic, improved `std::optional` that is fully monadic,
   also `ts::optional<T>` and `ts::optional_ref<T>` implementations
 * `ts::compact_optional` implementation for no space overhead optionals
 * `ts::basic_variant<VariantPolicy, Types...>` - a generic, improved `std::variant`, also `ts::variant` and `ts::fallback_variant` implementations
+
+### Type safe building blocks
+
 * `ts::constrained_type<T, Constraint, Verifier>` - a wrapper over some type that verifies that a certain constraint is always fulfilled
     * `ts::constraints::*` - predefined constraints like `non_null`, `non_empty`, ...
     * `ts::tagged_type<T, Constraint>` - constrained type without checking, useful for tagging
@@ -44,7 +59,6 @@ I highly suggest that you check out [the first](https://foonathan.github.io/blog
     * `ts::clamped_type<T>` - constrained type that clamps a value to ensure that it is in the certain interval
 * `ts::strong_typedef` - a generic facility to create strong typedefs more easily
 * `ts::deferred_construction<T>` - create an object without initializing it yet
-* `ts::output_parameter<T>` - an improved output parameter compared to the naive lvalue reference
 
 ## Installation
 
