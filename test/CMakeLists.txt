@@ -26,6 +26,7 @@ set(source_files test.cpp
                  compact_optional.cpp
                  constrained_type.cpp
                  deferred_construction.cpp
+                 downcast.cpp
                  flag.cpp
                  floating_point.cpp
                  index.cpp
