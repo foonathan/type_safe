@@ -34,6 +34,7 @@ set(source_files test.cpp
                  optional.cpp
                  optional_ref.cpp
                  output_parameter.cpp
+                 reference.cpp
                  strong_typedef.cpp
                  tagged_union.cpp
                  types.cpp

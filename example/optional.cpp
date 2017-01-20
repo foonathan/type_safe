@@ -116,8 +116,8 @@ int main()
     ts::optional_ref<const int> ref_const(ref);
 
     // create optional_ref from pointer
-    auto ptr       = ts::ref(&a);
-    auto ptr_const = ts::cref(&a);
+    auto ptr       = ts::opt_ref(&a);
+    auto ptr_const = ts::opt_cref(&a);
 
     // map() takes a functor and wraps the result in an optional itself
     // transform() does not wrap it in an optional to allow arbitrary transformation

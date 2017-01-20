@@ -10,9 +10,30 @@
 
 using namespace type_safe;
 
+template <typename A, typename B, typename Value>
+void test_optional_ref_conversion(Value)
+{
+    static_assert(std::is_constructible<optional_ref<A>, B>::value == Value::value, "");
+    static_assert(std::is_assignable<optional_ref<A>, B>::value == Value::value, "");
+}
+
 TEST_CASE("optional_ref")
 {
     // only test stuff special for optional_ref
+    struct base
+    {
+    };
+    struct derived : base
+    {
+    };
+
+    test_optional_ref_conversion<int, int&&>(std::false_type{});
+    test_optional_ref_conversion<int, const int&>(std::false_type{});
+    test_optional_ref_conversion<int, optional_ref<const int>>(std::false_type{});
+    test_optional_ref_conversion<const int, int&>(std::true_type{});
+    test_optional_ref_conversion<const int, optional_ref<int>>(std::true_type{});
+    test_optional_ref_conversion<base, derived&>(std::true_type{});
+    test_optional_ref_conversion<base, optional_ref<derived>>(std::true_type{});
 
     int value = 0;
     SECTION("constructor")
@@ -23,8 +44,6 @@ TEST_CASE("optional_ref")
         optional_ref<int> b(value);
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
-
-        static_assert(!std::is_constructible<optional_ref<int>, int&&>::value, "");
     }
     SECTION("assignment")
     {
@@ -36,8 +55,6 @@ TEST_CASE("optional_ref")
         b = value;
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
-
-        static_assert(!std::is_assignable<optional_ref<int>, int&&>::value, "");
     }
     SECTION("value_or")
     {
@@ -62,19 +79,19 @@ TEST_CASE("optional_ref")
     }
     SECTION("ref")
     {
-        optional_ref<int> a = ref(static_cast<int*>(nullptr));
+        optional_ref<int> a = opt_ref(static_cast<int*>(nullptr));
         REQUIRE_FALSE(a.has_value());
 
-        optional_ref<int> b = ref(&value);
+        optional_ref<int> b = opt_ref(&value);
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
     }
     SECTION("cref")
     {
-        optional_ref<const int> a = cref(static_cast<const int*>(nullptr));
+        optional_ref<const int> a = opt_cref(static_cast<const int*>(nullptr));
         REQUIRE_FALSE(a.has_value());
 
-        optional_ref<const int> b = cref(&value);
+        optional_ref<const int> b = opt_cref(&value);
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
     }
@@ -91,6 +108,29 @@ TEST_CASE("optional_ref")
         REQUIRE(b_res.has_value());
         REQUIRE(b_res.value().id == 0);
     }
+    SECTION("value comparison")
+    {
+        int value2 = 0;
+
+        optional_ref<int> a;
+        optional_ref<int> b(value);
+        optional_ref<int> c(value2);
+
+        REQUIRE_FALSE(a == value);
+        REQUIRE_FALSE(value == a);
+        REQUIRE_FALSE(a == value2);
+        REQUIRE_FALSE(value2 == a);
+
+        REQUIRE(b == value);
+        REQUIRE(value == b);
+        REQUIRE_FALSE(b == value2);
+        REQUIRE_FALSE(value2 == b);
+
+        REQUIRE_FALSE(c == value);
+        REQUIRE_FALSE(value == c);
+        REQUIRE(c == value2);
+        REQUIRE(value2 == c);
+    }
 }
 
 TEST_CASE("optional_xvalue_ref")
@@ -105,8 +145,6 @@ TEST_CASE("optional_xvalue_ref")
         optional_xvalue_ref<int> b(value);
         REQUIRE(b.has_value());
         REQUIRE(b.value() == value);
-
-        static_assert(!std::is_constructible<optional_xvalue_ref<int>, int&&>::value, "");
     }
     SECTION("assignment")
     {
@@ -118,8 +156,6 @@ TEST_CASE("optional_xvalue_ref")
         b = value;
         REQUIRE(b.has_value());
         REQUIRE(b.value() == value);
-
-        static_assert(!std::is_assignable<optional_xvalue_ref<int>, int&&>::value, "");
     }
     SECTION("value_or")
     {
@@ -135,10 +171,10 @@ TEST_CASE("optional_xvalue_ref")
     }
     SECTION("xref")
     {
-        optional_xvalue_ref<int> a = xref(static_cast<int*>(nullptr));
+        optional_xvalue_ref<int> a = opt_xref(static_cast<int*>(nullptr));
         REQUIRE_FALSE(a.has_value());
 
-        optional_xvalue_ref<int> b = xref(&value);
+        optional_xvalue_ref<int> b = opt_xref(&value);
         REQUIRE(b.has_value());
         REQUIRE(b.value() == value);
     }

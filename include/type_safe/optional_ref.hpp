@@ -6,6 +6,7 @@
 #define TYPE_SAFE_OPTIONAL_REF_HPP_INCLUDED
 
 #include <type_safe/optional.hpp>
+#include <type_safe/reference.hpp>
 
 namespace type_safe
 {
@@ -27,7 +28,7 @@ namespace type_safe
 
     /// A `StoragePolicy` for [ts::basic_optional]() that allows optional references.
     ///
-    /// The actual `value_type` passed to the optional is [std::reference_wrapper<T>](),
+    /// The actual `value_type` passed to the optional is [ts::object_ref](),
     /// but the reference types are normal references, so `value()` will return a `T&`
     /// and `value_or()` takes a fallback reference of the same type and returns one of them.
     /// Assigning an optional will always change the target of the reference.
@@ -53,7 +54,7 @@ namespace type_safe
         };
 
     public:
-        using value_type             = std::reference_wrapper<T>;
+        using value_type             = object_ref<T, XValue>;
         using lvalue_reference       = T&;
         using const_lvalue_reference = lvalue_reference;
         /// \exclude target
@@ -69,26 +70,29 @@ namespace type_safe
         }
 
         /// \effects Binds the reference to `obj`.
-        void create_value(lvalue_reference obj) noexcept
+        /// \notes This function only participates in overload resolution, if `U` is a reference compatible with `T`.
+        /// \param 1
+        /// \exclude
+        template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
+        void create_value(U& obj) noexcept
         {
             pointer_ = &obj;
+        }
+
+        /// \effects Binds the same reference as sstored in the optional.
+        /// \notes This function only participates in overload resolution, if `U` is a reference compatible with `T`.
+        /// \param 1
+        /// \exclude
+        template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
+        void create_value(const basic_optional<reference_optional_storage<U, XValue>>& ref)
+        {
+            pointer_ = ref.has_value() ? &ref.value() : nullptr;
         }
 
         /// \effects Binds the reference to the same reference in `other`.
         void create_value(const reference_optional_storage& other) noexcept
         {
             pointer_ = other.pointer_;
-        }
-
-        /// \effects Binds the same target as `const_ref`.
-        /// \param 1
-        /// \exclude
-        template <typename U,
-                  typename = typename std::
-                      enable_if<std::is_same<U, typename std::remove_const<T>::type>::value>::type>
-        void create_value(const basic_optional<reference_optional_storage<U, XValue>>& const_ref)
-        {
-            pointer_ = const_ref.has_value() ? &const_ref.value() : nullptr;
         }
 
         /// \effects Same as `destroy_value()`.
@@ -166,6 +170,16 @@ namespace type_safe
         T* pointer_;
     };
 
+    /// Sets the [ts::basic_optional]() storage policy for [ts::object_ref]() to [ts::reference_optional_storage]().
+    ///
+    /// It will be used when the optional is rebound.
+    /// \module optional
+    template <typename T, bool XValue>
+    struct optional_storage_policy_for<object_ref<T, XValue>>
+    {
+        using type = reference_optional_storage<T, XValue>;
+    };
+
     /// A [ts::basic_optional]() that uses [ts::reference_optional_storage]().
     /// It is an optional reference.
     /// \notes `T` is the type without the reference, i.e. `optional_ref<int>`.
@@ -176,37 +190,17 @@ namespace type_safe
     /// \returns A [ts::optional_ref<T>]() to the pointee of `ptr` or `nullopt`.
     /// \module optional
     template <typename T>
-    optional_ref<T> ref(T* ptr) noexcept
+    optional_ref<T> opt_ref(T* ptr) noexcept
     {
         return ptr ? optional_ref<T>(*ptr) : nullopt;
-    }
-
-    /// \returns A [ts::optional_ref<T>]() to `obj`.
-    /// \module optional
-    /// \param 1
-    /// \exclude
-    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
-    optional_ref<T> ref(T& obj) noexcept
-    {
-        return optional_ref<T>(obj);
     }
 
     /// \returns A [ts::optional_ref<T>]() to `const` to the pointee of `ptr` or `nullopt`.
     /// \module optional
     template <typename T>
-    optional_ref<const T> cref(const T* ptr) noexcept
+    optional_ref<const T> opt_cref(const T* ptr) noexcept
     {
         return ptr ? optional_ref<const T>(*ptr) : nullopt;
-    }
-
-    /// \returns A [ts::optional_ref<T>]() to `obj`.
-    /// \module optional
-    /// \param 1
-    /// \exclude
-    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
-    optional_ref<const T> cref(const T& obj) noexcept
-    {
-        return optional_ref<const T>(obj);
     }
 
     /// A [ts::basic_optional]() that uses [ts::reference_optional_storage]() with `XValue` being `true`.
@@ -221,20 +215,9 @@ namespace type_safe
     /// \notes The pointee will be moved from when you call `value()`.
     /// \module optional
     template <typename T>
-    optional_xvalue_ref<T> xref(T* ptr) noexcept
+    optional_xvalue_ref<T> opt_xref(T* ptr) noexcept
     {
         return ptr ? optional_xvalue_ref<T>(*ptr) : nullopt;
-    }
-
-    /// \returns A [ts::optional_xvalue_ref<T>]() to `obj`.
-    /// \notes The object will be moved from when you call `value()`.
-    /// \module optional
-    /// \param 1
-    /// \exclude
-    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
-    optional_xvalue_ref<T> xref(T& obj) noexcept
-    {
-        return optional_xvalue_ref<T>(obj);
     }
 
     /// \returns A [ts::optional<T>]() containing a copy of the value of `ref`

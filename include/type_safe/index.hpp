@@ -8,68 +8,93 @@
 #include <cstddef>
 
 #include <type_safe/config.hpp>
-#include <type_safe/integer.hpp>
 #include <type_safe/strong_typedef.hpp>
+#include <type_safe/types.hpp>
 
 namespace type_safe
 {
-    /// \exclude
-    namespace detail
-    {
-#if TYPE_SAFE_ENABLE_WRAPPER
-        using index_t    = integer<std::size_t, undefined_behavior_arithmetic>;
-        using distance_t = integer<std::ptrdiff_t, undefined_behavior_arithmetic>;
-#else
-        using index_t    = std::size_t;
-        using distance_t = std::ptrdiff_t;
-#endif
-    } // namespace detail
-
     /// A type modelling the distance between two [ts::index_t]() objects.
     ///
-    /// It is a [ts::strong_typedef]() for a `signed` integer type.
+    /// It is a [ts::strong_typedef]() for [ts::ptrdiff_t]().
     /// It is comparable and you can add and subtract two differences.
     /// \module types
-    struct distance_t
-        : strong_typedef<distance_t, detail::distance_t>,
-          strong_typedef_op::equality_comparison<distance_t>,
-          strong_typedef_op::mixed_equality_comparison<distance_t, detail::distance_t>,
-          strong_typedef_op::relational_comparison<distance_t>,
-          strong_typedef_op::mixed_relational_comparison<distance_t, detail::distance_t>,
-          strong_typedef_op::unary_plus<distance_t>,
-          strong_typedef_op::unary_minus<distance_t>,
-          strong_typedef_op::addition<distance_t>,
-          strong_typedef_op::subtraction<distance_t>
+    struct distance_t : strong_typedef<distance_t, ptrdiff_t>,
+                        strong_typedef_op::equality_comparison<distance_t>,
+                        strong_typedef_op::relational_comparison<distance_t>,
+                        strong_typedef_op::unary_plus<distance_t>,
+                        strong_typedef_op::unary_minus<distance_t>,
+                        strong_typedef_op::addition<distance_t>,
+                        strong_typedef_op::subtraction<distance_t>
     {
-        using strong_typedef::strong_typedef;
-
         /// \effects Initializes it to `0`.
         constexpr distance_t() noexcept : strong_typedef(0)
+        {
+        }
+
+        /// \effects Initializes it from a valid `signed` integer type.
+        /// \notes This constructor does not participate in overload resolution,
+        /// if `T` is not safely convertible to [ts::ptrdiff_t]().
+        /// \group int_ctor
+        /// \param 1
+        /// \exclude
+        template <typename T,
+                  typename = typename std::
+                      enable_if<detail::is_safe_integer_conversion<T, std::ptrdiff_t>::value>::type>
+        constexpr distance_t(T i) noexcept : strong_typedef(i)
+        {
+        }
+
+        /// \group int_ctor
+        /// \param 1
+        /// \exclude
+        template <typename T, class Policy,
+                  typename = typename std::
+                      enable_if<detail::is_safe_integer_conversion<T, std::ptrdiff_t>::value>::type>
+        constexpr distance_t(integer<T, Policy> i) noexcept : strong_typedef(static_cast<T>(i))
         {
         }
     };
 
     /// A type modelling an index into an array.
     ///
-    /// It is a [ts::strong_typedef]() for an `unsigned` integer type.
+    /// It is a [ts::strong_typedef]() for [ts::size_t]().
     /// It is comparable and you can increment and decrement it,
     /// as well as adding/subtracing a [ts::distance_t]().
     /// \notes It has a similar interface to a `RandomAccessIterator`,
     /// but without the dereference functions.
     /// \module types
-    struct index_t : strong_typedef<index_t, detail::index_t>,
+    struct index_t : strong_typedef<index_t, size_t>,
                      strong_typedef_op::equality_comparison<index_t>,
-                     strong_typedef_op::mixed_equality_comparison<index_t, detail::index_t>,
                      strong_typedef_op::relational_comparison<index_t>,
-                     strong_typedef_op::mixed_relational_comparison<index_t, detail::index_t>,
                      strong_typedef_op::increment<index_t>,
                      strong_typedef_op::decrement<index_t>,
                      strong_typedef_op::unary_plus<index_t>
     {
-        using strong_typedef::strong_typedef;
-
         /// \effects Initializes it to `0`.
         constexpr index_t() noexcept : strong_typedef(0u)
+        {
+        }
+
+        /// \effects Initializes it from a valid `unsigned` integer type.
+        /// \notes This constructor does not participate in overload resolution,
+        /// if `T` is not safely convertible to [ts::size_t]().
+        /// \group int_ctor
+        /// \param 1
+        /// \exclude
+        template <typename T,
+                  typename = typename std::
+                      enable_if<detail::is_safe_integer_conversion<T, std::size_t>::value>::type>
+        constexpr index_t(T i) noexcept : strong_typedef(i)
+        {
+        }
+
+        /// \group int_ctor
+        /// \param 1
+        /// \exclude
+        template <typename T, class Policy,
+                  typename = typename std::
+                      enable_if<detail::is_safe_integer_conversion<T, std::size_t>::value>::type>
+        constexpr index_t(integer<T, Policy> i) noexcept : strong_typedef(static_cast<T>(i))
         {
         }
 
@@ -183,7 +208,7 @@ namespace type_safe
     /// If the distance is negative, decrements the index instead.
     /// \notes This is the same as `index += dist` and the equivalent of [std::advance()]().
     /// \module types
-    void advance(index_t& index, const distance_t& dist)
+    inline void advance(index_t& index, const distance_t& dist)
     {
         index += dist;
     }

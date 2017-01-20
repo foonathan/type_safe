@@ -12,7 +12,7 @@ using namespace type_safe;
 
 TEST_CASE("tagged_union")
 {
-    using union_t = tagged_union<int, float, debugger_type>;
+    using union_t = tagged_union<int, double, debugger_type>;
     REQUIRE(union_t::invalid_type == union_t::type_id());
 
     union_t tunion;
@@ -47,23 +47,23 @@ TEST_CASE("tagged_union")
             REQUIRE(tunion.type() == union_t::invalid_type);
         }
     }
-    SECTION("emplace float")
+    SECTION("emplace double")
     {
-        tunion.emplace(union_type<float>{}, 3.0);
+        tunion.emplace(union_type<double>{}, 3.0);
         REQUIRE(tunion.has_value());
-        REQUIRE(tunion.type() == union_t::type_id(union_type<float>{}));
+        REQUIRE(tunion.type() == union_t::type_id(union_type<double>{}));
         REQUIRE(static_cast<std::size_t>(tunion.type()) == 2u);
-        REQUIRE(tunion.value(union_type<float>{}) == 3.0);
+        REQUIRE(tunion.value(union_type<double>{}) == 3.0);
 
         union_t other;
         copy(other, tunion);
         REQUIRE(other.has_value());
-        REQUIRE(other.type() == union_t::type_id(union_type<float>{}));
-        REQUIRE(other.value(union_type<float>{}) == 3.0);
+        REQUIRE(other.type() == union_t::type_id(union_type<double>{}));
+        REQUIRE(other.value(union_type<double>{}) == 3.0);
 
         SECTION("member")
         {
-            tunion.destroy(union_type<float>{});
+            tunion.destroy(union_type<double>{});
             REQUIRE(!tunion.has_value());
             REQUIRE(tunion.type() == union_t::invalid_type);
         }

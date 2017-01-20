@@ -15,7 +15,7 @@ struct debugger_type
     bool was_copy_assigned = false;
     bool swapped           = false;
 
-    debugger_type(int id, float = 0., char = 0) : id(id)
+    debugger_type(int id, double = 0., char = 0) : id(id)
     {
         from_ctor = true;
     }
