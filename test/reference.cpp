@@ -5,6 +5,7 @@
 #include <type_safe/reference.hpp>
 
 #include <catch.hpp>
+#include <functional>
 
 #include "debugger_type.hpp"
 
@@ -202,8 +203,8 @@ TEST_CASE("function_ref")
         function_ref<int(int, int)> a(f);
         REQUIRE(a(1, 3) == 4);
 
-        function_ref<int(int, float)> b(f);
-        REQUIRE(b(1, 3.14) == 4);
+        function_ref<int(int, short)> b(f);
+        REQUIRE(b(1, 3) == 4);
 
         auto var = 0;
         function_ref<void(int, int&)> c(f);
@@ -220,8 +221,8 @@ TEST_CASE("function_ref")
         function_ref<int(int, int)> a(f);
         REQUIRE(a(1, 3) == 4);
 
-        function_ref<int(int, float)> b(f);
-        REQUIRE(a(1, 3.14) == 4);
+        function_ref<int(int, short)> b(f);
+        REQUIRE(a(1, 3) == 4);
 
         function_ref<void(int, int)> c(f);
         c(1, 3);
@@ -233,8 +234,8 @@ TEST_CASE("function_ref")
         function_ref<int(int, int)> a(f);
         REQUIRE(a(1, 3) == 4);
 
-        function_ref<int(int, float)> b(f);
-        REQUIRE(a(1, 3.14) == 4);
+        function_ref<int(int, short)> b(f);
+        REQUIRE(a(1, 3) == 4);
 
         function_ref<void(int, int)> c(f);
         c(1, 3);
@@ -269,8 +270,8 @@ TEST_CASE("function_ref")
         function_ref<int(int, int)> a([](int a, int b) { return a + b; });
         REQUIRE(a(1, 3) == 4);
 
-        function_ref<int(int, float)> b(a);
-        REQUIRE(b(1, 3.14) == 4);
+        function_ref<int(int, short)> b(a);
+        REQUIRE(b(1, 3) == 4);
 
         function_ref<void(int, int)> c(a);
         c(1, 3);

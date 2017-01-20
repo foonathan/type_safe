@@ -12,8 +12,8 @@ using namespace type_safe;
 
 // use optional variant to be able to test all functions
 // test policies separately
-using variant_t = variant<nullvar_t, int, float, debugger_type>;
-using union_t   = tagged_union<int, float, debugger_type>;
+using variant_t = variant<nullvar_t, int, double, debugger_type>;
+using union_t   = tagged_union<int, double, debugger_type>;
 
 template <class Variant>
 void check_variant_empty(const Variant& var)
@@ -51,13 +51,13 @@ void check_variant_value(const Variant& var, const T& val)
     REQUIRE(var.value(variant_type<T>{}) == val);
 
     // optional_value queries
-    using is_int   = std::is_same<T, int>;
-    using is_float = std::is_same<T, float>;
-    using is_dbg   = std::is_same<T, debugger_type>;
+    using is_int    = std::is_same<T, int>;
+    using is_double = std::is_same<T, double>;
+    using is_dbg    = std::is_same<T, debugger_type>;
 
     REQUIRE(!var.optional_value(variant_type<nullvar_t>{}));
     REQUIRE(bool(var.optional_value(variant_type<int>{})) == is_int::value);
-    REQUIRE(bool(var.optional_value(variant_type<float>{})) == is_float::value);
+    REQUIRE(bool(var.optional_value(variant_type<double>{})) == is_double::value);
     REQUIRE(bool(var.optional_value(variant_type<debugger_type>{})) == is_dbg::value);
 }
 
@@ -80,8 +80,8 @@ TEST_CASE("basic_variant")
         variant_t a(5);
         check_variant_value(a, 5);
 
-        variant_t b(3.0f);
-        check_variant_value(b, 3.0f);
+        variant_t b(3.0);
+        check_variant_value(b, 3.0);
 
         variant_t c(debugger_type(42));
         check_variant_value(c, debugger_type(42));
@@ -92,8 +92,8 @@ TEST_CASE("basic_variant")
         variant_t a(variant_type<int>{}, 5);
         check_variant_value(a, 5);
 
-        variant_t b(variant_type<float>{}, 3.0);
-        check_variant_value(b, 3.0f);
+        variant_t b(variant_type<double>{}, 3.0);
+        check_variant_value(b, 3.0);
 
         variant_t c(variant_type<debugger_type>{}, 42);
         check_variant_value(c, debugger_type(42));
@@ -355,7 +355,7 @@ TEST_CASE("basic_variant")
         REQUIRE(non_empty1.value_or(variant_type<int>{}, 3) == 5);
         REQUIRE(non_empty2.value_or(variant_type<int>{}, 3) == 3);
 
-        REQUIRE(non_empty2.value_or(variant_type<float>{}, 3.14) == 3.14f);
+        REQUIRE(non_empty2.value_or(variant_type<double>{}, 3.14) == 3.14);
     }
     SECTION("map")
     {
@@ -377,7 +377,7 @@ TEST_CASE("basic_variant")
                 return 42;
             }
 
-            int operator()(float) = delete;
+            int operator()(double) = delete;
         } functor;
 
         functor.expect_call = false;
@@ -393,8 +393,8 @@ TEST_CASE("basic_variant")
         check_variant_value(c, 42);
 
         functor.expect_call = false;
-        auto d              = variant_t(3.0f).map(functor);
-        check_variant_value(d, 3.0f);
+        auto d              = variant_t(3.0).map(functor);
+        check_variant_value(d, 3.0);
     }
     SECTION("compare null")
     {
@@ -546,10 +546,10 @@ TEST_CASE("basic_variant")
                 REQUIRE(val == 5);
             }
 
-            void operator()(float f) const
+            void operator()(double f) const
             {
                 REQUIRE(i == 2);
-                REQUIRE(f == 3.14f);
+                REQUIRE(f == 3.14);
             }
         } v;
 
@@ -561,7 +561,7 @@ TEST_CASE("basic_variant")
         v.i = 1;
         with(b, v);
 
-        variant_t c(3.14f);
+        variant_t c(3.14);
         v.i = 2;
         with(c, v);
 

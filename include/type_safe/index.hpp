@@ -34,10 +34,23 @@ namespace type_safe
         /// \effects Initializes it from a valid `signed` integer type.
         /// \notes This constructor does not participate in overload resolution,
         /// if `T` is not safely convertible to [ts::ptrdiff_t]().
+        /// \group int_ctor
         /// \param 1
         /// \exclude
-        template <typename T, typename = decltype(ptrdiff_t(T(0)))>
+        template <typename T,
+                  typename = typename std::
+                      enable_if<detail::is_safe_integer_conversion<T, std::ptrdiff_t>::value>::type>
         constexpr distance_t(T i) noexcept : strong_typedef(i)
+        {
+        }
+
+        /// \group int_ctor
+        /// \param 1
+        /// \exclude
+        template <typename T, class Policy,
+                  typename = typename std::
+                      enable_if<detail::is_safe_integer_conversion<T, std::ptrdiff_t>::value>::type>
+        constexpr distance_t(integer<T, Policy> i) noexcept : strong_typedef(static_cast<T>(i))
         {
         }
     };
@@ -65,10 +78,23 @@ namespace type_safe
         /// \effects Initializes it from a valid `unsigned` integer type.
         /// \notes This constructor does not participate in overload resolution,
         /// if `T` is not safely convertible to [ts::size_t]().
+        /// \group int_ctor
         /// \param 1
         /// \exclude
-        template <typename T, typename = decltype(size_t(T(0u)))>
+        template <typename T,
+                  typename = typename std::
+                      enable_if<detail::is_safe_integer_conversion<T, std::size_t>::value>::type>
         constexpr index_t(T i) noexcept : strong_typedef(i)
+        {
+        }
+
+        /// \group int_ctor
+        /// \param 1
+        /// \exclude
+        template <typename T, class Policy,
+                  typename = typename std::
+                      enable_if<detail::is_safe_integer_conversion<T, std::size_t>::value>::type>
+        constexpr index_t(integer<T, Policy> i) noexcept : strong_typedef(static_cast<T>(i))
         {
         }
 

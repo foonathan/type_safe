@@ -437,12 +437,16 @@ namespace type_safe
         {
         };
 
+        // can't use template alias, GCC 4.8 gets confused
         template <typename Func, typename Return, typename... Args>
-        using enable_matching_function =
-            typename std::enable_if<compatible_return_type<decltype(std::declval<Func&>()(
-                                                               std::declval<Args>()...)),
-                                                           Return>::value,
-                                    int>::type;
+        struct enable_matching_function
+        {
+            using type =
+                typename std::enable_if<compatible_return_type<decltype(std::declval<Func&>()(
+                                                                   std::declval<Args>()...)),
+                                                               Return>::value,
+                                        int>::type;
+        };
 
         struct matching_function_pointer_tag
         {
@@ -460,11 +464,12 @@ namespace type_safe
             // use unary + to convert to function pointer
             template <typename T>
             static matching_function_pointer_tag test(
-                int, T& obj, enable_matching_function<decltype(+obj), Return, Args...> = 0);
+                int, T& obj,
+                typename enable_matching_function<decltype(+obj), Return, Args...>::type = 0);
 
             template <typename T>
-            static matching_functor_tag test(short, T& obj,
-                                             enable_matching_function<T, Return, Args...> = 0);
+            static matching_functor_tag test(
+                short, T& obj, typename enable_matching_function<T, Return, Args...>::type = 0);
 
             static invalid_functor_tag test(...);
 
@@ -519,8 +524,9 @@ namespace type_safe
         /// \param 1
         /// \exclude
         template <typename Return2, typename... Args2>
-        function_ref(Return2 (*fptr)(Args2...),
-                     detail::enable_matching_function<decltype(fptr), Return, Args...> = 0)
+        function_ref(
+            Return2 (*fptr)(Args2...),
+            typename detail::enable_matching_function<decltype(fptr), Return, Args...>::type = 0)
         : function_ref(detail::matching_function_pointer_tag{}, fptr)
         {
         }
@@ -555,13 +561,7 @@ namespace type_safe
         template <typename Functor,
                   typename = detail::enable_function_tag<detail::matching_functor_tag, Functor,
                                                          Return, Args...>>
-        explicit function_ref(Functor& f)
-        : cb_([](const void* memory, Args... args) {
-              using ptr_t = void*;
-              auto  ptr   = *static_cast<const ptr_t*>(memory);
-              auto& func  = *static_cast<Functor*>(ptr);
-              return static_cast<Return>(func(static_cast<Args>(args)...));
-          })
+        explicit function_ref(Functor& f) : cb_(&invoke_functor<Functor>)
         {
             ::new (get_memory()) void*(&f);
         }
@@ -607,6 +607,23 @@ namespace type_safe
         }
 
     private:
+        template <typename Functor>
+        static Return invoke_functor(const void* memory, Args... args)
+        {
+            using ptr_t   = void*;
+            ptr_t    ptr  = *static_cast<const ptr_t*>(memory);
+            Functor& func = *static_cast<Functor*>(ptr);
+            return static_cast<Return>(func(static_cast<Args>(args)...));
+        }
+
+        template <typename PointerT, typename StoredT>
+        static Return invoke_function_pointer(const void* memory, Args... args)
+        {
+            auto ptr  = *static_cast<const StoredT*>(memory);
+            auto func = reinterpret_cast<PointerT>(ptr);
+            return static_cast<Return>(func(static_cast<Args>(args)...));
+        }
+
         template <typename Return2, typename... Args2>
         function_ref(detail::matching_function_pointer_tag, Return2 (*fptr)(Args2...))
         {
@@ -617,11 +634,7 @@ namespace type_safe
                          "function pointer must not be null");
             ::new (get_memory()) stored_pointer_type(reinterpret_cast<stored_pointer_type>(fptr));
 
-            cb_ = [](const void* memory, Args... args) {
-                auto ptr  = *static_cast<const stored_pointer_type*>(memory);
-                auto func = reinterpret_cast<pointer_type>(ptr);
-                return static_cast<Return>(func(static_cast<Args>(args)...));
-            };
+            cb_ = &invoke_function_pointer<pointer_type, stored_pointer_type>;
         }
 
         void* get_memory() noexcept
