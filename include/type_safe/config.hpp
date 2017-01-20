@@ -112,6 +112,18 @@
 #define TYPE_SAFE_RETHROW std::abort()
 #endif
 
+#ifndef TYPE_SAFE_USE_RTTI
+
+#ifdef __GXX_RTTI
+#define TYPE_SAFE_USE_RTTI 1
+#elif defined(_CPPRTTI_)
+#define TYPE_SAFE_USE_RTTI 1
+#else
+#define TYPE_SAFE_USE_RTTI 0
+#endif
+
+#endif
+
 /// \entity type_safe
 /// \unique_name ts
 
