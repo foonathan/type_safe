@@ -147,25 +147,6 @@ namespace type_safe
             return detail::move_if(std::integral_constant<bool, XValue>{}, other);
         }
 
-        /// \returns Either `get_value()` or `other`.
-        /// The type of `other` must not be an lvalue of type `T`,
-        /// it will return a new `T` object created from `other` or by copying/moving `get_value()`.
-        /// \notes This function does not participate in overload resolution,
-        /// unless `T` is convertible from `U`.
-        /// \param 1
-        /// \exclude
-        template <
-            typename U,
-            typename =
-                typename std::enable_if<!(std::is_reference<U>::value
-                                          && std::is_same<typename std::remove_reference<U>::type&,
-                                                          lvalue_reference>::value)
-                                        && std::is_convertible<U&&, T>::value>::type>
-        T get_value_or(U&& other) const
-        {
-            return has_value() ? get_value() : std::forward<U>(other);
-        }
-
     private:
         T* pointer_;
     };
