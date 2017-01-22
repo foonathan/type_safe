@@ -55,7 +55,7 @@ namespace type_safe
         /// \param 1
         /// \exclude
         template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
-        explicit constexpr object_ref(const object_ref<U>& obj) noexcept : ptr_(&*obj)
+        constexpr object_ref(const object_ref<U>& obj) noexcept : ptr_(&*obj)
         {
         }
 
