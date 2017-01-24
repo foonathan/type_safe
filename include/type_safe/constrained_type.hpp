@@ -49,6 +49,7 @@ namespace type_safe
     /// Those will be checked regardless of the `Verifier`.
     /// \requires `T` must not be a reference, `Constraint` must be a moveable, non-final class where no operation throws,
     /// and `Verifier` must provide a `static` function `void verify([const] T&, const Predicate&)`.
+    /// It also requires that no `const` operation on `T` may modify it in a way that the predicate isn't fulfilled anymore.
     /// \notes Additional requirements of the `Constraint` depend on the `Verifier` used.
     /// If not stated otherwise, a `Verifier` in this library requires
     /// that the `Constraint` is a `Predicate` for `T`.
@@ -165,7 +166,7 @@ namespace type_safe
             }
 
             /// \effects Verifies the value, if there is any.
-            ~modifier() noexcept(false)
+            ~modifier() noexcept(nothrow_verifier::value)
             {
                 if (value_)
                     value_->verify();
@@ -178,6 +179,22 @@ namespace type_safe
                 value_       = other.value_;
                 other.value_ = nullptr;
                 return *this;
+            }
+
+            /// Decrement operator.
+            /// \returns A reference to the stored value.
+            /// \requires It must not be in the moved-from state.
+            value_type& operator*() noexcept
+            {
+                return get();
+            }
+
+            /// Member access operator.
+            /// \returns A pointer to the stored value.
+            /// \requires It must not be in the moved-from state.
+            value_type* operator->() noexcept
+            {
+                return &get();
             }
 
             /// \returns A reference to the stored value.
@@ -215,8 +232,21 @@ namespace type_safe
             return std::move(value_);
         }
 
+        /// Decrement operator.
         /// \returns A `const` reference to the stored value.
-        /// \requires Any `const` operations on the `value_type` must not affect the validity of the value.
+        const value_type& operator*() const noexcept
+        {
+            return value_;
+        }
+
+        /// Member access operator.
+        /// \returns A `const` pointer to the stored value.
+        const value_type* operator->() const noexcept
+        {
+            return value_;
+        }
+
+        /// \returns A `const` reference to the stored value.
         const value_type& get_value() const noexcept
         {
             return value_;
