@@ -60,6 +60,7 @@ set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/compact_optional.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/constrained_type.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/deferred_construction.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/downcast.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/flag.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/floating_point.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/index.hpp
