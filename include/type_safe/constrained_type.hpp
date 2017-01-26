@@ -47,6 +47,9 @@ namespace type_safe
     /// The `Constraint` is checked by the `Verifier`.
     /// The `Constraint` can also provide a nested template `is_valid<T>` to statically check types.
     /// Those will be checked regardless of the `Verifier`.
+    ///
+    /// If `T` is `const`, the `modify()` function will not be available,
+    /// you can only modify the type by assigning a completely new value to it.
     /// \requires `T` must not be a reference, `Constraint` must be a moveable, non-final class where no operation throws,
     /// and `Verifier` must provide a `static` function `void verify([const] T&, const Predicate&)`.
     /// It also requires that no `const` operation on `T` may modify it in a way that the predicate isn't fulfilled anymore.
@@ -215,6 +218,9 @@ namespace type_safe
         };
 
         /// \returns A proxy object to provide verified write-access to the stored value.
+        /// \notes This function does not participate in overload resolution if `T` is `const`.
+        template <typename Dummy = T,
+                  typename       = typename std::enable_if<!std::is_const<T>::value>::type>
         modifier modify() noexcept
         {
             debug_verify();
