@@ -248,6 +248,12 @@ namespace type_safe
             verify();
         }
 
+        /// \exclude
+        template <typename U,
+                  typename = typename std::enable_if<!detail::is_valid<constraint_predicate,
+                                                                       U>::value>::type>
+        constrained_type(U) = delete;
+
         /// \returns A proxy object to provide verified write-access to the referred value.
         /// \notes This function does not participate in overload resolution if `T` is `const`.
         template <typename Dummy = T,
@@ -301,7 +307,7 @@ namespace type_safe
     };
 
     /// Alias for [ts::constrained_type<T&>](standardese://ts::constrained_type_ref/).
-    template <typename T, class Constraint, class Verifier>
+    template <typename T, class Constraint, class Verifier = assertion_verifier>
     using constrained_ref = constrained_type<T&, Constraint, Verifier>;
 
     /// A proxy class to provide write access to the stored value of a [ts::constrained_type]().
