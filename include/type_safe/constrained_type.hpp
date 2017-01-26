@@ -107,15 +107,16 @@ namespace type_safe
         /// \effects Destroys the value.
         ~constrained_type() noexcept = default;
 
-        /// \effects Copy(1)/move(2) assigns the stored value to the valid value `other`.
-        /// It will also verify the new value prior to assigning.
-        /// \throws Anything thrown by the copy(1)/move(2) assignment operator of `value_type`,
+        /// \effects Same as assigning `constrained_type(other, get_constraint()).release()` to the stored value.
+        /// It will invoke copy(1)/move(2) constructor followed by move assignment operator.
+        /// \throws Anything thrown by the copy(1)/move(2) constructor or move assignment operator of `value_type`,
         /// or the `Verifier` if the `value` is invalid.
+        /// If the `value` is invalid, nothing will be changed.
         /// \group assign_value
         constrained_type& operator=(const value_type& other)
         {
-            Verifier::verify(other, get_constraint());
-            value_ = other;
+            constrained_type tmp(other, get_constraint());
+            value_ = std::move(tmp).release();
             return *this;
         }
 
@@ -124,8 +125,8 @@ namespace type_safe
             std::is_nothrow_move_assignable<value_type>::value&&
                 detail::nothrow_verifier<T, Constraint, Verifier>::value)
         {
-            Verifier::verify(other, get_constraint());
-            value_ = std::move(other);
+            constrained_type tmp(std::move(other), get_constraint());
+            value_ = std::move(tmp).release();
             return *this;
         }
 
