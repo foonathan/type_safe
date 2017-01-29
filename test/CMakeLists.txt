@@ -28,6 +28,7 @@ set(source_files test.cpp
                  deferred_construction.cpp
                  downcast.cpp
                  flag.cpp
+                 flag_set.cpp
                  floating_point.cpp
                  index.cpp
                  integer.cpp
