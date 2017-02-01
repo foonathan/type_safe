@@ -21,17 +21,17 @@ struct test_verifier
 
 bool test_verifier::expected;
 
+struct test_predicate
+{
+    bool operator()(int i) const
+    {
+        return i != -1;
+    }
+};
+
 TEST_CASE("constrained_type")
 {
-    struct predicate
-    {
-        bool operator()(int i) const
-        {
-            return i != -1;
-        }
-    };
-
-    using my_int = constrained_type<int, predicate, test_verifier>;
+    using my_int = constrained_type<int, test_predicate, test_verifier>;
 
     SECTION("constructor")
     {
@@ -59,13 +59,13 @@ TEST_CASE("constrained_type")
     SECTION("constrain")
     {
         test_verifier::expected = true;
-        my_int a                = constrain<test_verifier>(5, predicate{});
+        my_int a                = constrain<test_verifier>(5, test_predicate{});
         REQUIRE(a.get_value() == 5);
-        my_int b = constrain<test_verifier>(-4, predicate{});
+        my_int b = constrain<test_verifier>(-4, test_predicate{});
         REQUIRE(b.get_value() == -4);
 
         test_verifier::expected = false;
-        my_int c                = constrain<test_verifier>(-1, predicate{});
+        my_int c                = constrain<test_verifier>(-1, test_predicate{});
         REQUIRE(c.get_value() == -1);
     }
     SECTION("modify()")
@@ -76,6 +76,62 @@ TEST_CASE("constrained_type")
         {
             auto modify = a.modify();
             modify.get() += 4;
+        }
+        REQUIRE(a.get_value() == 8);
+        {
+            auto modify = a.modify();
+            modify.get() -= 5;
+            modify.get() = 2;
+        }
+        REQUIRE(a.get_value() == 2);
+
+        {
+            auto modify             = a.modify();
+            modify.get()            = -1;
+            test_verifier::expected = false;
+        }
+        REQUIRE(a.get_value() == -1);
+        try
+        {
+            auto modify  = a.modify();
+            modify.get() = -1;
+            throw 0;
+        }
+        catch (...)
+        {
+            REQUIRE(a.get_value() == -1);
+        }
+    }
+}
+
+TEST_CASE("constrained_ref")
+{
+    using my_ref = constrained_ref<int, test_predicate, test_verifier>;
+
+    auto valid1  = 5;
+    auto valid2  = -4;
+    auto invalid = -1;
+
+    SECTION("constructor")
+    {
+        test_verifier::expected = true;
+        my_ref a(valid1);
+        REQUIRE(a.get_value() == 5);
+        my_ref b(valid2);
+        REQUIRE(b.get_value() == -4);
+
+        test_verifier::expected = false;
+        my_ref c(invalid);
+        REQUIRE(c.get_value() == -1);
+    }
+    SECTION("modify()")
+    {
+        // with() is the same
+        test_verifier::expected = true;
+        my_ref a(valid1);
+        {
+            auto modify = a.modify();
+            modify.get() += 3;
         }
         REQUIRE(a.get_value() == 8);
         {
