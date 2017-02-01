@@ -401,6 +401,11 @@ namespace type_safe
             return get_storage().get_value();
         }
 
+        auto operator*() TYPE_SAFE_LVALUE_REF noexcept -> decltype(std::declval<storage&>().get_value())
+        {
+            return value();
+        }
+
 #if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \group value
         auto value() && noexcept -> decltype(std::declval<storage&&>().get_value())
