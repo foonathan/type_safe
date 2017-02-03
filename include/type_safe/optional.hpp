@@ -493,19 +493,19 @@ namespace type_safe
 #endif
 
         /// Maps an optional.
-        /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `const value_type&` (1)/`value_type&&` (2).
+        /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `const value_type&` (1)/`value_type&&` (2) and the additional arguments.
         /// If `has_value()` is `true`, returns the new optional with result of the value passed to the function.
         /// otherwise returns an empty optional.
-        /// \requires `f` must be callable with `const value_type&` (1)/`value_type&&` (2).
+        /// \requires `f` must be callable using `operator()` with `const value_type&` (1)/`value_type&&` (2) followed by the arguments.
         /// \unique_name *map
         /// \group map
         /// \exclude return
-        template <typename Func>
-        auto map(Func&& f) const TYPE_SAFE_LVALUE_REF
-            -> rebind<decltype(std::forward<Func>(f)(this->value()))>
+        template <typename Func, typename... Args>
+        auto map(Func&& f, Args&&... args) const TYPE_SAFE_LVALUE_REF
+            -> rebind<decltype(std::forward<Func>(f)(this->value(), std::forward<Args>(args)...))>
         {
             if (has_value())
-                return std::forward<Func>(f)(value());
+                return std::forward<Func>(f)(value(), std::forward<Args>(args)...);
             else
                 return nullopt;
         }
@@ -514,11 +514,12 @@ namespace type_safe
         /// \unique_name *map_rvalue
         /// \group map
         /// \exclude return
-        template <typename Func>
-        auto map(Func&& f) && -> rebind<decltype(std::forward<Func>(f)(std::move(this->value())))>
+        template <typename Func, typename... Args>
+        auto map(Func&& f, Args&&... args) && -> rebind<decltype(
+            std::forward<Func>(f)(std::move(this->value()), std::forward<Args>(args)...))>
         {
             if (has_value())
-                return std::forward<Func>(f)(std::move(value()));
+                return std::forward<Func>(f)(std::move(value(), std::forward<Args>(args)...));
             else
                 return nullopt;
         }

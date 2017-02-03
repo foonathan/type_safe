@@ -50,11 +50,11 @@ int task_monadic(const std::string& str)
     return back(str)
         // map takes a functor and applies it to the stored value, if there is any
         // the result is another optional with possibly different type
-        .map([](char c) -> char { return std::toupper(c); })
-        // now we apply lookup
+        .map(static_cast<int (*)(int)>(&std::toupper))
+        // now we map lookup
+        .map(lookup)
         // but the result is a ts::optional<ts::optional<int>>
         // so we need to call unwrap() to flatten it to ts::optional<int>
-        .map(lookup)
         .unwrap()
         // value_or() as usual
         .value_or(0);
