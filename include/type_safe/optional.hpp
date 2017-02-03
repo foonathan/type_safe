@@ -984,6 +984,14 @@ namespace type_safe
     template <typename T>
     using optional = basic_optional<direct_optional_storage<T>>;
 
+    /// Uses [ts::optional_storage_policy_for]() to select the appropriate [ts::basic_optional]().
+    ///
+    /// By default, it uses [ts::direct_optional_storage]().
+    /// \module optional
+    template <typename T>
+    using optional_for = basic_optional<detail::select_optional_storage_policy<
+        typename optional_storage_policy_for<T>::type, direct_optional_storage<T>>>;
+
     /// \returns A new [ts::optional<T>]() storing a copy of `t`.
     /// \module optional
     template <typename T>
