@@ -41,6 +41,7 @@ I highly suggest that you check out [the first](https://foonathan.github.io/blog
 * `ts::array_ref<T>` - non-null reference to contigous storage
 * `ts::function_ref<T>` - non-null reference to a function
 * `ts::flag` - an improved flag type, better than a regular `bool` or `ts::boolean`
+* `ts::flag_set<Enum>` - a set of flags
 * `ts::output_parameter<T>` - an improved output parameter compared to the naive lvalue reference
 
 ### Optional & Variant

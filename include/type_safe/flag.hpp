@@ -47,6 +47,9 @@ namespace type_safe
     ///          do_sth(x); // no way to forget
     /// }
     /// ```
+    /// \notes It is named `flag` for consistency with [std::atomic_flag](),
+    /// even though this one can provide an extended interface as it is not atomic.
+    /// `flag` has nothing to do with [ts::flag_set]().
     /// \module types
     class flag
     {
