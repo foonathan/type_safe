@@ -104,6 +104,22 @@ namespace type_safe
         T* ptr_;
     };
 
+    template <typename T, bool XValue>
+    class reference_optional_storage;
+
+    template <typename T>
+    struct optional_storage_policy_for;
+
+    /// Sets the [ts::basic_optional]() storage policy for [ts::object_ref]() to [ts::reference_optional_storage]().
+    ///
+    /// It will be used when the optional is rebound.
+    /// \module optional
+    template <typename T, bool XValue>
+    struct optional_storage_policy_for<object_ref<T, XValue>>
+    {
+        using type = reference_optional_storage<T, XValue>;
+    };
+
     /// Comparison operator for [ts::object_ref]().
     ///
     /// Two references are equal if both refer to the same object.

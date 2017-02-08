@@ -143,6 +143,29 @@ namespace type_safe
         using type = void;
     };
 
+    template <typename T, bool XValue = false>
+    class reference_optional_storage;
+
+    /// Specialization of [ts::optional_storage_policy_for]() for lvalue references.
+    ///
+    /// It will use [ts::reference_optional_storage]() as policy.
+    /// \module optional
+    template <typename T>
+    struct optional_storage_policy_for<T&>
+    {
+        using type = reference_optional_storage<T>;
+    };
+
+    /// Specialization of [ts::optional_storage_policy_for]() for rvalue references.
+    ///
+    /// They are not supported.
+    /// \module optional
+    template <typename T>
+    struct optional_storage_policy_for<T&&>
+    {
+        static_assert(sizeof(T) != sizeof(T), "no optional for rvalue references supported");
+    };
+
     /// \exclude
     namespace detail
     {
@@ -983,6 +1006,14 @@ namespace type_safe
     /// \module optional
     template <typename T>
     using optional = basic_optional<direct_optional_storage<T>>;
+
+    /// Uses [ts::optional_storage_policy_for]() to select the appropriate [ts::basic_optional]().
+    ///
+    /// By default, it uses [ts::direct_optional_storage]().
+    /// \module optional
+    template <typename T>
+    using optional_for = basic_optional<detail::select_optional_storage_policy<
+        typename optional_storage_policy_for<T>::type, direct_optional_storage<T>>>;
 
     /// \returns A new [ts::optional<T>]() storing a copy of `t`.
     /// \module optional

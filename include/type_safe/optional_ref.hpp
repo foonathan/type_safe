@@ -41,7 +41,7 @@ namespace type_safe
     /// Depending on the const-ness of `T` is the reference to `const` or non-const as well,
     /// unless `XValue` is true`, in which case `T` must not be `const`.
     /// \module optional
-    template <typename T, bool XValue = false>
+    template <typename T, bool XValue /* = false*/>
     class reference_optional_storage
     {
         static_assert(!std::is_reference<T>::value, "pass the type without reference");
@@ -149,16 +149,6 @@ namespace type_safe
 
     private:
         T* pointer_;
-    };
-
-    /// Sets the [ts::basic_optional]() storage policy for [ts::object_ref]() to [ts::reference_optional_storage]().
-    ///
-    /// It will be used when the optional is rebound.
-    /// \module optional
-    template <typename T, bool XValue>
-    struct optional_storage_policy_for<object_ref<T, XValue>>
-    {
-        using type = reference_optional_storage<T, XValue>;
     };
 
     /// A [ts::basic_optional]() that uses [ts::reference_optional_storage]().
