@@ -287,30 +287,6 @@ TEST_CASE("optional")
         auto                    b_res = b.value_or(1);
         REQUIRE(b_res.id == 0);
     }
-    SECTION("unwrap")
-    {
-        optional<int> a;
-        optional<int> a_res = a.unwrap();
-        REQUIRE_FALSE(a_res.has_value());
-
-        optional<optional<int>> b;
-        optional<int>           b_res = b.unwrap();
-        REQUIRE_FALSE(b_res.has_value());
-
-        optional<int> c(0);
-        optional<int> c_res = c.unwrap();
-        REQUIRE(c_res.has_value());
-        REQUIRE(c_res.value() == 0);
-
-        optional<optional<int>> d{optional<int>(nullopt)};
-        optional<int>           d_res = d.unwrap();
-        REQUIRE_FALSE(d_res.has_value());
-
-        optional<optional<int>> e{optional<int>(0)};
-        optional<int>           e_res = e.unwrap();
-        REQUIRE(e_res.has_value());
-        REQUIRE(e_res.value() == 0);
-    }
     SECTION("map")
     {
         auto func = [](int i) { return "abc"[i]; };

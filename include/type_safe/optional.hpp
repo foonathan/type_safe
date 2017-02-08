@@ -82,38 +82,7 @@ namespace type_safe
         template <typename T>
         using is_optional = is_optional_impl<typename std::decay<T>::type>;
 
-        //=== unwrapping ===//
-        template <class Optional>
-        using need_unwrap_optional = is_optional<typename std::decay<Optional>::type::value_type>;
-
-        template <class Optional>
-        using unwrap_optional_impl =
-            typename std::conditional<is_optional<typename Optional::value_type>::value,
-                                      typename Optional::value_type, Optional>::type;
-
-        template <class Optional>
-        using unwrap_optional_t =
-            typename std::decay<unwrap_optional_impl<typename std::decay<Optional>::type>>::type;
-
-        template <class Optional>
-        unwrap_optional_t<Optional> unwrap_optional(std::true_type, Optional&& opt)
-        {
-            return opt.has_value() ? std::forward<Optional>(opt).value() :
-                                     unwrap_optional_t<Optional>{};
-        }
-
-        template <class Optional>
-        unwrap_optional_t<Optional> unwrap_optional(std::false_type, Optional&& opt)
-        {
-            return std::forward<Optional>(opt);
-        }
-
-        template <class Optional>
-        unwrap_optional_t<Optional> unwrap_optional(Optional&& opt)
-        {
-            return unwrap_optional(need_unwrap_optional<Optional>{}, std::forward<Optional>(opt));
-        }
-
+        //=== map_invoke ==//
         template <typename Func, typename Value, typename... Args>
         auto map_invoke(Func&& f, Value&& v, Args&&... args)
             -> decltype(std::forward<Func>(f)(std::forward<Value>(v), std::forward<Args>(args)...))
@@ -129,6 +98,9 @@ namespace type_safe
             return (std::forward<Value>(v).*std::forward<Func>(f))(std::forward<Args>(args)...);
         }
     } // namespace detail
+
+    template <class StoragePolicy>
+    class basic_optional;
 
     //=== basic_optional ===//
     /// Tag type to mark a [ts::basic_optional]() without a value.
@@ -158,6 +130,17 @@ namespace type_safe
         using type = void;
     };
 
+    /// Specialization of [ts::optional_storage_policy_for]() for [ts::basic_optional]() itself.
+    ///
+    /// It will simply forward to the same policy, so `ts::optional_for<ts::optional<T>>` is simply `ts::optional<T>`,
+    /// not `ts::optional<ts::optional<T>>`.
+    /// \module optional
+    template <class StoragePolicy>
+    struct optional_storage_policy_for<basic_optional<StoragePolicy>>
+    {
+        using type = StoragePolicy;
+    };
+
     template <typename T, bool XValue = false>
     class reference_optional_storage;
 
@@ -180,9 +163,6 @@ namespace type_safe
     {
         static_assert(sizeof(T) != sizeof(T), "no optional for rvalue references supported");
     };
-
-    template <class StoragePolicy>
-    class basic_optional;
 
     /// \exclude
     namespace detail
@@ -234,6 +214,9 @@ namespace type_safe
         ///
         /// It will use [ts::optional_storage_policy_for]() to determine whether a change of storage policy is needed.
         /// \notes If `U` is `void`, the result will be `void` as well.
+        /// \notes Due to a specialization of [ts::optional_storage_policy_for](),
+        /// if `U` is an optional itself, the result will be `U`,
+        /// not an optional of an optional.
         /// \exclude target
         template <typename U>
         using rebind = detail::rebind_optional<U, typename StoragePolicy::template rebind<U>>;
@@ -485,36 +468,6 @@ namespace type_safe
 #endif
 
         //=== factories ===//
-        /// \returns If `value_type` is a `basic_optional` itself, returns a copy of that optional (by moving in (2))
-        /// or a null optional of that type if `has_value()` is `false`.
-        /// Otherwise returns a copy of `*this`.
-        /// \requires `value_type` must be copy constructible.
-        /// \group unwrap -Factories
-        /// \param T
-        /// \exclude
-        /// \param 1
-        /// \exclude
-        template <typename T = value_type,
-                  typename std::enable_if<std::is_copy_constructible<T>::value, int>::type = 0>
-        detail::unwrap_optional_t<basic_optional<StoragePolicy>> unwrap() const TYPE_SAFE_LVALUE_REF
-        {
-            return detail::unwrap_optional(*this);
-        }
-
-#if TYPE_SAFE_USE_REF_QUALIFIERS
-        /// \group unwrap
-        /// \param T
-        /// \exclude
-        /// \param 1
-        /// \exclude
-        template <typename T = value_type,
-                  typename std::enable_if<std::is_move_constructible<T>::value, int>::type = 0>
-        detail::unwrap_optional_t<basic_optional<StoragePolicy>> unwrap() &&
-        {
-            return detail::unwrap_optional(*this);
-        }
-#endif
-
         /// Maps an optional.
         /// \effects If the optional contains a value,
         /// calls the function with the value followed by the additional arguments perfectly forwarded.
@@ -522,6 +475,10 @@ namespace type_safe
         /// that is empty if `*this` is empty and contains the result of the function otherwise.
         /// \requires `f` must either be a function or function object of matching signature,
         /// or a member function pointer of the stored type with compatible signature.
+        /// \notes Due to the way [ts::basic_optional::rebind]() works,
+        /// if the result of the function is `void`, `map()` will return `void` as well,
+        /// and if the result of the function is an optional itself,
+        /// `map()` will return the optional unchanged.
         /// \unique_name *map
         /// \group map
         /// \exclude return

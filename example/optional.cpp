@@ -52,10 +52,9 @@ int task_monadic(const std::string& str)
         // the result is another optional with possibly different type
         .map(static_cast<int (*)(int)>(&std::toupper))
         // now we map lookup
+        // as lookup returns already an optional itself,
+        // it won't wrap the result in another optional
         .map(lookup)
-        // but the result is a ts::optional<ts::optional<int>>
-        // so we need to call unwrap() to flatten it to ts::optional<int>
-        .unwrap()
         // value_or() as usual
         .value_or(0);
 }
