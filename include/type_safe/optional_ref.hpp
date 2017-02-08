@@ -41,7 +41,7 @@ namespace type_safe
     /// Depending on the const-ness of `T` is the reference to `const` or non-const as well,
     /// unless `XValue` is true`, in which case `T` must not be `const`.
     /// \module optional
-    template <typename T, bool XValue = false>
+    template <typename T, bool XValue /* = false*/>
     class reference_optional_storage
     {
         static_assert(!std::is_reference<T>::value, "pass the type without reference");
