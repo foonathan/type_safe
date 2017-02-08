@@ -323,6 +323,19 @@ TEST_CASE("optional")
         optional<char> b_res = b.map(func);
         REQUIRE(b_res.has_value());
         REQUIRE(b_res.value() == 'a');
+
+        struct foo
+        {
+            int func(int i)
+            {
+                return 2 * i;
+            }
+        };
+
+        optional<foo> c(foo{});
+        optional<int> c_res = c.map(&foo::func, 2);
+        REQUIRE(c_res.has_value());
+        REQUIRE(c_res.value() == 4);
     }
     SECTION("with")
     {

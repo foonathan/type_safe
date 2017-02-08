@@ -113,6 +113,21 @@ namespace type_safe
         {
             return unwrap_optional(need_unwrap_optional<Optional>{}, std::forward<Optional>(opt));
         }
+
+        template <typename Func, typename Value, typename... Args>
+        auto map_invoke(Func&& f, Value&& v, Args&&... args)
+            -> decltype(std::forward<Func>(f)(std::forward<Value>(v), std::forward<Args>(args)...))
+        {
+            return std::forward<Func>(f)(std::forward<Value>(v), std::forward<Args>(args)...);
+        }
+
+        template <typename Func, typename Value, typename... Args>
+        auto map_invoke(Func&& f, Value&& v, Args&&... args)
+            -> decltype((std::forward<Value>(v)
+                         .*std::forward<Func>(f))(std::forward<Args>(args)...))
+        {
+            return (std::forward<Value>(v).*std::forward<Func>(f))(std::forward<Args>(args)...);
+        }
     } // namespace detail
 
     //=== basic_optional ===//
@@ -493,19 +508,23 @@ namespace type_safe
 #endif
 
         /// Maps an optional.
-        /// \returns The return type is the `basic_optional` rebound to the return type of the function when called with `const value_type&` (1)/`value_type&&` (2) and the additional arguments.
-        /// If `has_value()` is `true`, returns the new optional with result of the value passed to the function.
-        /// otherwise returns an empty optional.
-        /// \requires `f` must be callable using `operator()` with `const value_type&` (1)/`value_type&&` (2) followed by the arguments.
+        /// \effects If the optional contains a value,
+        /// calls the function with the value followed by the additional arguments perfectly forwarded.
+        /// \returns A `basic_optional` rebound to the result type of the function,
+        /// that is empty if `*this` is empty and contains the result of the function otherwise.
+        /// \requires `f` must either be a function or function object of matching signature,
+        /// or a member function pointer of the stored type with compatible signature.
         /// \unique_name *map
         /// \group map
         /// \exclude return
         template <typename Func, typename... Args>
         auto map(Func&& f, Args&&... args) TYPE_SAFE_LVALUE_REF
-            -> rebind<decltype(std::forward<Func>(f)(this->value(), std::forward<Args>(args)...))>
+            -> rebind<decltype(detail::map_invoke(std::forward<Func>(f), this->value(),
+                                                  std::forward<Args>(args)...))>
         {
             if (has_value())
-                return std::forward<Func>(f)(value(), std::forward<Args>(args)...);
+                return detail::map_invoke(std::forward<Func>(f), value(),
+                                          std::forward<Args>(args)...);
             else
                 return nullopt;
         }
@@ -515,10 +534,12 @@ namespace type_safe
         /// \exclude return
         template <typename Func, typename... Args>
         auto map(Func&& f, Args&&... args) const TYPE_SAFE_LVALUE_REF
-            -> rebind<decltype(std::forward<Func>(f)(this->value(), std::forward<Args>(args)...))>
+            -> rebind<decltype(detail::map_invoke(std::forward<Func>(f), this->value(),
+                                                  std::forward<Args>(args)...))>
         {
             if (has_value())
-                return std::forward<Func>(f)(value(), std::forward<Args>(args)...);
+                return detail::map_invoke(std::forward<Func>(f), value(),
+                                          std::forward<Args>(args)...);
             else
                 return nullopt;
         }
@@ -529,10 +550,11 @@ namespace type_safe
         /// \exclude return
         template <typename Func, typename... Args>
         auto map(Func&& f, Args&&... args) && -> rebind<decltype(
-            std::forward<Func>(f)(std::move(this->value()), std::forward<Args>(args)...))>
+            detail::map_invoke(std::forward<Func>(f), this->value(), std::forward<Args>(args)...))>
         {
             if (has_value())
-                return std::forward<Func>(f)(std::move(value(), std::forward<Args>(args)...));
+                return detail::map_invoke(std::forward<Func>(f), value(),
+                                          std::forward<Args>(args)...);
             else
                 return nullopt;
         }
@@ -542,10 +564,11 @@ namespace type_safe
         /// \exclude return
         template <typename Func, typename... Args>
         auto map(Func&& f, Args&&... args) const && -> rebind<decltype(
-            std::forward<Func>(f)(std::move(this->value()), std::forward<Args>(args)...))>
+            detail::map_invoke(std::forward<Func>(f), this->value(), std::forward<Args>(args)...))>
         {
             if (has_value())
-                return std::forward<Func>(f)(std::move(value(), std::forward<Args>(args)...));
+                return detail::map_invoke(std::forward<Func>(f), value(),
+                                          std::forward<Args>(args)...);
             else
                 return nullopt;
         }
