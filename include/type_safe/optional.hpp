@@ -181,6 +181,9 @@ namespace type_safe
         static_assert(sizeof(T) != sizeof(T), "no optional for rvalue references supported");
     };
 
+    template <class StoragePolicy>
+    class basic_optional;
+
     /// \exclude
     namespace detail
     {
@@ -188,6 +191,12 @@ namespace type_safe
         using select_optional_storage_policy =
             typename std::conditional<std::is_same<TraitsResult, void>::value, Fallback,
                                       TraitsResult>::type;
+
+        template <typename T, typename Fallback>
+        using rebind_optional = typename std::
+            conditional<std::is_void<T>::value, void,
+                        basic_optional<select_optional_storage_policy<
+                            typename optional_storage_policy_for<T>::type, Fallback>>>::type;
     }
 
     /// An optional type, i.e. a type that may or may not be there.
@@ -224,11 +233,10 @@ namespace type_safe
         /// Rebinds the current optional to the type `U`.
         ///
         /// It will use [ts::optional_storage_policy_for]() to determine whether a change of storage policy is needed.
+        /// \notes If `U` is `void`, the result will be `void` as well.
         /// \exclude target
         template <typename U>
-        using rebind = basic_optional<detail::select_optional_storage_policy<
-            typename optional_storage_policy_for<U>::type,
-            typename StoragePolicy::template rebind<U>>>;
+        using rebind = detail::rebind_optional<U, typename StoragePolicy::template rebind<U>>;
 
     private:
         storage& get_storage() TYPE_SAFE_LVALUE_REF noexcept
@@ -522,11 +530,13 @@ namespace type_safe
             -> rebind<decltype(detail::map_invoke(std::forward<Func>(f), this->value(),
                                                   std::forward<Args>(args)...))>
         {
+            using return_type = decltype(
+                detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
             if (has_value())
                 return detail::map_invoke(std::forward<Func>(f), value(),
                                           std::forward<Args>(args)...);
             else
-                return nullopt;
+                return static_cast<rebind<return_type>>(nullopt);
         }
 
         /// \unique_name *map_const
@@ -537,11 +547,13 @@ namespace type_safe
             -> rebind<decltype(detail::map_invoke(std::forward<Func>(f), this->value(),
                                                   std::forward<Args>(args)...))>
         {
+            using return_type = decltype(
+                detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
             if (has_value())
                 return detail::map_invoke(std::forward<Func>(f), value(),
                                           std::forward<Args>(args)...);
             else
-                return nullopt;
+                return static_cast<rebind<return_type>>(nullopt);
         }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
@@ -552,11 +564,13 @@ namespace type_safe
         auto map(Func&& f, Args&&... args) && -> rebind<decltype(
             detail::map_invoke(std::forward<Func>(f), this->value(), std::forward<Args>(args)...))>
         {
+            using return_type = decltype(
+                detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
             if (has_value())
                 return detail::map_invoke(std::forward<Func>(f), value(),
                                           std::forward<Args>(args)...);
             else
-                return nullopt;
+                return static_cast<rebind<return_type>>(nullopt);
         }
 
         /// \unique_name *map_rvalue_const
@@ -566,11 +580,13 @@ namespace type_safe
         auto map(Func&& f, Args&&... args) const && -> rebind<decltype(
             detail::map_invoke(std::forward<Func>(f), this->value(), std::forward<Args>(args)...))>
         {
+            using return_type = decltype(
+                detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
             if (has_value())
                 return detail::map_invoke(std::forward<Func>(f), value(),
                                           std::forward<Args>(args)...);
             else
-                return nullopt;
+                return static_cast<rebind<return_type>>(nullopt);
         }
 #endif
     };

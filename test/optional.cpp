@@ -330,12 +330,20 @@ TEST_CASE("optional")
             {
                 return 2 * i;
             }
+
+            void func2(int i)
+            {
+                REQUIRE(i == 42);
+            }
         };
 
         optional<foo> c(foo{});
+
         optional<int> c_res = c.map(&foo::func, 2);
         REQUIRE(c_res.has_value());
         REQUIRE(c_res.value() == 4);
+
+        c.map(&foo::func2, 42);
     }
     SECTION("with")
     {
