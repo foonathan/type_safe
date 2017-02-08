@@ -951,10 +951,10 @@ namespace type_safe
     /// Uses [ts::optional_storage_policy_for]() to select the appropriate [ts::basic_optional]().
     ///
     /// By default, it uses [ts::direct_optional_storage]().
+    /// \notes If `T` is `void`, `optional_for` will also be `void`.
     /// \module optional
     template <typename T>
-    using optional_for = basic_optional<detail::select_optional_storage_policy<
-        typename optional_storage_policy_for<T>::type, direct_optional_storage<T>>>;
+    using optional_for = basic_optional<direct_optional_storage<int>>::rebind<T>;
 
     /// \returns A new [ts::optional<T>]() storing a copy of `t`.
     /// \module optional
