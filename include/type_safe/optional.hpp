@@ -501,6 +501,19 @@ namespace type_safe
         /// \group map
         /// \exclude return
         template <typename Func, typename... Args>
+        auto map(Func&& f, Args&&... args) TYPE_SAFE_LVALUE_REF
+            -> rebind<decltype(std::forward<Func>(f)(this->value(), std::forward<Args>(args)...))>
+        {
+            if (has_value())
+                return std::forward<Func>(f)(value(), std::forward<Args>(args)...);
+            else
+                return nullopt;
+        }
+
+        /// \unique_name *map_const
+        /// \group map
+        /// \exclude return
+        template <typename Func, typename... Args>
         auto map(Func&& f, Args&&... args) const TYPE_SAFE_LVALUE_REF
             -> rebind<decltype(std::forward<Func>(f)(this->value(), std::forward<Args>(args)...))>
         {
@@ -516,6 +529,19 @@ namespace type_safe
         /// \exclude return
         template <typename Func, typename... Args>
         auto map(Func&& f, Args&&... args) && -> rebind<decltype(
+            std::forward<Func>(f)(std::move(this->value()), std::forward<Args>(args)...))>
+        {
+            if (has_value())
+                return std::forward<Func>(f)(std::move(value(), std::forward<Args>(args)...));
+            else
+                return nullopt;
+        }
+
+        /// \unique_name *map_rvalue_const
+        /// \group map
+        /// \exclude return
+        template <typename Func, typename... Args>
+        auto map(Func&& f, Args&&... args) const && -> rebind<decltype(
             std::forward<Func>(f)(std::move(this->value()), std::forward<Args>(args)...))>
         {
             if (has_value())
