@@ -106,22 +106,26 @@ write_basic_package_version_file(
 )
 
 # Install target
-install(TARGETS type_safe 
-    EXPORT type_safe-targets
-    DESTINATION lib)
-
 install(DIRECTORY include/type_safe DESTINATION include)
 
-install( EXPORT type_safe-targets
-  DESTINATION
-    ${CONFIG_PACKAGE_INSTALL_DIR}
-)
+# Only export target when using imported targets
+if(debug_assert_FOUND)
+    install(TARGETS type_safe 
+        EXPORT type_safe-targets
+        DESTINATION lib)
 
-install( FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/type_safe-config.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/type_safe-config-version.cmake
-  DESTINATION
-    ${CONFIG_PACKAGE_INSTALL_DIR} )
+    install( EXPORT type_safe-targets
+      DESTINATION
+        ${CONFIG_PACKAGE_INSTALL_DIR}
+    )
+
+    install( FILES
+      ${CMAKE_CURRENT_SOURCE_DIR}/type_safe-config.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/type_safe-config-version.cmake
+      DESTINATION
+        ${CONFIG_PACKAGE_INSTALL_DIR} )
+
+endif()
 
 # other subdirectories
 # only add if not inside add_subdirectory()
