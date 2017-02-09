@@ -126,6 +126,7 @@ install( FILES
 # other subdirectories
 # only add if not inside add_subdirectory()
 option(TYPE_SAFE_BUILD_TEST_EXAMPLE "build test and example" OFF)
+option(BUILD_TESTING "build test and example" OFF) # The ctest variable for building tests
 if(${TYPE_SAFE_BUILD_TEST_EXAMPLE} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR) OR ${BUILD_TESTING})
     enable_testing()
     add_subdirectory(example/)
