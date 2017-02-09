@@ -109,7 +109,7 @@ write_basic_package_version_file(
 install(DIRECTORY include/type_safe DESTINATION include)
 
 # Only export target when using imported targets
-if(debug_assert_FOUND)
+if(TYPE_SAFE_HAS_IMPORTED_TARGETS)
     install(TARGETS type_safe 
         EXPORT type_safe-targets
         DESTINATION lib)
