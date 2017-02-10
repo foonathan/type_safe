@@ -483,18 +483,18 @@ namespace type_safe
 #endif
 
         /// Maps a variant with a function.
+        /// \effects If the variant is not empty,
+        /// calls the function using either `std::forward<Functor>(f)(current-value, std::forward<Args>(args)...)`
+        /// or member call syntax `(current-value.*std::forward<Functor>(f))(std::forward<Args>(args)...)`.
+        /// If those two expressions are both ill-formed, does nothing.
         /// \returns A new variant of the same type.
-        /// If the variant is empty, the result will be empty as well.
-        /// Otherwise let the variant contain an object of type `T`.
-        /// If the expression `std::forward<Functor>(value(variant_type<T>{}))` is well-formed,
-        /// the result will contain the result returned by the function.
-        /// If the type of the result cannot be stored in the variant,
-        /// the program is ill-formed.
-        /// If the expression is not well-formed,
-        /// will contain a copy of the object.
+        /// It contains nothing, if `*this` contains nothing.
+        /// Otherwise, if the function was called, it contains the result of the function.
+        /// Otherwise, it is a copy of the current variant.
         /// \throws Anything thrown by the function or copy/move constructor,
         /// in which case the variant will be left unchanged,
         /// unless the object was already moved into the function and modified there.
+        /// \requires The result of the function - if it is called - can be stored in the variant.
         /// \notes (1) will use the copy constructor, (2) will use the move constructor.
         /// The function does not participate in overload resolution,
         /// if copy (1)/move (2) constructors are not available for all types.
@@ -504,16 +504,17 @@ namespace type_safe
         /// \param 2
         /// \exclude
         template <
-            typename Functor, typename Dummy = void,
+            typename Functor, typename... Args, typename Dummy = void,
             typename = typename std::enable_if<traits::copy_constructible::value, Dummy>::type>
-        basic_variant map(Functor&& f) const TYPE_SAFE_LVALUE_REF
+        basic_variant map(Functor&& f, Args&&... args) const TYPE_SAFE_LVALUE_REF
         {
             basic_variant result(force_empty{});
             if (!has_value())
                 return result;
             detail::map_union<Functor&&, union_t>::map(result.storage_.get_union(),
                                                        storage_.get_union(),
-                                                       std::forward<Functor>(f));
+                                                       std::forward<Functor>(f),
+                                                       std::forward<Args>(args)...);
             DEBUG_ASSERT(result.has_value(), detail::assert_handler{});
             return result;
         }
@@ -525,16 +526,17 @@ namespace type_safe
         /// \param 2
         /// \exclude
         template <
-            typename Functor, typename Dummy = void,
+            typename Functor, typename... Args, typename Dummy = void,
             typename = typename std::enable_if<traits::move_constructible::value, Dummy>::type>
-        basic_variant map(Functor&& f) &&
+        basic_variant map(Functor&& f, Args&&... args) &&
         {
             basic_variant result(force_empty{});
             if (!has_value())
                 return result;
             detail::map_union<Functor&&, union_t>::map(result.storage_.get_union(),
                                                        std::move(storage_.get_union()),
-                                                       std::forward<Functor>(f));
+                                                       std::forward<Functor>(f),
+                                                       std::forward<Args>(args)...);
             DEBUG_ASSERT(result.has_value(), detail::assert_handler{});
             return result;
         }

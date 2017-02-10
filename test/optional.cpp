@@ -287,30 +287,6 @@ TEST_CASE("optional")
         auto                    b_res = b.value_or(1);
         REQUIRE(b_res.id == 0);
     }
-    SECTION("unwrap")
-    {
-        optional<int> a;
-        optional<int> a_res = a.unwrap();
-        REQUIRE_FALSE(a_res.has_value());
-
-        optional<optional<int>> b;
-        optional<int>           b_res = b.unwrap();
-        REQUIRE_FALSE(b_res.has_value());
-
-        optional<int> c(0);
-        optional<int> c_res = c.unwrap();
-        REQUIRE(c_res.has_value());
-        REQUIRE(c_res.value() == 0);
-
-        optional<optional<int>> d{optional<int>(nullopt)};
-        optional<int>           d_res = d.unwrap();
-        REQUIRE_FALSE(d_res.has_value());
-
-        optional<optional<int>> e{optional<int>(0)};
-        optional<int>           e_res = e.unwrap();
-        REQUIRE(e_res.has_value());
-        REQUIRE(e_res.value() == 0);
-    }
     SECTION("map")
     {
         auto func = [](int i) { return "abc"[i]; };
@@ -323,71 +299,27 @@ TEST_CASE("optional")
         optional<char> b_res = b.map(func);
         REQUIRE(b_res.has_value());
         REQUIRE(b_res.value() == 'a');
-    }
-    SECTION("bind")
-    {
-        auto func1 = [](int i) { return "abc"[i]; };
 
-        optional<int>  a;
-        optional<char> a_res = a.bind(func1);
-        REQUIRE_FALSE(a_res.has_value());
+        struct foo
+        {
+            int func(int i)
+            {
+                return 2 * i;
+            }
 
-        optional<int>  b(0);
-        optional<char> b_res = b.bind(func1);
-        REQUIRE(b_res.has_value());
-        REQUIRE(b_res.value() == 'a');
+            void func2(int i)
+            {
+                REQUIRE(i == 42);
+            }
+        };
 
-        auto func2 = [&](int i) { return i == 0 ? optional<char>(nullopt) : func1(i - 1); };
+        optional<foo> c(foo{});
 
-        optional<int>  c;
-        optional<char> c_res = c.bind(func2);
-        REQUIRE_FALSE(c_res.has_value());
+        optional<int> c_res = c.map(&foo::func, 2);
+        REQUIRE(c_res.has_value());
+        REQUIRE(c_res.value() == 4);
 
-        optional<int>  d(0);
-        optional<char> d_res = d.bind(func2);
-        REQUIRE_FALSE(d_res.has_value());
-
-        optional<int>  e(1);
-        optional<char> e_res = e.bind(func2);
-        REQUIRE(e_res.has_value());
-        REQUIRE(e_res.value() == 'a');
-    }
-    SECTION("transform")
-    {
-        auto func = [](int i) { return "abc"[i]; };
-
-        optional<int> a;
-        char          a_res = a.transform(char('\0'), func);
-        REQUIRE(a_res == '\0');
-
-        optional<int> b(0);
-        char          b_res = b.transform(char('\0'), func);
-        REQUIRE(b_res == 'a');
-    }
-    SECTION("then")
-    {
-        auto func1 = [](optional<int> i) { return i.value_or(-1); };
-
-        optional<int> a;
-        optional<int> a_res = a.then(func1);
-        REQUIRE(a_res.has_value());
-        REQUIRE(a_res.value() == -1);
-
-        optional<int> b(0);
-        optional<int> b_res = b.then(func1);
-        REQUIRE(b_res.has_value());
-        REQUIRE(b_res.value() == 0);
-
-        auto func2 = [](optional<int> i) { return !i ? optional<char>(nullopt) : 'A' + i.value(); };
-
-        optional<int>  c;
-        optional<char> c_res = c.then(func2);
-        REQUIRE_FALSE(c_res.has_value());
-
-        optional<int>  d(0);
-        optional<char> d_res = d.then(func2);
-        REQUIRE(d_res.has_value());
-        REQUIRE(d_res.value() == 'A');
+        c.map(&foo::func2, 42);
     }
     SECTION("with")
     {

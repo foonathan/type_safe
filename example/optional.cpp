@@ -50,11 +50,11 @@ int task_monadic(const std::string& str)
     return back(str)
         // map takes a functor and applies it to the stored value, if there is any
         // the result is another optional with possibly different type
-        .map([](char c) -> char { return std::toupper(c); })
-        // lookup is similar to map
-        // but the result of map(lookup) would be a ts::optional<ts::optional<int>>
-        // bind() calls unwrap() to flatten it to ts::optional<int>
-        .bind(lookup)
+        .map(static_cast<int (*)(int)>(&std::toupper))
+        // now we map lookup
+        // as lookup returns already an optional itself,
+        // it won't wrap the result in another optional
+        .map(lookup)
         // value_or() as usual
         .value_or(0);
 }
@@ -119,12 +119,7 @@ int main()
     auto ptr       = ts::opt_ref(&a);
     auto ptr_const = ts::opt_cref(&a);
 
-    // map() takes a functor and wraps the result in an optional itself
-    // transform() does not wrap it in an optional to allow arbitrary transformation
-    // but it needs a fallback value if there is no value stored
-    // here transform() is used to transform an optional_ref to a normal optional
-    auto ptr_transformed = ptr.transform(ts::optional<int>(), [](int a) { return a; });
-    // note that the same for this particular situation can be achieved like this
-    ptr_transformed = ts::copy(ptr); // there is also ts::move() to move the value
+    /// transform an optional_ref to an optional by copying
+    auto ptr_transformed = ts::copy(ptr); // there is also ts::move() to move the value
     std::cout << ptr_transformed.value() << '\n';
 }
