@@ -201,19 +201,33 @@ namespace type_safe
         template <bool AllowIncomplete, typename Visitor, class Variant>
         class visit_variant_impl<AllowIncomplete, Visitor, Variant>
         {
-            template <typename, typename... Args>
+            template <typename, typename... Args,
+                      typename Variant2 = typename std::decay<Variant>::type>
             static auto call_type(Visitor&& visitor, variant_types<>, Variant&& variant,
-                                  Args&&... args)
-                -> decltype(visit_variant_impl<AllowIncomplete, Visitor>::call(
-                    std::forward<Visitor>(visitor), std::forward<Args>(args)..., nullvar))
+                                  Args&&... args) ->
+                typename std::enable_if<Variant2::allow_empty::value,
+                                        decltype(visit_variant_impl<AllowIncomplete, Visitor>::call(
+                                            std::forward<Visitor>(visitor),
+                                            std::forward<Args>(args)..., nullvar))>::type
             {
-                DEBUG_ASSERT(std::decay<Variant>::type::allow_empty::value && !variant.has_value(),
-                             precondition_error_handler{}, "variant in invalid state for visitor");
+                DEBUG_ASSERT(!variant.has_value(), assert_handler{},
+                             "it has a value but we are in this overload?!");
                 return visit_variant_impl<AllowIncomplete, Visitor>::call(std::forward<Visitor>(
                                                                               visitor),
                                                                           std::forward<Args>(
                                                                               args)...,
                                                                           nullvar);
+            }
+
+            template <typename, typename... Args,
+                      typename Variant2 = typename std::decay<Variant>::type>
+            static auto call_type(Visitor&&, variant_types<>, Variant&& variant, Args&&...) ->
+                typename std::enable_if<!Variant2::allow_empty::value>::type
+            {
+                DEBUG_ASSERT(!variant.has_value(), assert_handler{},
+                             "it has a value but we are in this overload?!");
+                DEBUG_UNREACHABLE(precondition_error_handler{},
+                                  "variant in invalid state for visit");
             }
 
             template <typename RecursiveDecltype, typename Head, typename... Tail, typename... Args>
@@ -258,12 +272,14 @@ namespace type_safe
         template <bool AllowIncomplete, typename Visitor, class Variant, class... Rest>
         class visit_variant_impl<AllowIncomplete, Visitor, Variant, Rest...>
         {
-            template <typename, typename... Args>
+            template <typename, typename... Args,
+                      typename Variant2 = typename std::decay<Variant>::type>
             static auto call_type(Visitor&& visitor, variant_types<>, Variant&& variant,
-                                  Rest&&... rest, Args&&... args)
-                -> decltype(visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
-                    std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
-                    std::forward<Args>(args)..., nullvar))
+                                  Rest&&... rest, Args&&... args) -> typename std::
+                enable_if<Variant2::allow_empty::value,
+                          decltype(visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
+                              std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
+                              std::forward<Args>(args)..., nullvar))>::type
             {
                 DEBUG_ASSERT(std::decay<Variant>::type::allow_empty::value && !variant.has_value(),
                              precondition_error_handler{}, "variant in invalid state for visitor");
@@ -271,6 +287,18 @@ namespace type_safe
                                           Rest...>::call(std::forward<Visitor>(visitor),
                                                          std::forward<Rest>(rest)...,
                                                          std::forward<Args>(args)..., nullvar);
+            }
+
+            template <typename, typename... Args,
+                      typename Variant2 = typename std::decay<Variant>::type>
+            static auto call_type(Visitor&&, variant_types<>, Variant&& variant, Rest&&...,
+                                  Args&&...) ->
+                typename std::enable_if<!Variant2::allow_empty::value>::type
+            {
+                DEBUG_ASSERT(!variant.has_value(), assert_handler{},
+                             "it has a value but we are in this overload?!");
+                DEBUG_UNREACHABLE(precondition_error_handler{},
+                                  "variant in invalid state for visit");
             }
 
             template <typename RecursiveDecltype, typename Head, typename... Tail, typename... Args>
