@@ -363,37 +363,39 @@ TEST_CASE("basic_variant")
         {
             bool expect_call = false;
 
-            int operator()(int i)
+            int operator()(int i, int j)
             {
                 REQUIRE(expect_call);
                 REQUIRE(i == 5);
+                REQUIRE(j == 0);
                 return 12;
             }
 
-            int operator()(const debugger_type& dbg)
+            int operator()(const debugger_type& dbg, int j)
             {
                 REQUIRE(expect_call);
                 REQUIRE(dbg.id == 42);
+                REQUIRE(j == 0);
                 return 42;
             }
 
-            int operator()(double) = delete;
+            int operator()(double, int) = delete;
         } functor;
 
         functor.expect_call = false;
-        auto a              = empty.map(functor);
+        auto a              = empty.map(functor, 0);
         check_variant_empty(a);
 
         functor.expect_call = true;
-        auto b              = non_empty1.map(functor);
+        auto b              = non_empty1.map(functor, 0);
         check_variant_value(b, 12);
 
         functor.expect_call = true;
-        auto c              = non_empty2.map(functor);
+        auto c              = non_empty2.map(functor, 0);
         check_variant_value(c, 42);
 
         functor.expect_call = false;
-        auto d              = variant_t(3.0).map(functor);
+        auto d              = variant_t(3.0).map(functor, 0);
         check_variant_value(d, 3.0);
     }
     SECTION("compare null")

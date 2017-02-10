@@ -9,6 +9,7 @@
 #include <type_safe/detail/assign_or_construct.hpp>
 #include <type_safe/detail/copy_move_control.hpp>
 #include <type_safe/detail/is_nothrow_swappable.hpp>
+#include <type_safe/optional.hpp>
 #include <type_safe/tagged_union.hpp>
 
 namespace type_safe
@@ -170,37 +171,45 @@ namespace type_safe
         {
             struct visitor
             {
-                template <typename T, typename Result =
-                                          decltype(std::declval<Functor&&>()(std::declval<T&&>()))>
-                void call(int, Union& res, Functor&& f, T&& value)
+                template <typename T, typename... Args>
+                auto call(int, Union& res, Functor&& f, T&& value, Args&&... args)
+                    -> decltype((void)map_invoke(std::forward<Functor>(f), std::forward<T>(value),
+                                                 std::forward<Args>(args)...))
                 {
-                    res.emplace(union_type<typename std::decay<Result>::type>{},
-                                std::forward<Functor>(f)(std::forward<T>(value)));
+                    using result =
+                        decltype(map_invoke(std::forward<Functor>(f), std::forward<T>(value),
+                                            std::forward<Args>(args)...));
+                    res.emplace(union_type<typename std::decay<result>::type>{},
+                                map_invoke(std::forward<Functor>(f), std::forward<T>(value),
+                                           std::forward<Args>(args)...));
                 }
-
-                template <typename T>
-                void call(short, Union& res, Functor&&, T&& value)
+                template <typename T, typename... Args>
+                void call(short, Union& res, Functor&&, T&& value, Args&&...)
                 {
                     res.emplace(union_type<typename std::decay<T>::type>{}, std::forward<T>(value));
                 }
 
-                template <typename T>
-                void operator()(T&& value, Union& res, Functor&& f)
+                template <typename T, typename... Args>
+                void operator()(T&& value, Union& res, Functor&& f, Args&&... args)
                 {
-                    call(0, res, std::forward<Functor>(f), std::forward<T>(value));
+                    call(0, res, std::forward<Functor>(f), std::forward<T>(value),
+                         std::forward<Args>(args)...);
                 }
             };
 
-            static void map(Union& res, const Union& u, Functor&& f)
+            template <typename... Args>
+            static void map(Union& res, const Union& u, Functor&& f, Args&&... args)
             {
                 DEBUG_ASSERT(!res.has_value(), precondition_error_handler{});
-                with(u, visitor{}, res, std::forward<Functor>(f));
+                with(u, visitor{}, res, std::forward<Functor>(f), std::forward<Args>(args)...);
             }
 
-            static void map(Union& res, Union&& u, Functor&& f)
+            template <typename... Args>
+            static void map(Union& res, Union&& u, Functor&& f, Args&&... args)
             {
                 DEBUG_ASSERT(!res.has_value(), precondition_error_handler{});
-                with(std::move(u), visitor{}, res, std::forward<Functor>(f));
+                with(std::move(u), visitor{}, res, std::forward<Functor>(f),
+                     std::forward<Args>(args)...);
             }
         };
 
