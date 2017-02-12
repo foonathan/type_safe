@@ -5,7 +5,10 @@
 cmake_minimum_required(VERSION 3.1)
 project(TYPE_SAFE)
 
-include(external/external.cmake)
+find_package(debug_assert)
+if(NOT debug_assert_FOUND)
+    include(external/external.cmake)
+endif()
 
 # options
 if(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -78,8 +81,9 @@ set(header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/visitor.hpp)
 
 add_library(type_safe INTERFACE)
-target_sources(type_safe INTERFACE ${detail_header_files} ${header_files})
-target_include_directories(type_safe INTERFACE include/)
+target_sources(type_safe INTERFACE $<BUILD_INTERFACE:${detail_header_files} ${header_files}>)
+target_include_directories(type_safe INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>)
+target_include_directories(type_safe SYSTEM INTERFACE $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>)
 target_compile_definitions(type_safe INTERFACE
                                      TYPE_SAFE_ENABLE_ASSERTIONS=${_type_safe_enable_assertions}
                                      TYPE_SAFE_ENABLE_PRECONDITION_CHECKS=${_type_safe_enable_precondition_checks}
@@ -91,10 +95,44 @@ if(MSVC)
    target_compile_options(type_safe INTERFACE /wd4800) # truncation to bool warning
 endif()
 
+# Setup package config
+include( CMakePackageConfigHelpers )
+set(CONFIG_PACKAGE_INSTALL_DIR lib/cmake/type_safe)
+
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/type_safe-config-version.cmake
+  VERSION 0.1
+  COMPATIBILITY SameMajorVersion
+)
+
+# Install target
+install(DIRECTORY include/type_safe DESTINATION include)
+
+# Only export target when using imported targets
+if(TYPE_SAFE_HAS_IMPORTED_TARGETS)
+    install(TARGETS type_safe 
+        EXPORT type_safe-targets
+        DESTINATION lib)
+
+    install( EXPORT type_safe-targets
+      DESTINATION
+        ${CONFIG_PACKAGE_INSTALL_DIR}
+    )
+
+    install( FILES
+      ${CMAKE_CURRENT_SOURCE_DIR}/type_safe-config.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/type_safe-config-version.cmake
+      DESTINATION
+        ${CONFIG_PACKAGE_INSTALL_DIR} )
+
+endif()
+
 # other subdirectories
 # only add if not inside add_subdirectory()
 option(TYPE_SAFE_BUILD_TEST_EXAMPLE "build test and example" OFF)
-if(${TYPE_SAFE_BUILD_TEST_EXAMPLE} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+option(BUILD_TESTING "build test and example" OFF) # The ctest variable for building tests
+if(${TYPE_SAFE_BUILD_TEST_EXAMPLE} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR) OR ${BUILD_TESTING})
+    enable_testing()
     add_subdirectory(example/)
     add_subdirectory(test/)
 endif()
