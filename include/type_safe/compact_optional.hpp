@@ -267,7 +267,7 @@ namespace type_safe
     };
 
     /// \exclude
-    namespace detail
+    namespace compact_enum_detail
     {
         template <typename Enum>
         struct underlying_type_impl
@@ -285,12 +285,12 @@ namespace type_safe
     /// It uses the given `Invalid` value of the underlying type to mark an empty optional.
     /// \notes It uses a different `storage_type` and thus cannot return a reference to the stored value.
     /// \module optional
-    template <typename Enum, detail::underlying_type<Enum> Invalid>
+    template <typename Enum, compact_enum_detail::underlying_type<Enum> Invalid>
     class compact_enum_policy
     {
     public:
         using value_type   = Enum;
-        using storage_type = detail::underlying_type<Enum>;
+        using storage_type = compact_enum_detail::underlying_type<Enum>;
 
         static storage_type invalid_value() noexcept
         {
