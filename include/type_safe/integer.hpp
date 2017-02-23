@@ -134,7 +134,7 @@ namespace type_safe
         constexpr integer(T) = delete;
 
         //=== assignment ===//
-        /// \effects Initializes it with the given value.
+        /// \effects Assigns it with the given value.
         /// \notes This function does not participate in overload resolution
         /// if `T` is not an integer type safely convertible to this type.
         /// \group assignment
