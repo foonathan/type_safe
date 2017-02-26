@@ -6,6 +6,7 @@
 #define TYPE_SAFE_CONSTRAINED_TYPE_HPP_INCLUDED
 
 #include <type_traits>
+#include <iterator>
 #include <utility>
 
 #include <type_safe/detail/assert.hpp>
@@ -192,7 +193,7 @@ namespace type_safe
         /// \returns A `const` pointer to the stored value.
         const value_type* operator->() const noexcept
         {
-            return value_;
+            return std::addressof(value_);
         }
 
         /// \returns A `const` reference to the stored value.
@@ -275,7 +276,7 @@ namespace type_safe
         /// \returns A `const` pointer to the referred value.
         const value_type* operator->() const noexcept
         {
-            return &get_value;
+            return &get_value();
         }
 
         /// \returns A `const` reference to the referred value.
