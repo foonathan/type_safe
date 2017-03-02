@@ -5,10 +5,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(TYPE_SAFE)
 
-find_package(debug_assert)
-if(NOT debug_assert_FOUND)
-    include(external/external.cmake)
-endif()
+include(external/external.cmake)
 
 # options
 if(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -110,7 +107,7 @@ install(DIRECTORY include/type_safe DESTINATION include)
 
 # Only export target when using imported targets
 if(TYPE_SAFE_HAS_IMPORTED_TARGETS)
-    install(TARGETS type_safe 
+    install(TARGETS type_safe
         EXPORT type_safe-targets
         DESTINATION lib)
 

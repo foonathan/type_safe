@@ -2,7 +2,7 @@
 # This file is subject to the license terms in the LICENSE file
 # found in the top-level directory of this distribution.
 
-find_package(debug_assert)
+find_package(debug_assert QUIET)
 if(debug_assert_FOUND)
     set(TYPE_SAFE_HAS_IMPORTED_TARGETS On)
 else()
