@@ -21,6 +21,9 @@ namespace type_safe
 
         template <bool... Bs>
         using none_of = std::is_same<bool_sequence<Bs...>, bool_sequence<(false && Bs)...>>;
+
+        template <bool... Bs>
+        using any_of = std::integral_constant<bool, !none_of<Bs...>::value>;
     }
 } // namespace type_safe::detail
 

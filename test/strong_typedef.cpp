@@ -15,8 +15,8 @@ TEST_CASE("strong_typedef")
     SECTION("equality_comparison")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::equality_comparison<type, bool>,
-                      strong_typedef_op::mixed_equality_comparison<type, int, bool>
+                      strong_typedef_op::equality_comparison<type>,
+                      strong_typedef_op::mixed_equality_comparison<type, int>
         {
             using strong_typedef::strong_typedef;
         };
@@ -37,8 +37,8 @@ TEST_CASE("strong_typedef")
     SECTION("relational_comparison")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::relational_comparison<type, bool>,
-                      strong_typedef_op::mixed_relational_comparison<type, int, bool>
+                      strong_typedef_op::relational_comparison<type>,
+                      strong_typedef_op::mixed_relational_comparison<type, int>
         {
             using strong_typedef::strong_typedef;
         };

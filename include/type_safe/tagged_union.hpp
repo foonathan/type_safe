@@ -9,6 +9,7 @@
 
 #include <type_safe/detail/aligned_union.hpp>
 #include <type_safe/detail/all_of.hpp>
+#include <type_safe/detail/assert.hpp>
 #include <type_safe/config.hpp>
 #include <type_safe/strong_typedef.hpp>
 
@@ -18,8 +19,8 @@ namespace type_safe
     namespace detail
     {
         struct union_type_id : strong_typedef<union_type_id, std::size_t>,
-                               strong_typedef_op::equality_comparison<union_type_id, bool>,
-                               strong_typedef_op::relational_comparison<union_type_id, bool>
+                               strong_typedef_op::equality_comparison<union_type_id>,
+                               strong_typedef_op::relational_comparison<union_type_id>
         {
             using strong_typedef<union_type_id, std::size_t>::strong_typedef;
         };
@@ -110,8 +111,8 @@ namespace type_safe
         /// It is a [ts::strong_typedef]() for `std::size_t`
         /// and provides equality and relational comparison.
         class type_id : public strong_typedef<type_id, std::size_t>,
-                        public strong_typedef_op::equality_comparison<type_id, bool>,
-                        public strong_typedef_op::relational_comparison<type_id, bool>
+                        public strong_typedef_op::equality_comparison<type_id>,
+                        public strong_typedef_op::relational_comparison<type_id>
         {
         public:
             /// \returns `true` if `T` is a valid type, `false` otherwise.
@@ -172,7 +173,8 @@ namespace type_safe
         void emplace(union_type<T>, Args&&... args)
         {
             constexpr auto index = type_id(union_type<T>{});
-            static_assert(index != invalid_type, "T must not be stored in variant");
+            // MSVC doesn't like operator!= of the strong typedef here, for some reason...
+            static_assert(get(index) != get(invalid_type), "T must not be stored in variant");
             static_assert(std::is_constructible<T, Args&&...>::value,
                           "T not constructible from arguments");
 
