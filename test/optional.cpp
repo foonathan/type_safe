@@ -302,6 +302,8 @@ TEST_CASE("optional")
 
         struct foo
         {
+            int var = 42;
+
             int func(int i)
             {
                 return 2 * i;
@@ -320,6 +322,10 @@ TEST_CASE("optional")
         REQUIRE(c_res.value() == 4);
 
         c.map(&foo::func2, 42);
+
+        optional_ref<int> c_res2 = c.map(&foo::var);
+        REQUIRE(c_res2.has_value());
+        REQUIRE(c_res2.value() == 42);
     }
     SECTION("with")
     {

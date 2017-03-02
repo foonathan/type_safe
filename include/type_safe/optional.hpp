@@ -90,6 +90,13 @@ namespace type_safe
             return std::forward<Func>(f)(std::forward<Value>(v), std::forward<Args>(args)...);
         }
 
+        template <typename Func, typename Value>
+        auto map_invoke(Func&& f, Value&& v)
+            -> decltype(std::forward<Value>(v).*std::forward<Func>(f))
+        {
+            return std::forward<Value>(v).*std::forward<Func>(f);
+        }
+
         template <typename Func, typename Value, typename... Args>
         auto map_invoke(Func&& f, Value&& v, Args&&... args)
             -> decltype((std::forward<Value>(v)
