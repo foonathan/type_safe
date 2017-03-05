@@ -100,6 +100,7 @@ namespace type_safe
 
         /// \effects Copies the value and predicate of `other`.
         /// \throws Anything thrown by the copy constructor of `value_type`.
+        /// \requires `Constraint` must be copyable.
         constrained_type(const constrained_type& other) : Constraint(other), value_(other.value_)
         {
             debug_verify();
@@ -113,6 +114,7 @@ namespace type_safe
         /// \throws Anything thrown by the copy(1)/move(2) constructor or move assignment operator of `value_type`,
         /// or the `Verifier` if the `value` is invalid.
         /// If the `value` is invalid, nothing will be changed.
+        /// \requires `Constraint` must be copyable.
         /// \group assign_value
         constrained_type& operator=(const value_type& other)
         {
@@ -182,7 +184,7 @@ namespace type_safe
             return std::move(value_);
         }
 
-        /// Decrement operator.
+        /// Dereference operator.
         /// \returns A `const` reference to the stored value.
         const value_type& operator*() const noexcept
         {
@@ -265,7 +267,7 @@ namespace type_safe
             return constrained_modifier<T&, Constraint, Verifier>(*this);
         }
 
-        /// Decrement operator.
+        /// Dereference operator.
         /// \returns A `const` reference to the referred value.
         const value_type& operator*() const noexcept
         {
@@ -343,7 +345,7 @@ namespace type_safe
             return *this;
         }
 
-        /// Decrement operator.
+        /// Dereference operator.
         /// \returns A reference to the stored value.
         /// \requires It must not be in the moved-from state.
         value_type& operator*() noexcept
@@ -465,7 +467,7 @@ namespace type_safe
     /// The `Constraint` - which does not need to be a predicate anymore - is a "tag" to differentiate a type in different states.
     /// For example, you could have a "sanitized" value and a "non-sanitized" value
     /// that have different types, so you cannot accidentally mix them.
-    /// \notes It is only intended if the `Constrained` cannot be formalized easily and/or is expensive.
+    /// \notes It is only intended if the `Constraint` cannot be formalized easily and/or is expensive.
     /// Otherwise [ts::constrained_type]() is recommended
     /// as it does additional runtime checks in debug mode.
     template <typename T, class Constraint>

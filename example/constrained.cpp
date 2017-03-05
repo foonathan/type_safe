@@ -50,7 +50,7 @@ struct unsanitized
 {
 };
 
-// ts::tagged_type is an alis for ts::constrained_type with the ts::null_verifier as third parameter
+// ts::tagged_type is an alias for ts::constrained_type with the ts::null_verifier as third parameter
 // it is a constrained type where the constraint isn't checked
 // so the constraint does not need to be a predicate
 // it is just there to create different, non convertible types

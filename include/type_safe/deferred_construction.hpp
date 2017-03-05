@@ -64,7 +64,7 @@ namespace type_safe
         }
 
         /// \notes You cannot construct it from the type directly.
-        /// If you are able to do that, there is no need to use `defer_construction~!
+        /// If you are able to do that, there is no need to use `defer_construction`!
         deferred_construction(value_type) = delete;
 
         /// \effects If it is initialized, it will destroy the value.
