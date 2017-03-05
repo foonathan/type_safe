@@ -5,6 +5,7 @@
 function(_type_safe_example name)
     add_executable(type_safe_example_${name} ${name}.cpp)
     target_link_libraries(type_safe_example_${name} PUBLIC type_safe)
+    set_property(TARGET type_safe_example_${name} PROPERTY CXX_STANDARD 11)
 endfunction()
 
 _type_safe_example(constrained)
