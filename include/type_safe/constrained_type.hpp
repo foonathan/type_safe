@@ -19,7 +19,8 @@ namespace type_safe
     //=== constrained_type ===//
     /// A `Verifier` for [ts::constrained_type]() that `DEBUG_ASSERT`s the constraint.
     ///
-    /// \notes It asserts only if [TYPE_SAFE_ENABLE_PRECONDITION_CHECKS]() is `true`.
+    /// \notes It asserts only if [TYPE_SAFE_ENABLE_PRECONDITION_CHECKS]() is `true`,
+    /// else it is undefined behavior.
     /// \output_section Constrained type
     struct assertion_verifier
     {
@@ -474,8 +475,10 @@ namespace type_safe
 
     /// Creates a [ts::constrained_type]() using the [ts::throwing_verifier]().
     /// \returns A [ts::constrained_type]() with the given `value` and `Constraint`.
+    /// \throws A [ts::constrain_error]() if the `value` isn't valid,
+    /// or anything else thrown by the constructor.
     /// \notes This is meant for sanitizing user input,
-    /// an exception will be thrown on error.
+    /// using a recoverable error handling strategy.
     template <typename T, typename Constraint>
     auto sanitize(T&& value, Constraint c)
         -> constrained_type<typename std::decay<T>::type, Constraint, throwing_verifier>

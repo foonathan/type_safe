@@ -363,14 +363,17 @@ namespace type_safe
     /// \notes This is some type where the values must be in a certain interval.
     template <typename T, bool LowerInclusive, bool UpperInclusive,
               typename LowerBound = constraints::dynamic_bound,
-              typename UpperBound = constraints::dynamic_bound>
+              typename UpperBound = constraints::dynamic_bound,
+              typename Verifier   = assertion_verifier>
     using bounded_type = constrained_type<T, constraints::bounded<T, LowerInclusive, UpperInclusive,
                                                                   LowerBound, UpperBound>,
-                                          assertion_verifier>;
+                                          Verifier>;
 
     /// Creates a [ts::bounded_type]() to a specified [ts::constraints::closed_interval]().
     /// \returns A [ts::bounded_type]() with the given `value` and lower and upper bounds,
     /// where the bounds are valid values as well.
+    /// \requires As it uses [ts::assertion_verifier](),
+    /// the value must be valid.
     /// \notes If this function is passed in dynamic values of the same type as `value`,
     /// it will create a dynamic bound.
     /// Otherwise it must be passed static bounds.
@@ -384,9 +387,31 @@ namespace type_safe
                                                                       std::forward<U2>(upper)));
     }
 
+    /// Creates a [ts::bounded_type]() to a specified [ts::constraints::closed_interval]().
+    /// \returns A [ts::bounded_type]() with the given `value` and lower and upper bounds,
+    /// where the bounds are valid values as well.
+    /// \throws A [ts::constrain_error]() if the `value` isn't valid,
+    /// or anything else thrown by the constructor.
+    /// \notes This is meant for sanitizing user input,
+    /// using a recoverable error handling strategy.
+    /// \notes If this function is passed in dynamic values of the same type as `value`,
+    /// it will create a dynamic bound.
+    /// Otherwise it must be passed static bounds.
+    template <typename T, typename U1, typename U2>
+    auto sanitize_bounded(T&& value, U1&& lower, U2&& upper)
+        -> detail::make_bounded_type<throwing_verifier, true, true, T, U1, U2>
+    {
+        using result_type = detail::make_bounded_type<throwing_verifier, true, true, T, U1, U2>;
+        return result_type(std::forward<T>(value),
+                           typename result_type::constraint_predicate(std::forward<U1>(lower),
+                                                                      std::forward<U2>(upper)));
+    }
+
     /// Creates a [ts::bounded_type]() to a specified [ts::constraints::open_interval]().
     /// \returns A [ts::bounded_type]() with the given `value` and lower and upper bounds,
     /// where the bounds are not valid values.
+    /// \requires As it uses [ts::assertion_verifier](),
+    /// the value must be valid.
     /// \notes If this function is passed in dynamic values of the same type as `value`,
     /// it will create a dynamic bound.
     /// Otherwise it must be passed static bounds.
@@ -400,8 +425,30 @@ namespace type_safe
                                                                       std::forward<U2>(upper)));
     }
 
+    /// Creates a [ts::bounded_type]() to a specified [ts::constraints::open_interval](),
+    /// using [ts::throwing_verifier]().
+    /// \returns A [ts::bounded_type]() with the given `value` and lower and upper bounds,
+    /// where the bounds are not valid values.
+    /// \throws A [ts::constrain_error]() if the `value` isn't valid,
+    /// or anything else thrown by the constructor.
+    /// \notes This is meant for sanitizing user input,
+    /// using a recoverable error handling strategy.
+    /// \notes If this function is passed in dynamic values of the same type as `value`,
+    /// it will create a dynamic bound.
+    /// Otherwise it must be passed static bounds.
+    template <typename T, typename U1, typename U2>
+    auto sanitize_bounded_exclusive(T&& value, U1&& lower, U2&& upper)
+        -> detail::make_bounded_type<throwing_verifier, false, false, T, U1, U2>
+    {
+        using result_type = detail::make_bounded_type<throwing_verifier, false, false, T, U1, U2>;
+        return result_type(std::forward<T>(value),
+                           typename result_type::constraint_predicate(std::forward<U1>(lower),
+                                                                      std::forward<U2>(upper)));
+    }
+
     /// Changes `val` so that it is in the given [ts::constraints::closed_interval]().
     /// \effects If it is not in the interval, assigns the bound that is closer to the value.
+    /// \output_section clamped_type
     template <typename T, typename LowerBound, typename UpperBound, typename U>
     void clamp(const constraints::closed_interval<T, LowerBound, UpperBound>& interval, U& val)
     {
