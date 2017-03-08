@@ -74,11 +74,6 @@ namespace type_safe
         struct is_valid : decltype(verify_static_constrained<Constraint, T>(0))
         {
         };
-
-        template <typename T, class Constraint, class Verifier>
-        using nothrow_verifier =
-            std::integral_constant<bool, noexcept(Verifier::verify(std::declval<T&>(),
-                                                                   std::declval<Constraint&>()))>;
     } // namespace detail
 
     template <typename T, class Constraint, class Verifier>
@@ -118,8 +113,8 @@ namespace type_safe
 
         /// \group value_ctor
         explicit constrained_type(value_type&& value, constraint_predicate predicate = {}) noexcept(
-            std::is_nothrow_constructible<value_type>::value&&
-                detail::nothrow_verifier<T, Constraint, Verifier>::value)
+            std::is_nothrow_constructible<value_type>::value&& noexcept(
+                Verifier::verify(std::move(value), std::move(predicate))))
         : Constraint(std::move(predicate)), value_(std::move(value))
         {
             verify();
@@ -158,8 +153,8 @@ namespace type_safe
 
         /// \group assign_value
         constrained_type& operator=(value_type&& other) noexcept(
-            std::is_nothrow_move_assignable<value_type>::value&&
-                detail::nothrow_verifier<T, Constraint, Verifier>::value)
+            std::is_nothrow_move_assignable<value_type>::value&& noexcept(
+                Verifier::verify(std::move(other), std::declval<Constraint&>())))
         {
             constrained_type tmp(std::move(other), get_constraint());
             value_ = std::move(tmp).release();
@@ -244,7 +239,7 @@ namespace type_safe
         }
 
     private:
-        void verify() noexcept(detail::nothrow_verifier<T, Constraint, Verifier>::value)
+        void verify()
         {
             Verifier::verify(value_, get_constraint());
         }
@@ -328,7 +323,7 @@ namespace type_safe
         }
 
     private:
-        void verify() noexcept(detail::nothrow_verifier<T, Constraint, Verifier>::value)
+        void verify()
         {
             Verifier::verify(get_value(), get_constraint());
         }
@@ -363,7 +358,7 @@ namespace type_safe
         }
 
         /// \effects Verifies the value, if there is any.
-        ~constrained_modifier() noexcept(detail::nothrow_verifier<T, Constraint, Verifier>::value)
+        ~constrained_modifier() noexcept(false)
         {
             if (value_)
                 value_->verify();
