@@ -5,8 +5,9 @@
 #ifndef TYPE_SAFE_CONSTRAINED_TYPE_HPP_INCLUDED
 #define TYPE_SAFE_CONSTRAINED_TYPE_HPP_INCLUDED
 
-#include <type_traits>
 #include <iterator>
+#include <stdexcept>
+#include <type_traits>
 #include <utility>
 
 #include <type_safe/detail/assert.hpp>
@@ -17,6 +18,8 @@ namespace type_safe
 {
     //=== constrained_type ===//
     /// A `Verifier` for [ts::constrained_type]() that `DEBUG_ASSERT`s the constraint.
+    ///
+    /// \notes It asserts only if [TYPE_SAFE_ENABLE_PRECONDITION_CHECKS]() is `true`.
     /// \output_section Constrained type
     struct assertion_verifier
     {
@@ -25,6 +28,35 @@ namespace type_safe
         {
             DEBUG_ASSERT(p(val), detail::precondition_error_handler{},
                          "value does not fulfill constraint");
+        }
+    };
+
+    /// The exception class thrown by the [ts::throwing_verifier]().
+    class constrain_error : public std::logic_error
+    {
+    public:
+        constrain_error()
+        : std::logic_error("Constraint of type_safe::constrained_type wasn't fulfilled")
+        {
+        }
+    };
+
+    /// A `Verifier` for [ts::constrained_type]() that throws an exception in case of failure.
+    ///
+    /// Unlike [ts::assertion_verifier](), it will *always* check the constrain.
+    /// If it is not fulfilled, it throws an exception of type [ts::constrain_error]().
+    /// \notes [ts::assertion_verifier]() is the default,
+    /// because a constrain violation is a logic error,
+    /// usually done by a programmer.
+    /// Use this one only if you want to use [ts::constrained_type]()
+    /// with unsanitized user input, for example.
+    struct throwing_verifier
+    {
+        template <typename Value, typename Predicate>
+        static void verify(const Value& val, const Predicate& p)
+        {
+            if (!p(val))
+                TYPE_SAFE_THROW(constrain_error{});
         }
     };
 

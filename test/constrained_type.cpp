@@ -160,6 +160,15 @@ TEST_CASE("constrained_ref")
     }
 }
 
+TEST_CASE("throwing_verifier")
+{
+    auto dummy1 = 0, dummy2 = 0;
+
+    constrained_type<int*, constraints::non_null, throwing_verifier> a(&dummy1);
+    REQUIRE_NOTHROW((a = &dummy2, true));
+    REQUIRE_THROWS_AS(a = static_cast<int*>(nullptr), constrain_error);
+}
+
 TEST_CASE("constraints::non_null")
 {
     // conversion checks
