@@ -2,13 +2,13 @@
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
-#include <type_safe/types.hpp>
+#include <type_safe/detail/constant_parser.hpp>
 
 #include <catch.hpp>
 
 using namespace type_safe;
 
-TEST_CASE("parse")
+TEST_CASE("detail::parse")
 {
     REQUIRE((detail::parse<int, '1', '0'>() == 10));
     REQUIRE((detail::parse<int, '4', '2', '3'>() == 423));

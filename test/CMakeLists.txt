@@ -25,6 +25,7 @@ set(source_files test.cpp
                  bounded_type.cpp
                  compact_optional.cpp
                  constrained_type.cpp
+                 constant_parser.cpp
                  deferred_construction.cpp
                  downcast.cpp
                  flag.cpp
@@ -39,7 +40,6 @@ set(source_files test.cpp
                  reference.cpp
                  strong_typedef.cpp
                  tagged_union.cpp
-                 types.cpp
                  variant.cpp
                  visitor.cpp)
 add_executable(type_safe_test debugger_type.hpp ${source_files})
