@@ -167,6 +167,11 @@ TEST_CASE("throwing_verifier")
     constrained_type<int*, constraints::non_null, throwing_verifier> a(&dummy1);
     REQUIRE_NOTHROW((a = &dummy2, true));
     REQUIRE_THROWS_AS(a = static_cast<int*>(nullptr), constrain_error);
+
+    constrained_type<int*, constraints::non_null, throwing_verifier> b =
+        sanitize(&dummy2, constraints::non_null{});
+    REQUIRE_NOTHROW((b = &dummy2, true));
+    REQUIRE_THROWS_AS(b = static_cast<int*>(nullptr), constrain_error);
 }
 
 TEST_CASE("constraints::non_null")

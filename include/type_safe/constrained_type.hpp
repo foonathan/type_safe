@@ -448,17 +448,6 @@ namespace type_safe
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
     /// Creates a [ts::constrained_type]().
-    /// \returns A [ts::constrained_type]() with the given `value` and `Constraint`.
-    /// \unique_name constrain
-    template <typename T, typename Constraint>
-    auto constrain(T&& value, Constraint c)
-        -> constrained_type<typename std::decay<T>::type, Constraint>
-    {
-        return constrained_type<typename std::decay<T>::type, Constraint>(std::forward<T>(value),
-                                                                          std::move(c));
-    }
-
-    /// Creates a [ts::constrained_type]().
     /// \returns A [ts::constrained_type]() with the given `value`,  `Constraint` and `Verifier`.
     /// \unique_name constrain_verifier
     template <class Verifier, typename T, typename Constraint>
@@ -468,6 +457,31 @@ namespace type_safe
         return constrained_type<typename std::decay<T>::type, Constraint, Verifier>(std::forward<T>(
                                                                                         value),
                                                                                     std::move(c));
+    }
+
+    /// Creates a [ts::constrained_type]() with the default verifier, [ts::assertion_verifier]().
+    /// \returns A [ts::constrained_type]() with the given `value` and `Constraint`.
+    /// \requires As it uses a `DEBUG_ASSERT` to check constrain,
+    /// the value must be valid.
+    /// \unique_name constrain
+    template <typename T, typename Constraint>
+    auto constrain(T&& value, Constraint c)
+        -> constrained_type<typename std::decay<T>::type, Constraint>
+    {
+        return constrained_type<typename std::decay<T>::type, Constraint>(std::forward<T>(value),
+                                                                          std::move(c));
+    }
+
+    /// Creates a [ts::constrained_type]() using the [ts::throwing_verifier]().
+    /// \returns A [ts::constrained_type]() with the given `value` and `Constraint`.
+    /// \notes This is meant for sanitizing user input,
+    /// an exception will be thrown on error.
+    template <typename T, typename Constraint>
+    auto sanitize(T&& value, Constraint c)
+        -> constrained_type<typename std::decay<T>::type, Constraint, throwing_verifier>
+    {
+        return constrained_type<typename std::decay<T>::type, Constraint,
+                                throwing_verifier>(std::forward<T>(value), std::move(c));
     }
 
     /// With operation for [ts::constrained_type]().
