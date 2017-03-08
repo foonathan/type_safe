@@ -106,10 +106,20 @@
 /// \exclude
 #define TYPE_SAFE_RETHROW throw
 #else
-#define TYPE_SAFE_THROW(Ex) (Ex, std::abort())
+
+/// \exclude
+namespace type_safe
+{
+    namespace detail
+    {
+        void on_disabled_exception() noexcept;
+    }
+} // namespace type_safe::detail
+
+#define TYPE_SAFE_THROW(Ex) (Ex, type_safe::detail::on_disabled_exception())
 #define TYPE_SAFE_TRY if (true)
 #define TYPE_SAFE_CATCH_ALL if (false)
-#define TYPE_SAFE_RETHROW std::abort()
+#define TYPE_SAFE_RETHROW type_safe::detail::on_disabled_exception()
 #endif
 
 #ifndef TYPE_SAFE_USE_RTTI

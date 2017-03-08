@@ -23,6 +23,15 @@ namespace type_safe
               debug_assert::default_handler
         {
         };
+
+        inline void on_disabled_exception() noexcept
+        {
+            struct handler : debug_assert::set_level<1>, debug_assert::default_handler
+            {
+            };
+            DEBUG_UNREACHABLE(handler{},
+                              "attempt to throw an exception but exceptions are disabled");
+        }
     } // namespace detail
 } // namespace type_safe
 
