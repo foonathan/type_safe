@@ -5,8 +5,9 @@
 #ifndef TYPE_SAFE_CONSTRAINED_TYPE_HPP_INCLUDED
 #define TYPE_SAFE_CONSTRAINED_TYPE_HPP_INCLUDED
 
-#include <type_traits>
 #include <iterator>
+#include <stdexcept>
+#include <type_traits>
 #include <utility>
 
 #include <type_safe/detail/assert.hpp>
@@ -17,6 +18,9 @@ namespace type_safe
 {
     //=== constrained_type ===//
     /// A `Verifier` for [ts::constrained_type]() that `DEBUG_ASSERT`s the constraint.
+    ///
+    /// \notes It asserts only if [TYPE_SAFE_ENABLE_PRECONDITION_CHECKS]() is `true`,
+    /// else it is undefined behavior.
     /// \output_section Constrained type
     struct assertion_verifier
     {
@@ -25,6 +29,35 @@ namespace type_safe
         {
             DEBUG_ASSERT(p(val), detail::precondition_error_handler{},
                          "value does not fulfill constraint");
+        }
+    };
+
+    /// The exception class thrown by the [ts::throwing_verifier]().
+    class constrain_error : public std::logic_error
+    {
+    public:
+        constrain_error()
+        : std::logic_error("Constraint of type_safe::constrained_type wasn't fulfilled")
+        {
+        }
+    };
+
+    /// A `Verifier` for [ts::constrained_type]() that throws an exception in case of failure.
+    ///
+    /// Unlike [ts::assertion_verifier](), it will *always* check the constrain.
+    /// If it is not fulfilled, it throws an exception of type [ts::constrain_error]().
+    /// \notes [ts::assertion_verifier]() is the default,
+    /// because a constrain violation is a logic error,
+    /// usually done by a programmer.
+    /// Use this one only if you want to use [ts::constrained_type]()
+    /// with unsanitized user input, for example.
+    struct throwing_verifier
+    {
+        template <typename Value, typename Predicate>
+        static void verify(const Value& val, const Predicate& p)
+        {
+            if (!p(val))
+                TYPE_SAFE_THROW(constrain_error{});
         }
     };
 
@@ -41,11 +74,6 @@ namespace type_safe
         struct is_valid : decltype(verify_static_constrained<Constraint, T>(0))
         {
         };
-
-        template <typename T, class Constraint, class Verifier>
-        using nothrow_verifier =
-            std::integral_constant<bool, noexcept(Verifier::verify(std::declval<T&>(),
-                                                                   std::declval<Constraint&>()))>;
     } // namespace detail
 
     template <typename T, class Constraint, class Verifier>
@@ -85,8 +113,8 @@ namespace type_safe
 
         /// \group value_ctor
         explicit constrained_type(value_type&& value, constraint_predicate predicate = {}) noexcept(
-            std::is_nothrow_constructible<value_type>::value&&
-                detail::nothrow_verifier<T, Constraint, Verifier>::value)
+            std::is_nothrow_constructible<value_type>::value&& noexcept(
+                Verifier::verify(std::move(value), std::move(predicate))))
         : Constraint(std::move(predicate)), value_(std::move(value))
         {
             verify();
@@ -125,8 +153,8 @@ namespace type_safe
 
         /// \group assign_value
         constrained_type& operator=(value_type&& other) noexcept(
-            std::is_nothrow_move_assignable<value_type>::value&&
-                detail::nothrow_verifier<T, Constraint, Verifier>::value)
+            std::is_nothrow_move_assignable<value_type>::value&& noexcept(
+                Verifier::verify(std::move(other), std::declval<Constraint&>())))
         {
             constrained_type tmp(std::move(other), get_constraint());
             value_ = std::move(tmp).release();
@@ -211,7 +239,7 @@ namespace type_safe
         }
 
     private:
-        void verify() noexcept(detail::nothrow_verifier<T, Constraint, Verifier>::value)
+        void verify()
         {
             Verifier::verify(value_, get_constraint());
         }
@@ -295,7 +323,7 @@ namespace type_safe
         }
 
     private:
-        void verify() noexcept(detail::nothrow_verifier<T, Constraint, Verifier>::value)
+        void verify()
         {
             Verifier::verify(get_value(), get_constraint());
         }
@@ -330,7 +358,7 @@ namespace type_safe
         }
 
         /// \effects Verifies the value, if there is any.
-        ~constrained_modifier() noexcept(detail::nothrow_verifier<T, Constraint, Verifier>::value)
+        ~constrained_modifier() noexcept(false)
         {
             if (value_)
                 value_->verify();
@@ -416,17 +444,6 @@ namespace type_safe
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
     /// Creates a [ts::constrained_type]().
-    /// \returns A [ts::constrained_type]() with the given `value` and `Constraint`.
-    /// \unique_name constrain
-    template <typename T, typename Constraint>
-    auto constrain(T&& value, Constraint c)
-        -> constrained_type<typename std::decay<T>::type, Constraint>
-    {
-        return constrained_type<typename std::decay<T>::type, Constraint>(std::forward<T>(value),
-                                                                          std::move(c));
-    }
-
-    /// Creates a [ts::constrained_type]().
     /// \returns A [ts::constrained_type]() with the given `value`,  `Constraint` and `Verifier`.
     /// \unique_name constrain_verifier
     template <class Verifier, typename T, typename Constraint>
@@ -436,6 +453,33 @@ namespace type_safe
         return constrained_type<typename std::decay<T>::type, Constraint, Verifier>(std::forward<T>(
                                                                                         value),
                                                                                     std::move(c));
+    }
+
+    /// Creates a [ts::constrained_type]() with the default verifier, [ts::assertion_verifier]().
+    /// \returns A [ts::constrained_type]() with the given `value` and `Constraint`.
+    /// \requires As it uses a `DEBUG_ASSERT` to check constrain,
+    /// the value must be valid.
+    /// \unique_name constrain
+    template <typename T, typename Constraint>
+    auto constrain(T&& value, Constraint c)
+        -> constrained_type<typename std::decay<T>::type, Constraint>
+    {
+        return constrained_type<typename std::decay<T>::type, Constraint>(std::forward<T>(value),
+                                                                          std::move(c));
+    }
+
+    /// Creates a [ts::constrained_type]() using the [ts::throwing_verifier]().
+    /// \returns A [ts::constrained_type]() with the given `value` and `Constraint`.
+    /// \throws A [ts::constrain_error]() if the `value` isn't valid,
+    /// or anything else thrown by the constructor.
+    /// \notes This is meant for sanitizing user input,
+    /// using a recoverable error handling strategy.
+    template <typename T, typename Constraint>
+    auto sanitize(T&& value, Constraint c)
+        -> constrained_type<typename std::decay<T>::type, Constraint, throwing_verifier>
+    {
+        return constrained_type<typename std::decay<T>::type, Constraint,
+                                throwing_verifier>(std::forward<T>(value), std::move(c));
     }
 
     /// With operation for [ts::constrained_type]().
