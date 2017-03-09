@@ -10,6 +10,7 @@ using namespace type_safe;
 
 TEST_CASE("detail::parse")
 {
+    REQUIRE((detail::parse<int, '0'>() == 0));
     REQUIRE((detail::parse<int, '1', '0'>() == 10));
     REQUIRE((detail::parse<int, '4', '2', '3'>() == 423));
     REQUIRE((detail::parse<int, '2', '3', '\'', '9', '0', '0'>() == 23900));

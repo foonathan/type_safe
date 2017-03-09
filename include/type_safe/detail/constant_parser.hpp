@@ -138,12 +138,12 @@ namespace type_safe
             }
         };
 
-        template <typename T, char... Tail>
-        struct parse_base<T, '0', Tail...>
+        template <typename T, char Head, char... Tail>
+        struct parse_base<T, '0', Head, Tail...>
         {
             static constexpr T parse()
             {
-                return do_parse_loop<T, 8, Tail...>();
+                return do_parse_loop<T, 8, Head, Tail...>();
             }
         };
 
