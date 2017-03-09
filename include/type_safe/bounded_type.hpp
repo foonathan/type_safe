@@ -251,13 +251,13 @@ namespace type_safe
             }
 
             /// \returns The value of the lower bound.
-            auto get_lower_bound() const noexcept -> decltype(lower().get_bound())
+            auto get_lower_bound() const noexcept -> decltype(this->lower().get_bound())
             {
                 return lower().get_bound();
             }
 
             /// \returns The value of the upper bound.
-            auto get_upper_bound() const noexcept -> decltype(upper().get_bound())
+            auto get_upper_bound() const noexcept -> decltype(this->upper().get_bound())
             {
                 return upper().get_bound();
             }
@@ -385,8 +385,9 @@ namespace type_safe
 
             template <typename T, T Value>
             constexpr auto operator-(integer_bound<T, Value>) noexcept
-                -> integer_bound<typename std::make_signed<T>::type, -Value>
+                -> integer_bound<T, Value * T(-1)>
             {
+                static_assert(std::is_signed<T>::value, "must be a signed integer type");
                 return {};
             }
         } // namespace lit_detail
