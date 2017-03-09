@@ -79,7 +79,7 @@ script:
 
 after_success:
   - git config --global user.name "Travis CI"
-  - git config --global user.email "jonathanmueller.dev@gmail.com"
+  - git config --global user.email "ci@foonathan.net"
   - if [[ "$BUILD_DOCS" -eq 1 ]]; then $CMAKE --build . --target standardese_type_safe; fi
   - git clone "https://$GITHUB_TOKEN@github.com/foonathan/foonathan.github.io.git/"
   - cd foonathan.github.io/
