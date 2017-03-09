@@ -6,6 +6,8 @@
 
 #include <catch.hpp>
 
+#include <type_safe/integer.hpp>
+
 using namespace type_safe;
 
 TEST_CASE("constraints::less")
@@ -120,6 +122,35 @@ TEST_CASE("constraints::bounded")
         REQUIRE(!p(-5));
         REQUIRE(!p(100));
     }
+}
+
+TEST_CASE("bounded literal")
+{
+    SECTION("unsigned")
+    {
+        constraints::less<integer<unsigned>, lit_detail::integer_bound<unsigned long long, 42>> p(
+            42_boundu);
+        static_assert(std::is_same<decltype(p.get_bound()), unsigned long long>::value, "ups");
+        REQUIRE(p.get_bound() == 42);
+    }
+    SECTION("signed")
+    {
+        constraints::less<integer<int>, lit_detail::integer_bound<long long, 42>> p(42_bound);
+        static_assert(std::is_same<decltype(p.get_bound()), long long>::value, "ups");
+        REQUIRE(p.get_bound() == 42);
+    }
+    SECTION("signed negative")
+    {
+        constraints::less<integer<int>, lit_detail::integer_bound<long long, -42>> p(-42_bound);
+        static_assert(std::is_same<decltype(p.get_bound()), long long>::value, "ups");
+        REQUIRE(p.get_bound() == -42);
+    }
+
+    bounded_type<integer<int>, true, true, lit_detail::integer_bound<long long, 0>,
+                 lit_detail::integer_bound<long long, 100>>
+        bounded = make_bounded(integer<int>(50), 0_bound, 100_bound);
+    REQUIRE(bounded.get_constraint().get_lower_bound() == 0);
+    REQUIRE(bounded.get_constraint().get_upper_bound() == 100);
 }
 
 TEST_CASE("bounded_type")
