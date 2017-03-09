@@ -219,7 +219,7 @@ namespace type_safe
         {
             struct equal_visitor
             {
-                bool result;
+                bool result = false;
 
                 template <typename T>
                 void operator()(const T& value, const Variant& other)
@@ -230,7 +230,7 @@ namespace type_safe
 
             struct less_visitor
             {
-                bool result;
+                bool result = false;
 
                 template <typename T>
                 void operator()(const T& value, const Variant& other)

@@ -43,7 +43,7 @@ namespace type_safe
 
         // non-polymorphic type, no check possible
         template <typename Derived, typename Base>
-        auto is_safe_downcast(derived_type<Derived>, const Base& obj) ->
+        auto is_safe_downcast(derived_type<Derived>, const Base&) ->
             typename std::enable_if<!std::is_polymorphic<Base>::value, bool>::type
         {
             return true;
