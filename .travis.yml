@@ -3,12 +3,12 @@ language: cpp
 matrix:
   include:
     - os: linux
-      compiler: gcc
+      compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'boost-latest']
           packages: ['g++-5', 'libboost1.55-all-dev']
-      env: TOOLSET=g++-5 BUILD_TYPE='Release' BUILD_DOCS=1
+      env: TOOLSET=clang++ BUILD_TYPE='Release' BUILD_DOCS=1
 
     - os: linux
       compiler: gcc
