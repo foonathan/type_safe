@@ -96,6 +96,29 @@ void check_set(const type_safe::flag_set<test_flags>& set, bool a, bool b, bool 
     }
 }
 
+TEST_CASE("flag_set_traits")
+{
+    using namespace type_safe;
+
+    enum class a
+    {
+        e1,
+        e2,
+        e3
+    };
+    static_assert(!flag_set_traits<a>::value, "a is not a flag set enum");
+
+    enum class b
+    {
+        e1,
+        e2,
+        e3,
+        _flag_set_size,
+    };
+    static_assert(flag_set_traits<b>::value, "b is a flag set enum");
+    static_assert(flag_set_traits<b>::size() == 3u, "size of b is 3");
+}
+
 TEST_CASE("flag_set")
 {
     using namespace type_safe;

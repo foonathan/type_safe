@@ -13,16 +13,54 @@
 
 namespace type_safe
 {
+    /// \exclude
+    namespace detail
+    {
+        template <typename Enum, typename = void>
+        struct is_flag_set : std::false_type
+        {
+        };
+
+        template <typename Enum>
+        struct is_flag_set<Enum, decltype(static_cast<void>(Enum::_flag_set_size))>
+            : std::is_enum<Enum>
+        {
+        };
+
+        template <typename Enum>
+        constexpr typename std::enable_if<is_flag_set<Enum>::value, std::size_t>::type
+            flag_set_size() noexcept
+        {
+            return static_cast<std::size_t>(Enum::_flag_set_size);
+        }
+
+        template <typename Enum>
+        constexpr typename std::enable_if<!is_flag_set<Enum>::value, std::size_t>::type
+            flag_set_size() noexcept
+        {
+            return 0u;
+        }
+    } // namespace detail
+
     /// Traits for the enum used in a [ts::flag_set]().
     ///
-    /// Specialize it for your own enumeration type.
-    /// It must inherit from [std::true_type]() in order to create the combination operations.
-    /// It also must provide a `static constexpr` function `size()` that returns the number of enumeration values
-    /// used for indexing.
-    /// \requires The enumeration must be contiguous starting at `0`, simply don't set an explicit value to the enumeration members.
+    /// For each enum that should be used with [ts::flag_set]() it must provide the following interface:
+    /// * Inherit from [std::true_type]().
+    /// * `static constexpr std::size_t size()` that returns the number of enumerators.
+    ///
+    /// The default specialization automatically works for enums that have an enumerator `_flag_set_size`,
+    /// whose value is the number of enumerators.
+    /// But you can also specialize the traits for your own enums.
+    ///
+    /// \requires For all specializations the enum must be contiguous starting at `0`,
+    /// simply don't set an explicit value to the enumerators.
     template <typename Enum>
-    struct flag_set_traits : std::false_type
+    struct flag_set_traits : detail::is_flag_set<Enum>
     {
+        static constexpr std::size_t size() noexcept
+        {
+            return detail::flag_set_size<Enum>();
+        }
     };
 
     /// \exclude
