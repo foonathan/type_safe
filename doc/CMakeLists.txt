@@ -4,7 +4,7 @@
 
 set(TYPE_SAFE_STANDARDESE_DOWNLOAD_DIRECTORY "" CACHE PATH "path to directory with pre-built standardese")
 
-find_package(standardese)
+find_package(standardese QUIET)
 if(NOT standardese_FOUND)
     find_program(STANDARDESE_TOOL standardese ${TYPE_SAFE_STANDARDESE_DOWNLOAD_DIRECTORY})
     include(${TYPE_SAFE_STANDARDESE_DOWNLOAD_DIRECTORY}/standardese-config.cmake)
