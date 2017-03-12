@@ -240,6 +240,16 @@ namespace type_safe
             return bits_ != int_type(0);
         }
 
+        /// \returns An integer where each bit has the value of the corresponding flag.
+        /// \requires `T` must be an unsigned integer type with enough bits.
+        template <typename T>
+        constexpr T to_int() const noexcept
+        {
+            static_assert(std::is_unsigned<T>::value && sizeof(T) * CHAR_BIT >= traits::size(),
+                          "invalid integer type, lossy conversion");
+            return bits_;
+        }
+
         /// \returns A set with all bits flipped.
         constexpr flag_set operator~() const noexcept
         {
