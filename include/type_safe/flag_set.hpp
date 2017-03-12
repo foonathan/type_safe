@@ -5,7 +5,8 @@
 #ifndef TYPE_SAFE_FLAG_SET_HPP_INCLUDED
 #define TYPE_SAFE_FLAG_SET_HPP_INCLUDED
 
-#include <bitset>
+#include <cstdint>
+#include <climits>
 #include <type_traits>
 
 #include <type_safe/flag.hpp>
@@ -70,6 +71,31 @@ namespace type_safe
         using enable_enum_operation =
             typename std::enable_if<std::is_enum<Enum>::value
                                     && flag_set_traits<Enum>::value>::type;
+
+        template <std::size_t Size, typename = void>
+        struct select_flag_set_int
+        {
+            static_assert(Size != 0u,
+                          "number of bits not supported, complain loud enough so I'll do it");
+        };
+
+/// \exclude
+#define TYPE_SAFE_DETAIL_SELECT(Min, Max, Type)                                                    \
+    template <std::size_t Size>                                                                    \
+    struct select_flag_set_int<Size, typename std::enable_if<(Size > Min && Size <= Max)>::type>   \
+    {                                                                                              \
+        using type = Type;                                                                         \
+    };
+
+        TYPE_SAFE_DETAIL_SELECT(0u, 8u, std::uint_least8_t)
+        TYPE_SAFE_DETAIL_SELECT(8u, 16u, std::uint_least16_t)
+        TYPE_SAFE_DETAIL_SELECT(16u, 32u, std::uint_least32_t)
+        TYPE_SAFE_DETAIL_SELECT(32u, sizeof(std::uint_least64_t) * CHAR_BIT, std::uint_least64_t)
+
+#undef TYPE_SAFE_DETAIL_SELECT
+
+        template <std::size_t Size>
+        using flag_set_int = typename select_flag_set_int<Size>::type;
     } // namespace detail
 
     /// A set of flags where each one can either be `0` or `1`.
@@ -82,19 +108,31 @@ namespace type_safe
         static_assert(std::is_enum<Enum>::value, "not an enum");
         static_assert(flag_set_traits<Enum>::value, "invalid enum for flag_set");
 
-        using traits = flag_set_traits<Enum>;
-        using bitset = std::bitset<traits::size()>;
+        using traits   = flag_set_traits<Enum>;
+        using int_type = detail::flag_set_int<traits::size()>;
+
+        static constexpr int_type get_mask(const Enum& bit) noexcept
+        {
+            return int_type(int_type(1) << static_cast<std::size_t>(bit));
+        }
+
+        static constexpr int_type total_mask() noexcept
+        {
+            // well-defined due to modulo semantics
+            return int_type((int_type(1) << traits::size()) - int_type(1));
+        }
 
     public:
         //=== constructors/assignment ===//
         /// Default constructor.
         /// \effects Creates a set where all bits are set to `0`.
-        flag_set() noexcept = default;
+        constexpr flag_set() noexcept : bits_(0)
+        {
+        }
 
         /// \effects Creates a set where all bits are set to `0` except the given one.
-        flag_set(const Enum& bit) noexcept
+        constexpr flag_set(const Enum& bit) noexcept : bits_(get_mask(bit))
         {
-            bits_.set(static_cast<std::size_t>(bit));
         }
 
         /// \effects Same as `*this = flag_set(bit)`.
@@ -109,7 +147,7 @@ namespace type_safe
         /// \group set
         void set(const Enum& bit) noexcept
         {
-            bits_.set(static_cast<std::size_t>(bit));
+            bits_ |= get_mask(bit);
         }
 
         /// \group set
@@ -118,32 +156,38 @@ namespace type_safe
         template <typename T, typename = detail::enable_boolean<T>>
         void set(const Enum& bit, T value) noexcept
         {
-            bits_.set(static_cast<std::size_t>(bit), static_cast<bool>(value));
+            if (value)
+                set(bit);
+            else
+                reset(bit);
         }
 
         /// \group set
         void set(const Enum& bit, flag value) noexcept
         {
-            bits_.set(static_cast<std::size_t>(bit), value == true);
+            set(bit, value == true);
         }
 
         /// \effects Sets the specified bit to `0`.
         void reset(const Enum& bit) noexcept
         {
-            bits_.reset(static_cast<std::size_t>(bit));
+            bits_ &= ~get_mask(bit);
         }
 
         /// \effects Toggles the specified bit.
         void toggle(const Enum& bit) noexcept
         {
-            bits_.flip(static_cast<std::size_t>(bit));
+            bits_ ^= get_mask(bit);
         }
 
         /// \effects Sets/resets/toggles all bits.
         /// \group all
         void set_all() noexcept
         {
-            bits_.set();
+            // negative overflow is well-defined
+            // maximum value of int, i.e. all ones
+            // only need to make sure that the higher bits are kept 0
+            bits_ = int_type(-1) & total_mask();
         }
 
         /// \group all
@@ -167,40 +211,39 @@ namespace type_safe
         /// \group all
         void reset_all() noexcept
         {
-            bits_.reset();
+            bits_ = int_type(0);
         }
 
         /// \group all
         void toggle_all() noexcept
         {
-            bits_.flip();
+            bits_ ^= int_type(-1);
+            bits_ &= total_mask();
         }
 
         /// \returns Whether or not the specified bit is set.
-        bool is_set(const Enum& bit) const noexcept
+        constexpr bool is_set(const Enum& bit) const noexcept
         {
-            return bits_[static_cast<std::size_t>(bit)];
+            return (bits_ & get_mask(bit)) != int_type(0);
         }
 
         /// \returns Same as `flag(is_set(bit))`.
-        flag as_flag(const Enum& bit) const noexcept
+        constexpr flag as_flag(const Enum& bit) const noexcept
         {
             return is_set(bit);
         }
 
         //=== bitwise operations ===//
         /// \returns Whether any bit is set.
-        explicit operator bool() const noexcept
+        explicit constexpr operator bool() const noexcept
         {
-            return bits_.any();
+            return bits_ != int_type(0);
         }
 
         /// \returns A set with all bits flipped.
-        flag_set operator~() const noexcept
+        constexpr flag_set operator~() const noexcept
         {
-            flag_set result;
-            result.bits_ = ~bits_;
-            return result;
+            return flag_set(~bits_ & total_mask());
         }
 
         /// \effects Sets all bits in `*this` that are set in `other` (1)/the given `bit` (2).
@@ -250,52 +293,66 @@ namespace type_safe
         }
 
     private:
-        bitset bits_;
+        explicit constexpr flag_set(int_type i) noexcept : bits_(i)
+        {
+        }
+
+        int_type bits_;
 
         template <typename Enum2>
-        friend bool operator==(const flag_set<Enum2>& a, const flag_set<Enum2>& b) noexcept;
+        friend constexpr bool operator==(const flag_set<Enum2>& a,
+                                         const flag_set<Enum2>& b) noexcept;
+        template <typename Enum2>
+        friend constexpr flag_set<Enum2> operator|(const flag_set<Enum2>& a,
+                                                   const flag_set<Enum2>& b) noexcept;
+        template <typename Enum2>
+        friend constexpr flag_set<Enum2> operator&(const flag_set<Enum2>& a,
+                                                   const flag_set<Enum2>& b) noexcept;
+        template <typename Enum2>
+        friend constexpr flag_set<Enum2> operator^(const flag_set<Enum2>& a,
+                                                   const flag_set<Enum2>& b) noexcept;
     };
 
     /// `flag_set` equality comparison.
     /// \returns Whether both flag sets have the same combination of flags set/not set.
     /// \group flag_set_equal flag_set equality comparison
     template <typename Enum>
-    bool operator==(const flag_set<Enum>& a, const flag_set<Enum>& b) noexcept
+    constexpr bool operator==(const flag_set<Enum>& a, const flag_set<Enum>& b) noexcept
     {
         return a.bits_ == b.bits_;
     }
 
     /// \group flag_set_equal
     template <typename Enum>
-    bool operator==(const flag_set<Enum>& a, const Enum& b) noexcept
+    constexpr bool operator==(const flag_set<Enum>& a, const Enum& b) noexcept
     {
         return a == flag_set<Enum>(b);
     }
 
     /// \group flag_set_equal
     template <typename Enum>
-    bool operator==(const Enum& a, const flag_set<Enum>& b) noexcept
+    constexpr bool operator==(const Enum& a, const flag_set<Enum>& b) noexcept
     {
         return flag_set<Enum>(a) == b;
     }
 
     /// \group flag_set_equal
     template <typename Enum>
-    bool operator!=(const flag_set<Enum>& a, const flag_set<Enum>& b) noexcept
+    constexpr bool operator!=(const flag_set<Enum>& a, const flag_set<Enum>& b) noexcept
     {
         return !(a == b);
     }
 
     /// \group flag_set_equal
     template <typename Enum>
-    bool operator!=(const flag_set<Enum>& a, const Enum& b) noexcept
+    constexpr bool operator!=(const flag_set<Enum>& a, const Enum& b) noexcept
     {
         return !(a == b);
     }
 
     /// \group flag_set_equal
     template <typename Enum>
-    bool operator!=(const Enum& a, const flag_set<Enum>& b) noexcept
+    constexpr bool operator!=(const Enum& a, const flag_set<Enum>& b) noexcept
     {
         return !(a == b);
     }
@@ -303,27 +360,22 @@ namespace type_safe
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
     template <typename Enum>                                                                       \
-    flag_set<Enum> operator Op(const flag_set<Enum>& a, const flag_set<Enum>& b) noexcept          \
+    constexpr flag_set<Enum> operator Op(const flag_set<Enum>& a,                                  \
+                                         const flag_set<Enum>& b) noexcept                         \
     {                                                                                              \
-        flag_set<Enum> result = a;                                                                 \
-        result         Op##   = b;                                                                 \
-        return result;                                                                             \
+        return flag_set<Enum>(a.bits_ Op b.bits_);                                                 \
     }                                                                                              \
     /** \group flag_set_op */                                                                      \
     template <typename Enum>                                                                       \
-    flag_set<Enum> operator Op(const flag_set<Enum>& a, const Enum& b) noexcept                    \
+    constexpr flag_set<Enum> operator Op(const flag_set<Enum>& a, const Enum& b) noexcept          \
     {                                                                                              \
-        flag_set<Enum> result = a;                                                                 \
-        result         Op##   = b;                                                                 \
-        return result;                                                                             \
+        return a Op flag_set<Enum>(b);                                                             \
     }                                                                                              \
     /** \group flag_set_op */                                                                      \
     template <typename Enum>                                                                       \
-    flag_set<Enum> operator Op(const Enum& a, const flag_set<Enum>& b) noexcept                    \
+    constexpr flag_set<Enum> operator Op(const Enum& a, const flag_set<Enum>& b) noexcept          \
     {                                                                                              \
-        flag_set<Enum> result = a;                                                                 \
-        result         Op##   = b;                                                                 \
-        return result;                                                                             \
+        return flag_set<Enum>(a) Op b;                                                             \
     }
 
     /// \returns A new `flag_set` with the corresponding compound bitwise operation applied to it.
@@ -343,7 +395,7 @@ namespace type_safe
 /// \param 1
 /// \exclude
 template <typename Enum, typename = type_safe::detail::enable_enum_operation<Enum>>
-type_safe::flag_set<Enum> operator~(const Enum& e) noexcept
+constexpr type_safe::flag_set<Enum> operator~(const Enum& e) noexcept
 {
     return ~type_safe::flag_set<Enum>(e);
 }
@@ -355,7 +407,7 @@ type_safe::flag_set<Enum> operator~(const Enum& e) noexcept
 /// \param 1
 /// \exclude
 template <typename Enum, typename = type_safe::detail::enable_enum_operation<Enum>>
-type_safe::flag_set<Enum> operator|(const Enum& a, const Enum& b) noexcept
+constexpr type_safe::flag_set<Enum> operator|(const Enum& a, const Enum& b) noexcept
 {
     return type_safe::flag_set<Enum>(a) | b;
 }
@@ -364,7 +416,7 @@ type_safe::flag_set<Enum> operator|(const Enum& a, const Enum& b) noexcept
 /// \param 1
 /// \exclude
 template <typename Enum, typename = type_safe::detail::enable_enum_operation<Enum>>
-type_safe::flag_set<Enum> operator&(const Enum& a, const Enum& b) noexcept
+constexpr type_safe::flag_set<Enum> operator&(const Enum& a, const Enum& b) noexcept
 {
     return type_safe::flag_set<Enum>(a) & b;
 }
@@ -373,7 +425,7 @@ type_safe::flag_set<Enum> operator&(const Enum& a, const Enum& b) noexcept
 /// \param 1
 /// \exclude
 template <typename Enum, typename = type_safe::detail::enable_enum_operation<Enum>>
-type_safe::flag_set<Enum> operator^(const Enum& a, const Enum& b) noexcept
+constexpr type_safe::flag_set<Enum> operator^(const Enum& a, const Enum& b) noexcept
 {
     return type_safe::flag_set<Enum>(a) ^ b;
 }
