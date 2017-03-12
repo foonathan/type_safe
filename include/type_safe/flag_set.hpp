@@ -184,10 +184,7 @@ namespace type_safe
         /// \group all
         void set_all() noexcept
         {
-            // negative overflow is well-defined
-            // maximum value of int, i.e. all ones
-            // only need to make sure that the higher bits are kept 0
-            bits_ = int_type(-1) & total_mask();
+            bits_ = total_mask();
         }
 
         /// \group all
@@ -217,8 +214,7 @@ namespace type_safe
         /// \group all
         void toggle_all() noexcept
         {
-            bits_ ^= int_type(-1);
-            bits_ &= total_mask();
+            bits_ ^= total_mask();
         }
 
         /// \returns Whether or not the specified bit is set.
