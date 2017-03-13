@@ -45,9 +45,19 @@ void check_set(const type_safe::flag_set<test_flags>& set, bool a, bool b, bool 
         REQUIRE((set & test_flags::c));
 
     if (a || b || c)
+    {
         REQUIRE(set.any());
+        REQUIRE_FALSE(set.none());
+        REQUIRE(set != type_safe::noflag);
+        REQUIRE(type_safe::noflag != set);
+    }
     else
+    {
         REQUIRE_FALSE(set.any());
+        REQUIRE(set.none());
+        REQUIRE(set == type_safe::noflag);
+        REQUIRE(type_safe::noflag == set);
+    }
 
     auto number = (a ? 4 : 0) + (b ? 2 : 0) + (c ? 1 : 0);
     switch (number)
@@ -86,6 +96,7 @@ void check_set(const type_safe::flag_set<test_flags>& set, bool a, bool b, bool 
         REQUIRE((set & (test_flags::a | test_flags::b)));
         break;
     case 7:
+        REQUIRE(set.all());
         REQUIRE(set == (test_flags::a | test_flags::b | test_flags::c));
         REQUIRE((set & (test_flags::a | test_flags::b | test_flags::c)));
         break;

@@ -65,6 +65,15 @@ namespace type_safe
         }
     };
 
+    /// Tag type to mark a [ts::flag_set]() without any flags set.
+    struct noflag_t
+    {
+        constexpr noflag_t() = default;
+    };
+
+    /// Tag object of type [ts::noflag_t]().
+    constexpr noflag_t noflag;
+
     /// \exclude
     namespace detail
     {
@@ -181,6 +190,16 @@ namespace type_safe
         using flag_mask = flag_set_impl<Enum, struct mask_tag>;
 
         template <typename Enum>
+        constexpr bool operator==(const flag_combo<Enum>& a, noflag_t)
+        {
+            return a == a.none_set();
+        }
+        template <typename Enum>
+        constexpr bool operator==(noflag_t, const flag_combo<Enum>& a)
+        {
+            return a == a.none_set();
+        }
+        template <typename Enum>
         constexpr bool operator==(const flag_combo<Enum>& a, const flag_combo<Enum>& b)
         {
             return a.to_int() == b.to_int();
@@ -196,6 +215,16 @@ namespace type_safe
             return flag_combo<Enum>(a) == b;
         }
 
+        template <typename Enum>
+        constexpr bool operator!=(const flag_combo<Enum>& a, noflag_t b)
+        {
+            return !(a == b);
+        }
+        template <typename Enum>
+        constexpr bool operator!=(noflag_t a, const flag_combo<Enum>& b)
+        {
+            return !(a == b);
+        }
         template <typename Enum>
         constexpr bool operator!=(const flag_combo<Enum>& a, const flag_combo<Enum>& b)
         {
@@ -234,7 +263,27 @@ namespace type_safe
             return a.to_int() == b.to_int();
         }
         template <typename Enum>
+        constexpr bool operator==(const flag_mask<Enum>& a, noflag_t)
+        {
+            return a == a.none_set();
+        }
+        template <typename Enum>
+        constexpr bool operator==(noflag_t, const flag_mask<Enum>& a)
+        {
+            return a == a.none_set();
+        }
+        template <typename Enum>
         constexpr bool operator!=(const flag_mask<Enum>& a, const flag_mask<Enum>& b)
+        {
+            return !(a == b);
+        }
+        template <typename Enum>
+        constexpr bool operator!=(const flag_mask<Enum>& a, noflag_t b)
+        {
+            return !(a == b);
+        }
+        template <typename Enum>
+        constexpr bool operator!=(noflag_t a, const flag_mask<Enum>& b)
         {
             return !(a == b);
         }
@@ -373,9 +422,14 @@ namespace type_safe
 
     public:
         //=== constructors/assignment ===//
-        /// Default constructor.
         /// \effects Creates a set where all flags are set to `0`.
+        /// \group ctor_null
         constexpr flag_set() noexcept : flags_(detail::flag_set_impl<Enum>::none_set())
+        {
+        }
+
+        /// \group ctor_null
+        constexpr flag_set(noflag_t) noexcept : flag_set()
         {
         }
 
@@ -392,6 +446,13 @@ namespace type_safe
         flag_set& operator=(const FlagCombo& combo) noexcept
         {
             return *this = flag_set(combo);
+        }
+
+        /// \effects Same as [*reset_all]().
+        flag_set& operator=(noflag_t) noexcept
+        {
+            reset_all();
+            return *this;
         }
 
         //=== flag operation ===//
@@ -588,6 +649,20 @@ namespace type_safe
     }
 
     /// \group flag_set_equal
+    template <typename Enum>
+    constexpr bool operator==(const flag_set<Enum>& a, noflag_t b) noexcept
+    {
+        return combo(a) == b;
+    }
+
+    /// \group flag_set_equal
+    template <typename Enum>
+    constexpr bool operator==(noflag_t a, const flag_set<Enum>& b) noexcept
+    {
+        return a == combo(b);
+    }
+
+    /// \group flag_set_equal
     template <typename Enum, typename FlagCombo,
               typename = detail::enable_flag_combo<FlagCombo, Enum>>
     constexpr bool operator==(const flag_set<Enum>& a, const FlagCombo& b) noexcept
@@ -606,6 +681,20 @@ namespace type_safe
     /// \group flag_set_equal
     template <typename Enum>
     constexpr bool operator!=(const flag_set<Enum>& a, const flag_set<Enum>& b) noexcept
+    {
+        return !(a == b);
+    }
+
+    /// \group flag_set_equal
+    template <typename Enum>
+    constexpr bool operator!=(const flag_set<Enum>& a, noflag_t b) noexcept
+    {
+        return !(a == b);
+    }
+
+    /// \group flag_set_equal
+    template <typename Enum>
+    constexpr bool operator!=(noflag_t a, const flag_set<Enum>& b) noexcept
     {
         return !(a == b);
     }
