@@ -45,9 +45,9 @@ void check_set(const type_safe::flag_set<test_flags>& set, bool a, bool b, bool 
         REQUIRE((set & test_flags::c));
 
     if (a || b || c)
-        REQUIRE(set);
+        REQUIRE(set.any());
     else
-        REQUIRE_FALSE(set);
+        REQUIRE_FALSE(set.any());
 
     auto number = (a ? 4 : 0) + (b ? 2 : 0) + (c ? 1 : 0);
     switch (number)
@@ -57,32 +57,32 @@ void check_set(const type_safe::flag_set<test_flags>& set, bool a, bool b, bool 
         break;
     case 1:
         REQUIRE(set == test_flags::c);
-        REQUIRE(set == (~test_flags::a & ~test_flags::b));
+        REQUIRE(set == type_safe::combo(~test_flags::a & ~test_flags::b));
         REQUIRE((set & test_flags::c));
         break;
     case 2:
         REQUIRE(set == test_flags::b);
-        REQUIRE(set == (~test_flags::a & ~test_flags::c));
+        REQUIRE(set == type_safe::combo(~test_flags::a & ~test_flags::c));
         REQUIRE((set & test_flags::b));
         break;
     case 3:
         REQUIRE(set == (test_flags::b | test_flags::c));
-        REQUIRE(set == ~test_flags::a);
+        REQUIRE(set == type_safe::combo(~test_flags::a));
         REQUIRE((set & (test_flags::b | test_flags::c)));
         break;
     case 4:
         REQUIRE(set == test_flags::a);
-        REQUIRE(set == (~test_flags::b & ~test_flags::c));
+        REQUIRE(set == type_safe::combo(~test_flags::b & ~test_flags::c));
         REQUIRE((set & test_flags::a));
         break;
     case 5:
         REQUIRE(set == (test_flags::a | test_flags::c));
-        REQUIRE(set == ~test_flags::b);
+        REQUIRE(set == type_safe::combo(~test_flags::b));
         REQUIRE((set & (test_flags::a | test_flags::c)));
         break;
     case 6:
         REQUIRE(set == (test_flags::a | test_flags::b));
-        REQUIRE(set == ~test_flags::c);
+        REQUIRE(set == type_safe::combo(~test_flags::c));
         REQUIRE((set & (test_flags::a | test_flags::b)));
         break;
     case 7:
