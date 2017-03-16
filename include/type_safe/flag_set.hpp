@@ -68,7 +68,9 @@ namespace type_safe
     /// Tag type to mark a [ts::flag_set]() without any flags set.
     struct noflag_t
     {
-        constexpr noflag_t() = default;
+        constexpr noflag_t()
+        {
+        }
     };
 
     /// Tag object of type [ts::noflag_t]().
@@ -152,17 +154,17 @@ namespace type_safe
                 return (bits_ & mask(e)) != int_type(0u);
             }
 
-            constexpr flag_set_impl bitwise_or(const flag_set_impl& other)
+            constexpr flag_set_impl bitwise_or(const flag_set_impl& other) const
             {
                 return flag_set_impl(bits_ | other.bits_);
             }
 
-            constexpr flag_set_impl bitwise_xor(const flag_set_impl& other)
+            constexpr flag_set_impl bitwise_xor(const flag_set_impl& other) const
             {
                 return flag_set_impl(bits_ ^ other.bits_);
             }
 
-            constexpr flag_set_impl bitwise_and(const flag_set_impl& other)
+            constexpr flag_set_impl bitwise_and(const flag_set_impl& other) const
             {
                 return flag_set_impl(bits_ & other.bits_);
             }
@@ -615,6 +617,7 @@ namespace type_safe
         flag_set& operator&=(const flag_mask<Enum>& other) noexcept
         {
             flags_ = flags_.bitwise_and(detail::flag_set_impl<Enum>(other));
+            return *this;
         }
 
     private:
