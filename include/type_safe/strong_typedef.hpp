@@ -459,29 +459,46 @@ namespace type_safe
             /// \group deref
             Result& operator*()
             {
-                using type = underlying_type<StrongTypedef>;
-                return *static_cast<type&>(static_cast<StrongTypedef&>(*this));
+                return *deref_impl(get(static_cast<StrongTypedef&>(*this)));
             }
 
             /// \group deref
             const Result& operator*() const
             {
-                using type = underlying_type<StrongTypedef>;
-                return *static_cast<const type&>(static_cast<const StrongTypedef&>(*this));
+                return *deref_impl(get(static_cast<StrongTypedef const&>(*this)));
             }
 
             /// \group pointer
             ResultPtr operator->()
             {
-                using type = underlying_type<StrongTypedef>;
-                return static_cast<type&>(static_cast<StrongTypedef&>(*this));
+                return deref_impl(get(static_cast<StrongTypedef&>(*this)));
             }
 
             /// \group pointer
             ResultConstPtr operator->() const
             {
-                using type = underlying_type<StrongTypedef>;
-                return static_cast<const type&>(static_cast<const StrongTypedef&>(*this));
+                return deref_impl(get(static_cast<StrongTypedef const&>(*this)));
+            }
+
+        private:
+            ResultPtr deref_impl(ResultPtr r)
+            {
+                return r;
+            }
+
+            ResultConstPtr deref_impl(ResultConstPtr r)
+            {
+                return r;
+            }
+
+            ResultPtr deref_impl(Result& r)
+            {
+                return &r;
+            }
+
+            ResultConstPtr deref_impl(Result const& r)
+            {
+                return &r;
             }
         };
 
