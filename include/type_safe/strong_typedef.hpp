@@ -440,6 +440,45 @@ namespace type_safe
         {
         };
 
+        template <class StrongTypedef>
+        struct complement
+        {
+        };
+
+        /// \exclude
+        template <class StrongTypedef>
+        constexpr StrongTypedef operator~(const complement<StrongTypedef>& lhs)
+        {
+            return StrongTypedef(~get(static_cast<const StrongTypedef&>(lhs)));
+        }
+        /// \exclude
+        template <class StrongTypedef>
+        constexpr StrongTypedef operator~(complement<StrongTypedef>&& lhs)
+        {
+            return StrongTypedef(~get(static_cast<StrongTypedef&&>(lhs)));
+        }
+
+        TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP(bitwise_or, |)
+        TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP(bitwise_xor, ^)
+        TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP(bitwise_and, &)
+
+        template <class StrongTypedef>
+        struct bitmask : complement<StrongTypedef>,
+                         bitwise_or<StrongTypedef>,
+                         bitwise_xor<StrongTypedef>,
+                         bitwise_and<StrongTypedef>
+        {
+        };
+
+        template <class StrongTypedef, typename IntT>
+        struct bitshift
+        {
+            TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND(<<=, IntT)
+            TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND(>>=, IntT)
+        };
+        TYPE_SAFE_DETAIL_MAKE_OP_MIXED(<<, bitshift, StrongTypedef)
+        TYPE_SAFE_DETAIL_MAKE_OP_MIXED(>>, bitshift, StrongTypedef)
+
         template <class StrongTypedef, typename Result, typename ResultPtr = Result*,
                   typename ResultConstPtr = const Result*>
         struct dereference
