@@ -56,8 +56,6 @@ TEST_CASE("visit variant")
     {
         struct visitor
         {
-            using incomplete_visitor = void;
-
             int value;
 
             void operator()(nullvar_t) const
@@ -75,16 +73,28 @@ TEST_CASE("visit variant")
                 REQUIRE(f == 3.14f);
             }
 
+            void operator()(nullvar_t, nullvar_t) const
+            {
+                REQUIRE(false);
+            }
+            void operator()(nullvar_t, int) const
+            {
+                REQUIRE(false);
+            }
+
             void operator()(int, nullvar_t) const
             {
                 REQUIRE(value == -1);
             }
-
             void operator()(int, int b) const
             {
                 REQUIRE(value == b);
             }
 
+            void operator()(float, nullvar_t) const
+            {
+                REQUIRE(false);
+            }
             void operator()(float a, int b) const
             {
                 REQUIRE(value == b);
@@ -105,7 +115,7 @@ TEST_CASE("visit variant")
         visit(visitor{32}, a, b);
 
         a = 3.14f;
-        visit(visitor{}, a);
+        visit(visitor{-1}, a);
         visit(visitor{32}, a, b);
     }
     SECTION("rarely empty variant")

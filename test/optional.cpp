@@ -448,7 +448,7 @@ TEST_CASE("optional")
         REQUIRE(a.has_value());
         REQUIRE(a.value() == 5);
 
-        optional<std::string> b = make_optional<std::string>(1, 'a');
+        optional<std::string> b = make_optional<std::string>(1u, 'a');
         REQUIRE(b.has_value());
         REQUIRE(b.value() == "a");
     }

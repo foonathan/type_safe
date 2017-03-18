@@ -141,7 +141,7 @@ namespace type_safe
                        (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
                                           "addition will result in overflow"),
                         a) :
-                       a + b;
+                       T(a + b);
         }
 
         template <typename T>
@@ -151,7 +151,7 @@ namespace type_safe
                        (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
                                           "subtraction will result in underflow"),
                         a) :
-                       a - b;
+                       T(a - b);
         }
 
         template <typename T>
@@ -161,7 +161,7 @@ namespace type_safe
                        (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
                                           "multiplication will result in overflow"),
                         a) :
-                       a * b;
+                       T(a * b);
         }
 
         template <typename T>
@@ -171,7 +171,7 @@ namespace type_safe
                        (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
                                           "division by zero/overflow"),
                         a) :
-                       a / b;
+                       T(a / b);
         }
 
         template <typename T>
@@ -180,7 +180,7 @@ namespace type_safe
             return detail::will_modulo_error(detail::arithmetic_tag_for<T>{}, a, b) ?
                        (DEBUG_UNREACHABLE(detail::precondition_error_handler{}, "modulo by zero"),
                         a) :
-                       a % b;
+                       T(a % b);
         }
     };
 
