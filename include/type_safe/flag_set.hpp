@@ -175,7 +175,9 @@ namespace type_safe
                 return int_type(int_type(1u) << static_cast<std::size_t>(e));
             }
 
-            explicit constexpr flag_set_impl(int_type bits) : bits_(bits)
+            template <typename T, typename = typename std::enable_if<std::is_integral<T>::value
+                                                                     && std::is_unsigned<T>::value>>
+            explicit constexpr flag_set_impl(T bits) : bits_(int_type(bits))
             {
             }
 

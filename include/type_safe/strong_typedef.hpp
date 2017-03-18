@@ -223,7 +223,7 @@ namespace type_safe
     constexpr Result operator Op(Other&& lhs, Name<StrongTypedef>&& rhs)                           \
     {                                                                                              \
         return Result(detail::get_underlying<StrongTypedef>(detail::forward<Other>(                \
-            lhs)) Op detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(lhs)));    \
+            lhs)) Op detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(rhs)));    \
     }
 
 /// \exclude
@@ -254,7 +254,7 @@ namespace type_safe
               typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
     constexpr Result operator Op(Other&& lhs, Name<StrongTypedef, OtherArg>&& rhs)                 \
     {                                                                                              \
-        return Result(detail::forward<Other>(lhs) Op get(static_cast<StrongTypedef&&>(lhs)));      \
+        return Result(detail::forward<Other>(lhs) Op get(static_cast<StrongTypedef&&>(rhs)));      \
     }
 
 /// \exclude

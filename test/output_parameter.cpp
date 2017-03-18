@@ -24,7 +24,7 @@ TEST_CASE("output_parameter")
         }
         SECTION("assign")
         {
-            std::string& res = out.assign(3, 'c');
+            std::string& res = out.assign(3u, 'c');
             REQUIRE(&res == &output);
             REQUIRE(res == "ccc");
         }
@@ -38,7 +38,7 @@ TEST_CASE("output_parameter")
             REQUIRE(&res_b == &output);
             REQUIRE(res_b == "def");
 
-            std::string& res_c = out.assign(3, 'c');
+            std::string& res_c = out.assign(3u, 'c');
             REQUIRE(&res_c == &output);
             REQUIRE(res_c == "ccc");
         }
@@ -57,7 +57,7 @@ TEST_CASE("output_parameter")
         }
         SECTION("assign")
         {
-            std::string& res = out.assign(3, 'c');
+            std::string& res = out.assign(3u, 'c');
             REQUIRE(output.has_value());
             REQUIRE(&res == &output.value());
             REQUIRE(res == "ccc");
@@ -73,7 +73,7 @@ TEST_CASE("output_parameter")
             REQUIRE(&res_b == &output.value());
             REQUIRE(res_b == "def");
 
-            std::string& res_c = out.assign(3, 'c');
+            std::string& res_c = out.assign(3u, 'c');
             REQUIRE(&res_c == &output.value());
             REQUIRE(res_c == "ccc");
         }

@@ -3,12 +3,12 @@ language: cpp
 matrix:
   include:
     - os: linux
-      compiler: gcc
+      compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'boost-latest']
           packages: ['g++-5', 'libboost1.55-all-dev']
-      env: TOOLSET=g++-5 BUILD_TYPE='Release' BUILD_DOCS=1
+      env: TOOLSET=clang++ BUILD_TYPE='Release' BUILD_DOCS=1
 
     - os: linux
       compiler: gcc
@@ -73,13 +73,13 @@ script:
   - git diff --exit-code || { echo "Files not formatted properly."; exit 1; }
 
   - mkdir build/ && cd build/
-  - $CMAKE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-Wall -Wextra -pedantic -Wno-parentheses" -DTYPE_SAFE_BUILD_TEST_EXAMPLE=ON -DTYPE_SAFE_BUILD_DOC="$BUILD_DOCS" -DTYPE_SAFE_STANDARDESE_DOWNLOAD_DIRECTORY=../../standardese/ ../
+  - $CMAKE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-Werror -pedantic -Wall -Wextra -Wconversion -Wsign-conversion -Wno-parentheses" -DTYPE_SAFE_BUILD_TEST_EXAMPLE=ON -DTYPE_SAFE_BUILD_DOC="$BUILD_DOCS" -DTYPE_SAFE_STANDARDESE_DOWNLOAD_DIRECTORY=../../standardese/ ../
   - $CMAKE --build .
   - ./test/type_safe_test
 
 after_success:
   - git config --global user.name "Travis CI"
-  - git config --global user.email "jonathanmueller.dev@gmail.com"
+  - git config --global user.email "ci@foonathan.net"
   - if [[ "$BUILD_DOCS" -eq 1 ]]; then $CMAKE --build . --target standardese_type_safe; fi
   - git clone "https://$GITHUB_TOKEN@github.com/foonathan/foonathan.github.io.git/"
   - cd foonathan.github.io/

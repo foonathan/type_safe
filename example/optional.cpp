@@ -20,7 +20,7 @@ ts::optional<char> back(const std::string& str)
 }
 
 // some imaginary lookup function
-ts::optional<int> lookup(char c)
+ts::optional<int> lookup(int c)
 {
     // simulate lookup
     return c == 'T' ? ts::nullopt : ts::make_optional(c + 1);

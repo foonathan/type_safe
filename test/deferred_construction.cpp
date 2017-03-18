@@ -51,7 +51,7 @@ TEST_CASE("deferred_construction")
         deferred_construction<std::string> a;
         REQUIRE(!a.has_value());
 
-        a.emplace(3, 'c');
+        a.emplace(3u, 'c');
         REQUIRE(a.has_value());
         REQUIRE(a.value() == "ccc");
     }
