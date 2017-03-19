@@ -55,6 +55,21 @@ TEST_CASE("object_ref")
     object_ref<const debugger_type> f(a);
     check_object_ref(f, value);
 
+    // map
+    auto int_a  = 0;
+    auto int_b  = 42;
+    auto func_a = [&](int& a) -> int& { return a ? a : int_b; };
+    auto func_b = [](int& a, int& b) { return a ? ref(a) : ref(b); };
+
+    object_ref<int> map_ref(int_a);
+
+    auto map_a = map_ref.map(func_a);
+    REQUIRE(&map_a.get() == &int_b);
+
+    *map_ref   = 1;
+    auto map_b = map_ref.map(func_b, int_b);
+    REQUIRE(&map_b.get() == &int_a);
+
     // comparison
     REQUIRE(a == d);
     REQUIRE(b == e);

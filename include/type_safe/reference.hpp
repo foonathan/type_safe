@@ -11,10 +11,34 @@
 
 #include <type_safe/detail/assert.hpp>
 #include <type_safe/detail/aligned_union.hpp>
+#include <type_safe/detail/map_invoke.hpp>
 #include <type_safe/index.hpp>
 
 namespace type_safe
 {
+    template <typename T, bool XValue = false>
+    class object_ref;
+
+    /// \exclude
+    namespace detail
+    {
+        template <typename T, bool XValue>
+        struct rebind_object_ref_impl
+        {
+            using type = object_ref<T, XValue>;
+        };
+
+        template <typename T, bool XValue1, bool XValue2>
+        struct rebind_object_ref_impl<object_ref<T, XValue1>, XValue2>
+        {
+            using type = object_ref<T, XValue2>;
+        };
+
+        template <typename T, bool XValue>
+        using rebind_object_ref =
+            typename rebind_object_ref_impl<typename std::remove_reference<T>::type, XValue>::type;
+    } // namespace detail
+
     /// A reference to an object of some type `T`.
     ///
     /// Unlike [std::reference_wrapper]() it does not try to model reference semantics,
@@ -29,7 +53,7 @@ namespace type_safe
     /// If `XValue` is `true`, dereferencing will [std::move()]() the object,
     /// modelling a reference to an expiring lvalue.
     /// \notes `T` is the type without the reference, ie. `object_ref<int>`.
-    template <typename T, bool XValue = false>
+    template <typename T, bool XValue /* = false*/>
     class object_ref
     {
         static_assert(!std::is_void<T>::value, "must not be void");
@@ -88,6 +112,22 @@ namespace type_safe
         constexpr T* operator->() const noexcept
         {
             return ptr_;
+        }
+
+        /// \effects Invokes the function with the referred object followed by the arguments.
+        /// \returns A [ts::object_ref]() to the result of the function,
+        /// if `*this` is an xvalue reference, the result is as well.
+        /// \requires The function must return an lvalue or another [ts::object_ref]() object.
+        template <typename Func, typename... Args>
+        auto map(Func&& f, Args&&... args)
+            -> detail::rebind_object_ref<decltype(detail::map_invoke(std::forward<Func>(f), get(),
+                                                                     std::forward<Args>(args)...)),
+                                         XValue>
+        {
+            using result = decltype(
+                detail::map_invoke(std::forward<Func>(f), get(), std::forward<Args>(args)...));
+            return detail::rebind_object_ref<result, XValue>(
+                detail::map_invoke(std::forward<Func>(f), get(), std::forward<Args>(args)...));
         }
 
     private:
