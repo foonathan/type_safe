@@ -158,6 +158,38 @@ namespace type_safe
     template <typename T>
     using optional_ref = basic_optional<reference_optional_storage<T>>;
 
+    /// \returns A [ts::optional_ref]() to the same target as `ref`.
+    /// \module optional
+    template <typename T>
+    optional_ref<T> opt_ref(const object_ref<T>& ref) noexcept
+    {
+        return optional_ref<T>(ref.get());
+    }
+
+    /// \returns A [ts::optional_ref]() to `const` to the same target as `ref`.
+    /// \module optional
+    template <typename T>
+    optional_ref<const T> opt_cref(const object_ref<T>& ref) noexcept
+    {
+        return optional_ref<const T>(ref.get());
+    }
+
+    /// \returns A [ts::optional_ref]() to the stored value in `opt`.
+    /// \module optional
+    template <typename T>
+    optional_ref<T> opt_ref(optional<T>& opt) noexcept
+    {
+        return opt ? optional_ref<T>(opt.value()) : nullopt;
+    }
+
+    /// \returns A [ts::optional_ref]() to `const` to the stored value in `opt`.
+    /// \module optional
+    template <typename T>
+    optional_ref<const T> opt_cref(optional<T>& opt) noexcept
+    {
+        return opt ? optional_ref<T>(opt.value()) : nullopt;
+    }
+
     /// \returns A [ts::optional_ref<T>]() to the pointee of `ptr` or `nullopt`.
     /// \module optional
     template <typename T>
