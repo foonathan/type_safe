@@ -63,16 +63,6 @@ namespace type_safe
         /// \param 1
         /// \exclude
         template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
-        object_ref& operator=(U& obj) noexcept
-        {
-            ptr_ = &obj;
-            return *this;
-        }
-
-        /// \group ctor_assign
-        /// \param 1
-        /// \exclude
-        template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
         object_ref& operator=(const object_ref<U>& obj) noexcept
         {
             ptr_ = &*obj;
@@ -288,14 +278,6 @@ namespace type_safe
         template <std::size_t Size>
         explicit array_ref(T (&arr)[Size]) : begin_(arr), size_(Size)
         {
-        }
-
-        /// \group c_array
-        template <std::size_t Size>
-        array_ref& operator=(T (&arr)[Size]) noexcept
-        {
-            assign(arr);
-            return *this;
         }
 
         /// \group c_array
@@ -611,9 +593,11 @@ namespace type_safe
             typename = typename std::
                 enable_if<!std::is_same<typename std::decay<Functor>::type, function_ref>::value,
                           decltype(function_ref(std::declval<Functor&&>()))>::type>
-        function_ref& operator=(Functor&& f) noexcept
+        void assign(Functor&& f) noexcept
         {
-            return *this = function_ref(std::forward<Functor>(f));
+            auto ref = function_ref(std::forward<Functor>(f));
+            storage_ = ref.storage_;
+            cb_      = ref.cb_;
         }
 
         /// \effects Invokes the stored function with the specified arguments and returns the result.

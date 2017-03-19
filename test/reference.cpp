@@ -132,12 +132,6 @@ TEST_CASE("array_ref")
         REQUIRE(c.data() == array);
         REQUIRE((c.size() == 3u));
     }
-    SECTION("operator=")
-    {
-        ref = array2;
-        REQUIRE(ref.data() == array2);
-        REQUIRE((ref.size() == 1u));
-    }
     SECTION("assign range")
     {
         ref.assign(array2, array2 + 1);
