@@ -13,6 +13,7 @@
 #include <type_safe/detail/assign_or_construct.hpp>
 #include <type_safe/detail/copy_move_control.hpp>
 #include <type_safe/detail/is_nothrow_swappable.hpp>
+#include <type_safe/detail/map_invoke.hpp>
 
 namespace type_safe
 {
@@ -81,29 +82,6 @@ namespace type_safe
 
         template <typename T>
         using is_optional = is_optional_impl<typename std::decay<T>::type>;
-
-        //=== map_invoke ==//
-        template <typename Func, typename Value, typename... Args>
-        auto map_invoke(Func&& f, Value&& v, Args&&... args)
-            -> decltype(std::forward<Func>(f)(std::forward<Value>(v), std::forward<Args>(args)...))
-        {
-            return std::forward<Func>(f)(std::forward<Value>(v), std::forward<Args>(args)...);
-        }
-
-        template <typename Func, typename Value>
-        auto map_invoke(Func&& f, Value&& v)
-            -> decltype(std::forward<Value>(v).*std::forward<Func>(f))
-        {
-            return std::forward<Value>(v).*std::forward<Func>(f);
-        }
-
-        template <typename Func, typename Value, typename... Args>
-        auto map_invoke(Func&& f, Value&& v, Args&&... args)
-            -> decltype((std::forward<Value>(v)
-                         .*std::forward<Func>(f))(std::forward<Args>(args)...))
-        {
-            return (std::forward<Value>(v).*std::forward<Func>(f))(std::forward<Args>(args)...);
-        }
     } // namespace detail
 
     template <class StoragePolicy>
