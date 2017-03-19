@@ -199,6 +199,7 @@ namespace type_safe
     /// * Template alias `rebind<U>` - the same policy for a different type
     /// * `StoragePolicy() noexcept` - a no-throw default constructor that initializes it in the "empty" state
     /// * `void create_value(Args&&... args)` - creates a value by forwarding the arguments to its constructor
+    /// * `void create_value_explicit(T&& obj)` - creates a value requiring an `explicit` constructor
     /// * `void create_value(const StoragePolicy&/StoragePolicy&&)` - creates a value by using the value stored in the other policy
     /// * `void copy_value(const StoragePolicy&/StoragePolicy&&)` - similar to above, but *this may contain a value already
     /// * `void swap_value(StoragePolicy&)` - swaps the stored value (if any) with the one in the other policy
@@ -276,6 +277,21 @@ namespace type_safe
                                 0) = 0)
         {
             get_storage().create_value(std::forward<T>(value));
+        }
+
+        /// \effects Creates it with a value by forwarding `value`.
+        /// \throws Anything thrown by the constructor of `value_type`.
+        /// \requires The `create_value_explicit()` function of the `StoragePolicy` must accept `value`.
+        /// \param 1
+        /// \exclude
+        template <typename T,
+                  typename = typename std::enable_if<!std::is_same<
+                      typename std::decay<T>::type, basic_optional<storage>>::value>::type>
+        explicit basic_optional(
+            T&& value,
+            decltype(std::declval<storage>().create_value_explicit(std::forward<T>(value)), 0) = 0)
+        {
+            get_storage().create_value_explicit(std::forward<T>(value));
         }
 
         /// Copy constructor.
@@ -392,7 +408,9 @@ namespace type_safe
         /// \synopsis_return void
         template <typename Arg,
                   typename = typename std::
-                      enable_if<detail::is_direct_assignable<value_type, Arg&&>::value>::type>
+                      enable_if<detail::is_direct_assignable<decltype(std::declval<storage&>()
+                                                                          .get_value()),
+                                                             Arg&&>::value>::type>
         auto emplace(Arg&& arg) noexcept(std::is_nothrow_constructible<value_type, Arg>::value&&
                                              std::is_nothrow_assignable<value_type, Arg>::value)
             -> decltype(std::declval<basic_optional<storage>>().get_storage().create_value(
@@ -762,6 +780,10 @@ namespace type_safe
         {
             if (other.has_value())
                 create_value(std::move(other).get_value());
+        }
+
+        void create_value_explicit()
+        {
         }
 
         /// \effects Copies the policy from `other`, by copy-constructing or assigning the stored value,

@@ -30,9 +30,9 @@ TEST_CASE("optional_ref")
     test_optional_ref_conversion<int, int&&>(std::false_type{});
     test_optional_ref_conversion<int, const int&>(std::false_type{});
     test_optional_ref_conversion<int, optional_ref<const int>>(std::false_type{});
-    test_optional_ref_conversion<const int, int&>(std::true_type{});
+    test_optional_ref_conversion<const int, object_ref<int>>(std::true_type{});
     test_optional_ref_conversion<const int, optional_ref<int>>(std::true_type{});
-    test_optional_ref_conversion<base, derived&>(std::true_type{});
+    test_optional_ref_conversion<base, object_ref<derived>>(std::true_type{});
     test_optional_ref_conversion<base, optional_ref<derived>>(std::true_type{});
 
     int value = 0;
@@ -44,6 +44,10 @@ TEST_CASE("optional_ref")
         optional_ref<int> b(value);
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
+
+        optional_ref<int> c(ref(value));
+        REQUIRE(c.has_value());
+        REQUIRE(&c.value() == &value);
     }
     SECTION("assignment")
     {
@@ -52,7 +56,7 @@ TEST_CASE("optional_ref")
         REQUIRE_FALSE(a.has_value());
 
         optional_ref<int> b;
-        b = value;
+        b = ref(value);
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
     }
@@ -173,7 +177,7 @@ TEST_CASE("optional_xvalue_ref")
         REQUIRE_FALSE(a.has_value());
 
         optional_xvalue_ref<int> b;
-        b = value;
+        b = ref(value);
         REQUIRE(b.has_value());
         REQUIRE(b.value() == value);
     }

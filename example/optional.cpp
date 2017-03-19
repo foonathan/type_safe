@@ -100,7 +100,7 @@ int main()
     ts::optional_ref<int> ref;
 
     int a = 42;
-    ref   = a; // assignment rebinds
+    ref   = ts::ref(a); // assignment rebinds
     std::cout << ref.value() << '\n';
 
     ref.value() = 0;

@@ -94,6 +94,10 @@ namespace type_safe
             storage_ = std::move(other.storage_);
         }
 
+        void create_value_explicit()
+        {
+        }
+
         /// \effects Copy assigns the `storage_type`.
         void copy_value(const compact_optional_storage& other)
         {
