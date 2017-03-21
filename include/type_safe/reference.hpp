@@ -285,6 +285,9 @@ namespace type_safe
     /// If `XValue` is `true`, dereferencing will [std::move()]() the object,
     /// modelling a reference to an expiring lvalue.
     /// \notes `T` is the type stored in the array, so `array_ref<int>` to reference a contigous storage of `int`s.
+    /// \notes Unlike the other types it isn't technically non-null,
+    /// as it may contain an empty array.
+    /// But the range `[data(), data() + size)` will always be valid.
     template <typename T, bool XValue = false>
     class array_ref
     {
@@ -296,6 +299,14 @@ namespace type_safe
         using value_type     = T;
         using reference_type = typename std::conditional<XValue, T&&, T&>::type;
         using iterator       = T*;
+
+        /// \effects Sets the reference to an empty array.
+        /// \notes This is the only constructor to do it easily,
+        /// other constructors require non-null pointers.
+        /// \group empty
+        array_ref(std::nullptr_t) : begin_(nullptr), size_(0u)
+        {
+        }
 
         /// \effects Sets the reference to the memory range `[begin, end)`.
         /// \requires `begin` and `end` must not be `nullptr`, `begin <= end`.
@@ -320,12 +331,11 @@ namespace type_safe
         {
         }
 
-        /// \group c_array
-        template <std::size_t Size>
-        void                  assign(T (&arr)[Size]) noexcept
+        /// \group empty
+        void assign(std::nullptr_t) noexcept
         {
-            begin_ = arr;
-            size_  = Size;
+            begin_ = nullptr;
+            size_  = 0u;
         }
 
         /// \group range
@@ -345,6 +355,14 @@ namespace type_safe
             size_  = size;
         }
 
+        /// \group c_array
+        template <std::size_t Size>
+        void                  assign(T (&arr)[Size]) noexcept
+        {
+            begin_ = arr;
+            size_  = Size;
+        }
+
         /// \returns An iterator to the beginning of the array.
         iterator begin() const noexcept
         {
@@ -357,7 +375,8 @@ namespace type_safe
             return begin_ + size_.get();
         }
 
-        /// \returns A (non-null) pointer to the beginning of the array.
+        /// \returns A pointer to the beginning of the array.
+        /// If `size()` isn't zero, the pointer is guaranteed to be non-null.
         T* data() const noexcept
         {
             return begin_;
