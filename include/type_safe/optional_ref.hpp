@@ -69,17 +69,7 @@ namespace type_safe
         {
         }
 
-        /// \effects Binds the reference to `obj`.
-        /// \notes This function only participates in overload resolution, if `U` is a reference compatible with `T`.
-        /// \param 1
-        /// \exclude
-        template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
-        void create_value(U& obj) noexcept
-        {
-            pointer_ = &obj;
-        }
-
-        /// \effects Binds the same reference as sstored in the optional.
+        /// \effects Binds the same reference as stored in the optional.
         /// \notes This function only participates in overload resolution, if `U` is a reference compatible with `T`.
         /// \param 1
         /// \exclude
@@ -89,10 +79,16 @@ namespace type_safe
             pointer_ = ref.has_value() ? &ref.value() : nullptr;
         }
 
-        /// \effects Binds the reference to the same reference in `other`.
+        /// \effects Binds the reference to the same reference as in `other`.
         void create_value(const reference_optional_storage& other) noexcept
         {
             pointer_ = other.pointer_;
+        }
+
+        /// \effects Binds the reference to the same reference as in `ref`.
+        void create_value(const object_ref<T, XValue>& other) noexcept
+        {
+            pointer_ = other.operator->();
         }
 
         /// \effects Same as `destroy_value()`.
@@ -101,7 +97,17 @@ namespace type_safe
             destroy_value();
         }
 
-        void create_value(T&&) = delete;
+        /// \effects Binds the reference to `obj`.
+        /// \notes This function only participates in overload resolution, if `U` is a reference compatible with `T`.
+        /// \param 1
+        /// \exclude
+        template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
+        void create_value_explicit(U& obj) noexcept
+        {
+            pointer_ = &obj;
+        }
+
+        void create_value_explicit(T&&) = delete;
 
         /// \effects Binds the reference to the same reference in `other`.
         void copy_value(const reference_optional_storage& other) noexcept
@@ -157,6 +163,38 @@ namespace type_safe
     /// \module optional
     template <typename T>
     using optional_ref = basic_optional<reference_optional_storage<T>>;
+
+    /// \returns A [ts::optional_ref]() to the same target as `ref`.
+    /// \module optional
+    template <typename T>
+    optional_ref<T> opt_ref(const object_ref<T>& ref) noexcept
+    {
+        return optional_ref<T>(ref.get());
+    }
+
+    /// \returns A [ts::optional_ref]() to `const` to the same target as `ref`.
+    /// \module optional
+    template <typename T>
+    optional_ref<const T> opt_cref(const object_ref<T>& ref) noexcept
+    {
+        return optional_ref<const T>(ref.get());
+    }
+
+    /// \returns A [ts::optional_ref]() to the stored value in `opt`.
+    /// \module optional
+    template <typename T>
+    optional_ref<T> opt_ref(optional<T>& opt) noexcept
+    {
+        return opt ? optional_ref<T>(opt.value()) : nullopt;
+    }
+
+    /// \returns A [ts::optional_ref]() to `const` to the stored value in `opt`.
+    /// \module optional
+    template <typename T>
+    optional_ref<const T> opt_cref(optional<T>& opt) noexcept
+    {
+        return opt ? optional_ref<T>(opt.value()) : nullopt;
+    }
 
     /// \returns A [ts::optional_ref<T>]() to the pointee of `ptr` or `nullopt`.
     /// \module optional

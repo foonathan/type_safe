@@ -11,10 +11,34 @@
 
 #include <type_safe/detail/assert.hpp>
 #include <type_safe/detail/aligned_union.hpp>
+#include <type_safe/detail/map_invoke.hpp>
 #include <type_safe/index.hpp>
 
 namespace type_safe
 {
+    template <typename T, bool XValue = false>
+    class object_ref;
+
+    /// \exclude
+    namespace detail
+    {
+        template <typename T, bool XValue>
+        struct rebind_object_ref_impl
+        {
+            using type = object_ref<T, XValue>;
+        };
+
+        template <typename T, bool XValue1, bool XValue2>
+        struct rebind_object_ref_impl<object_ref<T, XValue1>, XValue2>
+        {
+            using type = object_ref<T, XValue2>;
+        };
+
+        template <typename T, bool XValue>
+        using rebind_object_ref =
+            typename rebind_object_ref_impl<typename std::remove_reference<T>::type, XValue>::type;
+    } // namespace detail
+
     /// A reference to an object of some type `T`.
     ///
     /// Unlike [std::reference_wrapper]() it does not try to model reference semantics,
@@ -29,12 +53,14 @@ namespace type_safe
     /// If `XValue` is `true`, dereferencing will [std::move()]() the object,
     /// modelling a reference to an expiring lvalue.
     /// \notes `T` is the type without the reference, ie. `object_ref<int>`.
-    template <typename T, bool XValue = false>
+    template <typename T, bool XValue /* = false*/>
     class object_ref
     {
         static_assert(!std::is_void<T>::value, "must not be void");
         static_assert(!std::is_reference<T>::value, "pass the type without reference");
         static_assert(!XValue || !std::is_const<T>::value, "must not be const if xvalue reference");
+
+        T* ptr_;
 
     public:
         using value_type     = T;
@@ -57,16 +83,6 @@ namespace type_safe
         template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
         constexpr object_ref(const object_ref<U>& obj) noexcept : ptr_(&*obj)
         {
-        }
-
-        /// \group ctor_assign
-        /// \param 1
-        /// \exclude
-        template <typename U, typename = decltype(std::declval<T*&>() = std::declval<U*>())>
-        object_ref& operator=(U& obj) noexcept
-        {
-            ptr_ = &obj;
-            return *this;
         }
 
         /// \group ctor_assign
@@ -100,8 +116,23 @@ namespace type_safe
             return ptr_;
         }
 
-    private:
-        T* ptr_;
+        /// \effects Invokes the function with the referred object followed by the arguments.
+        /// \returns A [ts::object_ref]() to the result of the function,
+        /// if `*this` is an xvalue reference, the result is as well.
+        /// \requires The function must return an lvalue or another [ts::object_ref]() object.
+        template <typename Func, typename... Args>
+        auto map(Func&& f, Args&&... args)
+            -> detail::rebind_object_ref<decltype(
+                                             detail::map_invoke(std::forward<Func>(f),
+                                                                std::declval<object_ref&>().get(),
+                                                                std::forward<Args>(args)...)),
+                                         XValue>
+        {
+            using result = decltype(
+                detail::map_invoke(std::forward<Func>(f), get(), std::forward<Args>(args)...));
+            return detail::rebind_object_ref<result, XValue>(
+                detail::map_invoke(std::forward<Func>(f), get(), std::forward<Args>(args)...));
+        }
     };
 
     template <typename T, bool XValue>
@@ -255,6 +286,9 @@ namespace type_safe
     /// If `XValue` is `true`, dereferencing will [std::move()]() the object,
     /// modelling a reference to an expiring lvalue.
     /// \notes `T` is the type stored in the array, so `array_ref<int>` to reference a contigous storage of `int`s.
+    /// \notes Unlike the other types it isn't technically non-null,
+    /// as it may contain an empty array.
+    /// But the range `[data(), data() + size)` will always be valid.
     template <typename T, bool XValue = false>
     class array_ref
     {
@@ -266,6 +300,14 @@ namespace type_safe
         using value_type     = T;
         using reference_type = typename std::conditional<XValue, T&&, T&>::type;
         using iterator       = T*;
+
+        /// \effects Sets the reference to an empty array.
+        /// \notes This is the only constructor to do it easily,
+        /// other constructors require non-null pointers.
+        /// \group empty
+        array_ref(std::nullptr_t) : begin_(nullptr), size_(0u)
+        {
+        }
 
         /// \effects Sets the reference to the memory range `[begin, end)`.
         /// \requires `begin` and `end` must not be `nullptr`, `begin <= end`.
@@ -290,20 +332,11 @@ namespace type_safe
         {
         }
 
-        /// \group c_array
-        template <std::size_t Size>
-        array_ref& operator=(T (&arr)[Size]) noexcept
+        /// \group empty
+        void assign(std::nullptr_t) noexcept
         {
-            assign(arr);
-            return *this;
-        }
-
-        /// \group c_array
-        template <std::size_t Size>
-        void                  assign(T (&arr)[Size]) noexcept
-        {
-            begin_ = arr;
-            size_  = Size;
+            begin_ = nullptr;
+            size_  = 0u;
         }
 
         /// \group range
@@ -323,6 +356,14 @@ namespace type_safe
             size_  = size;
         }
 
+        /// \group c_array
+        template <std::size_t Size>
+        void                  assign(T (&arr)[Size]) noexcept
+        {
+            begin_ = arr;
+            size_  = Size;
+        }
+
         /// \returns An iterator to the beginning of the array.
         iterator begin() const noexcept
         {
@@ -335,7 +376,8 @@ namespace type_safe
             return begin_ + size_.get();
         }
 
-        /// \returns A (non-null) pointer to the beginning of the array.
+        /// \returns A pointer to the beginning of the array.
+        /// If `size()` isn't zero, the pointer is guaranteed to be non-null.
         T* data() const noexcept
         {
             return begin_;
@@ -611,9 +653,11 @@ namespace type_safe
             typename = typename std::
                 enable_if<!std::is_same<typename std::decay<Functor>::type, function_ref>::value,
                           decltype(function_ref(std::declval<Functor&&>()))>::type>
-        function_ref& operator=(Functor&& f) noexcept
+        void assign(Functor&& f) noexcept
         {
-            return *this = function_ref(std::forward<Functor>(f));
+            auto ref = function_ref(std::forward<Functor>(f));
+            storage_ = ref.storage_;
+            cb_      = ref.cb_;
         }
 
         /// \effects Invokes the stored function with the specified arguments and returns the result.

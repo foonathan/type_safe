@@ -30,9 +30,9 @@ TEST_CASE("optional_ref")
     test_optional_ref_conversion<int, int&&>(std::false_type{});
     test_optional_ref_conversion<int, const int&>(std::false_type{});
     test_optional_ref_conversion<int, optional_ref<const int>>(std::false_type{});
-    test_optional_ref_conversion<const int, int&>(std::true_type{});
+    test_optional_ref_conversion<const int, object_ref<int>>(std::true_type{});
     test_optional_ref_conversion<const int, optional_ref<int>>(std::true_type{});
-    test_optional_ref_conversion<base, derived&>(std::true_type{});
+    test_optional_ref_conversion<base, object_ref<derived>>(std::true_type{});
     test_optional_ref_conversion<base, optional_ref<derived>>(std::true_type{});
 
     int value = 0;
@@ -44,6 +44,10 @@ TEST_CASE("optional_ref")
         optional_ref<int> b(value);
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
+
+        optional_ref<int> c(ref(value));
+        REQUIRE(c.has_value());
+        REQUIRE(&c.value() == &value);
     }
     SECTION("assignment")
     {
@@ -52,7 +56,7 @@ TEST_CASE("optional_ref")
         REQUIRE_FALSE(a.has_value());
 
         optional_ref<int> b;
-        b = value;
+        b = ref(value);
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
     }
@@ -79,6 +83,19 @@ TEST_CASE("optional_ref")
         optional_ref<int> b = opt_ref(&value);
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
+
+        optional_ref<int> c = opt_ref(ref(value));
+        REQUIRE(c.has_value());
+        REQUIRE(&c.value() == &value);
+
+        optional<int> opt_a, opt_b(42);
+
+        optional_ref<int> d = opt_ref(opt_a);
+        REQUIRE_FALSE(d.has_value());
+
+        optional_ref<int> e = opt_ref(opt_b);
+        REQUIRE(e.has_value());
+        REQUIRE(&e.value() == &opt_b.value());
     }
     SECTION("cref")
     {
@@ -88,6 +105,19 @@ TEST_CASE("optional_ref")
         optional_ref<const int> b = opt_cref(&value);
         REQUIRE(b.has_value());
         REQUIRE(&b.value() == &value);
+
+        optional_ref<const int> c = opt_cref(ref(value));
+        REQUIRE(c.has_value());
+        REQUIRE(&c.value() == &value);
+
+        optional<int> opt_a, opt_b(42);
+
+        optional_ref<const int> d = opt_cref(opt_a);
+        REQUIRE_FALSE(d.has_value());
+
+        optional_ref<const int> e = opt_cref(opt_b);
+        REQUIRE(e.has_value());
+        REQUIRE(&e.value() == &opt_b.value());
     }
     SECTION("copy")
     {
@@ -147,7 +177,7 @@ TEST_CASE("optional_xvalue_ref")
         REQUIRE_FALSE(a.has_value());
 
         optional_xvalue_ref<int> b;
-        b = value;
+        b = ref(value);
         REQUIRE(b.has_value());
         REQUIRE(b.value() == value);
     }
