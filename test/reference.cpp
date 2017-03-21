@@ -299,7 +299,7 @@ TEST_CASE("function_ref")
         b = a;
         REQUIRE(b() == 0);
 
-        a = g;
+        a.assign(g);
         REQUIRE(a() == 1);
     }
 }

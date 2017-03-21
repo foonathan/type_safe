@@ -262,9 +262,9 @@ namespace type_safe
         /// \requires The `create_value_explicit()` function of the `StoragePolicy` must accept `value`.
         /// \param 1
         /// \exclude
-        template <typename T,
-                  typename = typename std::enable_if<!std::is_same<
-                      typename std::decay<T>::type, basic_optional<storage>>::value>::type>
+        template <typename T, typename std::enable_if<!std::is_same<typename std::decay<T>::type,
+                                                                    basic_optional<storage>>::value,
+                                                      int>::type = 0>
         explicit basic_optional(
             T&& value,
             decltype(std::declval<storage>().create_value_explicit(std::forward<T>(value)), 0) = 0)
@@ -493,8 +493,8 @@ namespace type_safe
             using return_type = decltype(
                 detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
             if (has_value())
-                return detail::map_invoke(std::forward<Func>(f), value(),
-                                          std::forward<Args>(args)...);
+                return rebind<return_type>(detail::map_invoke(std::forward<Func>(f), value(),
+                                                              std::forward<Args>(args)...));
             else
                 return static_cast<rebind<return_type>>(nullopt);
         }

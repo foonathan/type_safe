@@ -60,6 +60,8 @@ namespace type_safe
         static_assert(!std::is_reference<T>::value, "pass the type without reference");
         static_assert(!XValue || !std::is_const<T>::value, "must not be const if xvalue reference");
 
+        T* ptr_;
+
     public:
         using value_type     = T;
         using reference_type = typename std::conditional<XValue, T&&, T&>::type;
@@ -120,8 +122,10 @@ namespace type_safe
         /// \requires The function must return an lvalue or another [ts::object_ref]() object.
         template <typename Func, typename... Args>
         auto map(Func&& f, Args&&... args)
-            -> detail::rebind_object_ref<decltype(detail::map_invoke(std::forward<Func>(f), get(),
-                                                                     std::forward<Args>(args)...)),
+            -> detail::rebind_object_ref<decltype(
+                                             detail::map_invoke(std::forward<Func>(f),
+                                                                std::declval<object_ref&>().get(),
+                                                                std::forward<Args>(args)...)),
                                          XValue>
         {
             using result = decltype(
@@ -129,9 +133,6 @@ namespace type_safe
             return detail::rebind_object_ref<result, XValue>(
                 detail::map_invoke(std::forward<Func>(f), get(), std::forward<Args>(args)...));
         }
-
-    private:
-        T* ptr_;
     };
 
     template <typename T, bool XValue>
