@@ -510,8 +510,8 @@ namespace type_safe
             using return_type = decltype(
                 detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
             if (has_value())
-                return detail::map_invoke(std::forward<Func>(f), value(),
-                                          std::forward<Args>(args)...);
+                return rebind<return_type>(detail::map_invoke(std::forward<Func>(f), value(),
+                                                              std::forward<Args>(args)...));
             else
                 return static_cast<rebind<return_type>>(nullopt);
         }
@@ -527,8 +527,8 @@ namespace type_safe
             using return_type = decltype(
                 detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
             if (has_value())
-                return detail::map_invoke(std::forward<Func>(f), value(),
-                                          std::forward<Args>(args)...);
+                return rebind<return_type>(detail::map_invoke(std::forward<Func>(f), value(),
+                                                              std::forward<Args>(args)...));
             else
                 return static_cast<rebind<return_type>>(nullopt);
         }
@@ -543,8 +543,8 @@ namespace type_safe
             using return_type = decltype(
                 detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
             if (has_value())
-                return detail::map_invoke(std::forward<Func>(f), value(),
-                                          std::forward<Args>(args)...);
+                return rebind<return_type>(detail::map_invoke(std::forward<Func>(f), value(),
+                                                              std::forward<Args>(args)...));
             else
                 return static_cast<rebind<return_type>>(nullopt);
         }
