@@ -153,6 +153,8 @@ namespace type_safe
             return detail::move_if(std::integral_constant<bool, XValue>{}, other);
         }
 
+        result_type get_value_or(T&&) const = delete;
+
     private:
         T* pointer_;
     };
