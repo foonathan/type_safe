@@ -63,7 +63,7 @@ TEST_CASE("optional")
         optional<debugger_type> d(std::move(org_value));
         REQUIRE(d.has_value());
         REQUIRE(d.value().id == 0);
-        REQUIRE(d.value().move_ctor() == TYPE_SAFE_USE_REF_QUALIFIERS);
+        REQUIRE(d.value().move_ctor());
     }
     SECTION("assignment - nullopt_t")
     {

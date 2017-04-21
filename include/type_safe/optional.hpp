@@ -757,7 +757,7 @@ namespace type_safe
         void create_value(direct_optional_storage&& other)
         {
             if (other.has_value())
-                create_value(std::move(other).get_value());
+                create_value(std::move(other.get_value()));
         }
 
         void create_value_explicit()
