@@ -12,6 +12,46 @@ using namespace type_safe;
 
 TEST_CASE("strong_typedef")
 {
+    SECTION("general")
+    {
+        // check compilation here
+        struct type : strong_typedef<type, int>, strong_typedef_op::equality_comparison<type>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+        // type + type
+        type t1, t2;
+        t1 == t2;
+        t1 == std::move(t2);
+        std::move(t1) == t2;
+        std::move(t1) == std::move(t2);
+
+        // type + convert_a
+        struct convert_a : type
+        {
+            using type::type;
+        };
+        convert_a a;
+        t1 == a;
+        t1 == std::move(a);
+        std::move(t1) == a;
+        std::move(t1) == std::move(a);
+
+        // type + convert_b
+        struct convert_b
+        {
+            operator type()
+            {
+                return type(0);
+            }
+        };
+        convert_b b;
+        t1 == b;
+        t1 == std::move(b);
+        std::move(t1) == b;
+        std::move(t1) == std::move(b);
+    }
     SECTION("equality_comparison")
     {
         struct type : strong_typedef<type, int>,
