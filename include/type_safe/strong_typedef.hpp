@@ -155,6 +155,7 @@ namespace type_safe
             template <typename From, typename To>
             using enable_if_convertible = typename std::
                 enable_if<!std::is_same<typename std::decay<From>::type, To>::value
+                          && !std::is_base_of<To, typename std::decay<From>::type>::value
                           && std::is_convertible<typename std::decay<From>::type, To>::value>::type;
 
             template <typename From, typename To>

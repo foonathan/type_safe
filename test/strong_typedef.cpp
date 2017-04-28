@@ -38,6 +38,11 @@ TEST_CASE("strong_typedef")
         REQUIRE(std::move(t1) == a);
         REQUIRE(std::move(t1) == std::move(a));
 
+        REQUIRE(a == a);
+        REQUIRE(std::move(a) == a);
+        REQUIRE(a == std::move(a));
+        REQUIRE(std::move(a) == std::move(a));
+
         // type + convert_b
         struct convert_b
         {
@@ -109,6 +114,11 @@ TEST_CASE("strong_typedef")
         REQUIRE(t1 == std::move(a));
         REQUIRE(std::move(t1) == a);
         REQUIRE(std::move(t1) == std::move(a));
+
+        REQUIRE(a == a);
+        REQUIRE(std::move(a) == a);
+        REQUIRE(a == std::move(a));
+        REQUIRE(std::move(a) == std::move(a));
 
         // type + convert_b
         struct convert_b
