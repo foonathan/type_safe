@@ -65,7 +65,7 @@ namespace type_safe
 
         /// \returns A reference to the stored underlying value.
         /// \group value_conv
-        explicit operator T&() TYPE_SAFE_LVALUE_REF noexcept
+        explicit TYPE_SAFE_CONSTEXPR14 operator T&() TYPE_SAFE_LVALUE_REF noexcept
         {
             return value_;
         }
@@ -78,7 +78,7 @@ namespace type_safe
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \group value_conv
-        explicit operator T &&() && noexcept
+        explicit TYPE_SAFE_CONSTEXPR14 operator T &&() && noexcept
         {
             return std::move(value_);
         }
@@ -117,7 +117,7 @@ namespace type_safe
     /// \returns A reference to the underlying value.
     /// \group strong_typedef_get
     template <class Tag, typename T>
-    T& get(strong_typedef<Tag, T>& type) noexcept
+    TYPE_SAFE_CONSTEXPR14 T& get(strong_typedef<Tag, T>& type) noexcept
     {
         return static_cast<T&>(type);
     }
@@ -131,7 +131,7 @@ namespace type_safe
 
     /// \group strong_typedef_get
     template <class Tag, typename T>
-    T&& get(strong_typedef<Tag, T>&& type) noexcept
+    TYPE_SAFE_CONSTEXPR14 T&& get(strong_typedef<Tag, T>&& type) noexcept
     {
         return static_cast<T&&>(static_cast<T&>(type));
     }
@@ -169,7 +169,8 @@ namespace type_safe
             }
 
             template <class StrongTypedef>
-            constexpr underlying_type<StrongTypedef>&& get_underlying(StrongTypedef&& type)
+            TYPE_SAFE_CONSTEXPR14 underlying_type<StrongTypedef>&& get_underlying(
+                StrongTypedef&& type)
             {
                 return get(static_cast<StrongTypedef&&>(type));
             }
