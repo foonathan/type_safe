@@ -12,6 +12,139 @@ using namespace type_safe;
 
 TEST_CASE("strong_typedef")
 {
+    // only check compilation here
+    SECTION("general")
+    {
+        struct type : strong_typedef<type, int>, strong_typedef_op::equality_comparison<type>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+        // type + type
+        type t1, t2;
+        REQUIRE(t1 == t2);
+        REQUIRE(t1 == std::move(t2));
+        REQUIRE(std::move(t1) == t2);
+        REQUIRE(std::move(t1) == std::move(t2));
+
+        // type + convert_a
+        struct convert_a : type
+        {
+            using type::type;
+        };
+        convert_a a;
+        REQUIRE(t1 == a);
+        REQUIRE(t1 == std::move(a));
+        REQUIRE(std::move(t1) == a);
+        REQUIRE(std::move(t1) == std::move(a));
+
+        // type + convert_b
+        struct convert_b
+        {
+            operator type()
+            {
+                return type(0);
+            }
+        };
+        convert_b b;
+        REQUIRE(t1 == b);
+        REQUIRE(t1 == std::move(b));
+        REQUIRE(std::move(t1) == b);
+        REQUIRE(std::move(t1) == std::move(b));
+    }
+    SECTION("general mixed")
+    {
+        struct type : strong_typedef<type, int>,
+                      strong_typedef_op::mixed_equality_comparison<type, int>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+        int i = 0;
+
+        // type + int
+        type t1;
+        REQUIRE(t1 == i);
+        REQUIRE(t1 == std::move(i));
+        REQUIRE(std::move(t1) == i);
+        REQUIRE(std::move(t1) == std::move(i));
+
+        // type + convert
+        struct convert
+        {
+            operator int()
+            {
+                return 0;
+            }
+        };
+        convert a;
+        REQUIRE(t1 == a);
+        REQUIRE(t1 == std::move(a));
+        REQUIRE(std::move(t1) == a);
+        REQUIRE(std::move(t1) == std::move(a));
+    }
+    SECTION("general mixed + non mixed")
+    {
+        struct type : strong_typedef<type, int>,
+                      strong_typedef_op::equality_comparison<type>,
+                      strong_typedef_op::mixed_equality_comparison<type, int>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+        // type + type
+        type t1, t2;
+        REQUIRE(t1 == t2);
+        REQUIRE(t1 == std::move(t2));
+        REQUIRE(std::move(t1) == t2);
+        REQUIRE(std::move(t1) == std::move(t2));
+
+        // type + convert_a
+        struct convert_a : type
+        {
+            using type::type;
+        };
+        convert_a a;
+        REQUIRE(t1 == a);
+        REQUIRE(t1 == std::move(a));
+        REQUIRE(std::move(t1) == a);
+        REQUIRE(std::move(t1) == std::move(a));
+
+        // type + convert_b
+        struct convert_b
+        {
+            operator type()
+            {
+                return type(0);
+            }
+        };
+        convert_b b;
+        REQUIRE(t1 == b);
+        REQUIRE(t1 == std::move(b));
+        REQUIRE(std::move(t1) == b);
+        REQUIRE(std::move(t1) == std::move(b));
+
+        // type + int
+        int i = 0;
+        REQUIRE(t1 == i);
+        REQUIRE(t1 == std::move(i));
+        REQUIRE(std::move(t1) == i);
+        REQUIRE(std::move(t1) == std::move(i));
+
+        // type + convert
+        struct convert_c
+        {
+            operator int()
+            {
+                return 0;
+            }
+        };
+        convert_c c;
+        REQUIRE(t1 == c);
+        REQUIRE(t1 == std::move(c));
+        REQUIRE(std::move(t1) == c);
+        REQUIRE(std::move(t1) == std::move(c));
+    }
     SECTION("equality_comparison")
     {
         struct type : strong_typedef<type, int>,

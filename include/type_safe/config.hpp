@@ -78,6 +78,26 @@
 #define TYPE_SAFE_NOEXCEPT_DEFAULT(Val)
 #endif
 
+#ifndef TYPE_SAFE_USE_CONSTEXPR14
+
+#if defined(__cpp_constexpr) && __cpp_constexpr >= 201304
+/// \exclude
+#define TYPE_SAFE_USE_CONSTEXPR14 1
+#else
+/// \exclude
+#define TYPE_SAFE_USE_CONSTEXPR14 0
+#endif
+
+#endif
+
+#if TYPE_SAFE_USE_CONSTEXPR14
+/// \exclude
+#define TYPE_SAFE_CONSTEXPR14 constexpr
+#else
+/// \exclude
+#define TYPE_SAFE_CONSTEXPR14
+#endif
+
 #ifndef TYPE_SAFE_USE_EXCEPTIONS
 
 #if __cpp_exceptions

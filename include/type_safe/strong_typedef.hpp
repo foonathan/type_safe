@@ -65,7 +65,7 @@ namespace type_safe
 
         /// \returns A reference to the stored underlying value.
         /// \group value_conv
-        explicit operator T&() TYPE_SAFE_LVALUE_REF noexcept
+        explicit TYPE_SAFE_CONSTEXPR14 operator T&() TYPE_SAFE_LVALUE_REF noexcept
         {
             return value_;
         }
@@ -78,7 +78,7 @@ namespace type_safe
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
         /// \group value_conv
-        explicit operator T &&() && noexcept
+        explicit TYPE_SAFE_CONSTEXPR14 operator T &&() && noexcept
         {
             return std::move(value_);
         }
@@ -117,7 +117,7 @@ namespace type_safe
     /// \returns A reference to the underlying value.
     /// \group strong_typedef_get
     template <class Tag, typename T>
-    constexpr T& get(strong_typedef<Tag, T>& type) noexcept
+    TYPE_SAFE_CONSTEXPR14 T& get(strong_typedef<Tag, T>& type) noexcept
     {
         return static_cast<T&>(type);
     }
@@ -131,7 +131,7 @@ namespace type_safe
 
     /// \group strong_typedef_get
     template <class Tag, typename T>
-    constexpr T&& get(strong_typedef<Tag, T>&& type) noexcept
+    TYPE_SAFE_CONSTEXPR14 T&& get(strong_typedef<Tag, T>&& type) noexcept
     {
         return static_cast<T&&>(static_cast<T&>(type));
     }
@@ -169,7 +169,8 @@ namespace type_safe
             }
 
             template <class StrongTypedef>
-            constexpr underlying_type<StrongTypedef>&& get_underlying(StrongTypedef&& type)
+            TYPE_SAFE_CONSTEXPR14 underlying_type<StrongTypedef>&& get_underlying(
+                StrongTypedef&& type)
             {
                 return get(static_cast<StrongTypedef&&>(type));
             }
@@ -193,8 +194,39 @@ namespace type_safe
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Name, Result)                                                 \
     /** \exclude */                                                                                \
+    template <class StrongTypedef>                                                                 \
+    constexpr Result operator Op(const Name<StrongTypedef>& lhs, const Name<StrongTypedef>& rhs)   \
+    {                                                                                              \
+        return Result(                                                                             \
+            detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(lhs))          \
+                Op detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(rhs))); \
+    }                                                                                              \
+    /** \exclude */                                                                                \
+    template <class StrongTypedef>                                                                 \
+    constexpr Result operator Op(Name<StrongTypedef>&& lhs, const Name<StrongTypedef>& rhs)        \
+    {                                                                                              \
+        return Result(                                                                             \
+            detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&>(lhs))                \
+                Op detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(rhs))); \
+    }                                                                                              \
+    /** \exclude */                                                                                \
+    template <class StrongTypedef>                                                                 \
+    constexpr Result operator Op(const Name<StrongTypedef>& lhs, Name<StrongTypedef>&& rhs)        \
+    {                                                                                              \
+        return Result(detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(     \
+            lhs)) Op detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(rhs)));    \
+    }                                                                                              \
+    /** \exclude */                                                                                \
+    template <class StrongTypedef>                                                                 \
+    constexpr Result operator Op(Name<StrongTypedef>&& lhs, Name<StrongTypedef>&& rhs)             \
+    {                                                                                              \
+        return Result(detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&>(           \
+            lhs)) Op detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(rhs)));    \
+    }                                                                                              \
+    /* mixed */                                                                                    \
+    /** \exclude */                                                                                \
     template <class StrongTypedef, typename Other,                                                 \
-              typename = detail::enable_if_convertible_same<Other&&, StrongTypedef>>               \
+              typename = detail::enable_if_convertible<Other&&, StrongTypedef>>                    \
     constexpr Result operator Op(const Name<StrongTypedef>& lhs, Other&& rhs)                      \
     {                                                                                              \
         return Result(detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(     \
@@ -202,7 +234,7 @@ namespace type_safe
     }                                                                                              \
     /** \exclude */                                                                                \
     template <class StrongTypedef, typename Other,                                                 \
-              typename = detail::enable_if_convertible_same<Other&&, StrongTypedef>>               \
+              typename = detail::enable_if_convertible<Other&&, StrongTypedef>>                    \
     constexpr Result operator Op(Name<StrongTypedef>&& lhs, Other&& rhs)                           \
     {                                                                                              \
         return Result(detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(lhs))     \
