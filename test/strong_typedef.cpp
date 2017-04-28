@@ -22,10 +22,10 @@ TEST_CASE("strong_typedef")
 
         // type + type
         type t1, t2;
-        t1 == t2;
-        t1 == std::move(t2);
-        std::move(t1) == t2;
-        std::move(t1) == std::move(t2);
+        REQUIRE(t1 == t2);
+        REQUIRE(t1 == std::move(t2));
+        REQUIRE(std::move(t1) == t2);
+        REQUIRE(std::move(t1) == std::move(t2));
 
         // type + convert_a
         struct convert_a : type
@@ -33,10 +33,10 @@ TEST_CASE("strong_typedef")
             using type::type;
         };
         convert_a a;
-        t1 == a;
-        t1 == std::move(a);
-        std::move(t1) == a;
-        std::move(t1) == std::move(a);
+        REQUIRE(t1 == a);
+        REQUIRE(t1 == std::move(a));
+        REQUIRE(std::move(t1) == a);
+        REQUIRE(std::move(t1) == std::move(a));
 
         // type + convert_b
         struct convert_b
@@ -47,10 +47,10 @@ TEST_CASE("strong_typedef")
             }
         };
         convert_b b;
-        t1 == b;
-        t1 == std::move(b);
-        std::move(t1) == b;
-        std::move(t1) == std::move(b);
+        REQUIRE(t1 == b);
+        REQUIRE(t1 == std::move(b));
+        REQUIRE(std::move(t1) == b);
+        REQUIRE(std::move(t1) == std::move(b));
     }
     SECTION("general mixed")
     {
@@ -60,28 +60,28 @@ TEST_CASE("strong_typedef")
             using strong_typedef::strong_typedef;
         };
 
-        int i;
+        int i = 0;
 
         // type + int
         type t1;
-        t1 == i;
-        t1 == std::move(i);
-        std::move(t1) == i;
-        std::move(t1) == std::move(i);
+        REQUIRE(t1 == i);
+        REQUIRE(t1 == std::move(i));
+        REQUIRE(std::move(t1) == i);
+        REQUIRE(std::move(t1) == std::move(i));
 
         // type + convert
         struct convert
         {
             operator int()
             {
-                return 5;
+                return 0;
             }
         };
         convert a;
-        t1 == a;
-        t1 == std::move(a);
-        std::move(t1) == a;
-        std::move(t1) == std::move(i);
+        REQUIRE(t1 == a);
+        REQUIRE(t1 == std::move(a));
+        REQUIRE(std::move(t1) == a);
+        REQUIRE(std::move(t1) == std::move(a));
     }
     SECTION("general mixed + non mixed")
     {
@@ -94,10 +94,10 @@ TEST_CASE("strong_typedef")
 
         // type + type
         type t1, t2;
-        t1 == t2;
-        t1 == std::move(t2);
-        std::move(t1) == t2;
-        std::move(t1) == std::move(t2);
+        REQUIRE(t1 == t2);
+        REQUIRE(t1 == std::move(t2));
+        REQUIRE(std::move(t1) == t2);
+        REQUIRE(std::move(t1) == std::move(t2));
 
         // type + convert_a
         struct convert_a : type
@@ -105,10 +105,10 @@ TEST_CASE("strong_typedef")
             using type::type;
         };
         convert_a a;
-        t1 == a;
-        t1 == std::move(a);
-        std::move(t1) == a;
-        std::move(t1) == std::move(a);
+        REQUIRE(t1 == a);
+        REQUIRE(t1 == std::move(a));
+        REQUIRE(std::move(t1) == a);
+        REQUIRE(std::move(t1) == std::move(a));
 
         // type + convert_b
         struct convert_b
@@ -119,31 +119,31 @@ TEST_CASE("strong_typedef")
             }
         };
         convert_b b;
-        t1 == b;
-        t1 == std::move(b);
-        std::move(t1) == b;
-        std::move(t1) == std::move(b);
+        REQUIRE(t1 == b);
+        REQUIRE(t1 == std::move(b));
+        REQUIRE(std::move(t1) == b);
+        REQUIRE(std::move(t1) == std::move(b));
 
         // type + int
-        int i;
-        t1 == i;
-        t1 == std::move(i);
-        std::move(t1) == i;
-        std::move(t1) == std::move(i);
+        int i = 0;
+        REQUIRE(t1 == i);
+        REQUIRE(t1 == std::move(i));
+        REQUIRE(std::move(t1) == i);
+        REQUIRE(std::move(t1) == std::move(i));
 
         // type + convert
         struct convert_c
         {
             operator int()
             {
-                return 5;
+                return 0;
             }
         };
         convert_c c;
-        t1 == c;
-        t1 == std::move(c);
-        std::move(t1) == c;
-        std::move(t1) == std::move(c);
+        REQUIRE(t1 == c);
+        REQUIRE(t1 == std::move(c));
+        REQUIRE(std::move(t1) == c);
+        REQUIRE(std::move(t1) == std::move(c));
     }
     SECTION("equality_comparison")
     {
