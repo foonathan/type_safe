@@ -285,4 +285,14 @@ TEST_CASE("integer")
         in >> i;
         REQUIRE(static_cast<int>(i) == 10);
     }
+    SECTION("abs")
+    {
+        int               i  = 123;
+        integer<unsigned> ia = type_safe::abs(i);
+        REQUIRE(static_cast<unsigned>(ia) == 123u);
+
+        i  = -123;
+        ia = type_safe::abs(i);
+        REQUIRE(static_cast<unsigned>(ia) == 123u);
+    }
 }
