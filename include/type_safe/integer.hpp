@@ -410,7 +410,7 @@ namespace type_safe
               typename = typename std::enable_if<std::is_signed<SignedInteger>::value>::type>
     TYPE_SAFE_FORCE_INLINE constexpr make_unsigned_t<SignedInteger> abs(const SignedInteger& i)
     {
-        return make_unsigned(i > 0 ? i : -1);
+        return make_unsigned(i > 0 ? i : -i);
     }
 
     /// \returns The absolute value of an [ts::integer]().
