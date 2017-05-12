@@ -13,21 +13,21 @@
 
 namespace type_safe
 {
-    /// A type modelling the distance between two [ts::index_t]() objects.
+    /// A type modelling the difference between two [ts::index_t]() objects.
     ///
     /// It is a [ts::strong_typedef]() for [ts::ptrdiff_t]().
     /// It is comparable and you can add and subtract two differences.
     /// \module types
-    struct distance_t : strong_typedef<distance_t, ptrdiff_t>,
-                        strong_typedef_op::equality_comparison<distance_t>,
-                        strong_typedef_op::relational_comparison<distance_t>,
-                        strong_typedef_op::unary_plus<distance_t>,
-                        strong_typedef_op::unary_minus<distance_t>,
-                        strong_typedef_op::addition<distance_t>,
-                        strong_typedef_op::subtraction<distance_t>
+    struct difference_t : strong_typedef<difference_t, ptrdiff_t>,
+                          strong_typedef_op::equality_comparison<difference_t>,
+                          strong_typedef_op::relational_comparison<difference_t>,
+                          strong_typedef_op::unary_plus<difference_t>,
+                          strong_typedef_op::unary_minus<difference_t>,
+                          strong_typedef_op::addition<difference_t>,
+                          strong_typedef_op::subtraction<difference_t>
     {
         /// \effects Initializes it to `0`.
-        constexpr distance_t() noexcept : strong_typedef(0)
+        constexpr difference_t() noexcept : strong_typedef(0)
         {
         }
 
@@ -40,7 +40,7 @@ namespace type_safe
         template <typename T,
                   typename = typename std::
                       enable_if<detail::is_safe_integer_conversion<T, std::ptrdiff_t>::value>::type>
-        constexpr distance_t(T i) noexcept : strong_typedef(i)
+        constexpr difference_t(T i) noexcept : strong_typedef(i)
         {
         }
 
@@ -50,7 +50,7 @@ namespace type_safe
         template <typename T, class Policy,
                   typename = typename std::
                       enable_if<detail::is_safe_integer_conversion<T, std::ptrdiff_t>::value>::type>
-        constexpr distance_t(integer<T, Policy> i) noexcept : strong_typedef(static_cast<T>(i))
+        constexpr difference_t(integer<T, Policy> i) noexcept : strong_typedef(static_cast<T>(i))
         {
         }
     };
@@ -101,7 +101,7 @@ namespace type_safe
         /// \effects Advances the index by the distance specified in `rhs`.
         /// If `rhs` is a negative distance, it advances backwards.
         /// \requires The new index must be greater or equal to `0`.
-        index_t& operator+=(const distance_t& rhs) noexcept
+        index_t& operator+=(const difference_t& rhs) noexcept
         {
             get(*this) = make_unsigned(make_signed(get(*this)) + get(rhs));
             return *this;
@@ -110,7 +110,7 @@ namespace type_safe
         /// \effects Advances the index backwards by the distance specified in `rhs`.
         /// If `rhs` is a negative distance, it advances forwards.
         /// \requires The new index must be greater or equal to `0`.
-        index_t& operator-=(const distance_t& rhs) noexcept
+        index_t& operator-=(const difference_t& rhs) noexcept
         {
             get(*this) = make_unsigned(make_signed(get(*this)) - get(rhs));
             return *this;
@@ -120,20 +120,20 @@ namespace type_safe
     /// \returns The given [ts::index_t]() advanced by the given [ts::distance_t]().
     /// \module types
     /// \group index_distance_plus
-    constexpr index_t operator+(const index_t& lhs, const distance_t& rhs) noexcept
+    constexpr index_t operator+(const index_t& lhs, const difference_t& rhs) noexcept
     {
         return index_t(make_unsigned(make_signed(get(lhs)) + get(rhs)));
     }
 
     /// \group index_distance_plus
-    constexpr index_t operator+(const distance_t& lhs, const index_t& rhs) noexcept
+    constexpr index_t operator+(const difference_t& lhs, const index_t& rhs) noexcept
     {
         return rhs + lhs;
     }
 
     /// \returns The given [ts::index_t]() advanced backwards by the given [ts::distance_t]().
     /// \module types
-    constexpr index_t operator-(const index_t& lhs, const distance_t& rhs) noexcept
+    constexpr index_t operator-(const index_t& lhs, const difference_t& rhs) noexcept
     {
         return index_t(make_unsigned(make_signed(get(lhs)) - get(rhs)));
     }
@@ -142,9 +142,9 @@ namespace type_safe
     /// This is the number of steps you need to increment `lhs` to reach `rhs`,
     /// it is negative if `lhs > rhs`.
     /// \module types
-    constexpr distance_t operator-(const index_t& lhs, const index_t& rhs) noexcept
+    constexpr difference_t operator-(const index_t& lhs, const index_t& rhs) noexcept
     {
-        return distance_t(make_signed(get(lhs)) - make_signed(get(rhs)));
+        return difference_t(make_signed(get(lhs)) - make_signed(get(rhs)));
     }
 
     /// \exclude
@@ -208,7 +208,7 @@ namespace type_safe
     /// If the distance is negative, decrements the index instead.
     /// \notes This is the same as `index += dist` and the equivalent of [std::advance()]().
     /// \module types
-    inline void advance(index_t& index, const distance_t& dist)
+    inline void advance(index_t& index, const difference_t& dist)
     {
         index += dist;
     }
@@ -217,7 +217,7 @@ namespace type_safe
     /// i.e. how often you'd have to increment `a` to reach `b`.
     /// \notes This is the same as `b - a` and the equivalent of [std::distance()]().
     /// \module types
-    constexpr distance_t distance(const index_t& a, const index_t& b)
+    constexpr difference_t distance(const index_t& a, const index_t& b)
     {
         return b - a;
     }
@@ -225,7 +225,7 @@ namespace type_safe
     /// \returns The [ts::index_t]() that is `dist` greater than `index`.
     /// \notes This is the same as `index + dist` and the equivalent of [std::next()]().
     /// \module types
-    constexpr index_t next(const index_t& index, const distance_t& dist = distance_t(1))
+    constexpr index_t next(const index_t& index, const difference_t& dist = difference_t(1))
     {
         return index + dist;
     }
@@ -233,7 +233,7 @@ namespace type_safe
     /// \returns The [ts::index_t]() that is `dist` smaller than `index`.
     /// \notes This is the same as `index - dist` and the equivalent of [std::prev()]().
     /// \module types
-    constexpr index_t prev(const index_t& index, const distance_t& dist = distance_t(1))
+    constexpr index_t prev(const index_t& index, const difference_t& dist = difference_t(1))
     {
         return index - dist;
     }
