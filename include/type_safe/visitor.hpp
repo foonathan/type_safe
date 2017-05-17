@@ -198,6 +198,20 @@ namespace type_safe
             }
         };
 
+        // should not be called
+        template <typename Variant, typename Head, typename... Types>
+        Head get_dummy_type(const Variant& var, variant_types<Head, Types...>)
+        {
+            return var.value(variant_type<Head>{});
+        }
+
+        template <typename Variant>
+        auto get_dummy_type(const Variant& var)
+            -> decltype(get_dummy_type(var, typename Variant::types{}))
+        {
+            return get_dummy_type(var, typename Variant::types{});
+        }
+
         template <bool AllowIncomplete, typename Visitor, class Variant>
         class visit_variant_impl<AllowIncomplete, Visitor, Variant>
         {
@@ -221,13 +235,23 @@ namespace type_safe
 
             template <typename, typename... Args,
                       typename Variant2 = typename std::decay<Variant>::type>
-            static auto call_type(Visitor&&, variant_types<>, Variant&& variant, Args&&...) ->
-                typename std::enable_if<!Variant2::allow_empty::value>::type
+            static auto call_type(Visitor&& visitor, variant_types<>, Variant&& variant,
+                                  Args&&... args) ->
+                typename std::enable_if<!Variant2::allow_empty::value,
+                                        decltype(visit_variant_impl<AllowIncomplete, Visitor>::call(
+                                            std::forward<Visitor>(visitor),
+                                            std::forward<Args>(args)...,
+                                            get_dummy_type(variant)))>::type
             {
                 DEBUG_ASSERT(!variant.has_value(), assert_handler{},
                              "it has a value but we are in this overload?!");
                 DEBUG_UNREACHABLE(precondition_error_handler{},
                                   "variant in invalid state for visit");
+                return visit_variant_impl<AllowIncomplete, Visitor>::call(std::forward<Visitor>(
+                                                                              visitor),
+                                                                          std::forward<Args>(
+                                                                              args)...,
+                                                                          get_dummy_type(variant));
             }
 
             template <typename RecursiveDecltype, typename Head, typename... Tail, typename... Args>
@@ -291,14 +315,22 @@ namespace type_safe
 
             template <typename, typename... Args,
                       typename Variant2 = typename std::decay<Variant>::type>
-            static auto call_type(Visitor&&, variant_types<>, Variant&& variant, Rest&&...,
-                                  Args&&...) ->
-                typename std::enable_if<!Variant2::allow_empty::value>::type
+            static auto call_type(Visitor&& visitor, variant_types<>, Variant&& variant,
+                                  Rest&&... rest, Args&&... args) -> typename std::
+                enable_if<!Variant2::allow_empty::value,
+                          decltype(visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
+                              std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
+                              std::forward<Args>(args)..., get_dummy_type(variant)))>::type
             {
                 DEBUG_ASSERT(!variant.has_value(), assert_handler{},
                              "it has a value but we are in this overload?!");
                 DEBUG_UNREACHABLE(precondition_error_handler{},
                                   "variant in invalid state for visit");
+                return visit_variant_impl<AllowIncomplete, Visitor,
+                                          Rest...>::call(std::forward<Visitor>(visitor),
+                                                         std::forward<Rest>(rest)...,
+                                                         std::forward<Args>(args)...,
+                                                         get_dummy_type(variant));
             }
 
             template <typename RecursiveDecltype, typename Head, typename... Tail, typename... Args>

@@ -166,4 +166,12 @@ TEST_CASE("visit variant")
         variant<int, float> b(0);
         visit(visitor{0}, a, b);
     }
+    SECTION("return type")
+    {
+        variant<int> a(1);
+        auto         b = a;
+
+        REQUIRE(visit([](int) { return 0; }, a) == 0);
+        REQUIRE(visit([](int, int) { return 0; }, a, b) == 0);
+    }
 }
