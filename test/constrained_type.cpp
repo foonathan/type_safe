@@ -13,9 +13,10 @@ struct test_verifier
     static bool expected;
 
     template <typename T, typename Predicate>
-    static void verify(const T& value, const Predicate& p)
+    static T&& verify(T&& value, const Predicate& p)
     {
         REQUIRE(p(value) == expected);
+        return std::forward<T>(value);
     }
 };
 

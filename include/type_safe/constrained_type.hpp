@@ -19,16 +19,20 @@ namespace type_safe
     //=== constrained_type ===//
     /// A `Verifier` for [ts::constrained_type]() that `DEBUG_ASSERT`s the constraint.
     ///
-    /// \notes It asserts only if [TYPE_SAFE_ENABLE_PRECONDITION_CHECKS]() is `true`,
-    /// else it is undefined behavior.
+    /// If [TYPE_SAFE_ENABLE_PRECONDITION_CHECKS]() is `true`,
+    /// it will assert that the value fulfills the predicate and returns it unchanged.
+    /// If assertions are disabled, it will just return the value unchanged.
     /// \output_section Constrained type
     struct assertion_verifier
     {
         template <typename Value, typename Predicate>
-        static void verify(const Value& val, const Predicate& p)
+        static constexpr auto verify(Value&& val, const Predicate& p) ->
+            typename std::decay<Value>::type
         {
-            DEBUG_ASSERT(p(val), detail::precondition_error_handler{},
-                         "value does not fulfill constraint");
+            return p(val) ? std::forward<Value>(val) :
+                            (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
+                                               "value does not fulfill constraint"),
+                             std::forward<Value>(val));
         }
     };
 
@@ -45,7 +49,8 @@ namespace type_safe
     /// A `Verifier` for [ts::constrained_type]() that throws an exception in case of failure.
     ///
     /// Unlike [ts::assertion_verifier](), it will *always* check the constrain.
-    /// If it is not fulfilled, it throws an exception of type [ts::constrain_error]().
+    /// If it is not fulfilled, it throws an exception of type [ts::constrain_error](),
+    /// otherwise return the original value unchanged.
     /// \notes [ts::assertion_verifier]() is the default,
     /// because a constrain violation is a logic error,
     /// usually done by a programmer.
@@ -54,10 +59,11 @@ namespace type_safe
     struct throwing_verifier
     {
         template <typename Value, typename Predicate>
-        static void verify(const Value& val, const Predicate& p)
+        static constexpr auto verify(Value&& val, const Predicate& p) ->
+            typename std::decay<Value>::type
         {
-            if (!p(val))
-                TYPE_SAFE_THROW(constrain_error{});
+            return p(val) ? std::forward<Value>(val) :
+                            (TYPE_SAFE_THROW(constrain_error{}), std::forward<Value>(val));
         }
     };
 
@@ -88,7 +94,8 @@ namespace type_safe
     /// If `T` is `const`, the `modify()` function will not be available,
     /// you can only modify the type by assigning a completely new value to it.
     /// \requires `T` must not be a reference, `Constraint` must be a moveable, non-final class where no operation throws,
-    /// and `Verifier` must provide a `static` function `void verify([const] T&, const Predicate&)`.
+    /// and `Verifier` must provide a `static` function `[const] T[&] verify(const T&, const Predicate&)`.
+    /// The return value is stored and it must always fulfill the predicate.
     /// It also requires that no `const` operation on `T` may modify it in a way that the predicate isn't fulfilled anymore.
     /// \notes Additional requirements of the `Constraint` depend on the `Verifier` used.
     /// If not stated otherwise, a `Verifier` in this library requires
@@ -105,19 +112,22 @@ namespace type_safe
         /// \throws Anything thrown by the copy(1)/move(2) constructor of `value_type`
         /// or the `Verifier` if the `value` is invalid.
         /// \group value_ctor
-        explicit constrained_type(const value_type& value, constraint_predicate predicate = {})
-        : Constraint(std::move(predicate)), value_(value)
+        explicit constexpr constrained_type(const value_type&    value,
+                                            constraint_predicate predicate = {})
+        : Constraint(std::move(predicate)), value_(Verifier::verify(value, get_constraint()))
         {
-            verify();
         }
 
         /// \group value_ctor
-        explicit constrained_type(value_type&& value, constraint_predicate predicate = {}) noexcept(
-            std::is_nothrow_constructible<value_type>::value&& noexcept(
-                Verifier::verify(std::move(value), std::move(predicate))))
-        : Constraint(std::move(predicate)), value_(std::move(value))
+        explicit constexpr constrained_type(
+            value_type&&         value,
+            constraint_predicate predicate =
+                {}) noexcept(std::is_nothrow_constructible<value_type>::
+                                 value&& noexcept(Verifier::verify(std::move(value),
+                                                                   std::move(predicate))))
+        : Constraint(std::move(predicate)),
+          value_(Verifier::verify(std::move(value), get_constraint()))
         {
-            verify();
         }
 
         /// \exclude
@@ -129,9 +139,9 @@ namespace type_safe
         /// \effects Copies the value and predicate of `other`.
         /// \throws Anything thrown by the copy constructor of `value_type`.
         /// \requires `Constraint` must be copyable.
-        constrained_type(const constrained_type& other) : Constraint(other), value_(other.value_)
+        constexpr constrained_type(const constrained_type& other)
+        : Constraint(other), value_(other.debug_verify())
         {
-            debug_verify();
         }
 
         /// \effects Destroys the value.
@@ -144,7 +154,7 @@ namespace type_safe
         /// If the `value` is invalid, nothing will be changed.
         /// \requires `Constraint` must be copyable.
         /// \group assign_value
-        constrained_type& operator=(const value_type& other)
+        TYPE_SAFE_CONSTEXPR14 constrained_type& operator=(const value_type& other)
         {
             constrained_type tmp(other, get_constraint());
             value_ = std::move(tmp).release();
@@ -152,7 +162,7 @@ namespace type_safe
         }
 
         /// \group assign_value
-        constrained_type& operator=(value_type&& other) noexcept(
+        TYPE_SAFE_CONSTEXPR14 constrained_type& operator=(value_type&& other) noexcept(
             std::is_nothrow_move_assignable<value_type>::value&& noexcept(
                 Verifier::verify(std::move(other), std::declval<Constraint&>())))
         {
@@ -170,7 +180,7 @@ namespace type_safe
         /// \effects Copies the value and predicate from `other`.
         /// \throws Anything thrown by the copy assignment operator of `value_type`.
         /// \requires `Constraint` must be copyable.
-        constrained_type& operator=(const constrained_type& other)
+        TYPE_SAFE_CONSTEXPR14 constrained_type& operator=(const constrained_type& other)
         {
             constrained_type tmp(other);
             swap(*this, tmp);
@@ -180,7 +190,7 @@ namespace type_safe
         /// \effects Swaps the value and predicate of a `a` and `b`.
         /// \throws Anything thrown by the swap function of `value_type`.
         /// \requires `Constraint` must be swappable.
-        friend void swap(constrained_type& a, constrained_type& b) noexcept(
+        friend TYPE_SAFE_CONSTEXPR14 void swap(constrained_type& a, constrained_type& b) noexcept(
             detail::is_nothrow_swappable<value_type>::value)
         {
             a.debug_verify();
@@ -206,7 +216,7 @@ namespace type_safe
         /// \returns An rvalue reference to the stored value.
         /// \notes After this function is called, the object must not be used anymore
         /// except as target for assignment or in the destructor.
-        value_type&& release() TYPE_SAFE_RVALUE_REF noexcept
+        TYPE_SAFE_CONSTEXPR14 value_type&& release() TYPE_SAFE_RVALUE_REF noexcept
         {
             debug_verify();
             return std::move(value_);
@@ -214,44 +224,41 @@ namespace type_safe
 
         /// Dereference operator.
         /// \returns A `const` reference to the stored value.
-        const value_type& operator*() const noexcept
+        constexpr const value_type& operator*() const noexcept
         {
-            return value_;
+            return get_value();
         }
 
         /// Member access operator.
         /// \returns A `const` pointer to the stored value.
-        const value_type* operator->() const noexcept
+        constexpr const value_type* operator->() const noexcept
         {
-            return std::addressof(value_);
+            return std::addressof(get_value());
         }
 
         /// \returns A `const` reference to the stored value.
-        const value_type& get_value() const noexcept
+        constexpr const value_type& get_value() const noexcept
         {
-            return value_;
+            return debug_verify();
         }
 
         /// \returns The predicate that determines validity.
-        const constraint_predicate& get_constraint() const noexcept
+        constexpr const constraint_predicate& get_constraint() const noexcept
         {
             return *this;
         }
 
     private:
-        void verify()
-        {
-            Verifier::verify(value_, get_constraint());
-        }
-
-        void debug_verify() noexcept
+        constexpr const value_type& debug_verify() const noexcept
         {
 #if TYPE_SAFE_ENABLE_ASSERTIONS
-            verify();
+            return Verifier::verify(value_, get_constraint()), value_;
+#else
+            return value_;
 #endif
         }
 
-        value_type& get_non_const() noexcept
+        TYPE_SAFE_CONSTEXPR14 value_type& get_non_const() noexcept
         {
             return value_;
         }
@@ -273,10 +280,9 @@ namespace type_safe
         using constraint_predicate = Constraint;
 
         /// \effects Binds the reference to the given object.
-        explicit constrained_type(T& value, constraint_predicate predicate = {})
-        : Constraint(std::move(predicate)), ref_(&value)
+        explicit constexpr constrained_type(T& value, constraint_predicate predicate = {})
+        : Constraint(std::move(predicate)), ref_(&Verifier::verify(value, get_constraint()))
         {
-            verify();
         }
 
         /// \exclude
@@ -291,44 +297,47 @@ namespace type_safe
                   typename       = typename std::enable_if<!std::is_const<Dummy>::value>::type>
         constrained_modifier<T&, Constraint, Verifier> modify() noexcept
         {
-            DEBUG_ASSERT(ref_, detail::assert_handler{});
+            debug_verify();
             return constrained_modifier<T&, Constraint, Verifier>(*this);
         }
 
         /// Dereference operator.
         /// \returns A `const` reference to the referred value.
-        const value_type& operator*() const noexcept
+        constexpr const value_type& operator*() const noexcept
         {
             return get_value();
         }
 
         /// Member access operator.
         /// \returns A `const` pointer to the referred value.
-        const value_type* operator->() const noexcept
+        constexpr const value_type* operator->() const noexcept
         {
             return &get_value();
         }
 
         /// \returns A `const` reference to the referred value.
-        const value_type& get_value() const noexcept
+        constexpr const value_type& get_value() const noexcept
         {
-            DEBUG_ASSERT(ref_, detail::assert_handler{}, "should have used object_ref");
-            return *ref_;
+            return debug_verify();
         }
 
         /// \returns The predicate that determines validity.
-        const constraint_predicate& get_constraint() const noexcept
+        constexpr const constraint_predicate& get_constraint() const noexcept
         {
             return *this;
         }
 
     private:
-        void verify()
+        constexpr const value_type& debug_verify() const noexcept
         {
-            Verifier::verify(get_value(), get_constraint());
+#if TYPE_SAFE_ENABLE_ASSERTIONS
+            return Verifier::verify(*ref_, get_constraint());
+#else
+            return *ref_;
+#endif
         }
 
-        value_type& get_non_const() noexcept
+        TYPE_SAFE_CONSTEXPR14 value_type& get_non_const() noexcept
         {
             return *ref_;
         }
@@ -361,7 +370,7 @@ namespace type_safe
         ~constrained_modifier() noexcept(false)
         {
             if (value_)
-                value_->verify();
+                Verifier::verify(**value_, value_->get_constraint());
         }
 
         /// \effects Move assigns it.
@@ -410,9 +419,9 @@ namespace type_safe
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
     template <typename T, typename Constraint, class Verifier>                                     \
-    auto operator Op(const constrained_type<T, Constraint, Verifier>& lhs,                         \
-                     const constrained_type<T, Constraint, Verifier>&                              \
-                         rhs) noexcept(noexcept(lhs.get_value() Op rhs.get_value()))               \
+    constexpr auto operator Op(const constrained_type<T, Constraint, Verifier>& lhs,               \
+                               const constrained_type<T, Constraint, Verifier>&                    \
+                                   rhs) noexcept(noexcept(lhs.get_value() Op rhs.get_value()))     \
         ->decltype(lhs.get_value() Op rhs.get_value())                                             \
     {                                                                                              \
         return lhs.get_value() Op rhs.get_value();                                                 \
@@ -447,7 +456,7 @@ namespace type_safe
     /// \returns A [ts::constrained_type]() with the given `value`,  `Constraint` and `Verifier`.
     /// \unique_name constrain_verifier
     template <class Verifier, typename T, typename Constraint>
-    auto constrain(T&& value, Constraint c)
+    constexpr auto constrain(T&& value, Constraint c)
         -> constrained_type<typename std::decay<T>::type, Constraint, Verifier>
     {
         return constrained_type<typename std::decay<T>::type, Constraint, Verifier>(std::forward<T>(
@@ -461,7 +470,7 @@ namespace type_safe
     /// the value must be valid.
     /// \unique_name constrain
     template <typename T, typename Constraint>
-    auto constrain(T&& value, Constraint c)
+    constexpr auto constrain(T&& value, Constraint c)
         -> constrained_type<typename std::decay<T>::type, Constraint>
     {
         return constrained_type<typename std::decay<T>::type, Constraint>(std::forward<T>(value),
@@ -475,7 +484,7 @@ namespace type_safe
     /// \notes This is meant for sanitizing user input,
     /// using a recoverable error handling strategy.
     template <typename T, typename Constraint>
-    auto sanitize(T&& value, Constraint c)
+    constexpr auto sanitize(T&& value, Constraint c)
         -> constrained_type<typename std::decay<T>::type, Constraint, throwing_verifier>
     {
         return constrained_type<typename std::decay<T>::type, Constraint,
@@ -495,13 +504,16 @@ namespace type_safe
 
     //=== tagged_type ===//
     /// A `Verifier` for [ts::constrained_type]() that doesn't check the constraint.
+    ///
+    /// It will simply return the value unchanged, without any checks.
     /// \notes It does not impose any additional requirements on the `Predicate`.
     /// \output_section Tagged type
     struct null_verifier
     {
         template <typename Value, typename Predicate>
-        static void verify(const Value&, const Predicate&)
+        static constexpr Value&& verify(Value&& v, const Predicate&)
         {
+            return std::forward<Value>(v);
         }
     };
 
@@ -524,7 +536,8 @@ namespace type_safe
     /// Creates a new [ts::tagged_type]().
     /// \returns A [ts::tagged_type]() with the given `value` and `Constraint`.
     template <typename T, typename Constraint>
-    auto tag(T&& value, Constraint c) -> tagged_type<typename std::decay<T>::type, Constraint>
+    constexpr auto tag(T&& value, Constraint c)
+        -> tagged_type<typename std::decay<T>::type, Constraint>
     {
         return tagged_type<typename std::decay<T>::type, Constraint>(std::forward<T>(value),
                                                                      std::move(c));
@@ -545,7 +558,7 @@ namespace type_safe
             };
 
             template <typename T>
-            bool operator()(const T& ptr) const noexcept
+            constexpr bool operator()(const T& ptr) const noexcept
             {
                 return ptr != nullptr;
             }
@@ -563,21 +576,21 @@ namespace type_safe
         class non_empty
         {
             template <typename T>
-            auto is_empty(int, const T& t) const noexcept(noexcept(t.empty()))
+            constexpr auto is_empty(int, const T& t) const noexcept(noexcept(t.empty()))
                 -> decltype(t.empty())
             {
                 return !t.empty();
             }
 
             template <typename T>
-            bool is_empty(short, const T& t) const
+            constexpr bool is_empty(short, const T& t) const
             {
                 return !empty(t);
             }
 
         public:
             template <typename T>
-            bool operator()(const T& t) const
+            constexpr bool operator()(const T& t) const
             {
                 return is_empty(0, t);
             }
@@ -589,7 +602,7 @@ namespace type_safe
         struct non_default
         {
             template <typename T>
-            bool operator()(const T& t) const noexcept(noexcept(t == T()))
+            constexpr bool operator()(const T& t) const noexcept(noexcept(t == T()))
             {
                 return !(t == T());
             }
@@ -601,7 +614,7 @@ namespace type_safe
         struct non_invalid
         {
             template <typename T>
-            bool operator()(const T& t) const noexcept(noexcept(!!t))
+            constexpr bool operator()(const T& t) const noexcept(noexcept(!!t))
             {
                 return !!t;
             }
