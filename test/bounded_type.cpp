@@ -130,19 +130,20 @@ TEST_CASE("bounded literal")
     {
         constraints::less<integer<unsigned>, lit_detail::integer_bound<unsigned long long, 42>> p(
             42_boundu);
-        static_assert(std::is_same<decltype(p.get_bound()), unsigned long long>::value, "ups");
+        static_assert(std::is_same<decltype(p.get_bound()), const unsigned long long&>::value,
+                      "ups");
         REQUIRE(p.get_bound() == 42);
     }
     SECTION("signed")
     {
         constraints::less<integer<int>, lit_detail::integer_bound<long long, 42>> p(42_bound);
-        static_assert(std::is_same<decltype(p.get_bound()), long long>::value, "ups");
+        static_assert(std::is_same<decltype(p.get_bound()), const long long&>::value, "ups");
         REQUIRE(p.get_bound() == 42);
     }
     SECTION("signed negative")
     {
         constraints::less<integer<int>, lit_detail::integer_bound<long long, -42>> p(-42_bound);
-        static_assert(std::is_same<decltype(p.get_bound()), long long>::value, "ups");
+        static_assert(std::is_same<decltype(p.get_bound()), const long long&>::value, "ups");
         REQUIRE(p.get_bound() == -42);
     }
 
@@ -233,19 +234,19 @@ TEST_CASE("clamping_verifier")
         constraints::less_equal<int> p(42);
 
         int a = 0;
-        clamping_verifier::verify(a, p);
+        a     = clamping_verifier::verify(a, p);
         REQUIRE(a == 0);
 
         int b = 30;
-        clamping_verifier::verify(b, p);
+        b     = clamping_verifier::verify(b, p);
         REQUIRE(b == 30);
 
         int c = 42;
-        clamping_verifier::verify(c, p);
+        c     = clamping_verifier::verify(c, p);
         REQUIRE(c == 42);
 
         int d = 50;
-        clamping_verifier::verify(d, p);
+        d     = clamping_verifier::verify(d, p);
         REQUIRE(d == 42);
     }
     SECTION("greater_equal")
@@ -253,19 +254,19 @@ TEST_CASE("clamping_verifier")
         constraints::greater_equal<int> p(42);
 
         int a = 0;
-        clamping_verifier::verify(a, p);
+        a     = clamping_verifier::verify(a, p);
         REQUIRE(a == 42);
 
         int b = 30;
-        clamping_verifier::verify(b, p);
+        b     = clamping_verifier::verify(b, p);
         REQUIRE(b == 42);
 
         int c = 42;
-        clamping_verifier::verify(c, p);
+        c     = clamping_verifier::verify(c, p);
         REQUIRE(c == 42);
 
         int d = 50;
-        clamping_verifier::verify(d, p);
+        d     = clamping_verifier::verify(d, p);
         REQUIRE(d == 50);
     }
     SECTION("closed_interval")
@@ -273,27 +274,27 @@ TEST_CASE("clamping_verifier")
         constraints::closed_interval<int> p(0, 42);
 
         int a = 30;
-        clamping_verifier::verify(a, p);
+        a     = clamping_verifier::verify(a, p);
         REQUIRE(a == 30);
 
         int b = 10;
-        clamping_verifier::verify(b, p);
+        b     = clamping_verifier::verify(b, p);
         REQUIRE(b == 10);
 
         int c = 0;
-        clamping_verifier::verify(c, p);
+        c     = clamping_verifier::verify(c, p);
         REQUIRE(c == 0);
 
         int d = 42;
-        clamping_verifier::verify(d, p);
+        d     = clamping_verifier::verify(d, p);
         REQUIRE(d == 42);
 
         int e = 50;
-        clamping_verifier::verify(e, p);
+        e     = clamping_verifier::verify(e, p);
         REQUIRE(e == 42);
 
         int f = -20;
-        clamping_verifier::verify(f, p);
+        f     = clamping_verifier::verify(f, p);
         REQUIRE(f == 0);
     }
 }
@@ -317,7 +318,7 @@ TEST_CASE("clamped_type")
     clamped_type<int> dynamic = make_clamped(value, 0, 42);
 
     auto clamped_val = value;
-    clamp(dynamic.get_constraint(), clamped_val);
+    clamped_val      = clamp(dynamic.get_constraint(), clamped_val);
     REQUIRE(dynamic.get_value() == clamped_val);
 
     REQUIRE(dynamic.get_constraint().get_lower_bound() == 0);
@@ -327,7 +328,7 @@ TEST_CASE("clamped_type")
         make_clamped(value, std::integral_constant<int, 0>{}, std::integral_constant<int, 42>{});
 
     clamped_val = value;
-    clamp(static_.get_constraint(), clamped_val);
+    clamped_val = clamp(static_.get_constraint(), clamped_val);
     REQUIRE(static_.get_value() == clamped_val);
 
     REQUIRE(static_.get_constraint().get_lower_bound() == 0);
@@ -337,7 +338,7 @@ TEST_CASE("clamped_type")
         make_clamped(value, std::integral_constant<int, 0>{}, 42);
 
     clamped_val = value;
-    clamp(mixed.get_constraint(), clamped_val);
+    clamped_val = clamp(mixed.get_constraint(), clamped_val);
     REQUIRE(mixed.get_value() == clamped_val);
 
     REQUIRE(mixed.get_constraint().get_lower_bound() == 0);

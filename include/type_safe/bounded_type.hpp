@@ -71,7 +71,7 @@ namespace type_safe
         using arg_type = typename std::conditional<is_dynamic, T, Bound>::type;                    \
                                                                                                    \
     public:                                                                                        \
-        using value_type = T;                                                                      \
+        using value_type = decltype(base::value);                                                                      \
         using bound_type = Bound;                                                                  \
                                                                                                    \
         /** Initializes it with a static bound.
@@ -85,7 +85,7 @@ namespace type_safe
           * \exclude */     \
         template <bool Condition = !is_dynamic,                                                    \
                   typename       = typename std::enable_if<Condition>::type>                       \
-        Name(Bound = {})                                                                           \
+        constexpr Name(Bound = {})                                                                 \
         {                                                                                          \
         }                                                                                          \
                                                                                                    \
@@ -100,7 +100,7 @@ namespace type_safe
           * \exclude */     \
         template <bool Condition = is_dynamic,                                                     \
                   typename       = typename std::enable_if<Condition>::type>                       \
-        explicit Name(const T& bound) : base{bound}                                                \
+        explicit constexpr Name(const T& bound) : base{bound}                                      \
         {                                                                                          \
         }                                                                                          \
                                                                                                    \
@@ -111,21 +111,20 @@ namespace type_safe
           * \exclude */     \
         template <bool Condition = is_dynamic,                                                     \
                   typename       = typename std::enable_if<Condition>::type>                       \
-        explicit Name(T&& bound) noexcept(std::is_nothrow_move_constructible<T>::value)            \
+        explicit constexpr Name(T&& bound) noexcept(std::is_nothrow_move_constructible<T>::value)  \
         : base{std::move(bound)}                                                                   \
         {                                                                                          \
         }                                                                                          \
                                                                                                    \
         /** Does the actual bounds check.*/                                                        \
         template <typename U>                                                                      \
-        bool operator()(const U& u) const                                                          \
+        constexpr bool operator()(const U& u) const                                                \
         {                                                                                          \
             return u Op get_bound();                                                               \
         }                                                                                          \
                                                                                                    \
         /** \returns The bound.*/                                                                  \
-        auto get_bound() const noexcept                                                        \
--> decltype(base::value) \
+        constexpr const value_type& get_bound() const noexcept                                                  \
         {                                                                                          \
             return base::value;                                                                    \
         }                                                                                          \
@@ -189,13 +188,13 @@ namespace type_safe
             using lower_type = detail::lower_bound_t<LowerInclusive, T, LowerBound>;
             using upper_type = detail::upper_bound_t<UpperInclusive, T, UpperBound>;
 
-            const lower_type& lower() const noexcept
+            constexpr const lower_type& lower() const noexcept
             {
-                return *this;
+                return static_cast<const lower_type&>(*this);
             }
-            const upper_type& upper() const noexcept
+            constexpr const upper_type& upper() const noexcept
             {
-                return *this;
+                return static_cast<const upper_type&>(*this);
             }
 
             template <typename U>
@@ -221,7 +220,7 @@ namespace type_safe
             /// \exclude
             template <bool Condition = !lower_is_dynamic && !upper_is_dynamic,
                       typename       = typename std::enable_if<Condition>::type>
-            bounded()
+            constexpr bounded()
             {
             }
 
@@ -236,28 +235,28 @@ namespace type_safe
             /// \param 3
             /// \exclude
             template <typename U1, typename U2>
-            explicit bounded(U1&& lower, U2&& upper,
-                             decltype(lower_type(std::forward<U1>(lower)), 0) = 0,
-                             decltype(upper_type(std::forward<U2>(upper)), 0) = 0)
+            explicit constexpr bounded(U1&& lower, U2&& upper,
+                                       decltype(lower_type(std::forward<U1>(lower)), 0) = 0,
+                                       decltype(upper_type(std::forward<U2>(upper)), 0) = 0)
             : lower_type(std::forward<U1>(lower)), upper_type(std::forward<U2>(upper))
             {
             }
 
             /// Does the bounds check.
             template <typename U>
-            bool operator()(const U& u) const
+            constexpr bool operator()(const U& u) const
             {
                 return lower()(u) && upper()(u);
             }
 
             /// \returns The value of the lower bound.
-            auto get_lower_bound() const noexcept -> decltype(this->lower().get_bound())
+            constexpr const typename lower_type::value_type& get_lower_bound() const noexcept
             {
                 return lower().get_bound();
             }
 
             /// \returns The value of the upper bound.
-            auto get_upper_bound() const noexcept -> decltype(this->upper().get_bound())
+            constexpr const typename upper_type::value_type& get_upper_bound() const noexcept
             {
                 return upper().get_bound();
             }
@@ -380,8 +379,11 @@ namespace type_safe
             template <typename T, T Value>
             struct integer_bound
             {
-                static constexpr auto value = Value;
+                static constexpr T value = Value;
             };
+
+            template <typename T, T Value>
+            constexpr T integer_bound<T, Value>::value;
 
             template <typename T, T Value>
             constexpr auto operator-(integer_bound<T, Value>) noexcept
@@ -426,7 +428,7 @@ namespace type_safe
     /// it will create a dynamic bound.
     /// Otherwise it must be passed static bounds.
     template <typename T, typename U1, typename U2>
-    auto make_bounded(T&& value, U1&& lower, U2&& upper)
+    constexpr auto make_bounded(T&& value, U1&& lower, U2&& upper)
         -> detail::make_bounded_type<assertion_verifier, true, true, T, U1, U2>
     {
         using result_type = detail::make_bounded_type<assertion_verifier, true, true, T, U1, U2>;
@@ -446,7 +448,7 @@ namespace type_safe
     /// it will create a dynamic bound.
     /// Otherwise it must be passed static bounds.
     template <typename T, typename U1, typename U2>
-    auto sanitize_bounded(T&& value, U1&& lower, U2&& upper)
+    constexpr auto sanitize_bounded(T&& value, U1&& lower, U2&& upper)
         -> detail::make_bounded_type<throwing_verifier, true, true, T, U1, U2>
     {
         using result_type = detail::make_bounded_type<throwing_verifier, true, true, T, U1, U2>;
@@ -464,7 +466,7 @@ namespace type_safe
     /// it will create a dynamic bound.
     /// Otherwise it must be passed static bounds.
     template <typename T, typename U1, typename U2>
-    auto make_bounded_exclusive(T&& value, U1&& lower, U2&& upper)
+    constexpr auto make_bounded_exclusive(T&& value, U1&& lower, U2&& upper)
         -> detail::make_bounded_type<assertion_verifier, false, false, T, U1, U2>
     {
         using result_type = detail::make_bounded_type<assertion_verifier, false, false, T, U1, U2>;
@@ -485,7 +487,7 @@ namespace type_safe
     /// it will create a dynamic bound.
     /// Otherwise it must be passed static bounds.
     template <typename T, typename U1, typename U2>
-    auto sanitize_bounded_exclusive(T&& value, U1&& lower, U2&& upper)
+    constexpr auto sanitize_bounded_exclusive(T&& value, U1&& lower, U2&& upper)
         -> detail::make_bounded_type<throwing_verifier, false, false, T, U1, U2>
     {
         using result_type = detail::make_bounded_type<throwing_verifier, false, false, T, U1, U2>;
@@ -494,16 +496,18 @@ namespace type_safe
                                                                       std::forward<U2>(upper)));
     }
 
-    /// Changes `val` so that it is in the given [ts::constraints::closed_interval]().
-    /// \effects If it is not in the interval, assigns the bound that is closer to the value.
+    /// Returns a copy of `val` so that it is in the given [ts::constraints::closed_interval]().
+    /// \effects If it is not in the interval, returns the bound that is closer to the value.
     /// \output_section clamped_type
     template <typename T, typename LowerBound, typename UpperBound, typename U>
-    void clamp(const constraints::closed_interval<T, LowerBound, UpperBound>& interval, U& val)
+    constexpr auto clamp(const constraints::closed_interval<T, LowerBound, UpperBound>& interval,
+                         U&& val) -> typename std::decay<U>::type
     {
-        if (val < interval.get_lower_bound())
-            val = static_cast<U>(interval.get_lower_bound());
-        else if (val > interval.get_upper_bound())
-            val = static_cast<U>(interval.get_upper_bound());
+        return val < interval.get_lower_bound() ?
+                   static_cast<typename std::decay<U>::type>(interval.get_lower_bound()) :
+                   (val > interval.get_upper_bound() ?
+                        static_cast<typename std::decay<U>::type>(interval.get_upper_bound()) :
+                        std::forward<U>(val));
     }
 
     /// A `Verifier` for [ts::constrained_type]() that clamps the value to make it valid.
@@ -511,32 +515,35 @@ namespace type_safe
     /// It must be used together with [ts::constraints::less_equal](), [ts::constraints::greater_equal]() or [ts::constraints::closed_interval]().
     struct clamping_verifier
     {
-        /// \effects If `val` is greater than the bound of `p`,
-        /// assigns the bound to `val`.
-        /// Otherwise does nothing.
+        /// \returns If `val` is greater than the bound of `p`,
+        /// returns the bound.
+        /// Otherwise returns the value unchanged
         template <typename Value, typename T, typename Bound>
-        static void verify(Value& val, const constraints::less_equal<T, Bound>& p)
+        static constexpr auto verify(Value&& val, const constraints::less_equal<T, Bound>& p) ->
+            typename std::decay<Value>::type
         {
-            if (!p(val))
-                val = static_cast<Value>(p.get_bound());
+            return p(val) ? std::forward<Value>(val) :
+                            static_cast<typename std::decay<Value>::type>(p.get_bound());
         }
 
-        /// \effects If `val` is less than the bound of `p`,
-        /// assigns the bound to `val`.
-        /// Otherwise does nothing.
+        /// \returns If `val` is less than the bound of `p`,
+        /// returns the bound.
+        /// Otherwise returns the value unchanged
         template <typename Value, typename T, typename Bound>
-        static void verify(Value& val, const constraints::greater_equal<T, Bound>& p)
+        static constexpr auto verify(Value&& val, const constraints::greater_equal<T, Bound>& p) ->
+            typename std::decay<Value>::type
         {
-            if (!p(val))
-                val = static_cast<Value>(p.get_bound());
+            return p(val) ? std::forward<Value>(val) :
+                            static_cast<typename std::decay<Value>::type>(p.get_bound());
         }
 
-        /// \effects Same as `clamp(interval, val)`.
+        /// \returns Same as `clamp(interval, val)`.
         template <typename Value, typename T, typename LowerBound, typename UpperBound>
-        static void verify(Value& val,
-                           const constraints::closed_interval<T, LowerBound, UpperBound>& interval)
+        static constexpr auto verify(
+            Value&& val, const constraints::closed_interval<T, LowerBound, UpperBound>& interval) ->
+            typename std::decay<Value>::type
         {
-            clamp(interval, val);
+            return clamp(interval, std::forward<Value>(val));
         }
     };
 
@@ -556,7 +563,7 @@ namespace type_safe
     /// it will create a dynamic bound.
     /// Otherwise it must be passed static bounds.
     template <typename T, typename U1, typename U2>
-    auto make_clamped(T&& value, U1&& lower, U2&& upper)
+    constexpr auto make_clamped(T&& value, U1&& lower, U2&& upper)
         -> detail::make_bounded_type<clamping_verifier, true, true, T, U1, U2>
     {
         using result_type = detail::make_bounded_type<clamping_verifier, true, true, T, U1, U2>;

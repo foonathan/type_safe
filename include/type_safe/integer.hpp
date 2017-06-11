@@ -22,19 +22,20 @@ namespace type_safe
     namespace detail
     {
         template <typename T>
-        struct is_integer : std::integral_constant<bool, std::is_integral<T>::value
-                                                             && !std::is_same<T, bool>::value
-                                                             && !std::is_same<T, char>::value>
+        struct is_integer
+            : std::integral_constant<bool,
+                                     std::is_integral<T>::value && !std::is_same<T, bool>::value
+                                         && !std::is_same<T, char>::value>
         {
         };
 
         template <typename From, typename To>
         struct is_safe_integer_conversion
-            : std::integral_constant<bool, detail::is_integer<From>::value
-                                               && detail::is_integer<To>::value
-                                               && sizeof(From) <= sizeof(To)
-                                               && std::is_signed<From>::value
-                                                      == std::is_signed<To>::value>
+            : std::
+                  integral_constant<bool,
+                                    detail::is_integer<From>::value && detail::is_integer<To>::value
+                                        && sizeof(From) <= sizeof(To)
+                                        && std::is_signed<From>::value == std::is_signed<To>::value>
         {
         };
 
@@ -48,8 +49,9 @@ namespace type_safe
 
         template <typename A, typename B>
         struct is_safe_integer_comparision
-            : std::integral_constant<bool, is_safe_integer_conversion<A, B>::value
-                                               || is_safe_integer_conversion<B, A>::value>
+            : std::integral_constant<bool,
+                                     is_safe_integer_conversion<A, B>::value
+                                         || is_safe_integer_conversion<B, A>::value>
         {
         };
 
@@ -353,10 +355,9 @@ namespace type_safe
         using result_type = make_signed_t<Integer>;
         return i <= Integer(std::numeric_limits<result_type>::max()) ?
                    static_cast<result_type>(i) :
-                   (DEBUG_UNREACHABLE(detail::precondition_error_handler{}, "conversion "
-                                                                            "would "
-                                                                            "overflow"),
-                    result_type());
+                   DEBUG_UNREACHABLE(detail::precondition_error_handler{}, "conversion "
+                                                                           "would "
+                                                                           "overflow");
     }
 
     /// \returns A new [ts::integer]() of the corresponding signed integer type.
@@ -386,9 +387,8 @@ namespace type_safe
     {
         using result_type = make_unsigned_t<Integer>;
         return i >= Integer(0) ? static_cast<result_type>(i) :
-                                 (DEBUG_UNREACHABLE(detail::precondition_error_handler{},
-                                                    "conversion would underflow"),
-                                  result_type(0));
+                                 DEBUG_UNREACHABLE(detail::precondition_error_handler{},
+                                                   "conversion would underflow");
     }
 
     /// \returns A new [ts::integer]() of the corresponding unsigned integer type.
