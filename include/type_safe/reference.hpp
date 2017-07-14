@@ -302,15 +302,13 @@ namespace type_safe
         using iterator       = T*;
 
         /// \effects Sets the reference to an empty array.
-        /// \notes This is the only constructor to do it easily,
-        /// other constructors require non-null pointers.
         /// \group empty
         array_ref(std::nullptr_t) : begin_(nullptr), size_(0u)
         {
         }
 
         /// \effects Sets the reference to the memory range `[begin, end)`.
-        /// \requires `begin` and `end` must not be `nullptr`, `begin <= end`.
+        /// \requires `begin <= end`.
         /// \group range
         array_ref(T* begin, T* end) noexcept : size_(0u)
         {
@@ -318,7 +316,7 @@ namespace type_safe
         }
 
         /// \effects Sets the reference to the memory range `[array, array + size)`.
-        /// \requires `array` must not be `nullptr`.
+        /// \requires `array` must not be `nullptr` unless `size` is `0`.
         /// \group ptr_size
         array_ref(T* array, size_t size) noexcept : size_(size)
         {
@@ -342,7 +340,7 @@ namespace type_safe
         /// \group range
         void assign(T* begin, T* end) noexcept
         {
-            DEBUG_ASSERT(begin && end && begin <= end, detail::precondition_error_handler{},
+            DEBUG_ASSERT(begin <= end, detail::precondition_error_handler{},
                          "invalid array bounds");
             begin_ = begin;
             size_  = static_cast<size_t>(make_unsigned(end - begin));
@@ -351,7 +349,8 @@ namespace type_safe
         /// \group ptr_size
         void assign(T* array, size_t size) noexcept
         {
-            DEBUG_ASSERT(array, detail::precondition_error_handler{}, "invalid array bounds");
+            DEBUG_ASSERT(size == 0u || array, detail::precondition_error_handler{},
+                         "invalid array bounds");
             begin_ = array;
             size_  = size;
         }
@@ -490,8 +489,9 @@ namespace type_safe
     {
         template <typename Returned, typename Required>
         struct compatible_return_type
-            : std::integral_constant<bool, std::is_void<Required>::value
-                                               || std::is_convertible<Returned, Required>::value>
+            : std::integral_constant<bool,
+                                     std::is_void<Required>::value
+                                         || std::is_convertible<Returned, Required>::value>
         {
         };
 

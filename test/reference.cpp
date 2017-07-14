@@ -146,6 +146,10 @@ TEST_CASE("array_ref")
         array_ref<int> c(array);
         REQUIRE(c.data() == array);
         REQUIRE((c.size() == 3u));
+
+        array_ref<int> d(nullptr, 0u);
+        REQUIRE(d.data() == nullptr);
+        REQUIRE((d.size() == 0u));
     }
     SECTION("assign range")
     {
