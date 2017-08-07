@@ -372,7 +372,7 @@ namespace type_safe
         /// \returns An iterator one past the last element of the array.
         iterator end() const noexcept
         {
-            return begin_ + size_.get();
+            return begin_ + get(size_);
         }
 
         /// \returns A pointer to the beginning of the array.
