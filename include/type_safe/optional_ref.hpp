@@ -238,7 +238,7 @@ namespace type_safe
     template <typename T>
     optional<typename std::remove_const<T>::type> copy(const optional_ref<T>& ref)
     {
-        return ref.has_value() ? make_optional(ref.value()) : nullopt;
+        return ref.has_value() ? type_safe::make_optional(ref.value()) : nullopt;
     }
 
     /// \returns A [ts::optional<T>]() containing a copy of the value of `ref` created by move constructing
@@ -249,7 +249,7 @@ namespace type_safe
     optional<T> move(const optional_xvalue_ref<T>& ref) noexcept(
         std::is_nothrow_move_constructible<T>::value)
     {
-        return ref.has_value() ? make_optional(ref.value()) : nullopt;
+        return ref.has_value() ? type_safe::make_optional(ref.value()) : nullopt;
     }
 } // namespace type_safe
 
