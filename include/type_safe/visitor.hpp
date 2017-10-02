@@ -19,19 +19,20 @@ namespace type_safe
         template <typename A, typename B>
         struct common_type
         {
-            using type = typename std::common_type<A, B>::type;
+            using type = typename std::conditional<std::is_same<A, B>::value, A,
+                                                   typename std::common_type<A, B>::type>::type;
         };
 
         template <typename A>
         struct common_type<A, void>
         {
-            using type = typename std::common_type<A>::type;
+            using type = A;
         };
 
         template <typename A>
         struct common_type<void, A>
         {
-            using type = typename std::common_type<A>::type;
+            using type = A;
         };
 
         template <>
