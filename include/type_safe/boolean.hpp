@@ -13,8 +13,21 @@
 
 namespace type_safe
 {
-    class boolean;
+	class boolean;
+} // namespace type_safe
 
+namespace std
+{
+	template<>
+	struct hash<type_safe::boolean>
+	{
+	public:
+		size_t operator()(const type_safe::boolean& boolean) const;
+	};
+} // namespace std
+
+namespace type_safe
+{
     /// \exclude
     namespace detail
     {
@@ -79,8 +92,10 @@ namespace type_safe
         {
             return boolean(!value_);
         }
-
     private:
+		template<typename T>
+		friend struct std::hash;
+
         bool value_;
     };
 
@@ -209,5 +224,12 @@ namespace type_safe
 
 #undef TYPE_SAFE_DETAIL_MAKE_PREDICATE
 } // namespace type_safe
+
+namespace std{
+	size_t hash<type_safe::boolean>::operator()(const type_safe::boolean& boolean) const
+	{
+		return hash<bool>()(boolean.value_);
+	}
+} // namespace std
 
 #endif // TYPE_SAFE_BOOLEAN_HPP_INCLUDED

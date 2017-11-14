@@ -17,7 +17,20 @@ namespace type_safe
 {
     template <typename IntegerT, class Policy = arithmetic_policy_default>
     class integer;
+} // namespace type_safe
 
+namespace std
+{
+	template<typename T>
+	struct hash<type_safe::integer<T>>
+	{
+	public:
+		size_t operator()(const type_safe::integer<T>& integer) const;
+	};
+} // namespace std
+
+namespace type_safe
+{
     /// \exclude
     namespace detail
     {
@@ -305,6 +318,9 @@ namespace type_safe
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 
     private:
+		template<typename T>
+		friend struct std::hash;
+
         integer_type value_;
     };
 
@@ -685,5 +701,13 @@ namespace type_safe
         return out << static_cast<IntegerT>(i);
     }
 } // namespace type_safe
+
+namespace std{
+	template<typename T>
+	size_t hash<type_safe::integer<T>>::operator()(const type_safe::integer<T>& integer) const
+	{
+		return hash<T>()(integer.value_);
+	}
+} // namespace std
 
 #endif // TYPE_SAFE_INTEGER_HPP_INCLUDED
