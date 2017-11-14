@@ -207,7 +207,7 @@ namespace type_safe
     constexpr Result operator Op(Name<StrongTypedef>&& lhs, const Name<StrongTypedef>& rhs)        \
     {                                                                                              \
         return Result(                                                                             \
-            detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&>(lhs))                \
+            detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(lhs))               \
                 Op detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(rhs))); \
     }                                                                                              \
     /** \exclude */                                                                                \
@@ -221,7 +221,7 @@ namespace type_safe
     template <class StrongTypedef>                                                                 \
     constexpr Result operator Op(Name<StrongTypedef>&& lhs, Name<StrongTypedef>&& rhs)             \
     {                                                                                              \
-        return Result(detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&>(           \
+        return Result(detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(          \
             lhs)) Op detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(rhs)));    \
     }                                                                                              \
     /* mixed */                                                                                    \
