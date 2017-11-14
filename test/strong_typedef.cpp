@@ -46,7 +46,7 @@ TEST_CASE("strong_typedef")
         // type + convert_b
         struct convert_b
         {
-            operator type()
+            operator type() const
             {
                 return type(0);
             }
@@ -77,7 +77,7 @@ TEST_CASE("strong_typedef")
         // type + convert
         struct convert
         {
-            operator int()
+            operator int() const
             {
                 return 0;
             }
@@ -123,7 +123,7 @@ TEST_CASE("strong_typedef")
         // type + convert_b
         struct convert_b
         {
-            operator type()
+            operator type() const
             {
                 return type(0);
             }
@@ -144,7 +144,7 @@ TEST_CASE("strong_typedef")
         // type + convert
         struct convert_c
         {
-            operator int()
+            operator int() const
             {
                 return 0;
             }
