@@ -7,6 +7,7 @@
 
 #include <iosfwd>
 #include <type_traits>
+#include <functional>
 #include <utility>
 
 #include <type_safe/detail/force_inline.hpp>
@@ -152,7 +153,7 @@ namespace type_safe
     /// \module types
     template <typename Char, class CharTraits>
     std::basic_istream<Char, CharTraits>& operator>>(std::basic_istream<Char, CharTraits>& in,
-                                                     boolean& b)
+                                                     boolean&                              b)
     {
         bool val;
         in >> val;
@@ -165,7 +166,7 @@ namespace type_safe
     /// \module types
     template <typename Char, class CharTraits>
     std::basic_ostream<Char, CharTraits>& operator<<(std::basic_ostream<Char, CharTraits>& out,
-                                                     const boolean& b)
+                                                     const boolean&                        b)
     {
         return out << static_cast<bool>(b);
     }
@@ -209,5 +210,19 @@ namespace type_safe
 
 #undef TYPE_SAFE_DETAIL_MAKE_PREDICATE
 } // namespace type_safe
+
+namespace std
+{
+    /// Hash specialization for [ts::boolean]().
+    /// \module types
+    template <>
+    struct hash<type_safe::boolean>
+    {
+        std::size_t operator()(type_safe::boolean b) const noexcept
+        {
+            return std::hash<bool>()(static_cast<bool>(b));
+        }
+    };
+} // namespace std
 
 #endif // TYPE_SAFE_BOOLEAN_HPP_INCLUDED
