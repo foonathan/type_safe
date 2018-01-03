@@ -68,7 +68,7 @@ install:
   - $CC --version
   - $CMAKE --version
 
-  - pip install --user conan && export PATH=$PATH:$HOME/.local/bin
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then pip install --user conan && export PATH=$PATH:$HOME/.local/bin; fi
 
   - cd type_safe/
 
@@ -78,9 +78,9 @@ script:
   - $CMAKE --build .
   - ./test/type_safe_test
 
-  # Run conan package test
-  - conan remote add Manu343726 https://api.bintray.com/conan/manu343726/conan-packages
-  - cd .. && conan create Manu343726/testing --build=outdated && cd build
+  # Run conan package test (only on linux, pip is not available in the osx build)
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then conan remote add Manu343726 https://api.bintray.com/conan/manu343726/conan-packages; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd .. && conan create Manu343726/testing --build=outdated && cd build; fi
 
 after_success:
   - git config --global user.name "Travis CI"
