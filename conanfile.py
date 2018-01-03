@@ -6,8 +6,6 @@ class TypeSafe(ConanFile):
     name = 'type_safe'
     url  = 'https://foonathan.github.io/blog/2016/10/11/type-safe.html'
     version = '0.1'
-    username = 'Manu343726'
-    channel = 'testing'
     requires = 'debug_assert/1.3@Manu343726/testing'
     exports = '*.hpp'
     generators = 'cmake'
