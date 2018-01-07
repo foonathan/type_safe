@@ -140,7 +140,7 @@ TEST_CASE("floating_point")
         normal  = -11.0 / normal;
         REQUIRE(static_cast<double>(wrapper) == normal);
     }
-    SECTION("comparision")
+    SECTION("comparison")
     {
         // <
         REQUIRE(bool(float_t(4.) < float_t(5.)));

@@ -340,7 +340,7 @@ TEST_CASE("optional")
         REQUIRE(a.has_value());
         REQUIRE(a.value() == 1);
     }
-    SECTION("comparision")
+    SECTION("comparison")
     {
         optional<int> a;
         optional<int> b(1);

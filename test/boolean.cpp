@@ -45,7 +45,7 @@ TEST_CASE("boolean")
         boolean b2(false);
         REQUIRE(!b2 == true);
     }
-    SECTION("comparision")
+    SECTION("comparison")
     {
         boolean b1(true);
         REQUIRE(b1 == true);

@@ -47,19 +47,19 @@ namespace type_safe
             typename std::enable_if<!is_safe_integer_conversion<From, To>::value>::type;
 
         template <typename A, typename B>
-        struct is_safe_integer_comparision
+        struct is_safe_integer_comparison
         : std::integral_constant<bool, is_safe_integer_conversion<A, B>::value
                                            || is_safe_integer_conversion<B, A>::value>
         {
         };
 
         template <typename A, typename B>
-        using enable_safe_integer_comparision =
-            typename std::enable_if<is_safe_integer_comparision<A, B>::value>::type;
+        using enable_safe_integer_comparison =
+            typename std::enable_if<is_safe_integer_comparison<A, B>::value>::type;
 
         template <typename A, typename B>
-        using fallback_safe_integer_comparision =
-            typename std::enable_if<!is_safe_integer_comparision<A, B>::value>::type;
+        using fallback_safe_integer_comparison =
+            typename std::enable_if<!is_safe_integer_comparison<A, B>::value>::type;
 
         template <typename A, typename B>
         struct is_safe_integer_operation
@@ -454,7 +454,7 @@ namespace type_safe
      * \param 3
      * \exclude */                                                                            \
     template <typename A, typename B, class Policy,                                                \
-              typename = detail::enable_safe_integer_comparision<A, B>>                            \
+              typename = detail::enable_safe_integer_comparison<A, B>>                            \
     TYPE_SAFE_FORCE_INLINE constexpr bool operator Op(const A& a, const integer<B, Policy>& b)     \
     {                                                                                              \
         return integer<A, Policy>(a) Op b;                                                         \
@@ -463,22 +463,22 @@ namespace type_safe
      * \param 3
      * \exclude */                                                                            \
     template <typename A, class Policy, typename B,                                                \
-              typename = detail::enable_safe_integer_comparision<A, B>>                            \
+              typename = detail::enable_safe_integer_comparison<A, B>>                            \
     TYPE_SAFE_FORCE_INLINE constexpr bool operator Op(const integer<A, Policy>& a, const B& b)     \
     {                                                                                              \
         return a Op integer<B, Policy>(b);                                                         \
     }                                                                                              \
     /** \exclude */                                                                                \
     template <typename A, class Policy, typename B,                                                \
-              typename = detail::fallback_safe_integer_comparision<A, B>>                          \
+              typename = detail::fallback_safe_integer_comparison<A, B>>                          \
     constexpr bool operator Op(integer<A, Policy>, integer<B, Policy>) = delete;                   \
     /** \exclude */                                                                                \
     template <typename A, typename B, class Policy,                                                \
-              typename = detail::fallback_safe_integer_comparision<A, B>>                          \
+              typename = detail::fallback_safe_integer_comparison<A, B>>                          \
     constexpr bool operator Op(A, integer<B, Policy>) = delete;                                    \
     /** \exclude */                                                                                \
     template <typename A, class Policy, typename B,                                                \
-              typename = detail::fallback_safe_integer_comparision<A, B>>                          \
+              typename = detail::fallback_safe_integer_comparison<A, B>>                          \
     constexpr bool operator Op(integer<A, Policy>, B) = delete;
 
     /// \returns The result of the comparison of the stored integer value in the [ts::integer]().
@@ -489,7 +489,7 @@ namespace type_safe
     /// \param 3
     /// \exclude
     template <typename A, typename B, class Policy,
-              typename = detail::enable_safe_integer_comparision<A, B>>
+              typename = detail::enable_safe_integer_comparison<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator==(const integer<A, Policy>& a,
                                                      const integer<B, Policy>& b)
     {
@@ -501,7 +501,7 @@ namespace type_safe
     /// \param 3
     /// \exclude
     template <typename A, typename B, class Policy,
-              typename = detail::enable_safe_integer_comparision<A, B>>
+              typename = detail::enable_safe_integer_comparison<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator!=(const integer<A, Policy>& a,
                                                      const integer<B, Policy>& b)
     {
@@ -513,7 +513,7 @@ namespace type_safe
     /// \param 3
     /// \exclude
     template <typename A, typename B, class Policy,
-              typename = detail::enable_safe_integer_comparision<A, B>>
+              typename = detail::enable_safe_integer_comparison<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator<(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
     {
@@ -525,7 +525,7 @@ namespace type_safe
     /// \param 3
     /// \exclude
     template <typename A, typename B, class Policy,
-              typename = detail::enable_safe_integer_comparision<A, B>>
+              typename = detail::enable_safe_integer_comparison<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator<=(const integer<A, Policy>& a,
                                                      const integer<B, Policy>& b)
     {
@@ -537,7 +537,7 @@ namespace type_safe
     /// \param 3
     /// \exclude
     template <typename A, typename B, class Policy,
-              typename = detail::enable_safe_integer_comparision<A, B>>
+              typename = detail::enable_safe_integer_comparison<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator>(const integer<A, Policy>& a,
                                                     const integer<B, Policy>& b)
     {
@@ -549,7 +549,7 @@ namespace type_safe
     /// \param 3
     /// \exclude
     template <typename A, typename B, class Policy,
-              typename = detail::enable_safe_integer_comparision<A, B>>
+              typename = detail::enable_safe_integer_comparison<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator>=(const integer<A, Policy>& a,
                                                      const integer<B, Policy>& b)
     {
