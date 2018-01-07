@@ -36,19 +36,19 @@ namespace type_safe
             typename std::enable_if<!is_safe_floating_point_conversion<From, To>::value>::type;
 
         template <typename A, typename B>
-        struct is_safe_floating_point_comparision
+        struct is_safe_floating_point_comparison
         : std::integral_constant<bool, is_safe_floating_point_conversion<A, B>::value
                                            || is_safe_floating_point_conversion<B, A>::value>
         {
         };
 
         template <typename A, typename B>
-        using enable_safe_floating_point_comparision =
-            typename std::enable_if<is_safe_floating_point_comparision<A, B>::value>::type;
+        using enable_safe_floating_point_comparison =
+            typename std::enable_if<is_safe_floating_point_comparison<A, B>::value>::type;
 
         template <typename A, typename B>
-        using fallback_safe_floating_point_comparision =
-            typename std::enable_if<!is_safe_floating_point_comparision<A, B>::value>::type;
+        using fallback_safe_floating_point_comparison =
+            typename std::enable_if<!is_safe_floating_point_comparison<A, B>::value>::type;
 
         template <typename A, typename B>
         struct is_safe_floating_point_operation
@@ -253,7 +253,7 @@ namespace type_safe
         floating_point_type value_;
     };
 
-//=== comparision ===//
+//=== comparison ===//
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op)                                                               \
     /** \group float_comp
@@ -269,22 +269,22 @@ namespace type_safe
      * \param 2
      * \exclude  */                                                                          \
     template <typename A, typename B,                                                              \
-              typename = detail::enable_safe_floating_point_comparision<A, B>>                     \
+              typename = detail::enable_safe_floating_point_comparison<A, B>>                     \
     TYPE_SAFE_FORCE_INLINE constexpr bool operator Op(const floating_point<A>& a, const B& b)      \
     {                                                                                              \
         return a Op floating_point<B>(b);                                                          \
     }                                                                                              \
     /** \exclude */                                                                                \
     template <typename A, typename B,                                                              \
-              typename = detail::fallback_safe_floating_point_comparision<A, B>>                   \
+              typename = detail::fallback_safe_floating_point_comparison<A, B>>                   \
     constexpr bool operator Op(floating_point<A>, floating_point<B>) = delete;                     \
     /** \exclude */                                                                                \
     template <typename A, typename B,                                                              \
-              typename = detail::fallback_safe_floating_point_comparision<A, B>>                   \
+              typename = detail::fallback_safe_floating_point_comparison<A, B>>                   \
     constexpr bool operator Op(A, floating_point<B>) = delete;                                     \
     /** \exclude */                                                                                \
     template <typename A, typename B,                                                              \
-              typename = detail::fallback_safe_floating_point_comparision<A, B>>                   \
+              typename = detail::fallback_safe_floating_point_comparison<A, B>>                   \
     constexpr bool operator Op(floating_point<A>, B) = delete;
 
     /// \returns The result of the comparison of the stored floating point value in the [ts::floating_point]().
@@ -295,7 +295,7 @@ namespace type_safe
     /// \param 2
     /// \exclude
     template <typename A, typename B,
-              typename = detail::enable_safe_floating_point_comparision<A, B>>
+              typename = detail::enable_safe_floating_point_comparison<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator<(const floating_point<A>& a,
                                                     const floating_point<B>& b) noexcept
     {
@@ -307,7 +307,7 @@ namespace type_safe
     /// \param 2
     /// \exclude
     template <typename A, typename B,
-              typename = detail::enable_safe_floating_point_comparision<A, B>>
+              typename = detail::enable_safe_floating_point_comparison<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator<=(const floating_point<A>& a,
                                                      const floating_point<B>& b) noexcept
     {
@@ -319,7 +319,7 @@ namespace type_safe
     /// \param 2
     /// \exclude
     template <typename A, typename B,
-              typename = detail::enable_safe_floating_point_comparision<A, B>>
+              typename = detail::enable_safe_floating_point_comparison<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator>(const floating_point<A>& a,
                                                     const floating_point<B>& b) noexcept
     {
@@ -331,7 +331,7 @@ namespace type_safe
     /// \param 2
     /// \exclude
     template <typename A, typename B,
-              typename = detail::enable_safe_floating_point_comparision<A, B>>
+              typename = detail::enable_safe_floating_point_comparison<A, B>>
     TYPE_SAFE_FORCE_INLINE constexpr bool operator>=(const floating_point<A>& a,
                                                      const floating_point<B>& b) noexcept
     {

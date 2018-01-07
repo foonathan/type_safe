@@ -85,7 +85,7 @@ namespace type_safe
         bool value_;
     };
 
-    //=== comparision ===//
+    //=== comparison ===//
     /// [ts::boolean]() equality comparison.
     /// \returns `true` if (1) both [ts::boolean]() objects have the same value,
     /// (2)/(3) the boolean has the same value as the given value,

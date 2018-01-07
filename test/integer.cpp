@@ -189,7 +189,7 @@ TEST_CASE("integer")
         normal  = (-4) % normal;
         REQUIRE(static_cast<int>(wrapper) == normal);
     }
-    SECTION("comparision")
+    SECTION("comparison")
     {
         // ==
         REQUIRE(bool(int_t(4) == int_t(4)));

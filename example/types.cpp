@@ -88,7 +88,7 @@ int main()
     std::cout << "floating point value: " << f1 << ' ' << d1 << '\n';
 
     //    f1++;      // error: no in/decrement for floats
-    //    f1 == 0.f; // error: no equality comparision for floats
+    //    f1 == 0.f; // error: no equality comparison for floats
 
     //=== narrow cast ===//
     ts::uint32_t uint32_val(325_u32);
