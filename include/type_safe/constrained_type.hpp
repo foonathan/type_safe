@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -131,9 +131,8 @@ namespace type_safe
         }
 
         /// \exclude
-        template <typename U,
-                  typename = typename std::enable_if<!detail::is_valid<constraint_predicate,
-                                                                       U>::value>::type>
+        template <typename U, typename = typename std::enable_if<
+                                  !detail::is_valid<constraint_predicate, U>::value>::type>
         constrained_type(U) = delete;
 
         /// \effects Copies the value and predicate of `other`.
@@ -172,9 +171,8 @@ namespace type_safe
         }
 
         /// \exclude
-        template <typename U,
-                  typename = typename std::enable_if<!detail::is_valid<constraint_predicate,
-                                                                       U>::value>::type>
+        template <typename U, typename = typename std::enable_if<
+                                  !detail::is_valid<constraint_predicate, U>::value>::type>
         constrained_type& operator=(U) = delete;
 
         /// \effects Copies the value and predicate from `other`.
@@ -286,9 +284,8 @@ namespace type_safe
         }
 
         /// \exclude
-        template <typename U,
-                  typename = typename std::enable_if<!detail::is_valid<constraint_predicate,
-                                                                       U>::value>::type>
+        template <typename U, typename = typename std::enable_if<
+                                  !detail::is_valid<constraint_predicate, U>::value>::type>
         constrained_type(U) = delete;
 
         /// \returns A proxy object to provide verified write-access to the referred value.

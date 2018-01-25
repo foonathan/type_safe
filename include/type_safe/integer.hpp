@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -454,7 +454,7 @@ namespace type_safe
      * \param 3
      * \exclude */                                                                            \
     template <typename A, typename B, class Policy,                                                \
-              typename = detail::enable_safe_integer_comparison<A, B>>                            \
+              typename = detail::enable_safe_integer_comparison<A, B>>                             \
     TYPE_SAFE_FORCE_INLINE constexpr bool operator Op(const A& a, const integer<B, Policy>& b)     \
     {                                                                                              \
         return integer<A, Policy>(a) Op b;                                                         \
@@ -463,22 +463,22 @@ namespace type_safe
      * \param 3
      * \exclude */                                                                            \
     template <typename A, class Policy, typename B,                                                \
-              typename = detail::enable_safe_integer_comparison<A, B>>                            \
+              typename = detail::enable_safe_integer_comparison<A, B>>                             \
     TYPE_SAFE_FORCE_INLINE constexpr bool operator Op(const integer<A, Policy>& a, const B& b)     \
     {                                                                                              \
         return a Op integer<B, Policy>(b);                                                         \
     }                                                                                              \
     /** \exclude */                                                                                \
     template <typename A, class Policy, typename B,                                                \
-              typename = detail::fallback_safe_integer_comparison<A, B>>                          \
+              typename = detail::fallback_safe_integer_comparison<A, B>>                           \
     constexpr bool operator Op(integer<A, Policy>, integer<B, Policy>) = delete;                   \
     /** \exclude */                                                                                \
     template <typename A, typename B, class Policy,                                                \
-              typename = detail::fallback_safe_integer_comparison<A, B>>                          \
+              typename = detail::fallback_safe_integer_comparison<A, B>>                           \
     constexpr bool operator Op(A, integer<B, Policy>) = delete;                                    \
     /** \exclude */                                                                                \
     template <typename A, class Policy, typename B,                                                \
-              typename = detail::fallback_safe_integer_comparison<A, B>>                          \
+              typename = detail::fallback_safe_integer_comparison<A, B>>                           \
     constexpr bool operator Op(integer<A, Policy>, B) = delete;
 
     /// \returns The result of the comparison of the stored integer value in the [ts::integer]().

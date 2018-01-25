@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -121,12 +121,10 @@ namespace type_safe
         /// if `*this` is an xvalue reference, the result is as well.
         /// \requires The function must return an lvalue or another [ts::object_ref]() object.
         template <typename Func, typename... Args>
-        auto map(Func&& f, Args&&... args)
-            -> detail::rebind_object_ref<decltype(
-                                             detail::map_invoke(std::forward<Func>(f),
-                                                                std::declval<object_ref&>().get(),
-                                                                std::forward<Args>(args)...)),
-                                         XValue>
+        auto map(Func&& f, Args&&... args) -> detail::rebind_object_ref<
+            decltype(detail::map_invoke(std::forward<Func>(f), std::declval<object_ref&>().get(),
+                                        std::forward<Args>(args)...)),
+            XValue>
         {
             using result = decltype(
                 detail::map_invoke(std::forward<Func>(f), get(), std::forward<Args>(args)...));
@@ -303,9 +301,7 @@ namespace type_safe
 
         /// \effects Sets the reference to an empty array.
         /// \group empty
-        array_ref(std::nullptr_t) : begin_(nullptr), size_(0u)
-        {
-        }
+        array_ref(std::nullptr_t) : begin_(nullptr), size_(0u) {}
 
         /// \effects Sets the reference to the memory range `[begin, end)`.
         /// \requires `begin <= end`.
@@ -357,7 +353,7 @@ namespace type_safe
 
         /// \group c_array
         template <std::size_t Size>
-        void                  assign(T (&arr)[Size]) noexcept
+        void assign(T (&arr)[Size]) noexcept
         {
             begin_ = arr;
             size_  = Size;
@@ -489,9 +485,8 @@ namespace type_safe
     {
         template <typename Returned, typename Required>
         struct compatible_return_type
-            : std::integral_constant<bool,
-                                     std::is_void<Required>::value
-                                         || std::is_convertible<Returned, Required>::value>
+        : std::integral_constant<bool, std::is_void<Required>::value
+                                           || std::is_convertible<Returned, Required>::value>
         {
         };
 
@@ -499,11 +494,10 @@ namespace type_safe
         template <typename Func, typename Return, typename... Args>
         struct enable_matching_function
         {
-            using type =
-                typename std::enable_if<compatible_return_type<decltype(std::declval<Func&>()(
-                                                                   std::declval<Args>()...)),
-                                                               Return>::value,
-                                        int>::type;
+            using type = typename std::enable_if<
+                compatible_return_type<decltype(std::declval<Func&>()(std::declval<Args>()...)),
+                                       Return>::value,
+                int>::type;
         };
 
         struct matching_function_pointer_tag
@@ -535,10 +529,9 @@ namespace type_safe
         };
 
         template <typename Result, typename Func, typename Return, typename... Args>
-        using enable_function_tag = typename std::
-            enable_if<std::is_same<typename get_callable_tag<Func, Return, Args...>::type,
-                                   Result>::value,
-                      int>::type;
+        using enable_function_tag = typename std::enable_if<
+            std::is_same<typename get_callable_tag<Func, Return, Args...>::type, Result>::value,
+            int>::type;
     } // namespace detail
 
     template <typename Signature>
@@ -616,9 +609,8 @@ namespace type_safe
         /// unless the functor is compatible with the specified signature.
         /// \param 1
         /// \exclude
-        template <typename Functor,
-                  typename = detail::enable_function_tag<detail::matching_functor_tag, Functor,
-                                                         Return, Args...>>
+        template <typename Functor, typename = detail::enable_function_tag<
+                                        detail::matching_functor_tag, Functor, Return, Args...>>
         explicit function_ref(Functor& f) : cb_(&invoke_functor<Functor>)
         {
             ::new (get_memory()) void*(&f);
@@ -648,11 +640,10 @@ namespace type_safe
         /// if the argument can also be a valid constructor argument.
         /// \param 1
         /// \exclude
-        template <
-            typename Functor,
-            typename = typename std::
-                enable_if<!std::is_same<typename std::decay<Functor>::type, function_ref>::value,
-                          decltype(function_ref(std::declval<Functor&&>()))>::type>
+        template <typename Functor,
+                  typename = typename std::enable_if<
+                      !std::is_same<typename std::decay<Functor>::type, function_ref>::value,
+                      decltype(function_ref(std::declval<Functor&&>()))>::type>
         void assign(Functor&& f) noexcept
         {
             auto ref = function_ref(std::forward<Functor>(f));

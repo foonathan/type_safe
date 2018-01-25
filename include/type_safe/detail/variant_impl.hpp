@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -58,9 +58,8 @@ namespace type_safe
         {
             struct visitor
             {
-                template <
-                    typename T,
-                    typename = typename std::enable_if<std::is_copy_assignable<T>::value>::type>
+                template <typename T, typename = typename std::enable_if<
+                                          std::is_copy_assignable<T>::value>::type>
                 void do_assign(Union& dest, const T& value)
                 {
                     dest.value(union_type<T>{}) = value;
@@ -96,9 +95,8 @@ namespace type_safe
         {
             struct visitor
             {
-                template <
-                    typename T,
-                    typename = typename std::enable_if<std::is_move_assignable<T>::value>::type>
+                template <typename T, typename = typename std::enable_if<
+                                          std::is_move_assignable<T>::value>::type>
                 void do_assign(Union& dest, T&& value)
                 {
                     dest.value(union_type<T>{}) = std::move(value);

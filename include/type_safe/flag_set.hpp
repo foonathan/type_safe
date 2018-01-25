@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -24,7 +24,7 @@ namespace type_safe
 
         template <typename Enum>
         struct is_flag_set<Enum, decltype(static_cast<void>(Enum::_flag_set_size))>
-            : std::is_enum<Enum>
+        : std::is_enum<Enum>
         {
         };
 
@@ -68,9 +68,7 @@ namespace type_safe
     /// Tag type to mark a [ts::flag_set]() without any flags set.
     struct noflag_t
     {
-        constexpr noflag_t()
-        {
-        }
+        constexpr noflag_t() {}
     };
 
     /// Tag object of type [ts::noflag_t]().
@@ -117,9 +115,7 @@ namespace type_safe
                 return flag_set_impl(int_type(0));
             }
 
-            explicit constexpr flag_set_impl(const Enum& e) : bits_(mask(e))
-            {
-            }
+            explicit constexpr flag_set_impl(const Enum& e) : bits_(mask(e)) {}
             template <typename Tag2>
             explicit constexpr flag_set_impl(const flag_set_impl<Enum, Tag2>& other)
             : bits_(other.bits_)
@@ -428,14 +424,10 @@ namespace type_safe
         //=== constructors/assignment ===//
         /// \effects Creates a set where all flags are set to `0`.
         /// \group ctor_null
-        constexpr flag_set() noexcept : flags_(detail::flag_set_impl<Enum>::none_set())
-        {
-        }
+        constexpr flag_set() noexcept : flags_(detail::flag_set_impl<Enum>::none_set()) {}
 
         /// \group ctor_null
-        constexpr flag_set(noflag_t) noexcept : flag_set()
-        {
-        }
+        constexpr flag_set(noflag_t) noexcept : flag_set() {}
 
         /// \effects Creates a set where all bits are set to `0` except the given ones.
         /// \notes This constructor only participates in overload resolution

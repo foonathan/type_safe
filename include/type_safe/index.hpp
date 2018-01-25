@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -27,9 +27,7 @@ namespace type_safe
                           strong_typedef_op::subtraction<difference_t>
     {
         /// \effects Initializes it to `0`.
-        constexpr difference_t() noexcept : strong_typedef(0)
-        {
-        }
+        constexpr difference_t() noexcept : strong_typedef(0) {}
 
         /// \effects Initializes it from a valid `signed` integer type.
         /// \notes This constructor does not participate in overload resolution,
@@ -37,9 +35,8 @@ namespace type_safe
         /// \group int_ctor
         /// \param 1
         /// \exclude
-        template <typename T,
-                  typename = typename std::
-                      enable_if<detail::is_safe_integer_conversion<T, std::ptrdiff_t>::value>::type>
+        template <typename T, typename = typename std::enable_if<detail::is_safe_integer_conversion<
+                                  T, std::ptrdiff_t>::value>::type>
         constexpr difference_t(T i) noexcept : strong_typedef(i)
         {
         }
@@ -48,8 +45,8 @@ namespace type_safe
         /// \param 1
         /// \exclude
         template <typename T, class Policy,
-                  typename = typename std::
-                      enable_if<detail::is_safe_integer_conversion<T, std::ptrdiff_t>::value>::type>
+                  typename = typename std::enable_if<
+                      detail::is_safe_integer_conversion<T, std::ptrdiff_t>::value>::type>
         constexpr difference_t(integer<T, Policy> i) noexcept : strong_typedef(static_cast<T>(i))
         {
         }
@@ -71,9 +68,7 @@ namespace type_safe
                      strong_typedef_op::unary_plus<index_t>
     {
         /// \effects Initializes it to `0`.
-        constexpr index_t() noexcept : strong_typedef(0u)
-        {
-        }
+        constexpr index_t() noexcept : strong_typedef(0u) {}
 
         /// \effects Initializes it from a valid `unsigned` integer type.
         /// \notes This constructor does not participate in overload resolution,
@@ -81,9 +76,8 @@ namespace type_safe
         /// \group int_ctor
         /// \param 1
         /// \exclude
-        template <typename T,
-                  typename = typename std::
-                      enable_if<detail::is_safe_integer_conversion<T, std::size_t>::value>::type>
+        template <typename T, typename = typename std::enable_if<
+                                  detail::is_safe_integer_conversion<T, std::size_t>::value>::type>
         constexpr index_t(T i) noexcept : strong_typedef(i)
         {
         }
@@ -92,8 +86,8 @@ namespace type_safe
         /// \param 1
         /// \exclude
         template <typename T, class Policy,
-                  typename = typename std::
-                      enable_if<detail::is_safe_integer_conversion<T, std::size_t>::value>::type>
+                  typename = typename std::enable_if<
+                      detail::is_safe_integer_conversion<T, std::size_t>::value>::type>
         constexpr index_t(integer<T, Policy> i) noexcept : strong_typedef(static_cast<T>(i))
         {
         }

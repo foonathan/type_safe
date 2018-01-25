@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -61,9 +61,7 @@ namespace type_safe
 
         /// \effects Initializes it in the state without value,
         /// i.e. sets the storage to the invalid value.
-        compact_optional_storage() noexcept : storage_(CompactPolicy::invalid_value())
-        {
-        }
+        compact_optional_storage() noexcept : storage_(CompactPolicy::invalid_value()) {}
 
         /// \effects Creates a temporary `value_type` by perfectly forwarding `args`,
         /// converts that to the `storage_type` and assigns it.
@@ -94,9 +92,7 @@ namespace type_safe
             storage_ = std::move(other.storage_);
         }
 
-        void create_value_explicit()
-        {
-        }
+        void create_value_explicit() {}
 
         /// \effects Copy assigns the `storage_type`.
         void copy_value(const compact_optional_storage& other)
@@ -166,10 +162,9 @@ namespace type_safe
         /// \group get_value_or
         /// \param 1
         /// \exclude
-        template <typename U,
-                  typename =
-                      typename std::enable_if<std::is_copy_constructible<value_type>::value
-                                              && std::is_convertible<U&&, value_type>::value>::type>
+        template <typename U, typename = typename std::enable_if<
+                                  std::is_copy_constructible<value_type>::value
+                                  && std::is_convertible<U&&, value_type>::value>::type>
         value_type get_value_or(U&& u) const TYPE_SAFE_LVALUE_REF
         {
             return has_value() ? get_value() : static_cast<value_type>(std::forward<U>(u));
@@ -179,10 +174,9 @@ namespace type_safe
         /// \group get_value_or
         /// \param 1
         /// \exclude
-        template <typename U,
-                  typename =
-                      typename std::enable_if<std::is_move_constructible<value_type>::value
-                                              && std::is_convertible<U&&, value_type>::value>::type>
+        template <typename U, typename = typename std::enable_if<
+                                  std::is_move_constructible<value_type>::value
+                                  && std::is_convertible<U&&, value_type>::value>::type>
         value_type get_value_or(U&& u) &&
         {
             return has_value() ? std::move(get_value()) :

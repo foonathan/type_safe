@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -66,12 +66,12 @@ namespace type_safe
 
             template <typename... Args>
             static auto call(Visitor&& visitor, Optional&& opt, Args&&... args) ->
-                typename common_type<decltype(call_visitor(0, std::forward<Visitor>(visitor),
-                                                           std::forward<Args>(args)..., nullopt)),
-                                     decltype(
-                                         call_visitor(0, std::forward<Visitor>(visitor),
-                                                      std::forward<Args>(args)...,
-                                                      std::forward<Optional>(opt).value()))>::type
+                typename common_type<
+                    decltype(call_visitor(0, std::forward<Visitor>(visitor),
+                                          std::forward<Args>(args)..., nullopt)),
+                    decltype(call_visitor(0, std::forward<Visitor>(visitor),
+                                          std::forward<Args>(args)...,
+                                          std::forward<Optional>(opt).value()))>::type
             {
                 return opt.has_value() ? call_visitor(0, std::forward<Visitor>(visitor),
                                                       std::forward<Args>(args)...,
@@ -86,14 +86,13 @@ namespace type_safe
         {
             template <typename... Args>
             static auto call(Visitor&& visitor, Optional&& opt, Rest&&... rest, Args&&... args) ->
-                typename common_type<decltype(visit_optional<Save, Visitor, Rest...>::call(
-                                         std::forward<Visitor>(visitor),
-                                         std::forward<Rest>(rest)..., std::forward<Args>(args)...,
-                                         std::forward<Optional>(opt).value())),
-                                     decltype(visit_optional<Save, Visitor, Rest...>::call(
-                                         std::forward<Visitor>(visitor),
-                                         std::forward<Rest>(rest)..., std::forward<Args>(args)...,
-                                         nullopt))>::type
+                typename common_type<
+                    decltype(visit_optional<Save, Visitor, Rest...>::call(
+                        std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
+                        std::forward<Args>(args)..., std::forward<Optional>(opt).value())),
+                    decltype(visit_optional<Save, Visitor, Rest...>::call(
+                        std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
+                        std::forward<Args>(args)..., nullopt))>::type
             {
                 return opt.has_value() ?
                            visit_optional<Save, Visitor,
@@ -155,10 +154,9 @@ namespace type_safe
     /// \exclude return
     /// \param 2
     /// \exclude
-    template <
-        typename Visitor, class... Optionals,
-        typename std::enable_if<detail::all_of<detail::is_optional<Optionals>::value...>::value,
-                                int>::type = 0>
+    template <typename Visitor, class... Optionals,
+              typename std::enable_if<
+                  detail::all_of<detail::is_optional<Optionals>::value...>::value, int>::type = 0>
     auto visit(Visitor&& visitor, Optionals&&... optionals)
         -> decltype(detail::visit_optional_impl(std::forward<Visitor>(visitor),
                                                 std::forward<Optionals>(optionals)...))
@@ -272,11 +270,10 @@ namespace type_safe
                                                              std::forward<Variant>(variant).value(
                                                                  variant_type<Head>{}));
                 else
-                    return RecursiveDecltype::
-                        template call_type<RecursiveDecltype>(std::forward<Visitor>(visitor),
-                                                              variant_types<Tail...>{},
-                                                              std::forward<Variant>(variant),
-                                                              std::forward<Args>(args)...);
+                    return RecursiveDecltype::template call_type<
+                        RecursiveDecltype>(std::forward<Visitor>(visitor), variant_types<Tail...>{},
+                                           std::forward<Variant>(variant),
+                                           std::forward<Args>(args)...);
             }
 
         public:
@@ -286,11 +283,11 @@ namespace type_safe
                     std::forward<Visitor>(visitor), typename std::decay<Variant>::type::types{},
                     std::forward<Variant>(variant), std::forward<Args>(args)...))
             {
-                return visit_variant_impl::
-                    call_type<visit_variant_impl>(std::forward<Visitor>(visitor),
-                                                  typename std::decay<Variant>::type::types{},
-                                                  std::forward<Variant>(variant),
-                                                  std::forward<Args>(args)...);
+                return visit_variant_impl::call_type<
+                    visit_variant_impl>(std::forward<Visitor>(visitor),
+                                        typename std::decay<Variant>::type::types{},
+                                        std::forward<Variant>(variant),
+                                        std::forward<Args>(args)...);
             }
         };
 
@@ -300,11 +297,12 @@ namespace type_safe
             template <typename, typename... Args,
                       typename Variant2 = typename std::decay<Variant>::type>
             static auto call_type(Visitor&& visitor, variant_types<>, Variant&& variant,
-                                  Rest&&... rest, Args&&... args) -> typename std::
-                enable_if<Variant2::allow_empty::value,
-                          decltype(visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
-                              std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
-                              std::forward<Args>(args)..., nullvar))>::type
+                                  Rest&&... rest, Args&&... args) ->
+                typename std::enable_if<
+                    Variant2::allow_empty::value,
+                    decltype(visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
+                        std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
+                        std::forward<Args>(args)..., nullvar))>::type
             {
                 DEBUG_ASSERT(std::decay<Variant>::type::allow_empty::value && !variant.has_value(),
                              precondition_error_handler{}, "variant in invalid state for visitor");
@@ -317,11 +315,12 @@ namespace type_safe
             template <typename, typename... Args,
                       typename Variant2 = typename std::decay<Variant>::type>
             static auto call_type(Visitor&& visitor, variant_types<>, Variant&& variant,
-                                  Rest&&... rest, Args&&... args) -> typename std::
-                enable_if<!Variant2::allow_empty::value,
-                          decltype(visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
-                              std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
-                              std::forward<Args>(args)..., get_dummy_type(variant)))>::type
+                                  Rest&&... rest, Args&&... args) ->
+                typename std::enable_if<
+                    !Variant2::allow_empty::value,
+                    decltype(visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
+                        std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
+                        std::forward<Args>(args)..., get_dummy_type(variant)))>::type
             {
                 DEBUG_ASSERT(!variant.has_value(), assert_handler{},
                              "it has a value but we are in this overload?!");
@@ -337,16 +336,15 @@ namespace type_safe
             template <typename RecursiveDecltype, typename Head, typename... Tail, typename... Args>
             static auto call_type(Visitor&& visitor, variant_types<Head, Tail...>,
                                   Variant&& variant, Rest&&... rest, Args&&... args)
-                -> common_type_t<decltype(
-                                     visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
-                                         std::forward<Visitor>(visitor),
-                                         std::forward<Rest>(rest)..., std::forward<Args>(args)...,
-                                         std::forward<Variant>(variant).value(
-                                             variant_type<Head>{}))),
-                                 decltype(RecursiveDecltype::template call_type<RecursiveDecltype>(
-                                     std::forward<Visitor>(visitor), variant_types<Tail...>{},
-                                     std::forward<Variant>(variant), std::forward<Rest>(rest)...,
-                                     std::forward<Args>(args)...))>
+                -> common_type_t<
+                    decltype(visit_variant_impl<AllowIncomplete, Visitor, Rest...>::call(
+                        std::forward<Visitor>(visitor), std::forward<Rest>(rest)...,
+                        std::forward<Args>(args)...,
+                        std::forward<Variant>(variant).value(variant_type<Head>{}))),
+                    decltype(RecursiveDecltype::template call_type<RecursiveDecltype>(
+                        std::forward<Visitor>(visitor), variant_types<Tail...>{},
+                        std::forward<Variant>(variant), std::forward<Rest>(rest)...,
+                        std::forward<Args>(args)...))>
             {
                 if (variant.has_value(variant_type<Head>{}))
                     return visit_variant_impl<AllowIncomplete, Visitor,
@@ -356,12 +354,11 @@ namespace type_safe
                                                              std::forward<Variant>(variant).value(
                                                                  variant_type<Head>{}));
                 else
-                    return RecursiveDecltype::
-                        template call_type<RecursiveDecltype>(std::forward<Visitor>(visitor),
-                                                              variant_types<Tail...>{},
-                                                              std::forward<Variant>(variant),
-                                                              std::forward<Rest>(rest)...,
-                                                              std::forward<Args>(args)...);
+                    return RecursiveDecltype::template call_type<
+                        RecursiveDecltype>(std::forward<Visitor>(visitor), variant_types<Tail...>{},
+                                           std::forward<Variant>(variant),
+                                           std::forward<Rest>(rest)...,
+                                           std::forward<Args>(args)...);
             }
 
         public:
@@ -372,12 +369,11 @@ namespace type_safe
                     std::forward<Variant>(variant), std::forward<Rest>(rest)...,
                     std::forward<Args>(args)...))
             {
-                return visit_variant_impl::
-                    call_type<visit_variant_impl>(std::forward<Visitor>(visitor),
-                                                  typename std::decay<Variant>::type::types{},
-                                                  std::forward<Variant>(variant),
-                                                  std::forward<Rest>(rest)...,
-                                                  std::forward<Args>(args)...);
+                return visit_variant_impl::call_type<
+                    visit_variant_impl>(std::forward<Visitor>(visitor),
+                                        typename std::decay<Variant>::type::types{},
+                                        std::forward<Variant>(variant), std::forward<Rest>(rest)...,
+                                        std::forward<Args>(args)...);
             }
         };
 
@@ -410,8 +406,8 @@ namespace type_safe
     /// \exclude return
     /// \module variant
     template <class Visitor, class... Variants,
-              typename = typename std::
-                  enable_if<detail::all_of<detail::is_variant<Variants>::value...>::value>::type>
+              typename = typename std::enable_if<
+                  detail::all_of<detail::is_variant<Variants>::value...>::value>::type>
     auto visit(Visitor&& visitor, Variants&&... variants)
         -> decltype(detail::visit_variant(std::forward<Visitor>(visitor),
                                           std::forward<Variants>(variants)...))

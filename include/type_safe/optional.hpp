@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -93,9 +93,7 @@ namespace type_safe
     /// \output_section Basic optional
     struct nullopt_t
     {
-        constexpr nullopt_t()
-        {
-        }
+        constexpr nullopt_t() {}
     };
 
     /// Tag object of type [ts::nullopt_t]().
@@ -158,10 +156,10 @@ namespace type_safe
                                       TraitsResult>::type;
 
         template <typename T, typename Fallback>
-        using rebind_optional = typename std::
-            conditional<std::is_void<T>::value, void,
-                        basic_optional<select_optional_storage_policy<
-                            typename optional_storage_policy_for<T>::type, Fallback>>>::type;
+        using rebind_optional = typename std::conditional<
+            std::is_void<T>::value, void,
+            basic_optional<select_optional_storage_policy<
+                typename optional_storage_policy_for<T>::type, Fallback>>>::type;
     }
 
     /// An optional type, i.e. a type that may or may not be there.
@@ -238,9 +236,7 @@ namespace type_safe
         basic_optional() noexcept = default;
 
         /// \group empty
-        basic_optional(nullopt_t) noexcept
-        {
-        }
+        basic_optional(nullopt_t) noexcept {}
 
         /// \effects Creates it with a value by forwarding `value`.
         /// \throws Anything thrown by the constructor of `value_type`.
@@ -385,10 +381,8 @@ namespace type_safe
         /// and the `create_value()` function of the `StoragePolicy` accepts the argument.
         /// \synopsis_return void
         template <typename Arg,
-                  typename = typename std::
-                      enable_if<detail::is_direct_assignable<decltype(std::declval<storage&>()
-                                                                          .get_value()),
-                                                             Arg&&>::value>::type>
+                  typename = typename std::enable_if<detail::is_direct_assignable<
+                      decltype(std::declval<storage&>().get_value()), Arg&&>::value>::type>
         auto emplace(Arg&& arg) noexcept(std::is_nothrow_constructible<value_type, Arg>::value&&
                                              std::is_nothrow_assignable<value_type, Arg>::value)
             -> decltype(std::declval<basic_optional<storage>>().get_storage().create_value(
@@ -599,7 +593,7 @@ namespace type_safe
         return Expr;                                                                               \
     }                                                                                              \
     /** \synopsis_return bool
-      * \group optional_comp_value */                                \
+      * \group optional_comp_value */                                                                      \
     template <class StoragePolicy, typename U>                                                     \
     auto operator Op(const U& lhs, const basic_optional<StoragePolicy>& rhs)                       \
         ->decltype(lhs Op typename StoragePolicy::value_type(rhs.value()))                         \
@@ -726,9 +720,7 @@ namespace type_safe
         using rebind = direct_optional_storage<U>;
 
         /// \effects Initializes it in the state without value.
-        direct_optional_storage() noexcept : empty_(true)
-        {
-        }
+        direct_optional_storage() noexcept : empty_(true) {}
 
         /// \effects Calls the constructor of `value_type` by perfectly forwarding `args`.
         /// Afterwards `has_value()` will return `true`.
@@ -760,9 +752,7 @@ namespace type_safe
                 create_value(std::move(other.get_value()));
         }
 
-        void create_value_explicit()
-        {
-        }
+        void create_value_explicit() {}
 
         /// \effects Copies the policy from `other`, by copy-constructing or assigning the stored value,
         /// if any.
@@ -794,7 +784,7 @@ namespace type_safe
         /// \exclude
         /// \param 1
         /// \exclude
-        template <typename Dummy = T,
+        template <typename Dummy                                                             = T,
                   typename std::enable_if<!std::is_copy_assignable<Dummy>::value, int>::type = 0>
         void copy_value(const direct_optional_storage& other)
         {
@@ -832,7 +822,7 @@ namespace type_safe
         /// \exclude
         /// \param 1
         /// \exclude
-        template <typename Dummy = T,
+        template <typename Dummy                                                             = T,
                   typename std::enable_if<!std::is_move_assignable<Dummy>::value, int>::type = 0>
         void copy_value(direct_optional_storage&& other)
         {
@@ -909,10 +899,9 @@ namespace type_safe
         /// \group get_value_or
         /// \param 1
         /// \exclude
-        template <typename U,
-                  typename =
-                      typename std::enable_if<std::is_copy_constructible<value_type>::value
-                                              && std::is_convertible<U&&, value_type>::value>::type>
+        template <typename U, typename = typename std::enable_if<
+                                  std::is_copy_constructible<value_type>::value
+                                  && std::is_convertible<U&&, value_type>::value>::type>
         value_type get_value_or(U&& u) const TYPE_SAFE_LVALUE_REF
         {
             return has_value() ? get_value() : static_cast<value_type>(std::forward<U>(u));
@@ -922,10 +911,9 @@ namespace type_safe
         /// \group get_value_or
         /// \param 1
         /// \exclude
-        template <typename U,
-                  typename =
-                      typename std::enable_if<std::is_move_constructible<value_type>::value
-                                              && std::is_convertible<U&&, value_type>::value>::type>
+        template <typename U, typename = typename std::enable_if<
+                                  std::is_move_constructible<value_type>::value
+                                  && std::is_convertible<U&&, value_type>::value>::type>
         value_type get_value_or(U&& u) &&
         {
             return has_value() ? std::move(get_value()) :
