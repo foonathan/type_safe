@@ -89,7 +89,7 @@ namespace type_safe
     template <typename... Types>
     class tagged_union
     {
-#if !defined(__clang__) && defined(__GNUC__) && __GNUC__ < 5
+#if defined(__GNUC__) && __GNUC__ < 5
         // does not have is_trivially_copyable
         using trivial = detail::all_of<std::is_trivial<Types>::value...>;
 #else
