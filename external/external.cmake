@@ -13,6 +13,6 @@ else()
         message(STATUS "Installing debug_assert via submodule")
         execute_process(COMMAND git submodule update --init -- external/debug_assert
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/debug_assert)
+        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/debug_assert EXCLUDE_FROM_ALL)
     endif()
 endif()
