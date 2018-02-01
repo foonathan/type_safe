@@ -8,7 +8,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'boost-latest']
           packages: ['g++-5', 'libboost1.55-all-dev']
-      env: TOOLSET=clang++ BUILD_TYPE='Release' BUILD_DOCS=1
+      env: TOOLSET=clang++ TOOLSET_C=clang BUILD_TYPE='Release' BUILD_DOCS=1
 
     - os: linux
       compiler: gcc
@@ -16,14 +16,14 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.8']
-      env: TOOLSET=g++-4.8 BUILD_TYPE='Debug' BUILD_DOCS=0
+      env: TOOLSET=g++-4.8 TOOLSET_C=gcc-4.8 BUILD_TYPE='Debug' BUILD_DOCS=0
     - os: linux
       compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.8']
-      env: TOOLSET=g++-4.8 BUILD_TYPE='Release' BUILD_DOCS=0
+      env: TOOLSET=g++-4.8 TOOLSET_C=gcc-4.8 BUILD_TYPE='Release' BUILD_DOCS=0
 
     - os: linux
       compiler: gcc
@@ -31,21 +31,21 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
-      env: TOOLSET=g++-5 BUILD_TYPE='Debug' BUILD_DOCS=0
+      env: TOOLSET=g++-5 TOOLSET_C=gcc-5 BUILD_TYPE='Debug' BUILD_DOCS=0
     - os: linux
       compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
-      env: TOOLSET=g++-5 BUILD_TYPE='Release' BUILD_DOCS=0
+      env: TOOLSET=g++-5 TOOLSET_C=gcc-5 BUILD_TYPE='Release' BUILD_DOCS=0
 
     - os: osx
       compiler: clang
-      env: TOOLSET=clang++ BUILD_TYPE='Debug' BUILD_DOCS=0
+      env: TOOLSET=clang++ TOOLSET_C=clang BUILD_TYPE='Debug' BUILD_DOCS=0
     - os: osx
       compiler: clang
-      env: TOOLSET=clang++ BUILD_TYPE='Release' BUILD_DOCS=0
+      env: TOOLSET=clang++ TOOLSET_C=clang BUILD_TYPE='Release' BUILD_DOCS=0
 
 install:
   - cd ../
@@ -63,8 +63,12 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CMAKE=$TRAVIS_BUILD_DIR/../cmake-3.3.0-Darwin-x86_64/CMake.app/Contents/bin/cmake; fi
 
   - export CXX=$TOOLSET
+  - export CC=$TOOLSET_C
   - $CXX --version
+  - $CC --version
   - $CMAKE --version
+
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then pip install --user conan && export PATH=$PATH:$HOME/.local/bin; fi
 
   - cd type_safe/
 
@@ -73,6 +77,10 @@ script:
   - $CMAKE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-Werror -pedantic -Wall -Wextra -Wconversion -Wsign-conversion -Wno-parentheses" -DTYPE_SAFE_BUILD_TEST_EXAMPLE=ON -DTYPE_SAFE_BUILD_DOC="$BUILD_DOCS" -DTYPE_SAFE_STANDARDESE_DOWNLOAD_DIRECTORY=../../standardese/ ../
   - $CMAKE --build .
   - ./test/type_safe_test
+
+  # Run conan package test (only on linux, pip is not available in the osx build)
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then conan remote add Manu343726 https://api.bintray.com/conan/manu343726/conan-packages; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd .. && conan create . Manu343726/testing --build=outdated && cd build; fi
 
 after_success:
   - git config --global user.name "Travis CI"
