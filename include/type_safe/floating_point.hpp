@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -269,22 +269,22 @@ namespace type_safe
      * \param 2
      * \exclude  */                                                                          \
     template <typename A, typename B,                                                              \
-              typename = detail::enable_safe_floating_point_comparison<A, B>>                     \
+              typename = detail::enable_safe_floating_point_comparison<A, B>>                      \
     TYPE_SAFE_FORCE_INLINE constexpr bool operator Op(const floating_point<A>& a, const B& b)      \
     {                                                                                              \
         return a Op floating_point<B>(b);                                                          \
     }                                                                                              \
     /** \exclude */                                                                                \
     template <typename A, typename B,                                                              \
-              typename = detail::fallback_safe_floating_point_comparison<A, B>>                   \
+              typename = detail::fallback_safe_floating_point_comparison<A, B>>                    \
     constexpr bool operator Op(floating_point<A>, floating_point<B>) = delete;                     \
     /** \exclude */                                                                                \
     template <typename A, typename B,                                                              \
-              typename = detail::fallback_safe_floating_point_comparison<A, B>>                   \
+              typename = detail::fallback_safe_floating_point_comparison<A, B>>                    \
     constexpr bool operator Op(A, floating_point<B>) = delete;                                     \
     /** \exclude */                                                                                \
     template <typename A, typename B,                                                              \
-              typename = detail::fallback_safe_floating_point_comparison<A, B>>                   \
+              typename = detail::fallback_safe_floating_point_comparison<A, B>>                    \
     constexpr bool operator Op(floating_point<A>, B) = delete;
 
     /// \returns The result of the comparison of the stored floating point value in the [ts::floating_point]().

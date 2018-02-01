@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -24,9 +24,7 @@ namespace type_safe
     /// \module variant
     struct nullvar_t
     {
-        constexpr nullvar_t()
-        {
-        }
+        constexpr nullvar_t() {}
     };
 
     /// Tag object of type [ts::nullvar_t]().
@@ -71,9 +69,8 @@ namespace type_safe
         /// \exclude
         /// \param 1
         /// \exclude
-        template <
-            typename Dummy = void,
-            typename = typename std::enable_if<VariantPolicy::allow_empty::value, Dummy>::type>
+        template <typename Dummy = void, typename = typename std::enable_if<
+                                             VariantPolicy::allow_empty::value, Dummy>::type>
         basic_variant() noexcept
         {
         }
@@ -83,9 +80,8 @@ namespace type_safe
         /// \exclude
         /// \param 1
         /// \exclude
-        template <
-            typename Dummy = void,
-            typename = typename std::enable_if<VariantPolicy::allow_empty::value, Dummy>::type>
+        template <typename Dummy = void, typename = typename std::enable_if<
+                                             VariantPolicy::allow_empty::value, Dummy>::type>
         basic_variant(nullvar_t) noexcept : basic_variant()
         {
         }
@@ -181,9 +177,8 @@ namespace type_safe
         /// \exclude
         /// \param 1
         /// \exclude
-        template <
-            typename Dummy = void,
-            typename = typename std::enable_if<VariantPolicy::allow_empty::value, Dummy>::type>
+        template <typename Dummy = void, typename = typename std::enable_if<
+                                             VariantPolicy::allow_empty::value, Dummy>::type>
         basic_variant& operator=(nullvar_t) noexcept
         {
             reset();
@@ -246,9 +241,8 @@ namespace type_safe
         /// \exclude
         /// \param 1
         /// \exclude
-        template <
-            typename Dummy = void,
-            typename = typename std::enable_if<VariantPolicy::allow_empty::value, Dummy>::type>
+        template <typename Dummy = void, typename = typename std::enable_if<
+                                             VariantPolicy::allow_empty::value, Dummy>::type>
         void reset() noexcept
         {
             destroy(storage_.get_union());
@@ -547,9 +541,7 @@ namespace type_safe
         {
         };
 
-        basic_variant(force_empty) noexcept
-        {
-        }
+        basic_variant(force_empty) noexcept {}
 
         detail::variant_storage<VariantPolicy, HeadT, TailT...> storage_;
 
@@ -704,8 +696,8 @@ namespace type_safe
     bool operator==(const basic_variant<VariantPolicy, Head, Types...>& lhs,
                     const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
-        return detail::compare_variant<basic_variant<VariantPolicy, Head,
-                                                     Types...>>::compare_equal(lhs, rhs);
+        return detail::compare_variant<
+            basic_variant<VariantPolicy, Head, Types...>>::compare_equal(lhs, rhs);
     }
 
     /// \group variant_comp
@@ -721,8 +713,8 @@ namespace type_safe
     bool operator<(const basic_variant<VariantPolicy, Head, Types...>& lhs,
                    const basic_variant<VariantPolicy, Head, Types...>& rhs)
     {
-        return detail::compare_variant<basic_variant<VariantPolicy, Head,
-                                                     Types...>>::compare_less(lhs, rhs);
+        return detail::compare_variant<
+            basic_variant<VariantPolicy, Head, Types...>>::compare_less(lhs, rhs);
     }
 
     /// \group variant_comp

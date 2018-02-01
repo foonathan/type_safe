@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -78,8 +78,8 @@ enum class test_compact_enum
     b,
 };
 
-template class type_safe::
-    basic_optional<compact_optional_storage<compact_enum_policy<test_compact_enum, 2>>>;
+template class type_safe::basic_optional<
+    compact_optional_storage<compact_enum_policy<test_compact_enum, 2>>>;
 
 TEST_CASE("compact_enum")
 {
@@ -104,21 +104,17 @@ struct test_compact_container
 {
     bool empty_ = true;
 
-    test_compact_container()
-    {
-    }
+    test_compact_container() {}
 
-    test_compact_container(int) : empty_(false)
-    {
-    }
+    test_compact_container(int) : empty_(false) {}
 
     bool empty() const
     {
         return empty_;
     }
 };
-template class type_safe::
-    basic_optional<compact_optional_storage<compact_container_policy<test_compact_container>>>;
+template class type_safe::basic_optional<
+    compact_optional_storage<compact_container_policy<test_compact_container>>>;
 
 TEST_CASE("compact_container")
 {

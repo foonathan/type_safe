@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -44,9 +44,9 @@ namespace type_safe
         // type not in the beginning
         template <typename T, typename Head, typename... Tail>
         struct get_type_index_impl<T, Head, Tail...>
-            : std::integral_constant<std::size_t, get_type_index_impl<T, Tail...>::value == 0u ?
-                                                      0u :
-                                                      1 + get_type_index_impl<T, Tail...>::value>
+        : std::integral_constant<std::size_t, get_type_index_impl<T, Tail...>::value == 0u ?
+                                                  0u :
+                                                  1 + get_type_index_impl<T, Tail...>::value>
         {
         };
 
@@ -66,9 +66,7 @@ namespace type_safe
     template <typename T>
     struct union_type
     {
-        constexpr union_type()
-        {
-        }
+        constexpr union_type() {}
     };
 
     /// Very basic typelist.
@@ -89,7 +87,7 @@ namespace type_safe
     template <typename... Types>
     class tagged_union
     {
-#if !defined(__clang__) && defined(__GNUC__) && __GNUC__ < 5
+#if defined(__GNUC__) && __GNUC__ < 5
         // does not have is_trivially_copyable
         using trivial = detail::all_of<std::is_trivial<Types>::value...>;
 #else
@@ -124,9 +122,7 @@ namespace type_safe
 
             /// \effects Initializes it to an invalid value.
             /// \notes The invalid value compares less than all valid values.
-            constexpr type_id() noexcept : strong_typedef<type_id, std::size_t>(0u)
-            {
-            }
+            constexpr type_id() noexcept : strong_typedef<type_id, std::size_t>(0u) {}
 
             /// \effects Initializes it to the value of the type `T`.
             /// If `T` is not one of the types of the union types,
@@ -302,9 +298,7 @@ namespace type_safe
             {
             }
 
-            static void with_impl(union_types<>, Union&&, Func&&, Args&&...)
-            {
-            }
+            static void with_impl(union_types<>, Union&&, Func&&, Args&&...) {}
 
             template <typename Head, typename... Tail>
             static void with_impl(union_types<Head, Tail...>, Union&& u, Func&& func,

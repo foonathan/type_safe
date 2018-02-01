@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -40,9 +40,7 @@ namespace type_safe
         /// \effects Creates it from an lvalue reference.
         /// All output will be assigned to the object referred by the reference.
         /// \requires The referred object must live as long as the function has not returned.
-        explicit output_parameter(T& obj) noexcept : ptr_(&obj), is_normal_ptr_(true)
-        {
-        }
+        explicit output_parameter(T& obj) noexcept : ptr_(&obj), is_normal_ptr_(true) {}
 
         /// \group delete_val
         output_parameter(const T&) = delete;
@@ -133,8 +131,8 @@ namespace type_safe
 
     private:
         template <typename U>
-        auto assign_impl(U&& u) -> typename std::
-            enable_if<std::is_assignable<T&, decltype(std::forward<U>(u))>::value>::type
+        auto assign_impl(U&& u) -> typename std::enable_if<
+            std::is_assignable<T&, decltype(std::forward<U>(u))>::value>::type
         {
             *static_cast<T*>(ptr_) = std::forward<U>(u);
         }

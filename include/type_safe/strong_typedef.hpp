@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -46,15 +46,11 @@ namespace type_safe
     {
     public:
         /// \effects Value initializes the underlying value.
-        constexpr strong_typedef() : value_()
-        {
-        }
+        constexpr strong_typedef() : value_() {}
 
         /// \effects Copy (1)/moves (2) the underlying value.
         /// \group value_ctor
-        explicit constexpr strong_typedef(const T& value) : value_(value)
-        {
-        }
+        explicit constexpr strong_typedef(const T& value) : value_(value) {}
 
         /// \group value_ctor
         explicit constexpr strong_typedef(T&& value) noexcept(
@@ -153,14 +149,14 @@ namespace type_safe
         namespace detail
         {
             template <typename From, typename To>
-            using enable_if_convertible = typename std::
-                enable_if<!std::is_same<typename std::decay<From>::type, To>::value
-                          && !std::is_base_of<To, typename std::decay<From>::type>::value
-                          && std::is_convertible<typename std::decay<From>::type, To>::value>::type;
+            using enable_if_convertible = typename std::enable_if<
+                !std::is_same<typename std::decay<From>::type, To>::value
+                && !std::is_base_of<To, typename std::decay<From>::type>::value
+                && std::is_convertible<typename std::decay<From>::type, To>::value>::type;
 
             template <typename From, typename To>
-            using enable_if_convertible_same = typename std::
-                enable_if<std::is_convertible<typename std::decay<From>::type, To>::value>::type;
+            using enable_if_convertible_same = typename std::enable_if<
+                std::is_convertible<typename std::decay<From>::type, To>::value>::type;
 
             template <class StrongTypedef>
             constexpr const underlying_type<StrongTypedef>& get_underlying(

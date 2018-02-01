@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -58,8 +58,8 @@ using sanitized_string   = ts::tagged_type<std::string, sanitized>;
 using unsanitized_string = ts::tagged_type<std::string, unsanitized>;
 
 unsanitized_string get_form_data();
-sanitized_string sanitize(const unsanitized_string& str);
-void execute_query(const sanitized_string& str);
+sanitized_string   sanitize(const unsanitized_string& str);
+void               execute_query(const sanitized_string& str);
 
 // now impossible to accidentally use unsanitized strings
 void do_stuff()

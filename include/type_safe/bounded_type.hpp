@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 Jonathan Müller <jonathanmueller.dev@gmail.com>
+// Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
@@ -267,14 +267,14 @@ namespace type_safe
         /// A value is valid if it is between two given bounds but not the bounds themselves.
         template <typename T, typename LowerBound = dynamic_bound,
                   typename UpperBound = dynamic_bound>
-        using open_interval           = bounded<T, open, open, LowerBound, UpperBound>;
+        using open_interval = bounded<T, open, open, LowerBound, UpperBound>;
 
         /// A `Constraint` for the [ts::constrained_type]().
         ///
         /// A value is valid if it is between two given bounds or the bounds themselves.
         template <typename T, typename LowerBound = dynamic_bound,
                   typename UpperBound = dynamic_bound>
-        using closed_interval         = bounded<T, closed, closed, LowerBound, UpperBound>;
+        using closed_interval = bounded<T, closed, closed, LowerBound, UpperBound>;
     } // namespace constraints
 
     /// \exclude
@@ -367,9 +367,9 @@ namespace type_safe
               typename LowerBound = constraints::dynamic_bound,
               typename UpperBound = constraints::dynamic_bound,
               typename Verifier   = assertion_verifier>
-    using bounded_type = constrained_type<T, constraints::bounded<T, LowerInclusive, UpperInclusive,
-                                                                  LowerBound, UpperBound>,
-                                          Verifier>;
+    using bounded_type = constrained_type<
+        T, constraints::bounded<T, LowerInclusive, UpperInclusive, LowerBound, UpperBound>,
+        Verifier>;
 
     inline namespace literals
     {
