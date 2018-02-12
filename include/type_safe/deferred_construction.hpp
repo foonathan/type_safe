@@ -20,7 +20,7 @@ namespace type_safe
     /// It works especially well with [ts::output_parameter]().
     ///
     /// It has two states:
-    /// Either it is *intialized* in which case you can get its value,
+    /// Either it is *initialized* in which case you can get its value,
     /// or it is *un-initialized* in which case you cannot get its value.
     /// All objects start out un-initialized.
     /// For consistency with [ts::basic_optional]() it provides a similar interface,

@@ -42,7 +42,7 @@ namespace type_safe
     ///
     /// It is a tiny, no overhead wrapper over `bool`.
     /// It can only be constructed from `bool` values
-    /// and does not implictly convert to integral types.
+    /// and does not implicitly convert to integral types.
     /// \module types
     class boolean
     {
@@ -187,10 +187,10 @@ namespace type_safe
     };
 
     /// Comparison functors similar to the `std::` version,
-    /// but explictly cast the result of the comparison to `bool`.
+    /// but explicitly cast the result of the comparison to `bool`.
     ///
     /// This allows using types where the comparison operator returns [ts::boolean](),
-    /// as it can not be implictly converted to `bool`
+    /// as it can not be implicitly converted to `bool`
     /// so, for example, [std::less]() can not be used.
     /// \notes These comparison functors are always transparent,
     /// i.e. can be used with two different types.

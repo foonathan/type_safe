@@ -274,16 +274,16 @@ namespace type_safe
     /// A reference to an array of objects of type `T`.
     ///
     /// It is a simple pointer + size pair that allows reference access to each element in the array.
-    /// An "array" here is any continguous storage (so C arrays, [std::vector](), etc.).
+    /// An "array" here is any contiguous storage (so C arrays, [std::vector](), etc.).
     /// It does not allow changing the size of the array, only the individual elements.
     /// Like [ts::object_ref]() it can be safely used in containers.
     ///
-    /// If the given type is `const`, it will only return a `const` reference to each elment,
+    /// If the given type is `const`, it will only return a `const` reference to each element,
     /// but then `XValue` must be `false`.
     ///
     /// If `XValue` is `true`, dereferencing will [std::move()]() the object,
     /// modelling a reference to an expiring lvalue.
-    /// \notes `T` is the type stored in the array, so `array_ref<int>` to reference a contigous storage of `int`s.
+    /// \notes `T` is the type stored in the array, so `array_ref<int>` to reference a contiguous storage of `int`s.
     /// \notes Unlike the other types it isn't technically non-null,
     /// as it may contain an empty array.
     /// But the range `[data(), data() + size)` will always be valid.
@@ -543,7 +543,7 @@ namespace type_safe
     /// It can refer to any function that is compatible with given signature.
     ///
     /// A function is compatible if it is callable with regular function call syntax from the given argument types,
-    /// and its return type is either implictly convertible to the specified return type
+    /// and its return type is either implicitly convertible to the specified return type
     /// or the specified return type is `void`.
     ///
     /// In general it will store a pointer to the functor,
@@ -584,9 +584,9 @@ namespace type_safe
 
         /// \effects Creates a reference to the function created by the stateless lambda.
         /// \notes This constructor is intended for stateless lambdas,
-        /// which are implictly convertible to function pointers.
+        /// which are implicitly convertible to function pointers.
         /// It does not participate in overload resolution,
-        /// unless the type is implictly convertible to a function pointer
+        /// unless the type is implicitly convertible to a function pointer
         /// that is compatible with the specified signature.
         /// \notes Due to to implementation reasons,
         /// it does not work for polymorphic lambdas,
@@ -622,7 +622,7 @@ namespace type_safe
         /// unless the signature of `other` is compatible with the specified signature.
         /// \notes This constructor may create a bigger conversion chain.
         /// For example, if `other` has signature `void(const char*)` it can refer to a function taking `std::string`.
-        /// If this signature than accepts a type `T` implictly convertible to `const char*`,
+        /// If this signature than accepts a type `T` implicitly convertible to `const char*`,
         /// calling this will call the function taking `std::string`, converting `T -> std::string`,
         /// even though such a conversion would be ill-formed otherwise.
         /// \param 1

@@ -91,7 +91,7 @@ namespace type_safe
                                                                                                    \
         /** Initializes it with a dynamic bound.
           * \effects Copies (1)/moves (2) the object and uses that as bound.
-          * \notes These constructors only participate in overload resoltuion,
+          * \notes These constructors only participate in overload resolution,
           * if a dynamic bound is used, i.e. `Bound` is [ts::constraints::dynamic_bound]().
           * \group dynamic_ctor
           * \param Condition
