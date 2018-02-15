@@ -56,7 +56,7 @@ namespace type_safe
     public:
         flag() = delete;
 
-        /// \effects Gives the flag the intial state.
+        /// \effects Gives the flag the initial state.
         /// \notes This function does not participate in overload resolution if `T` is not a boolean type.
         /// \param 1
         /// \exclude

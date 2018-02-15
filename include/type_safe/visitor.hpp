@@ -146,7 +146,7 @@ namespace type_safe
     /// where the `i`th argument is the `value()` of the `i`th optional or `nullopt`, if it has none.
     /// If the particular combination of types is not overloaded,
     /// the program is ill-formed,
-    /// unelss the `Visitor` provides a member named `incomplete_visitor`,
+    /// unless the `Visitor` provides a member named `incomplete_visitor`,
     /// then `visit()` does not do anything instead of the error.
     /// \returns The result of the chosen `operator()`,
     /// its the type is the common type of all possible combinations.
@@ -399,7 +399,7 @@ namespace type_safe
     /// otherwise the behavior is undefined.
     /// If the particular combination of types is not overloaded,
     /// the program is ill-formed,
-    /// unelss the `Visitor` provides a member named `incomplete_visitor`,
+    /// unless the `Visitor` provides a member named `incomplete_visitor`,
     /// then `visit()` does not do anything instead of the error.
     /// \returns The result of the chosen `operator()`,
     /// its the type is the common type of all possible combinations.

@@ -14,7 +14,7 @@ namespace type_safe
 {
     /// A tiny wrapper modelling an output parameter of a function.
     ///
-    /// An output paramater is a paramter that will be used to transport output of a function to its caller,
+    /// An output parameter is a parameter that will be used to transport output of a function to its caller,
     /// like a return value does.
     /// Usually they are implemented with lvalue references.
     /// They have a couple of disadvantages though:

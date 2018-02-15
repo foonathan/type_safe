@@ -56,7 +56,7 @@ namespace type_safe
     ///
     /// It is a [ts::strong_typedef]() for [ts::size_t]().
     /// It is comparable and you can increment and decrement it,
-    /// as well as adding/subtracing a [ts::distance_t]().
+    /// as well as adding/subtracting a [ts::distance_t]().
     /// \notes It has a similar interface to a `RandomAccessIterator`,
     /// but without the dereference functions.
     /// \module types

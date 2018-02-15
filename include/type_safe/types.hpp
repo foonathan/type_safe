@@ -217,7 +217,7 @@ namespace type_safe
                 // int is at least 16 bits
                 return unsigned_t(detail::parse_unsigned<std::uint16_t, Digits...>());
             }
-        } // namespace literalse
+        } // namespace literals
 
         //=== floating point types ===//
         /// \module types
