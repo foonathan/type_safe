@@ -87,7 +87,7 @@ int main()
     opt.reset();
     ts::visit(visitor{}, opt);
 
-    // savely manipulate the value if there is one
+    // safely manipulate the value if there is one
     // with() is an inplace map()
     // and thus more efficient if you do not need to change the type
     ts::with(opt, [](int& i) {
@@ -96,7 +96,7 @@ int main()
     });
 
     // an optional reference
-    // basically a pointer, but provides the funcionality of optional
+    // basically a pointer, but provides the functionality of optional
     ts::optional_ref<int> ref;
 
     int a = 42;
