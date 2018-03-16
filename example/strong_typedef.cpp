@@ -10,9 +10,9 @@
 namespace ts = type_safe;
 
 // we want some kind of handle to an int
-struct handle : ts::strong_typedef<handle, int*>,                   // required
-                ts::strong_typedef_op::equality_comparison<handle>, // for operator==/operator!=
-                ts::strong_typedef_op::dereference<handle, int>     // for operator*/operator->
+struct handle : ts::strong_typedef<handle, int*>,               // required
+                ts::strong_typedef_op::equality_comparison,     // for operator==/operator!=
+                ts::strong_typedef_op::dereference<handle, int> // for operator*/operator->
 {
     using strong_typedef::strong_typedef;
 
@@ -40,11 +40,11 @@ void use_handle(handle h)
 }
 
 // integer representing a distance
-struct distance : ts::strong_typedef<distance, unsigned>,               // required
-                  ts::strong_typedef_op::equality_comparison<distance>, // for operator==/operator!=
-                  ts::strong_typedef_op::relational_comparison<distance>, // for operator< etc.
-                  ts::strong_typedef_op::integer_arithmetic<
-                      distance> // all arithmetic operators that make sense for integers
+struct distance
+: ts::strong_typedef<distance, unsigned>,       // required
+  ts::strong_typedef_op::equality_comparison,   // for operator==/operator!=
+  ts::strong_typedef_op::relational_comparison, // for operator< etc.
+  ts::strong_typedef_op::integer_arithmetic // all arithmetic operators that make sense for integers
 {
     using strong_typedef::strong_typedef;
 };

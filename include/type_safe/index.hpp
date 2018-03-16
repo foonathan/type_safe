@@ -19,12 +19,12 @@ namespace type_safe
     /// It is comparable and you can add and subtract two differences.
     /// \module types
     struct difference_t : strong_typedef<difference_t, ptrdiff_t>,
-                          strong_typedef_op::equality_comparison<difference_t>,
-                          strong_typedef_op::relational_comparison<difference_t>,
-                          strong_typedef_op::unary_plus<difference_t>,
-                          strong_typedef_op::unary_minus<difference_t>,
-                          strong_typedef_op::addition<difference_t>,
-                          strong_typedef_op::subtraction<difference_t>
+                          strong_typedef_op::equality_comparison,
+                          strong_typedef_op::relational_comparison,
+                          strong_typedef_op::unary_plus,
+                          strong_typedef_op::unary_minus,
+                          strong_typedef_op::addition,
+                          strong_typedef_op::subtraction
     {
         /// \effects Initializes it to `0`.
         constexpr difference_t() noexcept : strong_typedef(0) {}
@@ -61,11 +61,11 @@ namespace type_safe
     /// but without the dereference functions.
     /// \module types
     struct index_t : strong_typedef<index_t, size_t>,
-                     strong_typedef_op::equality_comparison<index_t>,
-                     strong_typedef_op::relational_comparison<index_t>,
-                     strong_typedef_op::increment<index_t>,
-                     strong_typedef_op::decrement<index_t>,
-                     strong_typedef_op::unary_plus<index_t>
+                     strong_typedef_op::equality_comparison,
+                     strong_typedef_op::relational_comparison,
+                     strong_typedef_op::increment,
+                     strong_typedef_op::decrement,
+                     strong_typedef_op::unary_plus
     {
         /// \effects Initializes it to `0`.
         constexpr index_t() noexcept : strong_typedef(0u) {}
