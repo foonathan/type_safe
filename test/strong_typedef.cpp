@@ -15,7 +15,7 @@ TEST_CASE("strong_typedef")
     // only check compilation here
     SECTION("general")
     {
-        struct type : strong_typedef<type, int>, strong_typedef_op::equality_comparison<type>
+        struct type : strong_typedef<type, int>, strong_typedef_op::equality_comparison
         {
             using strong_typedef::strong_typedef;
         };
@@ -59,8 +59,7 @@ TEST_CASE("strong_typedef")
     }
     SECTION("general mixed")
     {
-        struct type : strong_typedef<type, int>,
-                      strong_typedef_op::mixed_equality_comparison<type, int>
+        struct type : strong_typedef<type, int>, strong_typedef_op::mixed_equality_comparison<int>
         {
             using strong_typedef::strong_typedef;
         };
@@ -91,8 +90,8 @@ TEST_CASE("strong_typedef")
     SECTION("general mixed + non mixed")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::equality_comparison<type>,
-                      strong_typedef_op::mixed_equality_comparison<type, int>
+                      strong_typedef_op::equality_comparison,
+                      strong_typedef_op::mixed_equality_comparison<int>
         {
             using strong_typedef::strong_typedef;
         };
@@ -158,8 +157,8 @@ TEST_CASE("strong_typedef")
     SECTION("equality_comparison")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::equality_comparison<type>,
-                      strong_typedef_op::mixed_equality_comparison<type, int>
+                      strong_typedef_op::equality_comparison,
+                      strong_typedef_op::mixed_equality_comparison<int>
         {
             using strong_typedef::strong_typedef;
         };
@@ -180,8 +179,8 @@ TEST_CASE("strong_typedef")
     SECTION("relational_comparison")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::relational_comparison<type>,
-                      strong_typedef_op::mixed_relational_comparison<type, int>
+                      strong_typedef_op::relational_comparison,
+                      strong_typedef_op::mixed_relational_comparison<int>
         {
             using strong_typedef::strong_typedef;
         };
@@ -209,8 +208,8 @@ TEST_CASE("strong_typedef")
     SECTION("addition")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::addition<type>,
-                      strong_typedef_op::mixed_addition<type, int>
+                      strong_typedef_op::addition,
+                      strong_typedef_op::mixed_addition<int>
         {
             using strong_typedef::strong_typedef;
         };
@@ -230,8 +229,8 @@ TEST_CASE("strong_typedef")
     SECTION("subtraction")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::subtraction<type>,
-                      strong_typedef_op::mixed_subtraction<type, int>
+                      strong_typedef_op::subtraction,
+                      strong_typedef_op::mixed_subtraction<int>
         {
             using strong_typedef::strong_typedef;
         };
@@ -251,8 +250,8 @@ TEST_CASE("strong_typedef")
     SECTION("multiplication")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::multiplication<type>,
-                      strong_typedef_op::mixed_multiplication<type, int>
+                      strong_typedef_op::multiplication,
+                      strong_typedef_op::mixed_multiplication<int>
         {
             using strong_typedef::strong_typedef;
         };
@@ -272,8 +271,8 @@ TEST_CASE("strong_typedef")
     SECTION("division")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::division<type>,
-                      strong_typedef_op::mixed_division<type, int>
+                      strong_typedef_op::division,
+                      strong_typedef_op::mixed_division<int>
         {
             using strong_typedef::strong_typedef;
         };
@@ -293,8 +292,8 @@ TEST_CASE("strong_typedef")
     SECTION("modulo")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::modulo<type>,
-                      strong_typedef_op::mixed_modulo<type, int>
+                      strong_typedef_op::modulo,
+                      strong_typedef_op::mixed_modulo<int>
         {
             using strong_typedef::strong_typedef;
         };
@@ -313,7 +312,7 @@ TEST_CASE("strong_typedef")
     }
     SECTION("increment")
     {
-        struct type : strong_typedef<type, int>, strong_typedef_op::increment<type>
+        struct type : strong_typedef<type, int>, strong_typedef_op::increment
         {
             using strong_typedef::strong_typedef;
         };
@@ -325,7 +324,7 @@ TEST_CASE("strong_typedef")
     }
     SECTION("decrement")
     {
-        struct type : strong_typedef<type, int>, strong_typedef_op::decrement<type>
+        struct type : strong_typedef<type, int>, strong_typedef_op::decrement
         {
             using strong_typedef::strong_typedef;
         };
@@ -338,8 +337,8 @@ TEST_CASE("strong_typedef")
     SECTION("unary")
     {
         struct type : strong_typedef<type, int>,
-                      strong_typedef_op::unary_minus<type>,
-                      strong_typedef_op::unary_plus<type>
+                      strong_typedef_op::unary_minus,
+                      strong_typedef_op::unary_plus
         {
             using strong_typedef::strong_typedef;
         };
@@ -350,7 +349,7 @@ TEST_CASE("strong_typedef")
     }
     SECTION("complement")
     {
-        struct type : strong_typedef<type, unsigned>, strong_typedef_op::complement<type>
+        struct type : strong_typedef<type, unsigned>, strong_typedef_op::complement
         {
             using strong_typedef::strong_typedef;
         };
@@ -364,9 +363,9 @@ TEST_CASE("strong_typedef")
     SECTION("bitwise")
     {
         struct type : strong_typedef<type, unsigned>,
-                      strong_typedef_op::bitwise_or<type>,
-                      strong_typedef_op::bitwise_xor<type>,
-                      strong_typedef_op::bitwise_and<type>
+                      strong_typedef_op::bitwise_or,
+                      strong_typedef_op::bitwise_xor,
+                      strong_typedef_op::bitwise_and
         {
             using strong_typedef::strong_typedef;
         };
@@ -390,7 +389,7 @@ TEST_CASE("strong_typedef")
     }
     SECTION("bitshift")
     {
-        struct type : strong_typedef<type, unsigned>, strong_typedef_op::bitshift<type, unsigned>
+        struct type : strong_typedef<type, unsigned>, strong_typedef_op::bitshift<unsigned>
         {
             using strong_typedef::strong_typedef;
         };

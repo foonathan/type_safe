@@ -158,6 +158,86 @@ namespace type_safe
             using enable_if_convertible_same = typename std::enable_if<
                 std::is_convertible<typename std::decay<From>::type, To>::value>::type;
 
+            template <typename T>
+            using enable_if_same_decay =
+                typename std::enable_if<std::is_same<T, typename std::decay<T>::type>::value>::type;
+
+            template <typename...>
+            struct map_to_void
+            {
+                using type = void;
+            };
+
+            template <typename... T>
+            using void_t = typename map_to_void<T...>::type;
+
+            template <class Tag, typename T>
+            strong_typedef<Tag, T> base_conversion(strong_typedef<Tag, T>*);
+
+            template <class StrongTypedef>
+            using base = decltype(base_conversion(std::declval<StrongTypedef*>()));
+
+            template <class Tag, typename T>
+            Tag tag_conversion(strong_typedef<Tag, T>*);
+
+            template <class StrongTypedef>
+            using tag = decltype(tag_conversion(std::declval<StrongTypedef*>()));
+
+            template <template <typename> class MixedOp, typename Other>
+            Other other_conversion(MixedOp<Other>*);
+
+            template <class StrongTypedef, template <typename> class MixedOp>
+            using other = decltype(other_conversion<MixedOp>(std::declval<StrongTypedef*>()));
+
+            template <typename StrongTypedef, typename Op, class = void>
+            struct strong_typedef_type_impl : std::enable_if<false>
+            {
+            };
+
+            template <typename Base, typename Derived>
+            using is_unambiguously_accessible_base_of = std::is_convertible<Derived*, Base*>;
+
+            // This alias is well-formed if the following is a hierarchy
+            //      `StrongTypedef` > `Tag` > `strong_typedef<Tag, T>`
+            //                              > `Op`
+            // where `strong_typedef<Tag, T>` is unambiguously accessible.
+            // Note: We take advantage of `base<A>` and `tag<A>` being
+            //      well-formed if `A` has an unambiguously accessible base of
+            //      the form `strong_typedef<Tag, T>`.
+            template <typename StrongTypedef, typename Op>
+            using valid_hierarchy = typename std::enable_if<
+                is_unambiguously_accessible_base_of<tag<StrongTypedef>, StrongTypedef>::value
+                && std::is_base_of<Op, tag<StrongTypedef>>::value
+                && std::is_same<base<StrongTypedef>, base<tag<StrongTypedef>>>::value>::type;
+
+            template <typename StrongTypedef, typename Op>
+            struct strong_typedef_type_impl<StrongTypedef, Op, valid_hierarchy<StrongTypedef, Op>>
+            : std::enable_if<true, tag<StrongTypedef>>
+            {
+            };
+
+            template <typename StrongTypedef, typename Op>
+            using strong_typedef_type =
+                typename strong_typedef_type_impl<typename std::decay<StrongTypedef>::type,
+                                                  Op>::type;
+
+            template <typename T, typename U, typename Op, class = void>
+            struct same_strong_typedef_type_impl : std::enable_if<false>
+            {
+            };
+
+            template <typename T, typename U, typename Op>
+            struct same_strong_typedef_type_impl<
+                T, U, Op, void_t<strong_typedef_type<T, Op>, strong_typedef_type<U, Op>>>
+            : std::enable_if<
+                  std::is_same<strong_typedef_type<T, Op>, strong_typedef_type<U, Op>>::value,
+                  strong_typedef_type<T, Op>>
+            {
+            };
+
+            template <typename T, typename U, typename Op>
+            using same_strong_typedef_type = typename same_strong_typedef_type_impl<T, U, Op>::type;
+
             template <class StrongTypedef>
             constexpr const underlying_type<StrongTypedef>& get_underlying(
                 const StrongTypedef& type)
@@ -198,65 +278,74 @@ namespace type_safe
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP(Op, Name, Result)                                                 \
     /** \exclude */                                                                                \
-    template <class StrongTypedef>                                                                 \
-    constexpr Result operator Op(const Name<StrongTypedef>& lhs, const Name<StrongTypedef>& rhs)   \
+    template <typename Left, typename Right,                                                       \
+              class StrongTypedef = detail::same_strong_typedef_type<Left, Right, Name>>           \
+    constexpr Result operator Op(const Left& lhs, const Right& rhs)                                \
     {                                                                                              \
         return Result(                                                                             \
             detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(lhs))          \
                 Op detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(rhs))); \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef>                                                                 \
-    constexpr Result operator Op(Name<StrongTypedef>&& lhs, const Name<StrongTypedef>& rhs)        \
+    template <typename Left, typename Right, typename = detail::enable_if_same_decay<Left>,        \
+              class StrongTypedef = detail::same_strong_typedef_type<Left, Right, Name>>           \
+    constexpr Result operator Op(Left&& lhs, const Right& rhs)                                     \
     {                                                                                              \
         return Result(                                                                             \
             detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(lhs))               \
                 Op detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(rhs))); \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef>                                                                 \
-    constexpr Result operator Op(const Name<StrongTypedef>& lhs, Name<StrongTypedef>&& rhs)        \
+    template <typename Left, typename Right, typename = detail::enable_if_same_decay<Right>,       \
+              class StrongTypedef = detail::same_strong_typedef_type<Left, Right, Name>>           \
+    constexpr Result operator Op(const Left& lhs, Right&& rhs)                                     \
     {                                                                                              \
         return Result(detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(     \
             lhs)) Op detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(rhs)));    \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef>                                                                 \
-    constexpr Result operator Op(Name<StrongTypedef>&& lhs, Name<StrongTypedef>&& rhs)             \
+    template <typename Left, typename Right, typename = detail::enable_if_same_decay<Left>,        \
+              typename            = detail::enable_if_same_decay<Right>,                           \
+              class StrongTypedef = detail::same_strong_typedef_type<Left, Right, Name>>           \
+    constexpr Result operator Op(Left&& lhs, Right&& rhs)                                          \
     {                                                                                              \
         return Result(detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(          \
             lhs)) Op detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(rhs)));    \
     }                                                                                              \
     /* mixed */                                                                                    \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename Other,                                                 \
-              typename = detail::enable_if_convertible<Other&&, StrongTypedef>>                    \
-    constexpr Result operator Op(const Name<StrongTypedef>& lhs, Other&& rhs)                      \
+    template <typename Left, typename Other,                                                       \
+              class StrongTypedef = detail::strong_typedef_type<Left, Name>,                       \
+              typename = detail::enable_if_convertible<Other&&, StrongTypedef>, int = 0>           \
+    constexpr Result operator Op(const Left& lhs, Other&& rhs)                                     \
     {                                                                                              \
         return Result(detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(     \
             lhs)) Op detail::get_underlying<StrongTypedef>(detail::forward<Other>(rhs)));          \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename Other,                                                 \
-              typename = detail::enable_if_convertible<Other&&, StrongTypedef>>                    \
-    constexpr Result operator Op(Name<StrongTypedef>&& lhs, Other&& rhs)                           \
+    template <typename Left, typename Other, typename = detail::enable_if_same_decay<Left>,        \
+              class StrongTypedef = detail::strong_typedef_type<Left, Name>,                       \
+              typename = detail::enable_if_convertible<Other&&, StrongTypedef>, int = 0>           \
+    constexpr Result operator Op(Left&& lhs, Other&& rhs)                                          \
     {                                                                                              \
         return Result(detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(lhs))     \
                           Op detail::get_underlying<StrongTypedef>(detail::forward<Other>(rhs)));  \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename Other,                                                 \
-              typename = detail::enable_if_convertible<Other&&, StrongTypedef>>                    \
-    constexpr Result operator Op(Other&& lhs, const Name<StrongTypedef>& rhs)                      \
+    template <typename Right, typename Other,                                                      \
+              class StrongTypedef = detail::strong_typedef_type<Right, Name>,                      \
+              typename = detail::enable_if_convertible<Other&&, StrongTypedef>, int = 0>           \
+    constexpr Result operator Op(Other&& lhs, const Right& rhs)                                    \
     {                                                                                              \
         return Result(                                                                             \
             detail::get_underlying<StrongTypedef>(detail::forward<Other>(lhs))                     \
                 Op detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(rhs))); \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename Other,                                                 \
-              typename = detail::enable_if_convertible<Other&&, StrongTypedef>>                    \
-    constexpr Result operator Op(Other&& lhs, Name<StrongTypedef>&& rhs)                           \
+    template <typename Right, typename Other, typename = detail::enable_if_same_decay<Right>,      \
+              class StrongTypedef = detail::strong_typedef_type<Right, Name>,                      \
+              typename = detail::enable_if_convertible<Other&&, StrongTypedef>, int = 0>           \
+    constexpr Result operator Op(Other&& lhs, Right&& rhs)                                         \
     {                                                                                              \
         return Result(detail::get_underlying<StrongTypedef>(detail::forward<Other>(                \
             lhs)) Op detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(rhs)));    \
@@ -265,30 +354,36 @@ namespace type_safe
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP_MIXED(Op, Name, Result)                                           \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename OtherArg, typename Other,                              \
-              typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
-    constexpr Result operator Op(const Name<StrongTypedef, OtherArg>& lhs, Other&& rhs)            \
+    template <typename Left, typename Other, typename OtherArg = detail::other<Left, Name>,        \
+              class StrongTypedef = detail::strong_typedef_type<Left, Name<OtherArg>>,             \
+              typename            = detail::enable_if_convertible_same<Other&&, OtherArg>>         \
+    constexpr Result operator Op(const Left& lhs, Other&& rhs)                                     \
     {                                                                                              \
         return Result(get(static_cast<const StrongTypedef&>(lhs)) Op detail::forward<Other>(rhs)); \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename OtherArg, typename Other,                              \
-              typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
-    constexpr Result operator Op(Name<StrongTypedef, OtherArg>&& lhs, Other&& rhs)                 \
+    template <typename Left, typename Other, typename = detail::enable_if_same_decay<Left>,        \
+              typename OtherArg   = detail::other<Left, Name>,                                     \
+              class StrongTypedef = detail::strong_typedef_type<Left, Name<OtherArg>>,             \
+              typename            = detail::enable_if_convertible_same<Other&&, OtherArg>>         \
+    constexpr Result operator Op(Left&& lhs, Other&& rhs)                                          \
     {                                                                                              \
         return Result(get(static_cast<StrongTypedef&&>(lhs)) Op detail::forward<Other>(rhs));      \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename OtherArg, typename Other,                              \
-              typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
-    constexpr Result operator Op(Other&& lhs, const Name<StrongTypedef, OtherArg>& rhs)            \
+    template <typename Right, typename Other, typename OtherArg = detail::other<Right, Name>,      \
+              class StrongTypedef = detail::strong_typedef_type<Right, Name<OtherArg>>,            \
+              typename            = detail::enable_if_convertible_same<Other&&, OtherArg>>         \
+    constexpr Result operator Op(Other&& lhs, const Right& rhs)                                    \
     {                                                                                              \
         return Result(detail::forward<Other>(lhs) Op get(static_cast<const StrongTypedef&>(rhs))); \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename OtherArg, typename Other,                              \
-              typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
-    constexpr Result operator Op(Other&& lhs, Name<StrongTypedef, OtherArg>&& rhs)                 \
+    template <typename Right, typename Other, typename = detail::enable_if_same_decay<Right>,      \
+              typename OtherArg   = detail::other<Right, Name>,                                    \
+              class StrongTypedef = detail::strong_typedef_type<Right, Name<OtherArg>>,            \
+              typename            = detail::enable_if_convertible_same<Other&&, OtherArg>>         \
+    constexpr Result operator Op(Other&& lhs, Right&& rhs)                                         \
     {                                                                                              \
         return Result(detail::forward<Other>(lhs) Op get(static_cast<StrongTypedef&&>(rhs)));      \
     }
@@ -296,34 +391,37 @@ namespace type_safe
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND(Op, Name)                                                \
     /** \exclude */                                                                                \
-    template <class StrongTypedef>                                                                 \
-    TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator Op(Name<StrongTypedef>&       lhs,               \
-                                                     const Name<StrongTypedef>& rhs)               \
+    template <typename Left, typename Right,                                                       \
+              class StrongTypedef = detail::same_strong_typedef_type<Left, Right, Name>>           \
+    TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator Op(Left& lhs, const Right& rhs)                  \
     {                                                                                              \
         detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&>(lhs)) Op                 \
             detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(rhs));         \
         return static_cast<StrongTypedef&>(lhs);                                                   \
-    } /** \exclude */                                                                              \
-    template <class StrongTypedef>                                                                 \
-    TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator Op(Name<StrongTypedef>&  lhs,                    \
-                                                     Name<StrongTypedef>&& rhs)                    \
+    }                                                                                              \
+    /** \exclude */                                                                                \
+    template <typename Left, typename Right, typename = detail::enable_if_same_decay<Right>,       \
+              class StrongTypedef = detail::same_strong_typedef_type<Left, Right, Name>>           \
+    TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator Op(Left& lhs, Right&& rhs)                       \
     {                                                                                              \
         detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&>(lhs)) Op                 \
             detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(rhs));              \
         return static_cast<StrongTypedef&>(lhs);                                                   \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef>                                                                 \
-    TYPE_SAFE_CONSTEXPR14 StrongTypedef&& operator Op(Name<StrongTypedef>&&      lhs,              \
-                                                      const Name<StrongTypedef>& rhs)              \
+    template <typename Left, typename Right, typename = detail::enable_if_same_decay<Left>,        \
+              class StrongTypedef = detail::same_strong_typedef_type<Left, Right, Name>>           \
+    TYPE_SAFE_CONSTEXPR14 StrongTypedef&& operator Op(Left&& lhs, const Right& rhs)                \
     {                                                                                              \
         detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(lhs)) Op                \
             detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(rhs));         \
         return static_cast<StrongTypedef&&>(lhs);                                                  \
-    } /** \exclude */                                                                              \
-    template <class StrongTypedef>                                                                 \
-    TYPE_SAFE_CONSTEXPR14 StrongTypedef&& operator Op(Name<StrongTypedef>&& lhs,                   \
-                                                      Name<StrongTypedef>&& rhs)                   \
+    }                                                                                              \
+    /** \exclude */                                                                                \
+    template <typename Left, typename Right, typename = detail::enable_if_same_decay<Left>,        \
+              typename            = detail::enable_if_same_decay<Right>,                           \
+              class StrongTypedef = detail::same_strong_typedef_type<Left, Right, Name>>           \
+    TYPE_SAFE_CONSTEXPR14 StrongTypedef&& operator Op(Left&& lhs, Right&& rhs)                     \
     {                                                                                              \
         detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(lhs)) Op                \
             detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(rhs));              \
@@ -331,18 +429,20 @@ namespace type_safe
     }                                                                                              \
     /* mixed */                                                                                    \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename Other,                                                 \
-              typename = detail::enable_if_convertible<Other&&, StrongTypedef>>                    \
-    TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator Op(Name<StrongTypedef>& lhs, Other&& rhs)        \
+    template <typename Left, typename Other,                                                       \
+              class StrongTypedef = detail::strong_typedef_type<Left, Name>,                       \
+              typename = detail::enable_if_convertible<Other&&, StrongTypedef>, int = 0>           \
+    TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator Op(Left& lhs, Other&& rhs)                       \
     {                                                                                              \
         detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&>(lhs))                    \
             Op detail::get_underlying<StrongTypedef>(detail::forward<Other>(rhs));                 \
         return static_cast<StrongTypedef&>(lhs);                                                   \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename Other,                                                 \
-              typename = detail::enable_if_convertible<Other&&, StrongTypedef>>                    \
-    TYPE_SAFE_CONSTEXPR14 StrongTypedef&& operator Op(Name<StrongTypedef>&& lhs, Other&& rhs)      \
+    template <typename Left, typename Other, typename = detail::enable_if_same_decay<Left>,        \
+              class StrongTypedef = detail::strong_typedef_type<Left, Name>,                       \
+              typename = detail::enable_if_convertible<Other&&, StrongTypedef>, int = 0>           \
+    TYPE_SAFE_CONSTEXPR14 StrongTypedef&& operator Op(Left&& lhs, Other&& rhs)                     \
     {                                                                                              \
         detail::get_underlying<StrongTypedef>(static_cast<StrongTypedef&&>(lhs))                   \
             Op detail::get_underlying<StrongTypedef>(detail::forward<Other>(rhs));                 \
@@ -352,19 +452,20 @@ namespace type_safe
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND_MIXED(Op, Name)                                          \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename OtherArg, typename Other,                              \
-              typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
-    TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator Op(Name<StrongTypedef, OtherArg>& lhs,           \
-                                                     Other&&                        rhs)           \
+    template <typename Left, typename Other, typename OtherArg = detail::other<Left, Name>,        \
+              class StrongTypedef = detail::strong_typedef_type<Left, Name<OtherArg>>,             \
+              typename            = detail::enable_if_convertible_same<Other&&, OtherArg>>         \
+    TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator Op(Left& lhs, Other&& rhs)                       \
     {                                                                                              \
         get(static_cast<StrongTypedef&>(lhs)) Op detail::forward<Other>(rhs);                      \
         return static_cast<StrongTypedef&>(lhs);                                                   \
     }                                                                                              \
     /** \exclude */                                                                                \
-    template <class StrongTypedef, typename OtherArg, typename Other,                              \
-              typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
-    TYPE_SAFE_CONSTEXPR14 StrongTypedef&& operator Op(Name<StrongTypedef, OtherArg>&& lhs,         \
-                                                      Other&&                         rhs)         \
+    template <typename Left, typename Other, typename = detail::enable_if_same_decay<Left>,        \
+              typename OtherArg   = detail::other<Left, Name>,                                     \
+              class StrongTypedef = detail::strong_typedef_type<Left, Name<OtherArg>>,             \
+              typename            = detail::enable_if_convertible_same<Other&&, OtherArg>>         \
+    TYPE_SAFE_CONSTEXPR14 StrongTypedef&& operator Op(Left&& lhs, Other&& rhs)                     \
     {                                                                                              \
         get(static_cast<StrongTypedef&&>(lhs)) Op detail::forward<Other>(rhs);                     \
         return static_cast<StrongTypedef&&>(lhs);                                                  \
@@ -372,34 +473,31 @@ namespace type_safe
 
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP(Name, Op)                                          \
-    template <class StrongTypedef>                                                                 \
     struct Name                                                                                    \
     {                                                                                              \
     };                                                                                             \
     TYPE_SAFE_DETAIL_MAKE_OP(Op, Name, StrongTypedef)                                              \
     TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND(Op## =, Name)                                                \
-    template <class StrongTypedef, typename Other>                                                 \
+    template <typename Other>                                                                      \
     struct mixed_##Name                                                                            \
     {                                                                                              \
     };                                                                                             \
     TYPE_SAFE_DETAIL_MAKE_OP_MIXED(Op, mixed_##Name, StrongTypedef)                                \
     TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND_MIXED(Op## =, mixed_##Name)
 
-        template <class StrongTypedef>
         struct equality_comparison
         {
         };
         TYPE_SAFE_DETAIL_MAKE_OP(==, equality_comparison, bool)
         TYPE_SAFE_DETAIL_MAKE_OP(!=, equality_comparison, bool)
 
-        template <class StrongTypedef, typename Other>
+        template <typename Other>
         struct mixed_equality_comparison
         {
         };
         TYPE_SAFE_DETAIL_MAKE_OP_MIXED(==, mixed_equality_comparison, bool)
         TYPE_SAFE_DETAIL_MAKE_OP_MIXED(!=, mixed_equality_comparison, bool)
 
-        template <class StrongTypedef>
         struct relational_comparison
         {
         };
@@ -408,7 +506,7 @@ namespace type_safe
         TYPE_SAFE_DETAIL_MAKE_OP(>, relational_comparison, bool)
         TYPE_SAFE_DETAIL_MAKE_OP(>=, relational_comparison, bool)
 
-        template <class StrongTypedef, typename Other>
+        template <typename Other>
         struct mixed_relational_comparison
         {
         };
@@ -423,119 +521,121 @@ namespace type_safe
         TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP(division, /)
         TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP(modulo, %)
 
-        template <class StrongTypedef>
         struct increment
         {
-            /// \exclude
-            TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator++()
-            {
-                using type = underlying_type<StrongTypedef>;
-                ++static_cast<type&>(static_cast<StrongTypedef&>(*this));
-                return static_cast<StrongTypedef&>(*this);
-            }
-
-            /// \exclude
-            TYPE_SAFE_CONSTEXPR14 StrongTypedef operator++(int)
-            {
-                auto result = static_cast<StrongTypedef&>(*this);
-                ++*this;
-                return result;
-            }
         };
 
-        template <class StrongTypedef>
+        /// \exclude
+        template <typename Left, class StrongTypedef = detail::strong_typedef_type<Left, increment>>
+        TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator++(Left& lhs)
+        {
+            using type = underlying_type<StrongTypedef>;
+            ++static_cast<type&>(static_cast<StrongTypedef&>(lhs));
+            return static_cast<StrongTypedef&>(lhs);
+        }
+        /// \exclude
+        template <typename Left, class StrongTypedef = detail::strong_typedef_type<Left, increment>>
+        TYPE_SAFE_CONSTEXPR14 StrongTypedef operator++(Left& lhs, int)
+        {
+            auto result = static_cast<StrongTypedef&>(lhs);
+            ++lhs;
+            return result;
+        }
+
         struct decrement
         {
-            /// \exclude
-            TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator--()
-            {
-                using type = underlying_type<StrongTypedef>;
-                --static_cast<type&>(static_cast<StrongTypedef&>(*this));
-                return static_cast<StrongTypedef&>(*this);
-            }
-
-            /// \exclude
-            TYPE_SAFE_CONSTEXPR14 StrongTypedef operator--(int)
-            {
-                auto result = static_cast<StrongTypedef&>(*this);
-                --*this;
-                return result;
-            }
         };
 
-        template <class StrongTypedef>
+        /// \exclude
+        template <typename Left, class StrongTypedef = detail::strong_typedef_type<Left, decrement>>
+        TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator--(Left& lhs)
+        {
+            using type = underlying_type<StrongTypedef>;
+            --static_cast<type&>(static_cast<StrongTypedef&>(lhs));
+            return static_cast<StrongTypedef&>(lhs);
+        }
+        /// \exclude
+        template <typename Left, class StrongTypedef = detail::strong_typedef_type<Left, decrement>>
+        TYPE_SAFE_CONSTEXPR14 StrongTypedef operator--(Left& lhs, int)
+        {
+            auto result = static_cast<StrongTypedef&>(lhs);
+            --lhs;
+            return result;
+        }
+
         struct unary_plus
         {
         };
 
         /// \exclude
-        template <class StrongTypedef>
-        constexpr StrongTypedef operator+(const unary_plus<StrongTypedef>& lhs)
+        template <typename Left,
+                  class StrongTypedef = detail::strong_typedef_type<Left, unary_plus>>
+        constexpr StrongTypedef operator+(const Left& lhs)
         {
             return StrongTypedef(+get(static_cast<const StrongTypedef&>(lhs)));
         }
         /// \exclude
-        template <class StrongTypedef>
-        constexpr StrongTypedef operator+(unary_plus<StrongTypedef>&& lhs)
+        template <typename Left, typename = detail::enable_if_same_decay<Left>,
+                  class StrongTypedef = detail::strong_typedef_type<Left, unary_plus>>
+        constexpr StrongTypedef operator+(Left&& lhs)
         {
             return StrongTypedef(+get(static_cast<StrongTypedef&&>(lhs)));
         }
 
-        template <class StrongTypedef>
         struct unary_minus
         {
         };
 
-        /// \exclude
-        template <class StrongTypedef>
-        constexpr StrongTypedef operator-(const unary_minus<StrongTypedef>& lhs)
+        template <typename Left,
+                  class StrongTypedef = detail::strong_typedef_type<Left, unary_minus>>
+        constexpr StrongTypedef operator-(const Left& lhs)
         {
             return StrongTypedef(-get(static_cast<const StrongTypedef&>(lhs)));
         }
         /// \exclude
-        template <class StrongTypedef>
-        constexpr StrongTypedef operator-(unary_minus<StrongTypedef>&& lhs)
+        template <typename Left, typename = detail::enable_if_same_decay<Left>,
+                  class StrongTypedef = detail::strong_typedef_type<Left, unary_minus>>
+        constexpr StrongTypedef operator-(Left&& lhs)
         {
             return StrongTypedef(-get(static_cast<StrongTypedef&&>(lhs)));
         }
 
-        template <class StrongTypedef>
-        struct integer_arithmetic : unary_plus<StrongTypedef>,
-                                    unary_minus<StrongTypedef>,
-                                    addition<StrongTypedef>,
-                                    subtraction<StrongTypedef>,
-                                    multiplication<StrongTypedef>,
-                                    division<StrongTypedef>,
-                                    modulo<StrongTypedef>,
-                                    increment<StrongTypedef>,
-                                    decrement<StrongTypedef>
+        struct integer_arithmetic : unary_plus,
+                                    unary_minus,
+                                    addition,
+                                    subtraction,
+                                    multiplication,
+                                    division,
+                                    modulo,
+                                    increment,
+                                    decrement
         {
         };
 
-        template <class StrongTypedef>
-        struct floating_point_arithmetic : unary_plus<StrongTypedef>,
-                                           unary_minus<StrongTypedef>,
-                                           addition<StrongTypedef>,
-                                           subtraction<StrongTypedef>,
-                                           multiplication<StrongTypedef>,
-                                           division<StrongTypedef>
+        struct floating_point_arithmetic : unary_plus,
+                                           unary_minus,
+                                           addition,
+                                           subtraction,
+                                           multiplication,
+                                           division
         {
         };
 
-        template <class StrongTypedef>
         struct complement
         {
         };
 
         /// \exclude
-        template <class StrongTypedef>
-        constexpr StrongTypedef operator~(const complement<StrongTypedef>& lhs)
+        template <typename Left,
+                  class StrongTypedef = detail::strong_typedef_type<Left, complement>>
+        constexpr StrongTypedef operator~(const Left& lhs)
         {
             return StrongTypedef(~get(static_cast<const StrongTypedef&>(lhs)));
         }
         /// \exclude
-        template <class StrongTypedef>
-        constexpr StrongTypedef operator~(complement<StrongTypedef>&& lhs)
+        template <typename Left, typename = detail::enable_if_same_decay<Left>,
+                  class StrongTypedef = detail::strong_typedef_type<Left, complement>>
+        constexpr StrongTypedef operator~(Left&& lhs)
         {
             return StrongTypedef(~get(static_cast<StrongTypedef&&>(lhs)));
         }
@@ -544,15 +644,11 @@ namespace type_safe
         TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP(bitwise_xor, ^)
         TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP(bitwise_and, &)
 
-        template <class StrongTypedef>
-        struct bitmask : complement<StrongTypedef>,
-                         bitwise_or<StrongTypedef>,
-                         bitwise_xor<StrongTypedef>,
-                         bitwise_and<StrongTypedef>
+        struct bitmask : complement, bitwise_or, bitwise_xor, bitwise_and
         {
         };
 
-        template <class StrongTypedef, typename IntT>
+        template <typename IntT>
         struct bitshift
         {
         };
@@ -614,7 +710,7 @@ namespace type_safe
 
         template <class StrongTypedef, class Category, typename T,
                   typename Distance = std::ptrdiff_t>
-        struct iterator : dereference<StrongTypedef, T, T*, const T*>, increment<StrongTypedef>
+        struct iterator : dereference<StrongTypedef, T, T*, const T*>, increment
         {
             using iterator_category = Category;
             using value_type        = T;
@@ -625,7 +721,7 @@ namespace type_safe
 
         template <class StrongTypedef, typename T, typename Distance = std::ptrdiff_t>
         struct input_iterator : iterator<StrongTypedef, std::input_iterator_tag, T, Distance>,
-                                equality_comparison<StrongTypedef>
+                                equality_comparison
         {
         };
 
@@ -641,8 +737,7 @@ namespace type_safe
         };
 
         template <class StrongTypedef, typename T, typename Distance = std::ptrdiff_t>
-        struct bidirectional_iterator : forward_iterator<StrongTypedef, T, Distance>,
-                                        decrement<StrongTypedef>
+        struct bidirectional_iterator : forward_iterator<StrongTypedef, T, Distance>, decrement
         {
             using iterator_category = std::bidirectional_iterator_tag;
         };
@@ -650,7 +745,7 @@ namespace type_safe
         template <class StrongTypedef, typename T, typename Distance = std::ptrdiff_t>
         struct random_access_iterator : bidirectional_iterator<StrongTypedef, T, Distance>,
                                         array_subscript<StrongTypedef, T, Distance>,
-                                        relational_comparison<StrongTypedef>
+                                        relational_comparison
         {
             using iterator_category = std::random_access_iterator_tag;
 

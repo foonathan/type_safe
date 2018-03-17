@@ -19,8 +19,8 @@ namespace type_safe
     namespace detail
     {
         struct union_type_id : strong_typedef<union_type_id, std::size_t>,
-                               strong_typedef_op::equality_comparison<union_type_id>,
-                               strong_typedef_op::relational_comparison<union_type_id>
+                               strong_typedef_op::equality_comparison,
+                               strong_typedef_op::relational_comparison
         {
             using strong_typedef<union_type_id, std::size_t>::strong_typedef;
         };
@@ -109,8 +109,8 @@ namespace type_safe
         /// It is a [ts::strong_typedef]() for `std::size_t`
         /// and provides equality and relational comparison.
         class type_id : public strong_typedef<type_id, std::size_t>,
-                        public strong_typedef_op::equality_comparison<type_id>,
-                        public strong_typedef_op::relational_comparison<type_id>
+                        public strong_typedef_op::equality_comparison,
+                        public strong_typedef_op::relational_comparison
         {
         public:
             /// \returns `true` if `T` is a valid type, `false` otherwise.
