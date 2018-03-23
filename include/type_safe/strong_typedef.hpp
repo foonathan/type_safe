@@ -141,8 +141,8 @@ namespace type_safe
 
     /// Some operations for [ts::strong_typedef]().
     ///
-    /// They all generate operators forwarding to the underlying type,
-    /// inherit from then in the typedef definition.
+    /// They all generate operators forwarding to the underlying type.
+    /// Inherit from them in the typedef definition.
     namespace strong_typedef_op
     {
         /// \exclude
@@ -729,6 +729,21 @@ namespace type_safe
 #undef TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND
 #undef TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP
     } // namespace strong_typedef_op
+
+    /// Inherit from it in the `std::hash<StrongTypedef>` specialization to make
+    /// it hashable like the underlying type. See example/strong_typedef.cpp.
+    template <class StrongTypedef>
+    struct hashable
+    {
+        using underlying_type = type_safe::underlying_type<StrongTypedef>;
+        using underlying_hash = std::hash<underlying_type>;
+
+        std::size_t operator()(const StrongTypedef& lhs) const
+            noexcept(noexcept(underlying_hash{}(std::declval<underlying_type>())))
+        {
+            return underlying_hash{}(static_cast<const underlying_type&>(lhs));
+        }
+    };
 } // namespace type_safe
 
 #endif // TYPE_SAFE_STRONG_TYPEDEF_HPP_INCLUDED

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <unordered_set>
 
 #include <type_safe/strong_typedef.hpp>
 
@@ -55,6 +56,16 @@ std::ostream& operator<<(std::ostream& out, const distance& d)
     return out << static_cast<unsigned>(d) << " distance";
 }
 
+namespace std
+{
+    // we want to use it with the std::unordered_* containers
+    template <>
+    struct hash<::distance> : type_safe::hashable<::distance>
+    {
+    };
+
+} // namespace std
+
 int main()
 {
     distance d(4);
@@ -62,5 +73,7 @@ int main()
     //    d += 3;           // error
     d += distance(3); // works
 
-    std::cout << d << '\n';
+    std::unordered_set<distance> set{d};
+
+    std::cout << *set.find(d) << '\n';
 }
