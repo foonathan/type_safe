@@ -296,6 +296,28 @@ TEST_CASE("strong_typedef")
         b = 1 - b;
         REQUIRE(static_cast<int>(b) == 3);
     }
+    SECTION("subtraction noncommutative")
+    {
+        struct type : strong_typedef<type, int>,
+                      strong_typedef_op::subtraction<type>,
+                      strong_typedef_op::mixed_subtraction_noncommutative<type, int>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+        type a(0);
+        a -= type(1);    // -1
+        a = a - type(1); // -2
+        a = type(1) - a; // 3
+        REQUIRE(static_cast<int>(a) == 3);
+
+        type b(0);
+        b -= 1;
+        b = b - 1;
+        REQUIRE(static_cast<int>(b) == -2);
+        static_assert(is_operator_minus_callable_with<type, int>::value, "");
+        static_assert(!is_operator_minus_callable_with<int, type>::value, "type is noncommutative");
+    }
     SECTION("multiplication")
     {
         struct type : strong_typedef<type, int>,
@@ -337,6 +359,29 @@ TEST_CASE("strong_typedef")
         b = b / 2;
         b = 2 / b;
         REQUIRE(static_cast<int>(b) == 1);
+    }
+    SECTION("division noncommutative")
+    {
+        struct type : strong_typedef<type, int>,
+                      strong_typedef_op::division<type>,
+                      strong_typedef_op::mixed_division_noncommutative<type, int>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+        type a(8);
+        a /= type(2);
+        a = a / type(2);
+        a = type(2) / a;
+        REQUIRE(static_cast<int>(a) == 1);
+
+        type b(8);
+        b /= 2;
+        b = b / 2;
+        REQUIRE(static_cast<int>(b) == 2);
+        static_assert(is_division_callable_with<type, int>::value, "");
+        static_assert(!is_division_callable_with<int, type>::value,
+                      "division of type and int is noncommutative");
     }
     SECTION("modulo")
     {

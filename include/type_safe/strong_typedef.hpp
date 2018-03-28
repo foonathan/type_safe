@@ -286,7 +286,7 @@ namespace type_safe
     }
 
 /// \exclude
-#define TYPE_SAFE_DETAIL_MAKE_OP_MIXED(Op, Name, Result)                                           \
+#define TYPE_SAFE_DETAIL_MAKE_OP_STRONGTYPEDEF_OTHER(Op, Name, Result)                             \
     /** \exclude */                                                                                \
     template <class StrongTypedef, typename OtherArg, typename Other,                              \
               typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
@@ -302,7 +302,9 @@ namespace type_safe
     {                                                                                              \
         return Result(get(static_cast<StrongTypedef&&>(lhs))                                       \
             Op detail::forward_or_underlying(detail::forward<Other>(rhs)));                        \
-    }                                                                                              \
+    }
+
+#define TYPE_SAFE_DETAIL_MAKE_OP_OTHER_STRONGTYPEDEF(Op, Name, Result)                             \
     /** \exclude */                                                                                \
     template <class StrongTypedef, typename OtherArg, typename Other,                              \
               typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
@@ -319,6 +321,10 @@ namespace type_safe
         return Result(detail::forward_or_underlying(detail::forward<Other>(lhs))                   \
             Op get(static_cast<StrongTypedef&&>(rhs)));                                            \
     }
+
+#define TYPE_SAFE_DETAIL_MAKE_OP_MIXED(Op, Name, Result)                                           \
+    TYPE_SAFE_DETAIL_MAKE_OP_STRONGTYPEDEF_OTHER(Op, Name, Result)                                 \
+    TYPE_SAFE_DETAIL_MAKE_OP_OTHER_STRONGTYPEDEF(Op, Name, Result)
 
 /// \exclude
 #define TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND(Op, Name)                                                \
@@ -412,7 +418,13 @@ namespace type_safe
     {                                                                                              \
     };                                                                                             \
     TYPE_SAFE_DETAIL_MAKE_OP_MIXED(Op, mixed_##Name, StrongTypedef)                                \
-    TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND_MIXED(Op## =, mixed_##Name)
+    TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND_MIXED(Op## =, mixed_##Name)                                  \
+    template <class StrongTypedef, typename Other>                                                 \
+    struct mixed_##Name##_noncommutative                                                           \
+    {                                                                                              \
+    };                                                                                             \
+    TYPE_SAFE_DETAIL_MAKE_OP_STRONGTYPEDEF_OTHER(Op, mixed_##Name##_noncommutative, StrongTypedef) \
+    TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND_MIXED(Op## =, mixed_##Name##_noncommutative)
 
         template <class StrongTypedef>
         struct equality_comparison
@@ -755,6 +767,8 @@ namespace type_safe
 
 #undef TYPE_SAFE_DETAIL_MAKE_OP
 #undef TYPE_SAFE_DETAIL_MAKE_OP_MIXED
+#undef TYPE_SAFE_DETAIL_MAKE_OP_STRONGTYPEDEF_OTHER
+#undef TYPE_SAFE_DETAIL_MAKE_OP_OTHER_STRONGTYPEDEF
 #undef TYPE_SAFE_DETAIL_MAKE_OP_COMPOUND
 #undef TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP
     } // namespace strong_typedef_op
