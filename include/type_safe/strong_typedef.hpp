@@ -193,6 +193,29 @@ namespace type_safe
                               "Can not forward an rvalue as an lvalue.");
                 return static_cast<T&&>(t);
             }
+
+            template<typename... Ts> struct make_void { typedef void type;};
+            template<typename... Ts> using void_t = typename make_void<Ts...>::type;
+
+            template<class T, typename = void_t<>>
+            struct is_strong_typedef
+                : std::false_type {};
+
+            template<class T>
+            struct is_strong_typedef<T, void_t<decltype(type_safe::detail::underlying_type(std::declval<T>()))>>
+                : std::true_type {};
+
+            template <class StrongTypedef, typename = typename std::enable_if<is_strong_typedef<StrongTypedef>::value>::type>
+            constexpr auto forward_or_underlying(StrongTypedef&& type) noexcept -> decltype(get(forward<StrongTypedef>(type)))
+            {
+                return get(forward<StrongTypedef>(type));
+            }
+            template <class T>
+            constexpr typename std::enable_if<!is_strong_typedef<T>::value, T&&>::type
+                forward_or_underlying(T&& type) noexcept
+            {
+                return forward<T>(type);
+            }
         } // namespace detail
 
 /// \exclude
@@ -269,28 +292,32 @@ namespace type_safe
               typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
     constexpr Result operator Op(const Name<StrongTypedef, OtherArg>& lhs, Other&& rhs)            \
     {                                                                                              \
-        return Result(get(static_cast<const StrongTypedef&>(lhs)) Op detail::forward<Other>(rhs)); \
+        return Result(get(static_cast<const StrongTypedef&>(lhs))                                  \
+            Op detail::forward_or_underlying(detail::forward<Other>(rhs)));                        \
     }                                                                                              \
     /** \exclude */                                                                                \
     template <class StrongTypedef, typename OtherArg, typename Other,                              \
               typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
     constexpr Result operator Op(Name<StrongTypedef, OtherArg>&& lhs, Other&& rhs)                 \
     {                                                                                              \
-        return Result(get(static_cast<StrongTypedef&&>(lhs)) Op detail::forward<Other>(rhs));      \
+        return Result(get(static_cast<StrongTypedef&&>(lhs))                                       \
+            Op detail::forward_or_underlying(detail::forward<Other>(rhs)));                        \
     }                                                                                              \
     /** \exclude */                                                                                \
     template <class StrongTypedef, typename OtherArg, typename Other,                              \
               typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
     constexpr Result operator Op(Other&& lhs, const Name<StrongTypedef, OtherArg>& rhs)            \
     {                                                                                              \
-        return Result(detail::forward<Other>(lhs) Op get(static_cast<const StrongTypedef&>(rhs))); \
+        return Result(detail::forward_or_underlying(detail::forward<Other>(lhs))                   \
+            Op get(static_cast<const StrongTypedef&>(rhs)));                                       \
     }                                                                                              \
     /** \exclude */                                                                                \
     template <class StrongTypedef, typename OtherArg, typename Other,                              \
               typename = detail::enable_if_convertible_same<Other&&, OtherArg>>                    \
     constexpr Result operator Op(Other&& lhs, Name<StrongTypedef, OtherArg>&& rhs)                 \
     {                                                                                              \
-        return Result(detail::forward<Other>(lhs) Op get(static_cast<StrongTypedef&&>(rhs)));      \
+        return Result(detail::forward_or_underlying(detail::forward<Other>(lhs))                   \
+            Op get(static_cast<StrongTypedef&&>(rhs)));                                            \
     }
 
 /// \exclude
@@ -357,7 +384,8 @@ namespace type_safe
     TYPE_SAFE_CONSTEXPR14 StrongTypedef& operator Op(Name<StrongTypedef, OtherArg>& lhs,           \
                                                      Other&&                        rhs)           \
     {                                                                                              \
-        get(static_cast<StrongTypedef&>(lhs)) Op detail::forward<Other>(rhs);                      \
+        get(static_cast<StrongTypedef&>(lhs))                                                      \
+            Op detail::forward_or_underlying(detail::forward<Other>(rhs));                         \
         return static_cast<StrongTypedef&>(lhs);                                                   \
     }                                                                                              \
     /** \exclude */                                                                                \
@@ -366,7 +394,8 @@ namespace type_safe
     TYPE_SAFE_CONSTEXPR14 StrongTypedef&& operator Op(Name<StrongTypedef, OtherArg>&& lhs,         \
                                                       Other&&                         rhs)         \
     {                                                                                              \
-        get(static_cast<StrongTypedef&&>(lhs)) Op detail::forward<Other>(rhs);                     \
+        get(static_cast<StrongTypedef&&>(lhs))                                                     \
+            Op detail::forward_or_underlying(detail::forward<Other>(rhs));                         \
         return static_cast<StrongTypedef&&>(lhs);                                                  \
     }
 
