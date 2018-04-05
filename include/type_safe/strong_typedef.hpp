@@ -776,7 +776,7 @@ namespace type_safe
     /// Inherit from it in the `std::hash<StrongTypedef>` specialization to make
     /// it hashable like the underlying type. See example/strong_typedef.cpp.
     template <class StrongTypedef>
-    struct hashable
+    struct hashable : std::hash<type_safe::underlying_type<StrongTypedef>>
     {
         using underlying_type = type_safe::underlying_type<StrongTypedef>;
         using underlying_hash = std::hash<underlying_type>;
