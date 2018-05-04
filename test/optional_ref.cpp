@@ -96,6 +96,10 @@ TEST_CASE("optional_ref")
         optional_ref<int> e = opt_ref(opt_b);
         REQUIRE(e.has_value());
         REQUIRE(&e.value() == &opt_b.value());
+
+        optional_ref<int> f = opt_ref(value);
+        REQUIRE(f.has_value());
+        REQUIRE(&f.value() == &value);
     }
     SECTION("cref")
     {
@@ -118,6 +122,10 @@ TEST_CASE("optional_ref")
         optional_ref<const int> e = opt_cref(opt_b);
         REQUIRE(e.has_value());
         REQUIRE(&e.value() == &opt_b.value());
+
+        optional_ref<const int> f = opt_cref(value);
+        REQUIRE(f.has_value());
+        REQUIRE(&f.value() == &value);
     }
     SECTION("copy")
     {

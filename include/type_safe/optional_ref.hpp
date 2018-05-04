@@ -24,7 +24,7 @@ namespace type_safe
         {
             return std::move(obj);
         }
-    }
+    } // namespace detail
 
     /// A `StoragePolicy` for [ts::basic_optional]() that allows optional references.
     ///
@@ -180,6 +180,26 @@ namespace type_safe
         return optional_ref<const T>(ref.get());
     }
 
+    /// \returns A [ts::optional_ref]() to the given object.
+    /// \module optional
+    /// \param 1
+    /// \exclude
+    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
+    optional_ref<T> opt_ref(T& ref) noexcept
+    {
+        return optional_ref<T>(ref);
+    }
+
+    /// \returns A [ts::optional_ref]() to the given object.
+    /// \module optional
+    /// \param 1
+    /// \exclude
+    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
+    optional_ref<const T> opt_cref(const T& ref) noexcept
+    {
+        return optional_ref<const T>(ref);
+    }
+
     /// \returns A [ts::optional_ref]() to the stored value in `opt`.
     /// \module optional
     template <typename T>
@@ -191,9 +211,9 @@ namespace type_safe
     /// \returns A [ts::optional_ref]() to `const` to the stored value in `opt`.
     /// \module optional
     template <typename T>
-    optional_ref<const T> opt_cref(optional<T>& opt) noexcept
+    optional_ref<const T> opt_cref(const optional<T>& opt) noexcept
     {
-        return opt ? optional_ref<T>(opt.value()) : nullopt;
+        return opt ? optional_ref<const T>(opt.value()) : nullopt;
     }
 
     /// \returns A [ts::optional_ref<T>]() to the pointee of `ptr` or `nullopt`.
@@ -227,6 +247,17 @@ namespace type_safe
     optional_xvalue_ref<T> opt_xref(T* ptr) noexcept
     {
         return ptr ? optional_xvalue_ref<T>(*ptr) : nullopt;
+    }
+
+    /// \returns A [ts::optional_xvalue_ref<T>]() to the given object.
+    /// \notes The pointee will be moved from when you call `value()`.
+    /// \module optional
+    /// \param 1
+    /// \exclude
+    template <typename T, typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
+    optional_xvalue_ref<T> opt_xref(T& obj) noexcept
+    {
+        return optional_xvalue_ref<T>(obj);
     }
 
     /// \returns A [ts::optional<T>]() containing a copy of the value of `ref`
