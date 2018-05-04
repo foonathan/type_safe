@@ -326,6 +326,20 @@ TEST_CASE("optional")
         optional_ref<int> c_res2 = c.map(&foo::var);
         REQUIRE(c_res2.has_value());
         REQUIRE(c_res2.value() == 42);
+
+#if TYPE_SAFE_USE_RETURN_TYPE_DEDUCTION
+        // just compiler check, see https://github.com/foonathan/type_safe/issues/60
+        struct bar
+        {
+            void non_const() {}
+        };
+
+        optional<bar> f = bar{};
+        f.map([](auto&& b) {
+            b.non_const();
+            return 42;
+        });
+#endif
     }
     SECTION("with")
     {

@@ -160,7 +160,7 @@ namespace type_safe
             std::is_void<T>::value, void,
             basic_optional<select_optional_storage_policy<
                 typename optional_storage_policy_for<T>::type, Fallback>>>::type;
-    }
+    } // namespace detail
 
     /// An optional type, i.e. a type that may or may not be there.
     ///
@@ -222,7 +222,7 @@ namespace type_safe
             return std::move(static_cast<detail::optional_storage<StoragePolicy>&>(*this).storage);
         }
 
-        const storage&& get_storage() const && noexcept
+        const storage&& get_storage() const&& noexcept
         {
             return std::move(
                 static_cast<const detail::optional_storage<StoragePolicy>&>(*this).storage);
@@ -481,8 +481,10 @@ namespace type_safe
         /// \exclude return
         template <typename Func, typename... Args>
         auto map(Func&& f, Args&&... args) TYPE_SAFE_LVALUE_REF
+#if !TYPE_SAFE_USE_RETURN_TYPE_DEDUCTION
             -> rebind<decltype(detail::map_invoke(std::forward<Func>(f), this->value(),
                                                   std::forward<Args>(args)...))>
+#endif
         {
             using return_type = decltype(
                 detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
@@ -498,8 +500,10 @@ namespace type_safe
         /// \exclude return
         template <typename Func, typename... Args>
         auto map(Func&& f, Args&&... args) const TYPE_SAFE_LVALUE_REF
+#if !TYPE_SAFE_USE_RETURN_TYPE_DEDUCTION
             -> rebind<decltype(detail::map_invoke(std::forward<Func>(f), this->value(),
                                                   std::forward<Args>(args)...))>
+#endif
         {
             using return_type = decltype(
                 detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
@@ -515,8 +519,11 @@ namespace type_safe
         /// \group map
         /// \exclude return
         template <typename Func, typename... Args>
-        auto map(Func&& f, Args&&... args) && -> rebind<decltype(
-            detail::map_invoke(std::forward<Func>(f), this->value(), std::forward<Args>(args)...))>
+        auto map(Func&& f, Args&&... args) &&
+#if !TYPE_SAFE_USE_RETURN_TYPE_DEDUCTION
+            -> rebind<decltype(detail::map_invoke(std::forward<Func>(f), this->value(),
+                                                  std::forward<Args>(args)...))>
+#endif
         {
             using return_type = decltype(
                 detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
@@ -531,8 +538,11 @@ namespace type_safe
         /// \group map
         /// \exclude return
         template <typename Func, typename... Args>
-        auto map(Func&& f, Args&&... args) const && -> rebind<decltype(
-            detail::map_invoke(std::forward<Func>(f), this->value(), std::forward<Args>(args)...))>
+        auto map(Func&& f, Args&&... args) const&&
+#if !TYPE_SAFE_USE_RETURN_TYPE_DEDUCTION
+            -> rebind<decltype(detail::map_invoke(std::forward<Func>(f), this->value(),
+                                                  std::forward<Args>(args)...))>
+#endif
         {
             using return_type = decltype(
                 detail::map_invoke(std::forward<Func>(f), value(), std::forward<Args>(args)...));
@@ -888,7 +898,7 @@ namespace type_safe
         }
 
         /// \group value
-        const_rvalue_reference get_value() const && noexcept
+        const_rvalue_reference get_value() const&& noexcept
         {
             return std::move(*static_cast<const value_type*>(as_void()));
         }

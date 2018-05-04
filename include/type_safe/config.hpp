@@ -57,6 +57,17 @@
 #define TYPE_SAFE_RVALUE_REF
 #endif
 
+#ifndef TYPE_SAFE_USE_RETURN_TYPE_DEDUCTION
+#if defined(__cpp_return_type_deduction) && __cpp_return_type_deduction >= 201304
+/// \exclude
+#define TYPE_SAFE_USE_RETURN_TYPE_DEDUCTION 1
+#elif defined(_MSC_VER) && _MSC_VER >= 1900
+#define TYPE_SAFE_USE_RETURN_TYPE_DEDUCTION 1
+#else
+#define TYPE_SAFE_USE_RETURN_TYPE_DEDUCTION 0
+#endif
+#endif
+
 #ifndef TYPE_SAFE_USE_NOEXCEPT_DEFAULT
 
 #if defined(__GNUC__) && __GNUC__ < 5
@@ -134,7 +145,7 @@ namespace type_safe
     {
         void on_disabled_exception() noexcept;
     }
-} // namespace type_safe::detail
+} // namespace type_safe
 
 #define TYPE_SAFE_THROW(Ex) (Ex, type_safe::detail::on_disabled_exception())
 #define TYPE_SAFE_TRY if (true)
