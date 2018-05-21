@@ -573,4 +573,17 @@ TEST_CASE("strong_typedef")
         in >> a;
         REQUIRE(static_cast<int>(a) == 1);
     }
+    SECTION("explicit bool")
+    {
+        struct type : strong_typedef<type, int>,
+                      strong_typedef_op::explicit_bool<type>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+	type a(0);
+	REQUIRE(!a);
+	type b(1);
+	REQUIRE(b);
+    }
 }
