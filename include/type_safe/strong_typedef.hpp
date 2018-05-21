@@ -470,7 +470,9 @@ namespace type_safe
             /// \exclude
             explicit constexpr operator bool() const
             {
-                return detail::get_underlying<StrongTypedef>(static_cast<const StrongTypedef&>(*this));
+                return static_cast<bool>(
+                    detail::get_underlying<StrongTypedef>(
+                        static_cast<const StrongTypedef&>(*this)));
             }
         };
 

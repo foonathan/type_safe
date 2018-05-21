@@ -581,9 +581,32 @@ TEST_CASE("strong_typedef")
             using strong_typedef::strong_typedef;
         };
 
-	type a(0);
-	REQUIRE(!a);
-	type b(1);
-	REQUIRE(b);
+        type a(0);
+        REQUIRE(!a);
+        type b(1);
+        REQUIRE(b);
+    }
+    SECTION("explicit bool nonconstexpr")
+    {
+        struct foo
+        {
+            bool flag;
+
+            explicit operator bool() const
+            {
+                return flag;
+            }
+        };
+
+        struct type : strong_typedef<type, foo>,
+                      strong_typedef_op::explicit_bool<type>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+        type a(foo{false});
+        REQUIRE(!a);
+        type b(foo{true});
+        REQUIRE(b);
     }
 }
