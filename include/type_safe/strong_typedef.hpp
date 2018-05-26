@@ -465,6 +465,18 @@ namespace type_safe
         TYPE_SAFE_DETAIL_MAKE_STRONG_TYPEDEF_OP(modulo, %)
 
         template <class StrongTypedef>
+        struct explicit_bool
+        {
+            /// \exclude
+            explicit constexpr operator bool() const
+            {
+                return static_cast<bool>(
+                    detail::get_underlying<StrongTypedef>(
+                        static_cast<const StrongTypedef&>(*this)));
+            }
+        };
+
+        template <class StrongTypedef>
         struct increment
         {
             /// \exclude
