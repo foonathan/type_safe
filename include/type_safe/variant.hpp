@@ -305,6 +305,9 @@ namespace type_safe
                 storage_.get_union().emplace(type, std::forward<Args>(args)...);
         }
 
+        template <typename T>
+        using enable_valid = typename std::enable_if<(type_id::template is_valid<T>)()>::type;
+
     public:
         //=== observers ===//
         /// \returns The type id representing the type of the value currently stored in the variant.
@@ -359,8 +362,7 @@ namespace type_safe
         /// \group value
         /// \param 1
         /// \exclude
-        template <typename T,
-                  typename = typename std::enable_if<type_id::template is_valid<T>()>::type>
+        template <typename T, typename = enable_valid<T>>
         T& value(variant_type<T> type) TYPE_SAFE_LVALUE_REF noexcept
         {
             return storage_.get_union().value(type);
@@ -369,8 +371,7 @@ namespace type_safe
         /// \group value
         /// \param 1
         /// \exclude
-        template <typename T,
-                  typename = typename std::enable_if<type_id::template is_valid<T>()>::type>
+        template <typename T, typename = enable_valid<T>>
         const T& value(variant_type<T> type) const TYPE_SAFE_LVALUE_REF noexcept
         {
             return storage_.get_union().value(type);
@@ -380,8 +381,7 @@ namespace type_safe
         /// \group value
         /// \param 1
         /// \exclude
-        template <typename T,
-                  typename = typename std::enable_if<type_id::template is_valid<T>()>::type>
+        template <typename T, typename = enable_valid<T>>
             T&& value(variant_type<T> type) && noexcept
         {
             return std::move(storage_.get_union()).value(type);
@@ -390,9 +390,8 @@ namespace type_safe
         /// \group value
         /// \param 1
         /// \exclude
-        template <typename T,
-                  typename = typename std::enable_if<type_id::template is_valid<T>()>::type>
-        const T&& value(variant_type<T> type) const && noexcept
+        template <typename T, typename = enable_valid<T>>
+        const T&& value(variant_type<T> type) const&& noexcept
         {
             return std::move(storage_.get_union()).value(type);
         }
@@ -435,7 +434,7 @@ namespace type_safe
 
         /// \group optional_value
         template <typename T>
-        optional_xvalue_ref<const T> optional_value(variant_type<T> type) const && noexcept
+        optional_xvalue_ref<const T> optional_value(variant_type<T> type) const&& noexcept
         {
             return has_value(type) ? type_safe::opt_xref(&storage_.get_union().value(type)) :
                                      nullptr;
