@@ -679,7 +679,7 @@ namespace type_safe
         function_ref(detail::matching_function_pointer_tag, Return2 (*fptr)(Args2...))
         {
             using pointer_type        = Return2 (*)(Args2...);
-            using stored_pointer_type = Return (*)(Args...);
+            using stored_pointer_type = void (*)();
 
             DEBUG_ASSERT(fptr, detail::precondition_error_handler{},
                          "function pointer must not be null");
