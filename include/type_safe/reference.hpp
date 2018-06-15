@@ -399,12 +399,13 @@ namespace type_safe
     };
 
     /// With operation for [ts::array_ref]().
-    /// \effects Calls the `operator()` of `f` passing it `ref[i]` and the additional arguments for each valid index of the array.
+    /// \effects For every element of the array in order, it will invoke `f`, passing it the current element and the additional arguments.
+    //// If `XValue` is `true`, it will pass an rvalue reference to the element, allowing it to be moved from.
     template <typename T, bool XValue, typename Func, typename... Args>
-    void with(const array_ref<T, XValue>& ref, Func& f, Args&&... additional_args)
+    void with(const array_ref<T, XValue>& ref, Func&& f, Args&&... additional_args)
     {
         for (auto&& elem : ref)
-            f(elem, std::forward<Args>(additional_args)...);
+            f(std::forward<decltype(elem)>(elem), additional_args...);
     }
 
     /// Creates a [ts::array_ref]().

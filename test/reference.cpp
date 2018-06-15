@@ -174,6 +174,28 @@ TEST_CASE("array_ref")
         REQUIRE(ref.begin() == array);
         REQUIRE(ref.end() == array + 3);
     }
+    SECTION("with")
+    {
+        struct test_arg
+        {
+            bool moved_from = false;
+
+            test_arg() = default;
+
+            test_arg(const test_arg&) = default;
+
+            test_arg(test_arg&&) noexcept : moved_from(true) {}
+        };
+
+        with(ref, [](int, test_arg arg) { REQUIRE(!arg.moved_from); }, test_arg{});
+
+        with(ref,
+             [&](int i, std::size_t& index) {
+                 REQUIRE(i == ref[index]);
+                 ++index;
+             },
+             std::size_t(0u));
+    }
 }
 
 // fake polymorphic lambda, due to C++11 requirement
@@ -219,7 +241,7 @@ TEST_CASE("function_ref")
         function_ref<int(int, short)> b(f);
         REQUIRE(b(1, 3) == 4);
 
-        auto var = 0;
+        auto                          var = 0;
         function_ref<void(int, int&)> c(f);
         c(1, var);
 
@@ -274,7 +296,7 @@ TEST_CASE("function_ref")
         function_ref<void(foo, int)> a([](foo f, int i) { f.func(i); });
         a(foo{}, 0);
 
-        auto fnc = std::mem_fn(&foo::func);
+        auto                         fnc = std::mem_fn(&foo::func);
         function_ref<void(foo, int)> b(fnc);
         b(foo{}, 0);
     }
