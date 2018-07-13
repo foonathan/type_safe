@@ -4,7 +4,7 @@
 
 if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/catch.hpp)
     file(DOWNLOAD
-         https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp
+         https://raw.githubusercontent.com/catchorg/Catch2/master/single_include/catch2/catch.hpp
          ${CMAKE_CURRENT_BINARY_DIR}/catch.hpp
          STATUS status
          LOG log)
