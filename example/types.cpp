@@ -85,7 +85,7 @@ int main()
     //    ts::double_t d2;      // error: no default constructor
     ts::double_t d3(0.f); // okay: float -> double is allowed
 
-    std::cout << "floating point value: " << f1 << ' ' << d1 << '\n';
+    std::cout << "floating point value: " << f1 << ' ' << d1 << ' ' << d3 << '\n';
 
     //    f1++;      // error: no in/decrement for floats
     //    f1 == 0.f; // error: no equality comparison for floats
