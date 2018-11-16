@@ -286,8 +286,10 @@ namespace type_safe
         private:
             template <typename T>
             static auto call(int, Union&& u, Func&& func, Args&&... args)
+#if !defined(_MSC_VER) || _MSC_VER < 1900
                 -> decltype(std::forward<Func>(func)(std::forward<Union>(u).value(union_type<T>{}),
                                                      std::forward<Args>(args)...))
+#endif
             {
                 return std::forward<Func>(func)(std::forward<Union>(u).value(union_type<T>{}),
                                                 std::forward<Args>(args)...);
