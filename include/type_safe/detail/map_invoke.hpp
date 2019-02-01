@@ -9,30 +9,28 @@
 
 namespace type_safe
 {
-    namespace detail
+namespace detail
+{
+    template <typename Func, typename Value, typename... Args>
+    auto map_invoke(Func&& f, Value&& v, Args&&... args)
+        -> decltype(std::forward<Func>(f)(std::forward<Value>(v), std::forward<Args>(args)...))
     {
-        template <typename Func, typename Value, typename... Args>
-        auto map_invoke(Func&& f, Value&& v, Args&&... args)
-            -> decltype(std::forward<Func>(f)(std::forward<Value>(v), std::forward<Args>(args)...))
-        {
-            return std::forward<Func>(f)(std::forward<Value>(v), std::forward<Args>(args)...);
-        }
-
-        template <typename Func, typename Value>
-        auto map_invoke(Func&& f, Value&& v)
-            -> decltype(std::forward<Value>(v).*std::forward<Func>(f))
-        {
-            return std::forward<Value>(v).*std::forward<Func>(f);
-        }
-
-        template <typename Func, typename Value, typename... Args>
-        auto map_invoke(Func&& f, Value&& v, Args&&... args)
-            -> decltype((std::forward<Value>(v)
-                         .*std::forward<Func>(f))(std::forward<Args>(args)...))
-        {
-            return (std::forward<Value>(v).*std::forward<Func>(f))(std::forward<Args>(args)...);
-        }
+        return std::forward<Func>(f)(std::forward<Value>(v), std::forward<Args>(args)...);
     }
-} // namespace type_safe::detail
+
+    template <typename Func, typename Value>
+    auto map_invoke(Func&& f, Value&& v) -> decltype(std::forward<Value>(v).*std::forward<Func>(f))
+    {
+        return std::forward<Value>(v).*std::forward<Func>(f);
+    }
+
+    template <typename Func, typename Value, typename... Args>
+    auto map_invoke(Func&& f, Value&& v, Args&&... args)
+        -> decltype((std::forward<Value>(v).*std::forward<Func>(f))(std::forward<Args>(args)...))
+    {
+        return (std::forward<Value>(v).*std::forward<Func>(f))(std::forward<Args>(args)...);
+    }
+} // namespace detail
+} // namespace type_safe
 
 #endif // TYPE_SAFE_MAP_INVOKE_HPP_INCLUDED

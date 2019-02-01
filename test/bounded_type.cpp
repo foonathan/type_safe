@@ -156,15 +156,15 @@ TEST_CASE("bounded literal")
 
 TEST_CASE("bounded_type")
 {
-    constrained_type<int, constraints::closed_interval<int>> dynamic_closed =
-        make_bounded(10, 0, 42);
+    constrained_type<int, constraints::closed_interval<int>> dynamic_closed
+        = make_bounded(10, 0, 42);
     static_assert(std::is_same<decltype(dynamic_closed), bounded_type<int, true, true>>::value, "");
     REQUIRE(dynamic_closed.get_value() == 10);
     REQUIRE(dynamic_closed.get_constraint().get_lower_bound() == 0);
     REQUIRE(dynamic_closed.get_constraint().get_upper_bound() == 42);
 
-    constrained_type<int, constraints::open_interval<int>> dynamic_open =
-        make_bounded_exclusive(10, 0, 42);
+    constrained_type<int, constraints::open_interval<int>> dynamic_open
+        = make_bounded_exclusive(10, 0, 42);
     static_assert(std::is_same<decltype(dynamic_open), bounded_type<int, false, false>>::value, "");
     REQUIRE(dynamic_open.get_value() == 10);
     REQUIRE(dynamic_open.get_constraint().get_lower_bound() == 0);
@@ -172,8 +172,8 @@ TEST_CASE("bounded_type")
 
     constrained_type<int, constraints::closed_interval<int, std::integral_constant<int, 0>,
                                                        std::integral_constant<int, 42>>>
-        static_closed =
-            make_bounded(10, std::integral_constant<int, 0>{}, std::integral_constant<int, 42>{});
+        static_closed
+        = make_bounded(10, std::integral_constant<int, 0>{}, std::integral_constant<int, 42>{});
     static_assert(std::is_same<decltype(static_closed),
                                bounded_type<int, true, true, std::integral_constant<int, 0>,
                                             std::integral_constant<int, 42>>>::value,
@@ -324,8 +324,8 @@ TEST_CASE("clamped_type")
     REQUIRE(dynamic.get_constraint().get_lower_bound() == 0);
     REQUIRE(dynamic.get_constraint().get_upper_bound() == 42);
 
-    clamped_type<int, std::integral_constant<int, 0>, std::integral_constant<int, 42>> static_ =
-        make_clamped(value, std::integral_constant<int, 0>{}, std::integral_constant<int, 42>{});
+    clamped_type<int, std::integral_constant<int, 0>, std::integral_constant<int, 42>> static_
+        = make_clamped(value, std::integral_constant<int, 0>{}, std::integral_constant<int, 42>{});
 
     clamped_val = value;
     clamped_val = clamp(static_.get_constraint(), clamped_val);
@@ -334,8 +334,8 @@ TEST_CASE("clamped_type")
     REQUIRE(static_.get_constraint().get_lower_bound() == 0);
     REQUIRE(static_.get_constraint().get_upper_bound() == 42);
 
-    clamped_type<int, std::integral_constant<int, 0>> mixed =
-        make_clamped(value, std::integral_constant<int, 0>{}, 42);
+    clamped_type<int, std::integral_constant<int, 0>> mixed
+        = make_clamped(value, std::integral_constant<int, 0>{}, 42);
 
     clamped_val = value;
     clamped_val = clamp(mixed.get_constraint(), clamped_val);

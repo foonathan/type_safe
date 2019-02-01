@@ -10,7 +10,8 @@
 namespace ts = type_safe;
 
 // ts::unsigned_t is alias for ts::integer<unsigned>
-// function is type safe - only unsigned integer types smaller than unsigned can be passed to the function
+// function is type safe - only unsigned integer types smaller than unsigned can be passed to the
+// function
 void only_unsigned(ts::unsigned_t val)
 {
     std::cout << "only_unsigned() got: " << val << '\n';

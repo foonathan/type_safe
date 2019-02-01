@@ -21,11 +21,9 @@ TEST_CASE("optional_ref")
 {
     // only test stuff special for optional_ref
     struct base
-    {
-    };
+    {};
     struct derived : base
-    {
-    };
+    {};
 
     test_optional_ref_conversion<int, int&&>(std::false_type{});
     test_optional_ref_conversion<int, const int&>(std::false_type{});

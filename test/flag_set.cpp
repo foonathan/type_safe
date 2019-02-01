@@ -17,15 +17,15 @@ enum class test_flags
 
 namespace type_safe
 {
-    template <>
-    struct flag_set_traits<test_flags> : std::true_type
+template <>
+struct flag_set_traits<test_flags> : std::true_type
+{
+    static constexpr std::size_t size()
     {
-        static constexpr std::size_t size()
-        {
-            return 3;
-        }
-    };
-}
+        return 3;
+    }
+};
+} // namespace type_safe
 
 void check_set(const type_safe::flag_set<test_flags>& set, bool a, bool b, bool c)
 {

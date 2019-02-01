@@ -624,8 +624,7 @@ TEST_CASE("fallback_variant")
             var = std::move(test);
         }
         catch (...)
-        {
-        }
+        {}
         check_variant_value(var, 0);
     }
 }
@@ -653,8 +652,7 @@ TEST_CASE("optional_variant")
             var = std::move(test);
         }
         catch (...)
-        {
-        }
+        {}
         check_variant_empty(var);
     }
 }
@@ -680,8 +678,7 @@ TEST_CASE("rarely_empty_variant")
             var.emplace(variant_type<evil_variant_test_type>{}, "I will throw");
         }
         catch (...)
-        {
-        }
+        {}
         check_variant_value(var, 3);
     }
     SECTION("delayed throwing move")
@@ -691,8 +688,7 @@ TEST_CASE("rarely_empty_variant")
             var.emplace(variant_type<evil_variant_test_type>{}, 3.14);
         }
         catch (...)
-        {
-        }
+        {}
         check_variant_empty(var);
     }
     SECTION("throwing move")
@@ -704,8 +700,7 @@ TEST_CASE("rarely_empty_variant")
             var = std::move(test);
         }
         catch (...)
-        {
-        }
+        {}
         check_variant_empty(var);
     }
 }

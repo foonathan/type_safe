@@ -44,16 +44,13 @@ int main()
 // some constraints do not need to be checked
 // (example taken from: https://www.youtube.com/watch?v=ojZbFIQSdl8)
 struct sanitized
-{
-};
+{};
 struct unsanitized
-{
-};
+{};
 
-// ts::tagged_type is an alias for ts::constrained_type with the ts::null_verifier as third parameter
-// it is a constrained type where the constraint isn't checked
-// so the constraint does not need to be a predicate
-// it is just there to create different, non convertible types
+// ts::tagged_type is an alias for ts::constrained_type with the ts::null_verifier as third
+// parameter it is a constrained type where the constraint isn't checked so the constraint does not
+// need to be a predicate it is just there to create different, non convertible types
 using sanitized_string   = ts::tagged_type<std::string, sanitized>;
 using unsanitized_string = ts::tagged_type<std::string, unsanitized>;
 
@@ -66,5 +63,6 @@ void do_stuff()
 {
     //    execute_query(get_form_data());             // error!
     //    execute_query(get_form_data().get_value()); // error!
-    //    execute_query(sanitize(get_form_data()));   // only this possible (but linker error, so...)
+    //    execute_query(sanitize(get_form_data()));   // only this possible (but linker error,
+    //    so...)
 }

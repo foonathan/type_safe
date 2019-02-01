@@ -10,9 +10,9 @@ using namespace type_safe;
 
 namespace type_safe
 {
-    template class basic_optional<compact_optional_storage<compact_bool_policy<bool>>>;
-    template class basic_optional<compact_optional_storage<compact_integer_policy<int, -1>>>;
-    template class basic_optional<compact_optional_storage<compact_floating_point_policy<float>>>;
+template class basic_optional<compact_optional_storage<compact_bool_policy<bool>>>;
+template class basic_optional<compact_optional_storage<compact_integer_policy<int, -1>>>;
+template class basic_optional<compact_optional_storage<compact_floating_point_policy<float>>>;
 } // namespace type_safe
 
 TEST_CASE("compact_bool")
