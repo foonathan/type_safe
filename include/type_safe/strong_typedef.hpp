@@ -10,7 +10,6 @@
 #include <type_traits>
 #include <utility>
 
-#include <type_safe/detail/all_of.hpp>
 #include <type_safe/config.hpp>
 
 namespace type_safe
@@ -670,8 +669,8 @@ namespace type_safe
         struct iterator : dereference<StrongTypedef, T, T*, const T*>, increment<StrongTypedef>
         {
             using iterator_category = Category;
-            using value_type        = T;
-            using distance_type     = Distance;
+            using value_type        = typename std::remove_cv<T>::type;
+            using difference_type   = Distance;
             using pointer           = T*;
             using reference         = T&;
         };
