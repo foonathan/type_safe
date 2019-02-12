@@ -5,6 +5,9 @@
 cmake_minimum_required(VERSION 3.1)
 if(POLICY CMP0076)
     cmake_policy(SET CMP0076 NEW)
+    set(source_prefix ".")
+else()
+    set(source_prefix "${CMAKE_CURRENT_SOURCE_DIR}")
 endif()
 
 project(TYPE_SAFE)
@@ -48,40 +51,40 @@ endif()
 
 # interface target
 set(detail_header_files
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/aligned_union.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/all_of.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/assert.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/assign_or_construct.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/constant_parser.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/copy_move_control.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/force_inline.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/is_nothrow_swappable.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/map_invoke.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/variant_impl.hpp)
+    ${source_prefix}/include/type_safe/detail/aligned_union.hpp
+    ${source_prefix}/include/type_safe/detail/all_of.hpp
+    ${source_prefix}/include/type_safe/detail/assert.hpp
+    ${source_prefix}/include/type_safe/detail/assign_or_construct.hpp
+    ${source_prefix}/include/type_safe/detail/constant_parser.hpp
+    ${source_prefix}/include/type_safe/detail/copy_move_control.hpp
+    ${source_prefix}/include/type_safe/detail/force_inline.hpp
+    ${source_prefix}/include/type_safe/detail/is_nothrow_swappable.hpp
+    ${source_prefix}/include/type_safe/detail/map_invoke.hpp
+    ${source_prefix}/include/type_safe/detail/variant_impl.hpp)
 set(header_files
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/config.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/arithmetic_policy.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/boolean.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/bounded_type.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/compact_optional.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/constrained_type.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/deferred_construction.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/downcast.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/flag.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/flag_set.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/floating_point.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/index.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/integer.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/narrow_cast.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/optional.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/optional_ref.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/output_parameter.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/reference.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/strong_typedef.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/tagged_union.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/types.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/variant.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/visitor.hpp)
+    ${source_prefix}/include/type_safe/config.hpp
+    ${source_prefix}/include/type_safe/arithmetic_policy.hpp
+    ${source_prefix}/include/type_safe/boolean.hpp
+    ${source_prefix}/include/type_safe/bounded_type.hpp
+    ${source_prefix}/include/type_safe/compact_optional.hpp
+    ${source_prefix}/include/type_safe/constrained_type.hpp
+    ${source_prefix}/include/type_safe/deferred_construction.hpp
+    ${source_prefix}/include/type_safe/downcast.hpp
+    ${source_prefix}/include/type_safe/flag.hpp
+    ${source_prefix}/include/type_safe/flag_set.hpp
+    ${source_prefix}/include/type_safe/floating_point.hpp
+    ${source_prefix}/include/type_safe/index.hpp
+    ${source_prefix}/include/type_safe/integer.hpp
+    ${source_prefix}/include/type_safe/narrow_cast.hpp
+    ${source_prefix}/include/type_safe/optional.hpp
+    ${source_prefix}/include/type_safe/optional_ref.hpp
+    ${source_prefix}/include/type_safe/output_parameter.hpp
+    ${source_prefix}/include/type_safe/reference.hpp
+    ${source_prefix}/include/type_safe/strong_typedef.hpp
+    ${source_prefix}/include/type_safe/tagged_union.hpp
+    ${source_prefix}/include/type_safe/types.hpp
+    ${source_prefix}/include/type_safe/variant.hpp
+    ${source_prefix}/include/type_safe/visitor.hpp)
 
 add_library(type_safe INTERFACE)
 target_sources(type_safe INTERFACE $<BUILD_INTERFACE:${detail_header_files} ${header_files}>)
