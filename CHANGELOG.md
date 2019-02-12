@@ -1,3 +1,12 @@
+## Version 0.2.1
+
+This release is mainly bugfixes:
+
+* Added `explicit_bool` strong typedef
+* Fixed forwarding bug in `with()` of `array_ref`
+* Silenced some warnings
+* Improved CMake configuration
+
 ## Version 0.2
 
 This release took a long time, so here are just the most important changes.

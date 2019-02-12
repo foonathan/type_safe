@@ -104,7 +104,7 @@ set(CONFIG_PACKAGE_INSTALL_DIR lib/cmake/type_safe)
 
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/type_safe-config-version.cmake
-  VERSION 0.2
+  VERSION 0.2.1
   COMPATIBILITY SameMajorVersion
 )
 
