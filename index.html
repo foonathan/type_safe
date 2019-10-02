@@ -7,3 +7,83 @@
     <li><a href="standardese_entities.html">Entity Index</a></li>
 </ul>
 
+<p><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fwww.jonathanmueller.dev%2Fproject%2Ftype_safe%2Findex.json" alt="Project Status" /> <a href="https://travis-ci.org/foonathan/type_safe"><img src="https://travis-ci.org/foonathan/type_safe.svg?branch=master" alt="Build Status" /></a> <a href="https://ci.appveyor.com/project/foonathan/type-safe/branch/master"><img src="https://ci.appveyor.com/api/projects/status/aw1j2h2s52g4laen/branch/master?svg=true" alt="Build status" /></a> <a href="https://bintray.com/manu343726/conan-packages/type_safe%3AManu343726/_latestVersion"><img src="https://api.bintray.com/packages/manu343726/conan-packages/type_safe%3AManu343726/images/download.svg" alt="Download" /></a></p>
+<p>type_safe provides zero overhead abstractions that use the C++ type system to prevent bugs.</p>
+<blockquote>
+<p>Zero overhead abstractions here and in following mean abstractions that have no cost with optimizations enabled, but may lead to slightly lower runtime in debug mode, especially when assertions for this library are enabled.</p>
+</blockquote>
+<p>The library features cannot really explained in the scope of this readme, I highly suggest that you check out <a href="https://foonathan.github.io/blog/2016/10/11/type-safe.html">the first</a> and <a href="https://foonathan.github.io/blog/2016/10/19/strong-typedefs.html">second blog post</a> and the examples.</p>
+<h2 id="features">Features</h2>
+<h3 id="improved-built-in-types">Improved built-in types</h3>
+<ul>
+<li><code>ts::integer&lt;T&gt;</code> - a zero overhead wrapper over a built-in integer type
+<ul>
+<li>no default constructor to force meaningful initialization</li>
+<li>no “lossy” conversions (i.e. from a bigger type or a type with a different signedness)</li>
+<li>no mixed arithmetic/comparison with floating points or integer types of a different signedness</li>
+<li>over/underflow is undefined behavior in release mode - even for <code>unsigned</code> integers, enabling compiler optimizations</li>
+</ul></li>
+<li><code>ts::floating_point&lt;T&gt;</code> - a zero overhead wrapper over a built-in floating point
+<ul>
+<li>no default constructor to force meaningful initialization</li>
+<li>no “lossy” conversion (i.e. from a bigger type)</li>
+<li>no “lossy” comparisons</li>
+<li>no mixed arithmetic/comparison with integers</li>
+</ul></li>
+<li><code>ts::boolean</code> - a zero overhead wrapper over <code>bool</code>
+<ul>
+<li>no default constructor to force meaningful initialization</li>
+<li>no conversion from integer values</li>
+<li>no arithmetic operators</li>
+</ul></li>
+<li>aliases like <code>ts::uint32_t</code> or <code>ts::size_t</code> that are either wrapper or built-in type depending on macro</li>
+<li>literal operators for those aliases like <code>342_u32</code> or <code>0_usize</code></li>
+</ul>
+<h3 id="vocabulary-types">Vocabulary types</h3>
+<ul>
+<li><code>ts::object_ref&lt;T&gt;</code> - a non-null pointer</li>
+<li><code>ts::index_t</code> and <code>ts::distance_t</code> - index and distance integer types with only a subset of operations available</li>
+<li><code>ts::array_ref&lt;T&gt;</code> - non-null reference to contigous storage</li>
+<li><code>ts::function_ref&lt;T&gt;</code> - non-null reference to a function</li>
+<li><code>ts::flag</code> - an improved flag type, better than a regular <code>bool</code> or <code>ts::boolean</code></li>
+<li><code>ts::flag_set&lt;Enum&gt;</code> - a set of flags</li>
+<li><code>ts::output_parameter&lt;T&gt;</code> - an improved output parameter compared to the naive lvalue reference</li>
+</ul>
+<h3 id="optional-variant">Optional &amp; Variant</h3>
+<ul>
+<li><code>ts::basic_optional&lt;StoragePolicy&gt;</code> - a generic, improved <code>std::optional</code> that is fully monadic, also <code>ts::optional&lt;T&gt;</code> and <code>ts::optional_ref&lt;T&gt;</code> implementations</li>
+<li><code>ts::compact_optional</code> implementation for no space overhead optionals</li>
+<li><code>ts::basic_variant&lt;VariantPolicy, Types...&gt;</code> - a generic, improved <code>std::variant</code>, also <code>ts::variant</code> and <code>ts::fallback_variant</code> implementations</li>
+</ul>
+<h3 id="type-safe-building-blocks">Type safe building blocks</h3>
+<ul>
+<li><code>ts::constrained_type&lt;T, Constraint, Verifier&gt;</code> - a wrapper over some type that verifies that a certain constraint is always fulfilled
+<ul>
+<li><code>ts::constraints::*</code> - predefined constraints like <code>non_null</code>, <code>non_empty</code>, …</li>
+<li><code>ts::tagged_type&lt;T, Constraint&gt;</code> - constrained type without checking, useful for tagging</li>
+<li><code>ts::bounded_type&lt;T&gt;</code> - constrained type that ensures a value in a certain interval</li>
+<li><code>ts::clamped_type&lt;T&gt;</code> - constrained type that clamps a value to ensure that it is in the certain interval</li>
+</ul></li>
+<li><code>ts::strong_typedef</code> - a generic facility to create strong typedefs more easily</li>
+<li><code>ts::deferred_construction&lt;T&gt;</code> - create an object without initializing it yet</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<p>Header-only, just copy the files in your project. You need to add the type_safe <code>include</code> directory to your include path as well as make <a href="https://github.com/foonathan/debug_assert">debug_assert.hpp</a> available. The repository is included as <code>git submodule</code>, simply run <code>git submodule update --init</code> and add <code>external/debug_assert</code> to the include path. You also need to enable C++11.</p>
+<p>Behavior can be customized with the following macros:</p>
+<ul>
+<li><code>TYPE_SAFE_ENABLE_ASSERTIONS</code> (default is <code>1</code>): whether or not assertions are enabled in this library</li>
+<li><code>TYPE_SAFE_ENABLE_WRAPPER</code> (default is <code>1</code>): whether or not the typedefs in <code>type_safe/types.hpp</code> use the wrapper classes</li>
+<li><code>TYPE_SAFE_ARITHMETIC_UB</code> (default is <code>1</code>): whether under/overflow in the better integer types is UB.</li>
+</ul>
+<p>If you’re using CMake there is the target <code>type_safe</code> available after you’ve called <code>add_subdirectory(path/to/type_safe)</code>. Simply link this target to your target and it will setup everything automagically. For convenience the macros are also mapped to CMake options of the same name.</p>
+<h2 id="documentation">Documentation</h2>
+<p>You can find the full documentation generated by <a href="https://github.com/standardese/standardese">standardese</a> <a href="https://foonathan.net/type_safe">here</a>.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>This project is greatly supported by my <a href="https://patreon.com/foonathan">patrons</a>. In particular thanks to the individual supporters:</p>
+<ul>
+<li>Reiner Eiteljörge</li>
+</ul>
+<p>And big thanks to the main contributors as well:</p>
+<ul>
+<li>Johel Ernesto Guerrero Peña <span class="citation" data-cites="johelegp">[@johelegp]</span>(https://github.com/johelegp)</li>
+</ul>
