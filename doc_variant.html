@@ -1,0 +1,551 @@
+<h1>Header file <code>variant.hpp</code><a id="variant.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;typename T&gt;
+    using <a href='doc_variant.html#ts::variant_type-T-'>variant_type</a> = <a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a>;
+    
+    template &lt;typename ... Ts&gt;
+    using <a href='doc_variant.html#ts::variant_types-Ts...-'>variant_types</a> = <a href='doc_tagged_union.html#ts::union_types-Ts...-'>union_types&lt;Ts...&gt;</a>;
+    
+    struct <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>;
+    
+    constexpr <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a> <a href='doc_variant.html#ts::nullvar'>nullvar</a>;
+    
+    template &lt;class VariantPolicy, typename HeadT, typename ... TailT&gt;
+    class <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>;
+    
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(constbasic_variant-VariantPolicy,Head,Types...-&,type_safe::nullvar_t)'>operator==</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+    
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator==</a>(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator!=</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator!=</a>(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&lt;</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&lt;</a>(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&lt;=</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&lt;=</a>(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&gt;</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&gt;</a>(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&gt;=</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&gt;=</a>(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constbasic_variant-VariantPolicy,Head,Types...-&,constT&)'>operator==</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+    
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator==</a>(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator!=</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator!=</a>(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&lt;</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&lt;</a>(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&lt;=</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&lt;=</a>(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&gt;</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&gt;</a>(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&gt;=</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+    bool <a href='doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&gt;=</a>(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator==(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator==</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator!=</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&lt;</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&lt;=</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&gt;</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+    bool <a href='doc_variant.html#ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)'>operator&gt;=</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+    
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename Func, typename ... Args&gt;
+    void <a href='doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)'>with</a>(<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; variant, Func&amp;&amp; func, Args&amp;&amp;... additional_args);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename Func, typename ... Args&gt;
+    void <a href='doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)'>with</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; variant, Func&amp;&amp; func, Args&amp;&amp;... additional_args);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename Func, typename ... Args&gt;
+    void <a href='doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)'>with</a>(<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp;&amp; variant, Func&amp;&amp; func, Args&amp;&amp;... additional_args);
+    template &lt;class VariantPolicy, typename Head, typename ... Types, typename Func, typename ... Args&gt;
+    void <a href='doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)'>with</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp;&amp; variant, Func&amp;&amp; func, Args&amp;&amp;... additional_args);
+    
+    template &lt;typename Fallback&gt;
+    class <a href='doc_variant.html#ts::fallback_variant_policy-Fallback-'>fallback_variant_policy</a>;
+    
+    template &lt;typename Fallback, typename ... OtherTypes&gt;
+    using <a href='doc_variant.html#ts::fallback_variant-Fallback,OtherTypes...-'>fallback_variant</a> = <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;fallback_variant_policy&lt;Fallback&gt;, Fallback, OtherTypes...&gt;</a>;
+    
+    class <a href='doc_variant.html#ts::optional_variant_policy'>optional_variant_policy</a>;
+    
+    using <a href='doc_variant.html#ts::rarely_empty_variant_policy'>rarely_empty_variant_policy</a> = 'hidden';
+    
+    using <a href='doc_variant.html#ts::never_empty_variant_policy'>never_empty_variant_policy</a> = 'hidden';
+    
+    template &lt;typename ... Types&gt;
+    using <a href='doc_variant.html#ts::variant-Types...-'>variant</a> = typename detail::select_variant_policy&lt;Types...&gt;::type;
+}</code></pre>
+<h2>Alias template <code>type_safe::variant_type</code> [variant]<a id="ts::variant_type-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+using variant_type = <a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a>;</code></pre>
+<p>Convenience alias for <a href="doc_tagged_union.html#ts::union_type-T-">ts::union_type</a>.</p>
+<h2>Alias template <code>type_safe::variant_types</code> [variant]<a id="ts::variant_types-Ts...-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename ... Ts&gt;
+using variant_types = <a href='doc_tagged_union.html#ts::union_types-Ts...-'>union_types&lt;Ts...&gt;</a>;</code></pre>
+<p>Convenience alias for <a href="doc_tagged_union.html#ts::union_types-Ts...-">ts::union_types</a>.</p>
+<h2>Struct <code>type_safe::nullvar_t</code> [variant]<a id="ts::nullvar_t"></a></h2>
+<pre><code class="language-cpp">struct nullvar_t
+{
+    constexpr <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>();
+};</code></pre>
+<p>Tag type to mark a <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> without a value.</p>
+<h2>Variable <code>type_safe::nullvar</code> [variant]<a id="ts::nullvar"></a></h2>
+<pre><code class="language-cpp">constexpr <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a> nullvar;</code></pre>
+<p>Tag object of type <a href="doc_variant.html#ts::nullvar_t">ts::nullvar_t</a>.</p>
+<h2>Class template <code>type_safe::basic_variant</code> [variant]<a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-"></a></h2>
+<pre><code class="language-cpp">template &lt;class VariantPolicy, typename HeadT, typename ... TailT&gt;
+class basic_variant
+{
+public:
+    using <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>types</a> = typename union_t::types;
+    
+    using <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>type_id</a> = typename union_t::type_id;
+    
+    using <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>allow_empty</a> = typename VariantPolicy::allow_empty;
+    
+    static constexpr <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>type_id</a> <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>invalid_type</a> = union_t::;
+    
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant()'>basic_variant</a>() noexcept;
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant()'>basic_variant</a>(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>) noexcept;
+    
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant(constbasic_variant-VariantPolicy,Head,Types...-&)'>basic_variant</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp;) = default;
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant(constbasic_variant-VariantPolicy,Head,Types...-&)'>basic_variant</a>(<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp;&amp;) = default;
+    
+    template &lt;typename T, typename ... Args&gt;
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant(variant_type-T-,Args&&...)'>basic_variant</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type, Args&amp;&amp;... args);
+    
+    template &lt;typename T, typename = detail::enable_variant_type&lt;union_t, T, T&amp;&amp;&gt;&gt;
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant(T&&)'>basic_variant</a>(T&amp;&amp; obj);
+    
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant(consttagged_union-HeadT,TailT...-&)'>basic_variant</a>(const <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;HeadT, TailT...&gt;</a>&amp; u);
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant(consttagged_union-HeadT,TailT...-&)'>basic_variant</a>(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;HeadT, TailT...&gt;</a>&amp;&amp; u);
+    
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::~basic_variant()'>~basic_variant</a>() noexcept = default;
+    
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::operator=(constbasic_variant-VariantPolicy,Head,Types...-&)'>operator=</a>(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp;) = default;
+    
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::operator=(basic_variant-VariantPolicy,Head,Types...-&&)'>operator=</a>(<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp;&amp;) = default;
+    
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::operator=(type_safe::nullvar_t)'>operator=</a>(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::operator=(T&&)'>operator=</a>(T&amp;&amp; obj);
+    
+    friend void <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::swap(basic_variant-VariantPolicy,Head,Types...-&,basic_variant-VariantPolicy,Head,Types...-&)'>swap</a>(<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; a, <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; b) noexcept('hidden');
+    
+    void <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::reset()'>reset</a>() noexcept;
+    
+    template &lt;typename T, typename Arg&gt;
+    void <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::emplace(variant_type-T-,Arg&&)'>emplace</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type, Arg&amp;&amp; arg);
+    
+    template &lt;typename T, typename ... Args&gt;
+    void <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::emplace(variant_type-T-,Args&&...)'>emplace</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type, Args&amp;&amp;... args);
+    
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>type_id</a> <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::type()const'>type</a>() const noexcept;
+    
+    bool <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::has_value()const'>has_value</a>() const noexcept;
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::has_value()const'>operator bool</a>() const noexcept;
+    bool <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::has_value()const'>has_value</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>variant_type&lt;nullvar_t&gt;</a>) const noexcept;
+    
+    template &lt;typename T&gt;
+    bool <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::has_value(variant_type-T-)const'>has_value</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) const noexcept;
+    
+    <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a> <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::value(variant_type-type_safe::nullvar_t-)const'>value</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>variant_type&lt;nullvar_t&gt;</a>) const noexcept;
+    
+    template &lt;typename T, typename = enable_valid&lt;T&gt;&gt;
+    T&amp; <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::value(variant_type-T-)&'>value</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) &amp; noexcept;
+    
+    template &lt;typename T&gt;
+    const T&amp; <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::value(variant_type-T-)const&'>value</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) const &amp; noexcept;
+    template &lt;typename T&gt;
+    T&amp;&amp; <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::value(variant_type-T-)const&'>value</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) &amp;&amp; noexcept;
+    template &lt;typename T&gt;
+    const T&amp;&amp; <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::value(variant_type-T-)const&'>value</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) const &amp;&amp; noexcept;
+    
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>optional_ref&lt;const nullvar_t&gt;</a> <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::optional_value(variant_type-type_safe::nullvar_t-)const'>optional_value</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>variant_type&lt;nullvar_t&gt;</a>) const noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a> <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::optional_value(variant_type-T-)&'>optional_value</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) &amp; noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;const T&gt;</a> <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::optional_value(variant_type-T-)const&'>optional_value</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) const &amp; noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref&lt;T&gt;</a> <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::optional_value(variant_type-T-)const&'>optional_value</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) &amp;&amp; noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref&lt;const T&gt;</a> <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::optional_value(variant_type-T-)const&'>optional_value</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) const &amp;&amp; noexcept;
+    
+    template &lt;typename T, typename U&gt;
+    T <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::value_or(variant_type-T-,U&&,typenamestd::enable_if-std::is_copy_constructible-T-::value&&std::is_convertible-U&&,T-::value,int-::type)const&'>value_or</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type, U&amp;&amp; other) const &amp;;
+    template &lt;typename T, typename U&gt;
+    T <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::value_or(variant_type-T-,U&&,typenamestd::enable_if-std::is_copy_constructible-T-::value&&std::is_convertible-U&&,T-::value,int-::type)const&'>value_or</a>(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type, U&amp;&amp; other) &amp;&amp;;
+    
+    template &lt;typename Functor, typename ... Args, typename Dummy = void, typename = typename std::enable_if&lt;traits::copy_constructible::value, Dummy&gt;::type&gt;
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a> <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::map(Functor&&,Args&&...)const&'>map</a>(Functor&amp;&amp; f, Args&amp;&amp;... args) const &amp;;
+    template &lt;typename Functor, typename ... Args, typename Dummy = void, typename = typename std::enable_if&lt;traits::move_constructible::value, Dummy&gt;::type&gt;
+    <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a> <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::map(Functor&&,Args&&...)const&'>map</a>(Functor&amp;&amp; f, Args&amp;&amp;... args) &amp;&amp;;
+};</code></pre>
+<p>An improved <code>union</code> storing at most one of the given types at a time (or possibly none).</p>
+<p>It is an improved version of <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::variant">std::variant</a>. A big problem with variant is implementing the operation that changes the type. It has to destroy the old value and then create the new one. But how to handle an exception when creating the new type? There are multiple ways of handling this, so it is outsourced in a policy. The variant policy is a class that must have the following members:</p>
+<ul>
+<li><code>allow_empty</code> - either <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::true_type">std::true_type</a> or <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::false_type">std::false_type</a>. If it is &quot;true&quot;, the variant can be put in the empty state explicitly.</li>
+<li><code>void change_value(variant_type&lt;T&gt;, tagged_union&lt;Types...&gt;&amp;, Args&amp;&amp;... args)</code> - changes the value and type. It will be called when the variant already contains an object of a different type. It must destroy the old type and create a new one with the given type and arguments.<code>void change_value(variant_type&lt;T&gt;, tagged_union&lt;Types...&gt;&amp;, Args&amp;&amp;... args)</code> - changes the value and type. It will be called when the variant already contains an object of a different type. It must destroy the old type and create a new one with the given type and arguments.</li>
+</ul>
+<h3>Default constructor <code>type_safe::basic_variant::basic_variant::basic_variant</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant()"></a></h3>
+<pre><code class="language-cpp">(1)  basic_variant() noexcept;
+
+(2)  basic_variant(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes the variant to the empty state.</p>
+<p><em>Notes</em>: This constructor only participates in overload resolution, if the policy allows an empty variant.</p>
+<h3>Copy constructor <code>type_safe::basic_variant::basic_variant</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant(constbasic_variant-VariantPolicy,Head,Types...-&)"></a></h3>
+<pre><code class="language-cpp">(1)  basic_variant(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp;) = default;
+
+(2)  basic_variant(<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp;&amp;) = default;</code></pre>
+<p>Copy (1)/move (2) constructs a variant.</p>
+<p><em>Effects</em>: If the other variant is not empty, it will call <a href="doc_tagged_union.html#ts::copy_union">ts::copy</a> (1) or <a href="doc_tagged_union.html#ts::copy_union">ts::move</a> (2). \throws Anything thrown by the copy (1)/move (2) constructor. \notes This constructor only participates in overload resolution, if all types are copy (1)/move (2) constructible.</p>
+<p><em>Notes</em>: The move constructor only moves the stored value, and does not make the other variant empty.</p>
+<h3>Function template <code>type_safe::basic_variant::basic_variant</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant(variant_type-T-,Args&&...)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T, typename ... Args&gt;
+basic_variant(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type, Args&amp;&amp;... args);</code></pre>
+<p>Initializes it containing a new object of the given type.</p>
+<p><em>Effects</em>: Creates it by calling <code>T</code>s constructor with the perfectly forwarded arguments.</p>
+<p><em>Throws</em>: Anything thrown by <code>T</code>s constructor.</p>
+<p><em>Notes</em>: This constructor does not participate in overload resolution, unless <code>T</code> is a valid type for the variant and constructible from the arguments.</p>
+<h3>Function template <code>type_safe::basic_variant::basic_variant</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant(T&&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T, typename = detail::enable_variant_type&lt;union_t, T, T&amp;&amp;&gt;&gt;
+basic_variant(T&amp;&amp; obj);</code></pre>
+<p>Initializes it with a copy of the given object.</p>
+<p><em>Effects</em>: Same as the type + argument constructor called with the decayed type of the argument and the object perfectly forwarded. \throws Anything thrown by <code>T</code>s copy/move constructor. \notes This constructor does not participate in overload resolution, unless <code>T</code> is a valid type for the variant and copy/move constructible. \param 1 \exclude</p>
+<h3>Constructor <code>type_safe::basic_variant::basic_variant</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::basic_variant(consttagged_union-HeadT,TailT...-&)"></a></h3>
+<pre><code class="language-cpp">(1)  basic_variant(const <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;HeadT, TailT...&gt;</a>&amp; u);
+
+(2)  basic_variant(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;HeadT, TailT...&gt;</a>&amp;&amp; u);</code></pre>
+<p>Initializes it from a <a href="doc_tagged_union.html#ts::tagged_union-Types...-">ts::tagged_union</a>.</p>
+<p><em>Effects</em>: Copies the currently stored type of the union into the variant by calling the copy (1)/move (2) constructor of the stored type.</p>
+<p><em>Throws</em>: Anything thrown by the selected copy (1)/move (2) constructor.</p>
+<p><em>Requires</em>: If the variant policy does not allow the empty state, the union must not be empty.</p>
+<h3>Destructor <code>type_safe::basic_variant::~basic_variant</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::~basic_variant()"></a></h3>
+<pre><code class="language-cpp">~basic_variant() noexcept = default;</code></pre>
+<p></p>
+<p><em>Effects</em>: Destroys the currently stored value, if there is any.</p>
+<h3>Assignment operator <code>type_safe::basic_variant::operator=</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::operator=(constbasic_variant-VariantPolicy,Head,Types...-&)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; operator=(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp;) = default;</code></pre>
+<p>Copy (1)/move (2) assigns a variant.</p>
+<p><em>Effects</em>: If the other variant is empty, makes this one empty as well. Otherwise let the other variant contains an object of type <code>T</code>. If this variant contains the same type and there is a copy (1)/move (2) assignment operator available, assigns the object to this object. Else forwards to the variant policy's <code>change_value()</code> function. \throws Anything thrown by either the copy (1)/move (2) assignment operator or copy (1)/move (2) constructor. If the assignment operator throws, the variant will contain the partially assigned object. If the constructor throws, the state depends on the variant policy. \notes This function does not participate in overload resolution, unless all types are copy (1)/move (2) constructible. \group copy_move_assign</p>
+<h3>Assignment operator <code>type_safe::basic_variant::operator=</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::operator=(basic_variant-VariantPolicy,Head,Types...-&&)"></a></h3>
+<pre><code class="language-cpp">(1)  <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; operator=(<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp;&amp;) = default;</code></pre>
+<p></p>
+<h3>Assignment operator <code>type_safe::basic_variant::operator=::operator=</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::operator=(type_safe::nullvar_t)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; operator=(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>) noexcept;</code></pre>
+<p>Alias for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-::reset()">reset()</a>.</p>
+<h3>Assignment operator <code>type_safe::basic_variant::operator=</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::operator=(T&&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; operator=(T&amp;&amp; obj);</code></pre>
+<p>Same as the single argument <code>emplace()</code>.</p>
+<p><em>Effects</em>: Changes the value to a copy of <code>obj</code>.</p>
+<p><em>Throws</em>: Anything thrown by <code>T</code>s copy/move constructor.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution, unless <code>T</code> is a valid type for the variant and copy/move constructible.</p>
+<h3>Function <code>type_safe::swap</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::swap(basic_variant-VariantPolicy,Head,Types...-&,basic_variant-VariantPolicy,Head,Types...-&)"></a></h3>
+<pre><code class="language-cpp">friend void swap(<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; a, <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a>&amp; b) noexcept('hidden');</code></pre>
+<p>Swaps two variants.</p>
+<p><em>Effects</em>: There are four cases:</p>
+<ul>
+<li>Both variants are empty. Then the function has no effect.</li>
+<li>Both variants contain the same type, <code>T</code>. Then it calls swap on the stored type.</li>
+<li>Both variants contain a type, but different types. Then it swaps the variant by move constructing the objects from one type to the other, using the variant policy.</li>
+<li>Only one variant contains an object. Then it moves the value to the empty variant, and destroys it in the non-empty variant.</li>
+</ul>
+<p><em>Effects</em>: In either case, it will only call the swap() function or the move constructor.</p>
+<p><em>Throws</em>: Anything thrown by the swap function, in which case both variants contain the partially swapped values, or the mvoe constructor, in which case the exact behavior depends on the variant policy.</p>
+<h3>Function template <code>type_safe::basic_variant::reset::reset</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::reset()"></a></h3>
+<pre><code class="language-cpp">void reset() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Destroys the stored value in the variant, if any.</p>
+<p><em>Notes</em>: This function only participate in overload resolution, if the variant policy allows the empty state.</p>
+<h3>Function template <code>type_safe::basic_variant::emplace</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::emplace(variant_type-T-,Arg&&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T, typename Arg&gt;
+void emplace(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type, Arg&amp;&amp; arg);</code></pre>
+<p>Changes the value to a new object of the given type.</p>
+<p><em>Effects</em>: If the variant contains an object of the same type, assigns the argument to it. Otherwise behaves as the other emplace version.</p>
+<p><em>Throws</em>: Anything thrown by the chosen assignment operator or the other <code>emplace()</code>. If the assignment operator throws, the variant contains a partially assigned object. Otherwise it depends on the variant policy.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution, unless <code>T</code> is a valid type for the variant and assignable from the argument without creating an additional temporary.</p>
+<h3>Function template <code>type_safe::basic_variant::emplace</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::emplace(variant_type-T-,Args&&...)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T, typename ... Args&gt;
+void emplace(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type, Args&amp;&amp;... args);</code></pre>
+<p>Changes the value to a new object of given type.</p>
+<p><em>Effects</em>: If variant is empty, creates the object directly in place by perfectly forwarding the arguments. Otherwise it forwards to the variant policy's <code>change_value()</code> function.</p>
+<p><em>Throws</em>: Anything thrown by <code>T</code>s constructor or possibly move constructor. If the variant was empty before, it is still empty afterwards. Otherwise the state depends on the policy.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution, unless <code>T</code> is a valid type for the variant and constructible from the arguments.</p>
+<h3>Function <code>type_safe::basic_variant::type</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::type()const"></a></h3>
+<pre><code class="language-cpp"><a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>type_id</a> type() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The type id representing the type of the value currently stored in the variant.</p>
+<p><em>Notes</em>: If it does not have a value stored, returns <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">invalid_type</a>.</p>
+<h3>Function <code>type_safe::basic_variant::has_value</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::has_value()const"></a></h3>
+<pre><code class="language-cpp">(1)  bool has_value() const noexcept;
+
+(2)  operator bool() const noexcept;
+
+(3)  bool has_value(<a href='doc_tagged_union.html#ts::union_type-T-'>variant_type&lt;nullvar_t&gt;</a>) const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: <code>true</code> if the variant currently contains a value, <code>false</code> otherwise.</p>
+<p><em>Notes</em>: Depending on the variant policy, it can be guaranteed to return <code>true</code> all the time.</p>
+<h3>Function template <code>type_safe::basic_variant::has_value</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::has_value(variant_type-T-)const"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+bool has_value(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: <code>true</code> if the variant currently stores an object of type <code>T</code>, <code>false</code> otherwise.</p>
+<p><em>Notes</em>: <code>T</code> must not necessarily be a type that can be stored in the variant.</p>
+<h3>Function <code>type_safe::basic_variant::value</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::value(variant_type-type_safe::nullvar_t-)const"></a></h3>
+<pre><code class="language-cpp"><a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a> value(<a href='doc_tagged_union.html#ts::union_type-T-'>variant_type&lt;nullvar_t&gt;</a>) const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A copy of <a href="doc_variant.html#ts::nullvar">ts::nullvar</a>.</p>
+<p><em>Requires</em>: The variant must be empty.</p>
+<h3>Function template <code>type_safe::basic_variant::value</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::value(variant_type-T-)&"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T, typename = enable_valid&lt;T&gt;&gt;
+T&amp; value(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) &amp; noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A (<code>const</code>) lvalue (1, 2)/rvalue (3, 4) reference to the stored object of the given type. \requires The variant must currently store an object of the given type, i.e. <code>has_value(type)</code> must return <code>true</code>. \group value \param 1 \exclude</p>
+<h3>Function template <code>type_safe::basic_variant::value</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::value(variant_type-T-)const&"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     const T&amp; value(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) const &amp; noexcept;
+
+(2)  template &lt;typename T&gt;
+     T&amp;&amp; value(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) &amp;&amp; noexcept;
+
+(3)  template &lt;typename T&gt;
+     const T&amp;&amp; value(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) const &amp;&amp; noexcept;</code></pre>
+<p></p>
+<h3>Function <code>type_safe::basic_variant::optional_value</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::optional_value(variant_type-type_safe::nullvar_t-)const"></a></h3>
+<pre><code class="language-cpp"><a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>optional_ref&lt;const nullvar_t&gt;</a> optional_value(<a href='doc_tagged_union.html#ts::union_type-T-'>variant_type&lt;nullvar_t&gt;</a>) const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref</a> to <a href="doc_variant.html#ts::nullvar">ts::nullvar</a>. If the variant is not empty, returns a null reference.</p>
+<h3>Function template <code>type_safe::basic_variant::optional_value</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::optional_value(variant_type-T-)&"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a> optional_value(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) &amp; noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A (<code>const</code>) <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref</a> (1, 2)/<a href="doc_optional_ref.html#ts::optional_xvalue_ref-T-">ts::optional_xvalue_ref</a> to the stored value of given type. If it stores a different type, returns a null reference. \group optional_value</p>
+<h3>Function template <code>type_safe::basic_variant::optional_value</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::optional_value(variant_type-T-)const&"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;const T&gt;</a> optional_value(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) const &amp; noexcept;
+
+(2)  template &lt;typename T&gt;
+     <a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref&lt;T&gt;</a> optional_value(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) &amp;&amp; noexcept;
+
+(3)  template &lt;typename T&gt;
+     <a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref&lt;const T&gt;</a> optional_value(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type) const &amp;&amp; noexcept;</code></pre>
+<p></p>
+<h3>Function template <code>type_safe::basic_variant::value_or</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::value_or(variant_type-T-,U&&,typenamestd::enable_if-std::is_copy_constructible-T-::value&&std::is_convertible-U&&,T-::value,int-::type)const&"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T, typename U&gt;
+     T value_or(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type, U&amp;&amp; other) const &amp;;
+
+(2)  template &lt;typename T, typename U&gt;
+     T value_or(<a href='doc_variant.html#ts::variant_type-T-'>variant_type&lt;T&gt;</a> type, U&amp;&amp; other) &amp;&amp;;</code></pre>
+<p></p>
+<p><em>Returns</em>: If the variant currently stores an object of type <code>T</code>, returns a copy of that by copy (1)/move (2) constructing. Otherwise returns <code>other</code> converted to <code>T</code>.</p>
+<p><em>Throws</em>: Anything thrown by <code>T</code>s copy (1)/move (2) constructor or the converting constructor.</p>
+<p><em>Notes</em>: <code>T</code> must not necessarily be a type that can be stored in the variant.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution, unless <code>T</code> is copy (1)/move (2) constructible and the fallback convertible to <code>T</code>.</p>
+<h3>Function template <code>type_safe::basic_variant::map</code><a id="ts::basic_variant-VariantPolicy,HeadT,TailT...-::map(Functor&&,Args&&...)const&"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename Functor, typename ... Args, typename Dummy = void, typename = typename std::enable_if&lt;traits::copy_constructible::value, Dummy&gt;::type&gt;
+     <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a> map(Functor&amp;&amp; f, Args&amp;&amp;... args) const &amp;;
+
+(2)  template &lt;typename Functor, typename ... Args, typename Dummy = void, typename = typename std::enable_if&lt;traits::move_constructible::value, Dummy&gt;::type&gt;
+     <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant</a> map(Functor&amp;&amp; f, Args&amp;&amp;... args) &amp;&amp;;</code></pre>
+<p>Maps a variant with a function.</p>
+<p><em>Effects</em>: If the variant is not empty, calls the function using either <code>std::forward&lt;Functor&gt;(f)(current-value, std::forward&lt;Args&gt;(args)...)</code> or member call syntax <code>(current-value.*std::forward&lt;Functor&gt;(f))(std::forward&lt;Args&gt;(args)...)</code>. If those two expressions are both ill-formed, does nothing. \returns A new variant of the same type. It contains nothing, if <code>*this</code> contains nothing. Otherwise, if the function was called, it contains the result of the function. Otherwise, it is a copy of the current variant. \throws Anything thrown by the function or copy/move constructor, in which case the variant will be left unchanged, unless the object was already moved into the function and modified there.</p>
+<p><em>Requires</em>: The result of the function - if it is called - can be stored in the variant.</p>
+<p><em>Notes</em>: (1) will use the copy constructor, (2) will use the move constructor. The function does not participate in overload resolution, if copy (1)/move (2) constructors are not available for all types.</p>
+<hr />
+<h2>Comparison operator <code>type_safe::operator==</code><a id="ts::operator==(constbasic_variant-VariantPolicy,Head,Types...-&,type_safe::nullvar_t)"></a></h2>
+<pre><code class="language-cpp">template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+bool operator==(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);</code></pre>
+<p>Compares a <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> with <a href="doc_variant.html#ts::nullvar">ts::nullvar</a>.</p>
+<p>A variant compares equal to <code>nullvar</code>, when it does not have a value. A variant compares never less to <code>nullvar</code>, <code>nullvar</code> compares less only if the variant has a value. The other comparisons behave accordingly. \group variant_comp_null \module variant</p>
+<h2>Comparison operator <code>type_safe::operator==</code><a id="ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator==(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(2)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator!=(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+
+(3)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator!=(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(4)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&lt;(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+
+(5)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&lt;(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(6)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&lt;=(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+
+(7)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&lt;=(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(8)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&gt;(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+
+(9)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&gt;(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(10)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&gt;=(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, <a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>);
+
+(11)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&gt;=(<a href='doc_variant.html#ts::nullvar_t'>nullvar_t</a>, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);</code></pre>
+<p></p>
+<h2>Comparison operator <code>type_safe::operator==</code><a id="ts::operator==(constbasic_variant-VariantPolicy,Head,Types...-&,constT&)"></a></h2>
+<pre><code class="language-cpp">template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+bool operator==(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);</code></pre>
+<p>Compares a <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> with a value.</p>
+<p>A variant compares equal to a value, if it contains an object of the same type and the object compares equal. A variant compares less to a value, if - when it has a different type - the type id compares less than the type id of the value, or - when it has the same type - the object compares less to the value. The other comparisons behave accordingly. \notes The value must not necessarily have a type that can be stored in the variant. \group variant_comp_t \module variant</p>
+<h2>Comparison operator <code>type_safe::operator==</code><a id="ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator==(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(2)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator!=(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+
+(3)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator!=(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(4)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator&lt;(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+
+(5)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator&lt;(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(6)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator&lt;=(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+
+(7)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator&lt;=(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(8)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator&gt;(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+
+(9)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator&gt;(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(10)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator&gt;=(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const T&amp; rhs);
+
+(11)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename T&gt;
+     bool operator&gt;=(const T&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);</code></pre>
+<p></p>
+<h2>Comparison operator <code>type_safe::operator==</code><a id="ts::operator==(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+bool operator==(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);</code></pre>
+<p>Compares two <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a>s.</p>
+<p>They compare equal if both store the same type (or none) and the stored object compares equal. A variant is less than another if they store mismatched types and the type id of the first is less than the other, or if they store the same type and the stored object compares less. The other comparisons behave accordingly. \module variant \group variant_comp</p>
+<h2>Comparison operator <code>type_safe::operator!=</code><a id="ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator!=(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(2)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&lt;(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(3)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&lt;=(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(4)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&gt;(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);
+
+(5)  template &lt;class VariantPolicy, typename Head, typename ... Types&gt;
+     bool operator&gt;=(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; lhs, const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; rhs);</code></pre>
+<p></p>
+<h2>Function template <code>type_safe::with</code> [variant]<a id="ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename Func, typename ... Args&gt;
+     void with(<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; variant, Func&amp;&amp; func, Args&amp;&amp;... additional_args);
+
+(2)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename Func, typename ... Args&gt;
+     void with(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp; variant, Func&amp;&amp; func, Args&amp;&amp;... additional_args);
+
+(3)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename Func, typename ... Args&gt;
+     void with(<a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp;&amp; variant, Func&amp;&amp; func, Args&amp;&amp;... additional_args);
+
+(4)  template &lt;class VariantPolicy, typename Head, typename ... Types, typename Func, typename ... Args&gt;
+     void with(const <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;VariantPolicy, Head, Types...&gt;</a>&amp;&amp; variant, Func&amp;&amp; func, Args&amp;&amp;... additional_args);</code></pre>
+<p></p>
+<p><em>Effects</em>: If the variant is empty, does nothing. Otherwise let the variant contain an object of type <code>T</code>. If the functor is callable for the <code>T</code>, calls its <code>operator()</code> passing it the stored object. Else does nothing.</p>
+<h2>Class template <code>type_safe::fallback_variant_policy</code> [variant]<a id="ts::fallback_variant_policy-Fallback-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Fallback&gt;
+class fallback_variant_policy
+{
+public:
+    using <a href='doc_variant.html#ts::fallback_variant_policy-Fallback-'>allow_empty</a> = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::false_type'>std::false_type</a>;
+    
+    template &lt;typename T, typename ... Types, typename ... Args&gt;
+    static void <a href='doc_variant.html#ts::fallback_variant_policy-Fallback-'>change_value</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type, <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; storage, Args&amp;&amp;... args);
+};</code></pre>
+<p>A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that uses a fallback type.</p>
+<p>When changing the type of the variant throws an exception, the variant will create an object of the fallback type instead. The variant will never be empty.</p>
+<p><em>Requires</em>: <code>Fallback</code> must be nothrow default constructible and a type that can be stored in the variant.</p>
+<h2>Alias template <code>type_safe::fallback_variant</code> [variant]<a id="ts::fallback_variant-Fallback,OtherTypes...-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Fallback, typename ... OtherTypes&gt;
+using fallback_variant = <a href='doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-'>basic_variant&lt;fallback_variant_policy&lt;Fallback&gt;, Fallback, OtherTypes...&gt;</a>;</code></pre>
+<p>A <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> using the <a href="doc_variant.html#ts::fallback_variant_policy-Fallback-">ts::fallback_variant_policy</a>.</p>
+<p>This is a variant that is never empty, where exceptions on changing the type leaves it with a default-constructed object of the <code>Fallback</code> type.</p>
+<p><em>Requires</em>: <code>Fallback</code> must be nothrow default constructible.</p>
+<h2>Class <code>type_safe::optional_variant_policy</code> [variant]<a id="ts::optional_variant_policy"></a></h2>
+<pre><code class="language-cpp">class optional_variant_policy
+{
+public:
+    using <a href='doc_variant.html#ts::optional_variant_policy'>allow_empty</a> = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::true_type'>std::true_type</a>;
+    
+    template &lt;typename T, typename ... Types, typename ... Args&gt;
+    static void <a href='doc_variant.html#ts::optional_variant_policy'>change_value</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type, <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; storage, Args&amp;&amp;... args);
+};</code></pre>
+<p>A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that creates a variant with explicit empty state.</p>
+<p>It allows an empty variant explicitly. When changing the type of the variant throws an exception, the variant will be left in that empty state.</p>
+<h2>Type alias <code>type_safe::rarely_empty_variant_policy</code> [variant]<a id="ts::rarely_empty_variant_policy"></a></h2>
+<pre><code class="language-cpp">using rarely_empty_variant_policy = 'hidden';</code></pre>
+<p>A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that creates a variant which is rarely empty.</p>
+<p>When changing the type of the variant, it will use a the move constructor with a temporary. If the move constructor throws, the variant will be left in the empty state. Putting it into the empty state explicitly is not allowed.</p>
+<h2>Type alias <code>type_safe::never_empty_variant_policy</code> [variant]<a id="ts::never_empty_variant_policy"></a></h2>
+<pre><code class="language-cpp">using never_empty_variant_policy = 'hidden';</code></pre>
+<p>A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that creates a variant which is never empty.</p>
+<p>Similar to <a href="doc_variant.html#ts::rarely_empty_variant_policy">ts::rarely_empty_variant_policy</a> but when the move constructor throws, it calls <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::terminate()">std::terminate()</a>.</p>
+<h2>Alias template <code>type_safe::variant</code> [variant]<a id="ts::variant-Types...-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename ... Types&gt;
+using variant = typename detail::select_variant_policy&lt;Types...&gt;::type;</code></pre>
+<p>A <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> with the recommended default semantics.</p>
+<p>If the first type is <a href="doc_variant.html#ts::nullvar_t">ts::nullvar_t</a> it will use the <a href="doc_variant.html#ts::optional_variant_policy">ts::optional_variant_policy</a>, which explicitly allows the empty state. Otherwise it will use the <a href="doc_variant.html#ts::rarely_empty_variant_policy">ts::rarely_empty_variant_policy</a> where it tries to avoid the empty state as good as possible.</p>
+<p><em>Notes</em>: If you pass <a href="doc_variant.html#ts::nullvar_t">ts::nullvar_t</a> as the first type, it is not actually one of the types that can be stored in the variant, but a tag to enable the empty state.</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

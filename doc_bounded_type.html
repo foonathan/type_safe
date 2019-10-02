@@ -1,0 +1,404 @@
+<h1>Header file <code>bounded_type.hpp</code><a id="bounded_type.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    namespace <a href='doc_bounded_type.html#bounded_type.hpp'>constraints</a>
+    {
+        struct <a href='doc_bounded_type.html#ts::constraints::dynamic_bound'>dynamic_bound</a>;
+        
+        template &lt;typename T, typename Bound = dynamic_bound&gt;
+        class <a href='doc_bounded_type.html#ts::constraints::less-T,Bound-'>less</a>;
+        
+        template &lt;typename T, typename Bound = dynamic_bound&gt;
+        class <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-'>less_equal</a>;
+        
+        template &lt;typename T, typename Bound = dynamic_bound&gt;
+        class <a href='doc_bounded_type.html#ts::constraints::greater-T,Bound-'>greater</a>;
+        
+        template &lt;typename T, typename Bound = dynamic_bound&gt;
+        class <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-'>greater_equal</a>;
+        
+        //=== <a href='doc_bounded_type.html#ts::constraints::open'>Open/Closed Tags</a> ===//
+        constexpr bool <a href='doc_bounded_type.html#ts::constraints::open'>open</a> = false;
+        constexpr bool <a href='doc_bounded_type.html#ts::constraints::open'>closed</a> = true;
+        
+        template &lt;typename T, bool LowerInclusive, bool UpperInclusive, typename LowerBound = dynamic_bound, typename UpperBound = dynamic_bound&gt;
+        class <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-'>bounded</a>;
+        
+        template &lt;typename T, typename LowerBound = dynamic_bound, typename UpperBound = dynamic_bound&gt;
+        using <a href='doc_bounded_type.html#ts::constraints::open_interval-T,LowerBound,UpperBound-'>open_interval</a> = <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-'>bounded&lt;T, open, open, LowerBound, UpperBound&gt;</a>;
+        
+        template &lt;typename T, typename LowerBound = dynamic_bound, typename UpperBound = dynamic_bound&gt;
+        using <a href='doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-'>closed_interval</a> = <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-'>bounded&lt;T, closed, closed, LowerBound, UpperBound&gt;</a>;
+    }
+    
+    template &lt;typename T, bool LowerInclusive, bool UpperInclusive, typename LowerBound = constraints::dynamic_bound, typename UpperBound = constraints::dynamic_bound, typename Verifier = assertion_verifier&gt;
+    using <a href='doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-'>bounded_type</a> = constrained_type&lt;T, constraints::bounded&lt;T, LowerInclusive, UpperInclusive, LowerBound, UpperBound&gt;, Verifier&gt;;
+    
+    inline namespace <a href='doc_bounded_type.html#bounded_type.hpp'>literals</a>
+    {
+        template &lt;char ... Digits&gt;
+        constexpr 'hidden' <a href='doc_bounded_type.html#ts::literals::operator%22%22_bound()'>operator""_bound</a>();
+        template &lt;char ... Digits&gt;
+        constexpr 'hidden' <a href='doc_bounded_type.html#ts::literals::operator%22%22_bound()'>operator""_boundu</a>();
+    }
+    
+    template &lt;typename T, typename U1, typename U2&gt;
+    constexpr 'hidden' <a href='doc_bounded_type.html#ts::make_bounded(T&&,U1&&,U2&&)'>make_bounded</a>(T&amp;&amp; value, U1&amp;&amp; lower, U2&amp;&amp; upper);
+    
+    template &lt;typename T, typename U1, typename U2&gt;
+    constexpr 'hidden' <a href='doc_bounded_type.html#ts::sanitize_bounded(T&&,U1&&,U2&&)'>sanitize_bounded</a>(T&amp;&amp; value, U1&amp;&amp; lower, U2&amp;&amp; upper);
+    
+    template &lt;typename T, typename U1, typename U2&gt;
+    constexpr 'hidden' <a href='doc_bounded_type.html#ts::make_bounded_exclusive(T&&,U1&&,U2&&)'>make_bounded_exclusive</a>(T&amp;&amp; value, U1&amp;&amp; lower, U2&amp;&amp; upper);
+    
+    template &lt;typename T, typename U1, typename U2&gt;
+    constexpr 'hidden' <a href='doc_bounded_type.html#ts::sanitize_bounded_exclusive(T&&,U1&&,U2&&)'>sanitize_bounded_exclusive</a>(T&amp;&amp; value, U1&amp;&amp; lower, U2&amp;&amp; upper);
+    
+    //=== <a href='doc_bounded_type.html#ts::clamp(constconstraints::closed_interval-T,LowerBound,UpperBound-&,U&&)'>clamped_type</a> ===//
+    template &lt;typename T, typename LowerBound, typename UpperBound, typename U&gt;
+    constexpr typename std::decay&lt;U&gt;::type <a href='doc_bounded_type.html#ts::clamp(constconstraints::closed_interval-T,LowerBound,UpperBound-&,U&&)'>clamp</a>(const <a href='doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-'>constraints::closed_interval&lt;T, LowerBound, UpperBound&gt;</a>&amp; interval, U&amp;&amp; val);
+    
+    struct <a href='doc_bounded_type.html#ts::clamping_verifier'>clamping_verifier</a>;
+    
+    template &lt;typename T, typename LowerBound = constraints::dynamic_bound, typename UpperBound = constraints::dynamic_bound&gt;
+    using <a href='doc_bounded_type.html#ts::clamped_type-T,LowerBound,UpperBound-'>clamped_type</a> = constrained_type&lt;T, constraints::closed_interval&lt;T, LowerBound, UpperBound&gt;, clamping_verifier&gt;;
+    
+    template &lt;typename T, typename U1, typename U2&gt;
+    constexpr 'hidden' <a href='doc_bounded_type.html#ts::make_clamped(T&&,U1&&,U2&&)'>make_clamped</a>(T&amp;&amp; value, U1&amp;&amp; lower, U2&amp;&amp; upper);
+}</code></pre>
+<h2>Struct <code>type_safe::constraints::dynamic_bound</code><a id="ts::constraints::dynamic_bound"></a></h2>
+<pre><code class="language-cpp">struct dynamic_bound
+{
+};</code></pre>
+<p>Tag type to enable a dynamic bound.</p>
+<h2>Class template <code>type_safe::constraints::less</code><a id="ts::constraints::less-T,Bound-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename Bound = dynamic_bound&gt;
+class less
+{
+public:
+    using <a href='doc_bounded_type.html#ts::constraints::less-T,Bound-'>value_type</a> = decltype(base::value);
+    
+    using <a href='doc_bounded_type.html#ts::constraints::less-T,Bound-'>bound_type</a> = Bound;
+    
+    constexpr <a href='doc_bounded_type.html#ts::constraints::less-T,Bound-::less(Bound)'>less</a>(Bound = {});
+    
+    constexpr <a href='doc_bounded_type.html#ts::constraints::less-T,Bound-::less(constT&)'>less</a>(const T&amp; bound);
+    constexpr <a href='doc_bounded_type.html#ts::constraints::less-T,Bound-::less(constT&)'>less</a>(T&amp;&amp; bound) noexcept('hidden');
+    
+    template &lt;typename U&gt;
+    constexpr bool <a href='doc_bounded_type.html#ts::constraints::less-T,Bound-::operator()(constU&)const'>operator()</a>(const U&amp; u) const;
+    
+    constexpr const <a href='doc_bounded_type.html#ts::constraints::less-T,Bound-'>value_type</a>&amp; <a href='doc_bounded_type.html#ts::constraints::less-T,Bound-::get_bound()const'>get_bound</a>() const noexcept;
+};</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value is valid if it is less than some given value.</p>
+<h3>Default constructor <code>type_safe::constraints::less::less::less</code><a id="ts::constraints::less-T,Bound-::less(Bound)"></a></h3>
+<pre><code class="language-cpp">constexpr less(Bound = {});</code></pre>
+<p>Initializes it with a static bound.</p>
+<p><em>Effects</em>: Does nothing, a static bound is not stored. It will use <code>Bound::value</code> as the bound.</p>
+<p><em>Notes</em>: This constructor only participates in overload resolution, if a static bound is used, i.e. <code>Bound</code> is not <a href="doc_bounded_type.html#ts::constraints::dynamic_bound">ts::constraints::dynamic_bound</a>.</p>
+<h3>Constructor <code>type_safe::constraints::less::less::less</code><a id="ts::constraints::less-T,Bound-::less(constT&)"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr less(const T&amp; bound);
+
+(2)  constexpr less(T&amp;&amp; bound) noexcept('hidden');</code></pre>
+<p>Initializes it with a dynamic bound.</p>
+<p><em>Effects</em>: Copies (1)/moves (2) the object and uses that as bound.</p>
+<p><em>Notes</em>: These constructors only participate in overload resolution, if a dynamic bound is used, i.e. <code>Bound</code> is <a href="doc_bounded_type.html#ts::constraints::dynamic_bound">ts::constraints::dynamic_bound</a>.</p>
+<h3>Function call operator <code>type_safe::constraints::less::operator()</code><a id="ts::constraints::less-T,Bound-::operator()(constU&)const"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U&gt;
+constexpr bool operator()(const U&amp; u) const;</code></pre>
+<p>Does the actual bounds check.</p>
+<h3>Function <code>type_safe::constraints::less::get_bound</code><a id="ts::constraints::less-T,Bound-::get_bound()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_bounded_type.html#ts::constraints::less-T,Bound-'>value_type</a>&amp; get_bound() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The bound.</p>
+<hr />
+<h2>Class template <code>type_safe::constraints::less_equal</code><a id="ts::constraints::less_equal-T,Bound-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename Bound = dynamic_bound&gt;
+class less_equal
+{
+public:
+    using <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-'>value_type</a> = decltype(base::value);
+    
+    using <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-'>bound_type</a> = Bound;
+    
+    constexpr <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-::less_equal(Bound)'>less_equal</a>(Bound = {});
+    
+    constexpr <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-::less_equal(constT&)'>less_equal</a>(const T&amp; bound);
+    constexpr <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-::less_equal(constT&)'>less_equal</a>(T&amp;&amp; bound) noexcept('hidden');
+    
+    template &lt;typename U&gt;
+    constexpr bool <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-::operator()(constU&)const'>operator()</a>(const U&amp; u) const;
+    
+    constexpr const <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-'>value_type</a>&amp; <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-::get_bound()const'>get_bound</a>() const noexcept;
+};</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value is valid if it is less than or equal to some given value.</p>
+<h3>Default constructor <code>type_safe::constraints::less_equal::less_equal::less_equal</code><a id="ts::constraints::less_equal-T,Bound-::less_equal(Bound)"></a></h3>
+<pre><code class="language-cpp">constexpr less_equal(Bound = {});</code></pre>
+<p>Initializes it with a static bound.</p>
+<p><em>Effects</em>: Does nothing, a static bound is not stored. It will use <code>Bound::value</code> as the bound.</p>
+<p><em>Notes</em>: This constructor only participates in overload resolution, if a static bound is used, i.e. <code>Bound</code> is not <a href="doc_bounded_type.html#ts::constraints::dynamic_bound">ts::constraints::dynamic_bound</a>.</p>
+<h3>Constructor <code>type_safe::constraints::less_equal::less_equal::less_equal</code><a id="ts::constraints::less_equal-T,Bound-::less_equal(constT&)"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr less_equal(const T&amp; bound);
+
+(2)  constexpr less_equal(T&amp;&amp; bound) noexcept('hidden');</code></pre>
+<p>Initializes it with a dynamic bound.</p>
+<p><em>Effects</em>: Copies (1)/moves (2) the object and uses that as bound.</p>
+<p><em>Notes</em>: These constructors only participate in overload resolution, if a dynamic bound is used, i.e. <code>Bound</code> is <a href="doc_bounded_type.html#ts::constraints::dynamic_bound">ts::constraints::dynamic_bound</a>.</p>
+<h3>Function call operator <code>type_safe::constraints::less_equal::operator()</code><a id="ts::constraints::less_equal-T,Bound-::operator()(constU&)const"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U&gt;
+constexpr bool operator()(const U&amp; u) const;</code></pre>
+<p>Does the actual bounds check.</p>
+<h3>Function <code>type_safe::constraints::less_equal::get_bound</code><a id="ts::constraints::less_equal-T,Bound-::get_bound()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-'>value_type</a>&amp; get_bound() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The bound.</p>
+<hr />
+<h2>Class template <code>type_safe::constraints::greater</code><a id="ts::constraints::greater-T,Bound-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename Bound = dynamic_bound&gt;
+class greater
+{
+public:
+    using <a href='doc_bounded_type.html#ts::constraints::greater-T,Bound-'>value_type</a> = decltype(base::value);
+    
+    using <a href='doc_bounded_type.html#ts::constraints::greater-T,Bound-'>bound_type</a> = Bound;
+    
+    constexpr <a href='doc_bounded_type.html#ts::constraints::greater-T,Bound-::greater(Bound)'>greater</a>(Bound = {});
+    
+    constexpr <a href='doc_bounded_type.html#ts::constraints::greater-T,Bound-::greater(constT&)'>greater</a>(const T&amp; bound);
+    constexpr <a href='doc_bounded_type.html#ts::constraints::greater-T,Bound-::greater(constT&)'>greater</a>(T&amp;&amp; bound) noexcept('hidden');
+    
+    template &lt;typename U&gt;
+    constexpr bool <a href='doc_bounded_type.html#ts::constraints::greater-T,Bound-::operator()(constU&)const'>operator()</a>(const U&amp; u) const;
+    
+    constexpr const <a href='doc_bounded_type.html#ts::constraints::greater-T,Bound-'>value_type</a>&amp; <a href='doc_bounded_type.html#ts::constraints::greater-T,Bound-::get_bound()const'>get_bound</a>() const noexcept;
+};</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value is valid if it is greater than some given value.</p>
+<h3>Default constructor <code>type_safe::constraints::greater::greater::greater</code><a id="ts::constraints::greater-T,Bound-::greater(Bound)"></a></h3>
+<pre><code class="language-cpp">constexpr greater(Bound = {});</code></pre>
+<p>Initializes it with a static bound.</p>
+<p><em>Effects</em>: Does nothing, a static bound is not stored. It will use <code>Bound::value</code> as the bound.</p>
+<p><em>Notes</em>: This constructor only participates in overload resolution, if a static bound is used, i.e. <code>Bound</code> is not <a href="doc_bounded_type.html#ts::constraints::dynamic_bound">ts::constraints::dynamic_bound</a>.</p>
+<h3>Constructor <code>type_safe::constraints::greater::greater::greater</code><a id="ts::constraints::greater-T,Bound-::greater(constT&)"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr greater(const T&amp; bound);
+
+(2)  constexpr greater(T&amp;&amp; bound) noexcept('hidden');</code></pre>
+<p>Initializes it with a dynamic bound.</p>
+<p><em>Effects</em>: Copies (1)/moves (2) the object and uses that as bound.</p>
+<p><em>Notes</em>: These constructors only participate in overload resolution, if a dynamic bound is used, i.e. <code>Bound</code> is <a href="doc_bounded_type.html#ts::constraints::dynamic_bound">ts::constraints::dynamic_bound</a>.</p>
+<h3>Function call operator <code>type_safe::constraints::greater::operator()</code><a id="ts::constraints::greater-T,Bound-::operator()(constU&)const"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U&gt;
+constexpr bool operator()(const U&amp; u) const;</code></pre>
+<p>Does the actual bounds check.</p>
+<h3>Function <code>type_safe::constraints::greater::get_bound</code><a id="ts::constraints::greater-T,Bound-::get_bound()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_bounded_type.html#ts::constraints::greater-T,Bound-'>value_type</a>&amp; get_bound() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The bound.</p>
+<hr />
+<h2>Class template <code>type_safe::constraints::greater_equal</code><a id="ts::constraints::greater_equal-T,Bound-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename Bound = dynamic_bound&gt;
+class greater_equal
+{
+public:
+    using <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-'>value_type</a> = decltype(base::value);
+    
+    using <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-'>bound_type</a> = Bound;
+    
+    constexpr <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-::greater_equal(Bound)'>greater_equal</a>(Bound = {});
+    
+    constexpr <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-::greater_equal(constT&)'>greater_equal</a>(const T&amp; bound);
+    constexpr <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-::greater_equal(constT&)'>greater_equal</a>(T&amp;&amp; bound) noexcept('hidden');
+    
+    template &lt;typename U&gt;
+    constexpr bool <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-::operator()(constU&)const'>operator()</a>(const U&amp; u) const;
+    
+    constexpr const <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-'>value_type</a>&amp; <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-::get_bound()const'>get_bound</a>() const noexcept;
+};</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value is valid if it is greater than or equal to some given value.</p>
+<h3>Default constructor <code>type_safe::constraints::greater_equal::greater_equal::greater_equal</code><a id="ts::constraints::greater_equal-T,Bound-::greater_equal(Bound)"></a></h3>
+<pre><code class="language-cpp">constexpr greater_equal(Bound = {});</code></pre>
+<p>Initializes it with a static bound.</p>
+<p><em>Effects</em>: Does nothing, a static bound is not stored. It will use <code>Bound::value</code> as the bound.</p>
+<p><em>Notes</em>: This constructor only participates in overload resolution, if a static bound is used, i.e. <code>Bound</code> is not <a href="doc_bounded_type.html#ts::constraints::dynamic_bound">ts::constraints::dynamic_bound</a>.</p>
+<h3>Constructor <code>type_safe::constraints::greater_equal::greater_equal::greater_equal</code><a id="ts::constraints::greater_equal-T,Bound-::greater_equal(constT&)"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr greater_equal(const T&amp; bound);
+
+(2)  constexpr greater_equal(T&amp;&amp; bound) noexcept('hidden');</code></pre>
+<p>Initializes it with a dynamic bound.</p>
+<p><em>Effects</em>: Copies (1)/moves (2) the object and uses that as bound.</p>
+<p><em>Notes</em>: These constructors only participate in overload resolution, if a dynamic bound is used, i.e. <code>Bound</code> is <a href="doc_bounded_type.html#ts::constraints::dynamic_bound">ts::constraints::dynamic_bound</a>.</p>
+<h3>Function call operator <code>type_safe::constraints::greater_equal::operator()</code><a id="ts::constraints::greater_equal-T,Bound-::operator()(constU&)const"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U&gt;
+constexpr bool operator()(const U&amp; u) const;</code></pre>
+<p>Does the actual bounds check.</p>
+<h3>Function <code>type_safe::constraints::greater_equal::get_bound</code><a id="ts::constraints::greater_equal-T,Bound-::get_bound()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-'>value_type</a>&amp; get_bound() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The bound.</p>
+<hr />
+<h2>Open/Closed Tags<a id="ts::constraints::open"></a></h2>
+<pre><code class="language-cpp">(1)  constexpr bool open = false;
+
+(2)  constexpr bool closed = true;</code></pre>
+<p>Tag objects to specify bounds for <a href="doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-">ts::constraints::bounded</a>.</p>
+<h2>Class template <code>type_safe::constraints::bounded</code><a id="ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, bool LowerInclusive, bool UpperInclusive, typename LowerBound = dynamic_bound, typename UpperBound = dynamic_bound&gt;
+class bounded
+{
+public:
+    using <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-'>value_type</a> = T;
+    
+    using <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-'>lower_bound</a> = LowerBound;
+    
+    using <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-'>upper_bound</a> = UpperBound;
+    
+    static constexpr auto <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-'>lower_inclusive</a> = LowerInclusive;
+    
+    static constexpr auto <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-'>upper_inclusive</a> = UpperInclusive;
+    
+    constexpr <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-::bounded()'>bounded</a>();
+    
+    template &lt;typename U1, typename U2&gt;
+    constexpr <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-::bounded(U1&&,U2&&,decltype(lower_type(std::forward-U1-(lower)),0),decltype(upper_type(std::forward-U2-(upper)),0))'>bounded</a>(U1&amp;&amp; lower, U2&amp;&amp; upper, decltype(lower_type(std::forward&lt;U1&gt;(lower)), 0) = 0, decltype(upper_type(std::forward&lt;U2&gt;(upper)), 0) = 0);
+    
+    template &lt;typename U&gt;
+    constexpr bool <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-::operator()(constU&)const'>operator()</a>(const U&amp; u) const;
+    
+    constexpr const typename lower_type::value_type&amp; <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-::get_lower_bound()const'>get_lower_bound</a>() const noexcept;
+    
+    constexpr const typename upper_type::value_type&amp; <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-::get_upper_bound()const'>get_upper_bound</a>() const noexcept;
+};</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value is valid if it is between two given bounds, <code>LowerInclusive</code>/<code>UpperInclusive</code> control whether the lower/upper bound itself is valid too.</p>
+<h3>Default constructor <code>type_safe::constraints::bounded::bounded::bounded</code><a id="ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-::bounded()"></a></h3>
+<pre><code class="language-cpp">constexpr bounded();</code></pre>
+<p>Initializes it with static bounds.</p>
+<p><em>Effects</em>: Does nothing, a static bound is not stored. It will use <code>LowerBound::value</code> as lower bound and <code>UpperBound::value</code> as upper bound.</p>
+<p><em>Notes</em>: This constructor does not participate in overload resolution, unless both bounds are static, i.e. not <a href="doc_bounded_type.html#ts::constraints::dynamic_bound">ts::constraints::dynamic_bound</a>.</p>
+<h3>Function template <code>type_safe::constraints::bounded::bounded</code><a id="ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-::bounded(U1&&,U2&&,decltype(lower_type(std::forward-U1-(lower)),0),decltype(upper_type(std::forward-U2-(upper)),0))"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U1, typename U2&gt;
+constexpr bounded(U1&amp;&amp; lower, U2&amp;&amp; upper, decltype(lower_type(std::forward&lt;U1&gt;(lower)), 0) = 0, decltype(upper_type(std::forward&lt;U2&gt;(upper)), 0) = 0);</code></pre>
+<p>Initializes it with (mixed) dynamic bounds.</p>
+<p><em>Effects</em>: Perfectly forwards the arguments to the bounds. If a bound is static, the static member <code>value</code> will be used as bound, if it is dynamic, a copy created by perfectly forwarding will be stored and used as bound. \notes This constructor does not participate in overload resolution, unless the arguments are convertible to the bounds. \param 2 \exclude \param 3 \exclude</p>
+<h3>Function call operator <code>type_safe::constraints::bounded::operator()</code><a id="ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-::operator()(constU&)const"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U&gt;
+constexpr bool operator()(const U&amp; u) const;</code></pre>
+<p>Does the bounds check.</p>
+<h3>Function <code>type_safe::constraints::bounded::get_lower_bound</code><a id="ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-::get_lower_bound()const"></a></h3>
+<pre><code class="language-cpp">constexpr const typename lower_type::value_type&amp; get_lower_bound() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The value of the lower bound.</p>
+<h3>Function <code>type_safe::constraints::bounded::get_upper_bound</code><a id="ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-::get_upper_bound()const"></a></h3>
+<pre><code class="language-cpp">constexpr const typename upper_type::value_type&amp; get_upper_bound() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The value of the upper bound.</p>
+<hr />
+<h2>Alias template <code>type_safe::constraints::open_interval</code><a id="ts::constraints::open_interval-T,LowerBound,UpperBound-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename LowerBound = dynamic_bound, typename UpperBound = dynamic_bound&gt;
+using open_interval = <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-'>bounded&lt;T, open, open, LowerBound, UpperBound&gt;</a>;</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value is valid if it is between two given bounds but not the bounds themselves.</p>
+<h2>Alias template <code>type_safe::constraints::closed_interval</code><a id="ts::constraints::closed_interval-T,LowerBound,UpperBound-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename LowerBound = dynamic_bound, typename UpperBound = dynamic_bound&gt;
+using closed_interval = <a href='doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-'>bounded&lt;T, closed, closed, LowerBound, UpperBound&gt;</a>;</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value is valid if it is between two given bounds or the bounds themselves.</p>
+<hr />
+<h2>Alias template <code>type_safe::bounded_type</code><a id="ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, bool LowerInclusive, bool UpperInclusive, typename LowerBound = constraints::dynamic_bound, typename UpperBound = constraints::dynamic_bound, typename Verifier = assertion_verifier&gt;
+using bounded_type = constrained_type&lt;T, constraints::bounded&lt;T, LowerInclusive, UpperInclusive, LowerBound, UpperBound&gt;, Verifier&gt;;</code></pre>
+<p>An alias for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that uses <a href="doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-">ts::constraints::bounded</a> as its <code>Constraint</code>. \notes This is some type where the values must be in a certain interval.</p>
+<h2>User defined literal <code>type_safe::literals::operator&quot;&quot;_bound</code><a id="ts::literals::operator%22%22_bound()"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;char ... Digits&gt;
+     constexpr 'hidden' operator""_bound();
+
+(2)  template &lt;char ... Digits&gt;
+     constexpr 'hidden' operator""_boundu();</code></pre>
+<p>Creates a static bound for <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a>.</p>
+<p>This is a bound encapsulated in the type, so there is no overhead. You can use it for example like this <code>ts::make_bounded(50, 0_bound, 100_bound)</code>, to bound an integer between <code>0</code> and <code>100</code>.</p>
+<p><em>Returns</em>: A type representing the given value, the value has type <code>long long</code> (1)/<code>unsigned long long</code>(2).</p>
+<hr />
+<h2>Function template <code>type_safe::make_bounded</code><a id="ts::make_bounded(T&&,U1&&,U2&&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename U1, typename U2&gt;
+constexpr 'hidden' make_bounded(T&amp;&amp; value, U1&amp;&amp; lower, U2&amp;&amp; upper);</code></pre>
+<p>Creates a <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> to a specified <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a>.</p>
+<p><em>Returns</em>: A <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> with the given <code>value</code> and lower and upper bounds, where the bounds are valid values as well.</p>
+<p><em>Requires</em>: As it uses <a href="doc_constrained_type.html#ts::assertion_verifier">ts::assertion_verifier</a>, the value must be valid.</p>
+<p><em>Notes</em>: If this function is passed in dynamic values of the same type as <code>value</code>, it will create a dynamic bound. Otherwise it must be passed static bounds.</p>
+<h2>Function template <code>type_safe::sanitize_bounded</code><a id="ts::sanitize_bounded(T&&,U1&&,U2&&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename U1, typename U2&gt;
+constexpr 'hidden' sanitize_bounded(T&amp;&amp; value, U1&amp;&amp; lower, U2&amp;&amp; upper);</code></pre>
+<p>Creates a <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> to a specified <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a>.</p>
+<p><em>Returns</em>: A <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> with the given <code>value</code> and lower and upper bounds, where the bounds are valid values as well.</p>
+<p><em>Throws</em>: A <a href="doc_constrained_type.html#ts::constrain_error">ts::constrain_error</a> if the <code>value</code> isn't valid, or anything else thrown by the constructor.</p>
+<p><em>Notes</em>: This is meant for sanitizing user input, using a recoverable error handling strategy.</p>
+<p><em>Notes</em>: If this function is passed in dynamic values of the same type as <code>value</code>, it will create a dynamic bound. Otherwise it must be passed static bounds.</p>
+<h2>Function template <code>type_safe::make_bounded_exclusive</code><a id="ts::make_bounded_exclusive(T&&,U1&&,U2&&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename U1, typename U2&gt;
+constexpr 'hidden' make_bounded_exclusive(T&amp;&amp; value, U1&amp;&amp; lower, U2&amp;&amp; upper);</code></pre>
+<p>Creates a <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> to a specified <a href="doc_bounded_type.html#ts::constraints::open_interval-T,LowerBound,UpperBound-">ts::constraints::open_interval</a>.</p>
+<p><em>Returns</em>: A <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> with the given <code>value</code> and lower and upper bounds, where the bounds are not valid values.</p>
+<p><em>Requires</em>: As it uses <a href="doc_constrained_type.html#ts::assertion_verifier">ts::assertion_verifier</a>, the value must be valid.</p>
+<p><em>Notes</em>: If this function is passed in dynamic values of the same type as <code>value</code>, it will create a dynamic bound. Otherwise it must be passed static bounds.</p>
+<h2>Function template <code>type_safe::sanitize_bounded_exclusive</code><a id="ts::sanitize_bounded_exclusive(T&&,U1&&,U2&&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename U1, typename U2&gt;
+constexpr 'hidden' sanitize_bounded_exclusive(T&amp;&amp; value, U1&amp;&amp; lower, U2&amp;&amp; upper);</code></pre>
+<p>Creates a <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> to a specified <a href="doc_bounded_type.html#ts::constraints::open_interval-T,LowerBound,UpperBound-">ts::constraints::open_interval</a>, using <a href="doc_constrained_type.html#ts::throwing_verifier">ts::throwing_verifier</a>.</p>
+<p><em>Returns</em>: A <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> with the given <code>value</code> and lower and upper bounds, where the bounds are not valid values.</p>
+<p><em>Throws</em>: A <a href="doc_constrained_type.html#ts::constrain_error">ts::constrain_error</a> if the <code>value</code> isn't valid, or anything else thrown by the constructor.</p>
+<p><em>Notes</em>: This is meant for sanitizing user input, using a recoverable error handling strategy.</p>
+<p><em>Notes</em>: If this function is passed in dynamic values of the same type as <code>value</code>, it will create a dynamic bound. Otherwise it must be passed static bounds.</p>
+<h2>Function template <code>type_safe::clamp</code><a id="ts::clamp(constconstraints::closed_interval-T,LowerBound,UpperBound-&,U&&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename LowerBound, typename UpperBound, typename U&gt;
+constexpr typename std::decay&lt;U&gt;::type clamp(const <a href='doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-'>constraints::closed_interval&lt;T, LowerBound, UpperBound&gt;</a>&amp; interval, U&amp;&amp; val);</code></pre>
+<p>Returns a copy of <code>val</code> so that it is in the given <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a>.</p>
+<p><em>Effects</em>: If it is not in the interval, returns the bound that is closer to the value.</p>
+<h2>Struct <code>type_safe::clamping_verifier</code><a id="ts::clamping_verifier"></a></h2>
+<pre><code class="language-cpp">struct clamping_verifier
+{
+    template &lt;typename Value, typename T, typename Bound&gt;
+    static constexpr typename std::decay&lt;Value&gt;::type <a href='doc_bounded_type.html#ts::clamping_verifier::verify(Value&&,constconstraints::less_equal-T,Bound-&)'>verify</a>(Value&amp;&amp; val, const <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-'>constraints::less_equal&lt;T, Bound&gt;</a>&amp; p);
+    
+    template &lt;typename Value, typename T, typename Bound&gt;
+    static constexpr typename std::decay&lt;Value&gt;::type <a href='doc_bounded_type.html#ts::clamping_verifier::verify(Value&&,constconstraints::greater_equal-T,Bound-&)'>verify</a>(Value&amp;&amp; val, const <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-'>constraints::greater_equal&lt;T, Bound&gt;</a>&amp; p);
+    
+    template &lt;typename Value, typename T, typename LowerBound, typename UpperBound&gt;
+    static constexpr typename std::decay&lt;Value&gt;::type <a href='doc_bounded_type.html#ts::clamping_verifier::verify(Value&&,constconstraints::closed_interval-T,LowerBound,UpperBound-&)'>verify</a>(Value&amp;&amp; val, const <a href='doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-'>constraints::closed_interval&lt;T, LowerBound, UpperBound&gt;</a>&amp; interval);
+};</code></pre>
+<p>A <code>Verifier</code> for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that clamps the value to make it valid.</p>
+<p>It must be used together with <a href="doc_bounded_type.html#ts::constraints::less_equal-T,Bound-">ts::constraints::less_equal</a>, <a href="doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-">ts::constraints::greater_equal</a> or <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a>.</p>
+<h3>Function template <code>type_safe::clamping_verifier::verify</code><a id="ts::clamping_verifier::verify(Value&&,constconstraints::less_equal-T,Bound-&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Value, typename T, typename Bound&gt;
+static constexpr typename std::decay&lt;Value&gt;::type verify(Value&amp;&amp; val, const <a href='doc_bounded_type.html#ts::constraints::less_equal-T,Bound-'>constraints::less_equal&lt;T, Bound&gt;</a>&amp; p);</code></pre>
+<p></p>
+<p><em>Returns</em>: If <code>val</code> is greater than the bound of <code>p</code>, returns the bound. Otherwise returns the value unchanged</p>
+<h3>Function template <code>type_safe::clamping_verifier::verify</code><a id="ts::clamping_verifier::verify(Value&&,constconstraints::greater_equal-T,Bound-&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Value, typename T, typename Bound&gt;
+static constexpr typename std::decay&lt;Value&gt;::type verify(Value&amp;&amp; val, const <a href='doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-'>constraints::greater_equal&lt;T, Bound&gt;</a>&amp; p);</code></pre>
+<p></p>
+<p><em>Returns</em>: If <code>val</code> is less than the bound of <code>p</code>, returns the bound. Otherwise returns the value unchanged</p>
+<h3>Function template <code>type_safe::clamping_verifier::verify</code><a id="ts::clamping_verifier::verify(Value&&,constconstraints::closed_interval-T,LowerBound,UpperBound-&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Value, typename T, typename LowerBound, typename UpperBound&gt;
+static constexpr typename std::decay&lt;Value&gt;::type verify(Value&amp;&amp; val, const <a href='doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-'>constraints::closed_interval&lt;T, LowerBound, UpperBound&gt;</a>&amp; interval);</code></pre>
+<p></p>
+<p><em>Returns</em>: Same as <code>clamp(interval, val)</code>.</p>
+<hr />
+<h2>Alias template <code>type_safe::clamped_type</code><a id="ts::clamped_type-T,LowerBound,UpperBound-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename LowerBound = constraints::dynamic_bound, typename UpperBound = constraints::dynamic_bound&gt;
+using clamped_type = constrained_type&lt;T, constraints::closed_interval&lt;T, LowerBound, UpperBound&gt;, clamping_verifier&gt;;</code></pre>
+<p>An alias for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that uses <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a> as its <code>Constraint</code> and <a href="doc_bounded_type.html#ts::clamping_verifier">ts::clamping_verifier</a> as its <code>Verifier</code>. \notes This is some type where the values are always clamped so that they are in a certain interval.</p>
+<h2>Function template <code>type_safe::make_clamped</code><a id="ts::make_clamped(T&&,U1&&,U2&&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename U1, typename U2&gt;
+constexpr 'hidden' make_clamped(T&amp;&amp; value, U1&amp;&amp; lower, U2&amp;&amp; upper);</code></pre>
+<p>Creates a <a href="doc_bounded_type.html#ts::clamped_type-T,LowerBound,UpperBound-">ts::clamped_type</a> from the specified <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a>.</p>
+<p><em>Returns</em>: A <a href="doc_bounded_type.html#ts::clamped_type-T,LowerBound,UpperBound-">ts::clamped_type</a> with the given <code>value</code> and lower and upper bounds, where the bounds are valid values.</p>
+<p><em>Notes</em>: If this function is passed in dynamic values of the same type as <code>value</code>, it will create a dynamic bound. Otherwise it must be passed static bounds.</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

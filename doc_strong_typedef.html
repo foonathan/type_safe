@@ -1,0 +1,470 @@
+<h1>Header file <code>strong_typedef.hpp</code><a id="strong_typedef.hpp"></a></h1>
+<pre><code class="language-cpp">#define <a href='doc_strong_typedef.html#strong_typedef.hpp'>TYPE_SAFE_DETAIL_MAKE_OP_OTHER_STRONGTYPEDEF</a>
+
+#define <a href='doc_strong_typedef.html#strong_typedef.hpp'>TYPE_SAFE_DETAIL_MAKE_OP_MIXED</a>
+
+namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;class Tag, typename T&gt;
+    class <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef</a>;
+    
+    template &lt;class StrongTypedef&gt;
+    using <a href='doc_strong_typedef.html#ts::underlying_type-StrongTypedef-'>underlying_type</a> = 'hidden';
+    
+    template &lt;class Tag, typename T&gt;
+    constexpr T&amp; <a href='doc_strong_typedef.html#ts::get(strong_typedef-Tag,T-&)'>get</a>(<a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef&lt;Tag, T&gt;</a>&amp; type) noexcept;
+    template &lt;class Tag, typename T&gt;
+    constexpr const T&amp; <a href='doc_strong_typedef.html#ts::get(strong_typedef-Tag,T-&)'>get</a>(const <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef&lt;Tag, T&gt;</a>&amp; type) noexcept;
+    template &lt;class Tag, typename T&gt;
+    constexpr T&amp;&amp; <a href='doc_strong_typedef.html#ts::get(strong_typedef-Tag,T-&)'>get</a>(<a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef&lt;Tag, T&gt;</a>&amp;&amp; type) noexcept;
+    template &lt;class Tag, typename T&gt;
+    constexpr const T&amp;&amp; <a href='doc_strong_typedef.html#ts::get(strong_typedef-Tag,T-&)'>get</a>(const <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef&lt;Tag, T&gt;</a>&amp;&amp; type) noexcept;
+    
+    namespace <a href='doc_strong_typedef.html#ts::strong_typedef_op'>strong_typedef_op</a>
+    {
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>equality_comparison</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef, typename Other&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>mixed_equality_comparison</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>relational_comparison</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef, typename Other&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>mixed_relational_comparison</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>addition</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>explicit_bool</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>increment</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>decrement</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_plus</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_minus</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>integer_arithmetic</a>
+        : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_plus&lt;StrongTypedef&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_minus&lt;StrongTypedef&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>addition&lt;StrongTypedef&gt;</a>,
+          'hidden',
+          'hidden',
+          'hidden',
+          'hidden',
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>increment&lt;StrongTypedef&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>decrement&lt;StrongTypedef&gt;</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>floating_point_arithmetic</a>
+        : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_plus&lt;StrongTypedef&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_minus&lt;StrongTypedef&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>addition&lt;StrongTypedef&gt;</a>,
+          'hidden',
+          'hidden',
+          'hidden'
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>complement</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bitwise_or</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bitmask</a>
+        : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>complement&lt;StrongTypedef&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bitwise_or&lt;StrongTypedef&gt;</a>,
+          'hidden',
+          'hidden'
+        {
+        };
+        
+        template &lt;class StrongTypedef, typename IntT&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bitshift</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef, typename Result, typename ResultPtr = Result*, typename ResultConstPtr = const Result*&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>dereference</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef, typename Result, typename Index = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a>&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>array_subscript</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef, class Category, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator</a>
+        : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>dereference&lt;StrongTypedef, T, T *, const T *&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>increment&lt;StrongTypedef&gt;</a>
+        {
+            using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator_category</a> = Category;
+            
+            using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>value_type</a> = typename std::remove_cv&lt;T&gt;::type;
+            
+            using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>difference_type</a> = Distance;
+            
+            using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>pointer</a> = T*;
+            
+            using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>reference</a> = T&amp;;
+        };
+        
+        template &lt;class StrongTypedef, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>input_iterator</a>
+        : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator&lt;StrongTypedef, std::input_iterator_tag, T, Distance&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>equality_comparison&lt;StrongTypedef&gt;</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>output_iterator</a>
+        : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator&lt;StrongTypedef, std::output_iterator_tag, T, Distance&gt;</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>forward_iterator</a>
+        : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>input_iterator&lt;StrongTypedef, T, Distance&gt;</a>
+        {
+            using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator_category</a> = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::forward_iterator_tag'>std::forward_iterator_tag</a>;
+        };
+        
+        template &lt;class StrongTypedef, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bidirectional_iterator</a>
+        : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>forward_iterator&lt;StrongTypedef, T, Distance&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>decrement&lt;StrongTypedef&gt;</a>
+        {
+            using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator_category</a> = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::bidirectional_iterator_tag'>std::bidirectional_iterator_tag</a>;
+        };
+        
+        template &lt;class StrongTypedef, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>random_access_iterator</a>
+        : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bidirectional_iterator&lt;StrongTypedef, T, Distance&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>array_subscript&lt;StrongTypedef, T, Distance&gt;</a>,
+          <a href='doc_strong_typedef.html#ts::strong_typedef_op'>relational_comparison&lt;StrongTypedef&gt;</a>
+        {
+            using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator_category</a> = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::random_access_iterator_tag'>std::random_access_iterator_tag</a>;
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>input_operator</a>
+        {
+        };
+        
+        template &lt;class StrongTypedef&gt;
+        struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>output_operator</a>
+        {
+        };
+    }
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::hashable-StrongTypedef-'>hashable</a>;
+}</code></pre>
+<h2>Class template <code>type_safe::strong_typedef</code><a id="ts::strong_typedef-Tag,T-"></a></h2>
+<pre><code class="language-cpp">template &lt;class Tag, typename T&gt;
+class strong_typedef
+{
+public:
+    constexpr <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-::strong_typedef()'>strong_typedef</a>();
+    
+    constexpr <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-::strong_typedef(constT&)'>strong_typedef</a>(const T&amp; value);
+    constexpr <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-::strong_typedef(constT&)'>strong_typedef</a>(T&amp;&amp; value) noexcept('hidden');
+    
+    constexpr <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-::operatorT&()&'>operator T&amp;</a>() &amp; noexcept;
+    constexpr <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-::operatorT&()&'>operator const T&amp;</a>() const &amp; noexcept;
+    constexpr <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-::operatorT&()&'>operator T&amp;&amp;</a>() &amp;&amp; noexcept;
+    constexpr <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-::operatorT&()&'>operator const T&amp;&amp;</a>() const &amp;&amp; noexcept;
+    
+    friend void <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>swap</a>(<a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef</a>&amp; a, <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef</a>&amp; b) noexcept;
+};</code></pre>
+<p>A strong typedef emulation.</p>
+<p>Unlike regular typedefs, this does create a new type and only allows explicit conversion from the underlying one. The <code>Tag</code> is used to differentiate between different strong typedefs to the same type. It is designed to be used as a base class and does not provide any operations by itself. Use the types in the <code>strong_typedef_op</code> namespace to generate operations and/or your own member functions.</p>
+<p>Example:</p>
+<pre><code class="language-cpp">struct my_handle
+: strong_typedef&lt;my_handle, void*&gt;,
+  strong_typedef_op::equality_comparison&lt;my_handle&gt;
+{
+    using strong_typedef::strong_typedef;
+};
+
+struct my_int
+: strong_typedef&lt;my_int, int&gt;,
+  strong_typedef_op::integer_arithmetic&lt;my_int&gt;,
+  strong_typedef_op::equality_comparison&lt;my_int&gt;,
+  strong_typedef_op::relational_comparison&lt;my_int&gt;
+{
+    using strong_typedef::strong_typedef;
+};
+</code></pre>
+<h3>Default constructor <code>type_safe::strong_typedef::strong_typedef</code><a id="ts::strong_typedef-Tag,T-::strong_typedef()"></a></h3>
+<pre><code class="language-cpp">constexpr strong_typedef();</code></pre>
+<p></p>
+<p><em>Effects</em>: Value initializes the underlying value.</p>
+<h3>Constructor <code>type_safe::strong_typedef::strong_typedef</code><a id="ts::strong_typedef-Tag,T-::strong_typedef(constT&)"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr strong_typedef(const T&amp; value);
+
+(2)  constexpr strong_typedef(T&amp;&amp; value) noexcept('hidden');</code></pre>
+<p></p>
+<p><em>Effects</em>: Copy (1)/moves (2) the underlying value.</p>
+<h3>Conversion operator <code>type_safe::strong_typedef::operator T&amp;</code><a id="ts::strong_typedef-Tag,T-::operatorT&()&"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr operator T&amp;() &amp; noexcept;
+
+(2)  constexpr operator const T&amp;() const &amp; noexcept;
+
+(3)  constexpr operator T&amp;&amp;() &amp;&amp; noexcept;
+
+(4)  constexpr operator const T&amp;&amp;() const &amp;&amp; noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A reference to the stored underlying value.</p>
+<hr />
+<h2>Alias template <code>type_safe::underlying_type</code><a id="ts::underlying_type-StrongTypedef-"></a></h2>
+<pre><code class="language-cpp">template &lt;class StrongTypedef&gt;
+using underlying_type = 'hidden';</code></pre>
+<p>The underlying type of the <a href="doc_strong_typedef.html#ts::strong_typedef-Tag,T-">ts::strong_typedef</a>.</p>
+<h2>Function template <code>type_safe::get</code><a id="ts::get(strong_typedef-Tag,T-&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;class Tag, typename T&gt;
+     constexpr T&amp; get(<a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef&lt;Tag, T&gt;</a>&amp; type) noexcept;
+
+(2)  template &lt;class Tag, typename T&gt;
+     constexpr const T&amp; get(const <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef&lt;Tag, T&gt;</a>&amp; type) noexcept;
+
+(3)  template &lt;class Tag, typename T&gt;
+     constexpr T&amp;&amp; get(<a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef&lt;Tag, T&gt;</a>&amp;&amp; type) noexcept;
+
+(4)  template &lt;class Tag, typename T&gt;
+     constexpr const T&amp;&amp; get(const <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef&lt;Tag, T&gt;</a>&amp;&amp; type) noexcept;</code></pre>
+<p>Accesses the underlying value.</p>
+<p><em>Returns</em>: A reference to the underlying value.</p>
+<h2>Namespace <code>type_safe::strong_typedef_op</code><a id="ts::strong_typedef_op"></a></h2>
+<pre><code class="language-cpp">namespace strong_typedef_op
+{
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>equality_comparison</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef, typename Other&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>mixed_equality_comparison</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>relational_comparison</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef, typename Other&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>mixed_relational_comparison</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>addition</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>explicit_bool</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>increment</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>decrement</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_plus</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_minus</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>integer_arithmetic</a>
+    : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_plus&lt;StrongTypedef&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_minus&lt;StrongTypedef&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>addition&lt;StrongTypedef&gt;</a>,
+      'hidden',
+      'hidden',
+      'hidden',
+      'hidden',
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>increment&lt;StrongTypedef&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>decrement&lt;StrongTypedef&gt;</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>floating_point_arithmetic</a>
+    : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_plus&lt;StrongTypedef&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>unary_minus&lt;StrongTypedef&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>addition&lt;StrongTypedef&gt;</a>,
+      'hidden',
+      'hidden',
+      'hidden'
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>complement</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bitwise_or</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bitmask</a>
+    : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>complement&lt;StrongTypedef&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bitwise_or&lt;StrongTypedef&gt;</a>,
+      'hidden',
+      'hidden'
+    {
+    };
+    
+    template &lt;class StrongTypedef, typename IntT&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bitshift</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef, typename Result, typename ResultPtr = Result*, typename ResultConstPtr = const Result*&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>dereference</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef, typename Result, typename Index = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a>&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>array_subscript</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef, class Category, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator</a>
+    : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>dereference&lt;StrongTypedef, T, T *, const T *&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>increment&lt;StrongTypedef&gt;</a>
+    {
+        using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator_category</a> = Category;
+        
+        using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>value_type</a> = typename std::remove_cv&lt;T&gt;::type;
+        
+        using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>difference_type</a> = Distance;
+        
+        using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>pointer</a> = T*;
+        
+        using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>reference</a> = T&amp;;
+    };
+    
+    template &lt;class StrongTypedef, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>input_iterator</a>
+    : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator&lt;StrongTypedef, std::input_iterator_tag, T, Distance&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>equality_comparison&lt;StrongTypedef&gt;</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>output_iterator</a>
+    : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator&lt;StrongTypedef, std::output_iterator_tag, T, Distance&gt;</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>forward_iterator</a>
+    : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>input_iterator&lt;StrongTypedef, T, Distance&gt;</a>
+    {
+        using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator_category</a> = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::forward_iterator_tag'>std::forward_iterator_tag</a>;
+    };
+    
+    template &lt;class StrongTypedef, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bidirectional_iterator</a>
+    : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>forward_iterator&lt;StrongTypedef, T, Distance&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>decrement&lt;StrongTypedef&gt;</a>
+    {
+        using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator_category</a> = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::bidirectional_iterator_tag'>std::bidirectional_iterator_tag</a>;
+    };
+    
+    template &lt;class StrongTypedef, typename T, typename Distance = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ptrdiff_t'>std::ptrdiff_t</a>&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>random_access_iterator</a>
+    : <a href='doc_strong_typedef.html#ts::strong_typedef_op'>bidirectional_iterator&lt;StrongTypedef, T, Distance&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>array_subscript&lt;StrongTypedef, T, Distance&gt;</a>,
+      <a href='doc_strong_typedef.html#ts::strong_typedef_op'>relational_comparison&lt;StrongTypedef&gt;</a>
+    {
+        using <a href='doc_strong_typedef.html#ts::strong_typedef_op'>iterator_category</a> = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::random_access_iterator_tag'>std::random_access_iterator_tag</a>;
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>input_operator</a>
+    {
+    };
+    
+    template &lt;class StrongTypedef&gt;
+    struct <a href='doc_strong_typedef.html#ts::strong_typedef_op'>output_operator</a>
+    {
+    };
+}</code></pre>
+<p>Some operations for <a href="doc_strong_typedef.html#ts::strong_typedef-Tag,T-">ts::strong_typedef</a>.</p>
+<p>They all generate operators forwarding to the underlying type. Inherit from them in the typedef definition.</p>
+<h2>Class template <code>type_safe::hashable</code><a id="ts::hashable-StrongTypedef-"></a></h2>
+<pre><code class="language-cpp">template &lt;class StrongTypedef&gt;
+struct hashable
+: <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::hash%3ctype_safe::underlying_type%3cStrongTypedef%3e%3e'>std::hash&lt;type_safe::underlying_type&lt;StrongTypedef&gt; &gt;</a>
+{
+    using <a href='doc_strong_typedef.html#ts::hashable-StrongTypedef-'>underlying_type</a> = <a href='doc_strong_typedef.html#ts::underlying_type-StrongTypedef-'>type_safe::underlying_type&lt;StrongTypedef&gt;</a>;
+    
+    using <a href='doc_strong_typedef.html#ts::hashable-StrongTypedef-'>underlying_hash</a> = <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::hash%3cunderlying_type%3e'>std::hash&lt;underlying_type&gt;</a>;
+    
+    <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> <a href='doc_strong_typedef.html#ts::hashable-StrongTypedef-'>operator()</a>(const StrongTypedef&amp; lhs) const noexcept('hidden');
+};</code></pre>
+<p>Inherit from it in the <code>std::hash&lt;StrongTypedef&gt;</code> specialization to make it hashable like the underlying type. See example/strong_typedef.cpp.</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

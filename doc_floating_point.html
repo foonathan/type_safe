@@ -1,0 +1,268 @@
+<h1>Header file <code>floating_point.hpp</code><a id="floating_point.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;typename FloatT&gt;
+    class <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>;
+    
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constfloating_point-A-&,constfloating_point-B-&)'>operator&lt;</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&lt;</a>(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b);
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&lt;</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b);
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&lt;=</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&lt;=</a>(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b);
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&lt;=</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b);
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&gt;</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&gt;</a>(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b);
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&gt;</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b);
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&gt;=</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&gt;=</a>(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b);
+    template &lt;typename A, typename B&gt;
+    constexpr bool <a href='doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)'>operator&gt;=</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b);
+    
+    //=== <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>Binary operations</a> ===//
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator+</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator+</a>(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator+</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator-</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator-</a>(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator-</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator*</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator*</a>(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator*</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator/</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator/</a>(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+    template &lt;typename A, typename B&gt;
+    constexpr 'hidden' <a href='doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)'>operator/</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b) noexcept;
+    
+    template &lt;typename Char, class CharTraits, typename FloatT&gt;
+    <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; <a href='doc_floating_point.html#ts::operator--(std::basic_istream-Char,CharTraits-&,floating_point-FloatT-&)'>operator&gt;&gt;</a>(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; in, <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;FloatT&gt;</a>&amp; f);
+    
+    template &lt;typename Char, class CharTraits, typename FloatT&gt;
+    <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; <a href='doc_floating_point.html#ts::operator--(std::basic_ostream-Char,CharTraits-&,constfloating_point-FloatT-&)'>operator&lt;&lt;</a>(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; out, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;FloatT&gt;</a>&amp; f);
+}
+
+namespace <a href='doc_boolean.html#boolean.hpp'>std</a>
+{
+}</code></pre>
+<h2>Class template <code>type_safe::floating_point</code> [types]<a id="ts::floating_point-FloatT-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename FloatT&gt;
+class floating_point
+{
+public:
+    using <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point_type</a> = FloatT;
+    
+    template &lt;typename T&gt;
+    constexpr <a href='doc_floating_point.html#ts::floating_point-FloatT-::floating_point(constT&)'>floating_point</a>(const T&amp; val) noexcept;
+    template &lt;typename T&gt;
+    constexpr <a href='doc_floating_point.html#ts::floating_point-FloatT-::floating_point(constT&)'>floating_point</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; val) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator=(constT&)'>operator=</a>(const T&amp; val) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator=(constT&)'>operator=</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; val) noexcept;
+    
+    constexpr <a href='doc_floating_point.html#ts::floating_point-FloatT-::operatorfloating_point_type()const'>operator floating_point_type</a>() const noexcept;
+    constexpr <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point_type</a> <a href='doc_floating_point.html#ts::floating_point-FloatT-::operatorfloating_point_type()const'>get</a>() const noexcept;
+    
+    constexpr <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a> <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator+()const'>operator+</a>() const noexcept;
+    
+    constexpr <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a> <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator-()const'>operator-</a>() const noexcept;
+    
+    //=== <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator+=(constfloating_point-T-&)'>Compound assignment</a> ===//
+    template &lt;typename T&gt;
+    <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator+=(constfloating_point-T-&)'>operator+=</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; other) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator+=(constfloating_point-T-&)'>operator+=</a>(const T&amp; other) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator+=(constfloating_point-T-&)'>operator-=</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; other) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator+=(constfloating_point-T-&)'>operator-=</a>(const T&amp; other) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator+=(constfloating_point-T-&)'>operator*=</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; other) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator+=(constfloating_point-T-&)'>operator*=</a>(const T&amp; other) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator+=(constfloating_point-T-&)'>operator/=</a>(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; other) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; <a href='doc_floating_point.html#ts::floating_point-FloatT-::operator+=(constfloating_point-T-&)'>operator/=</a>(const T&amp; other) noexcept;
+};</code></pre>
+<p>A type safe floating point class.</p>
+<p>It is a tiny, no overhead wrapper over a standard floating point type. It behaves exactly like the built-in types except it does not allow narrowing conversions.</p>
+<p><em>Requires</em>: <code>FloatT</code> must be a floating point type.</p>
+<p><em>Notes</em>: It intentionally does not provide equality or increment/decrement operators.</p>
+<h3>Function template <code>type_safe::floating_point::floating_point</code><a id="ts::floating_point-FloatT-::floating_point(constT&)"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     constexpr floating_point(const T&amp; val) noexcept;
+
+(2)  template &lt;typename T&gt;
+     constexpr floating_point(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; val) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes the floating point with the given value.</p>
+<p><em>Notes</em>: These functions do not participate in overload resolution, if <code>T</code> is not a floating point type safely convertible to this type.</p>
+<h3>Assignment operator <code>type_safe::floating_point::operator=</code><a id="ts::floating_point-FloatT-::operator=(constT&)"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; operator=(const T&amp; val) noexcept;
+
+(2)  template &lt;typename T&gt;
+     <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; operator=(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; val) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Assigns the floating point the given value.</p>
+<p><em>Notes</em>: These functions do not participate in overload resolution, if <code>T</code> is not a floating point type safely convertible to this type.</p>
+<h3>Conversion operator <code>type_safe::floating_point::operator floating_point_type</code><a id="ts::floating_point-FloatT-::operatorfloating_point_type()const"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr operator floating_point_type() const noexcept;
+
+(2)  constexpr <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point_type</a> get() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The stored value as the native floating point type.</p>
+<h3>Operator <code>type_safe::floating_point::operator+</code><a id="ts::floating_point-FloatT-::operator+()const"></a></h3>
+<pre><code class="language-cpp">constexpr <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a> operator+() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The value unchanged.</p>
+<h3>Operator <code>type_safe::floating_point::operator-</code><a id="ts::floating_point-FloatT-::operator-()const"></a></h3>
+<pre><code class="language-cpp">constexpr <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a> operator-() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The negative value.</p>
+<h3>Compound assignment<a id="ts::floating_point-FloatT-::operator+=(constfloating_point-T-&)"></a> [types]</h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; operator+=(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; other) noexcept;
+
+(2)  template &lt;typename T&gt;
+     <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; operator+=(const T&amp; other) noexcept;
+
+(3)  template &lt;typename T&gt;
+     <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; operator-=(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; other) noexcept;
+
+(4)  template &lt;typename T&gt;
+     <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; operator-=(const T&amp; other) noexcept;
+
+(5)  template &lt;typename T&gt;
+     <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; operator*=(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; other) noexcept;
+
+(6)  template &lt;typename T&gt;
+     <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; operator*=(const T&amp; other) noexcept;
+
+(7)  template &lt;typename T&gt;
+     <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; operator/=(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;T&gt;</a>&amp; other) noexcept;
+
+(8)  template &lt;typename T&gt;
+     <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point</a>&amp; operator/=(const T&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Same as the operation on the floating point type.</p>
+<p><em>Notes</em>: These functions do not participate in overload resolution, if <code>T</code> is not a floating point type safely convertible to this type.</p>
+<hr />
+<h2>Comparison operator <code>type_safe::operator&lt;</code><a id="ts::operator-(constfloating_point-A-&,constfloating_point-B-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename A, typename B&gt;
+constexpr bool operator&lt;(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The result of the comparison of the stored floating point value in the <a href="doc_floating_point.html#ts::floating_point-FloatT-">ts::floating_point</a>. \notes These functions do not participate in overload resolution unless <code>A</code> and <code>B</code> are both floating point types. \group float_comp Comparison operators \module types</p>
+<h2>Comparison operator <code>type_safe::operator&lt;</code><a id="ts::operator-(constA&,constfloating_point-B-&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&lt;(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b);
+
+(2)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&lt;(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b);
+
+(3)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&lt;=(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(4)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&lt;=(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b);
+
+(5)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&lt;=(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b);
+
+(6)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&gt;(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(7)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&gt;(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b);
+
+(8)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&gt;(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b);
+
+(9)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&gt;=(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(10)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&gt;=(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b);
+
+(11)  template &lt;typename A, typename B&gt;
+     constexpr bool operator&gt;=(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b);</code></pre>
+<p></p>
+<h2>Binary operations<a id="ts::operator+(constfloating_point-A-&,constfloating_point-B-&)"></a> [types]</h2>
+<pre><code class="language-cpp">(1)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator+(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(2)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator+(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(3)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator+(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b) noexcept;
+
+(4)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator-(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(5)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator-(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(6)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator-(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b) noexcept;
+
+(7)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator*(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(8)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator*(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(9)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator*(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b) noexcept;
+
+(10)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator/(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(11)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator/(const A&amp; a, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;B&gt;</a>&amp; b) noexcept;
+
+(12)  template &lt;typename A, typename B&gt;
+     constexpr 'hidden' operator/(const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;A&gt;</a>&amp; a, const B&amp; b) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The result of the binary operation of the stored floating point value in the <a href="doc_floating_point.html#ts::floating_point-FloatT-">ts::floating_point</a>. The type is a <a href="doc_floating_point.html#ts::floating_point-FloatT-">ts::floating_point</a> of the bigger floating point type.</p>
+<p><em>Notes</em>: These functions do not participate in overload resolution, unless <code>A</code> and <code>B</code> are both floating point types.</p>
+<h2>Input operator <code>type_safe::operator&gt;&gt;</code><a id="ts::operator--(std::basic_istream-Char,CharTraits-&,floating_point-FloatT-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Char, class CharTraits, typename FloatT&gt;
+<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; operator&gt;&gt;(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; in, <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;FloatT&gt;</a>&amp; f);</code></pre>
+<p></p>
+<p><em>Effects</em>: Reads a float from the <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::istream">std::istream</a> and assigns it to the given <a href="doc_floating_point.html#ts::floating_point-FloatT-">ts::floating_point</a>. \module types \output_section Input/output</p>
+<h2>Output operator <code>type_safe::operator&lt;&lt;</code><a id="ts::operator--(std::basic_ostream-Char,CharTraits-&,constfloating_point-FloatT-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Char, class CharTraits, typename FloatT&gt;
+<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; operator&lt;&lt;(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; out, const <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;FloatT&gt;</a>&amp; f);</code></pre>
+<p></p>
+<p><em>Effects</em>: Converts the given <a href="doc_floating_point.html#ts::floating_point-FloatT-">ts::floating_point</a> to the underlying floating point and writes it to the <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ostream">std::ostream</a>. \module types</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

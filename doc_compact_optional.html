@@ -1,0 +1,234 @@
+<h1>Header file <code>compact_optional.hpp</code><a id="compact_optional.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;class CompactPolicy&gt;
+    class <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>;
+    
+    template &lt;class CompactPolicy&gt;
+    using <a href='doc_compact_optional.html#ts::compact_optional-CompactPolicy-'>compact_optional</a> = basic_optional&lt;compact_optional_storage&lt;CompactPolicy&gt;&gt;;
+    
+    template &lt;typename Boolean&gt;
+    class <a href='doc_compact_optional.html#ts::compact_bool_policy-Boolean-'>compact_bool_policy</a>;
+    
+    template &lt;typename Integer, Integer Invalid&gt;
+    class <a href='doc_compact_optional.html#ts::compact_integer_policy-Integer,Invalid-'>compact_integer_policy</a>;
+    
+    template &lt;typename FloatingPoint&gt;
+    class <a href='doc_compact_optional.html#ts::compact_floating_point_policy-FloatingPoint-'>compact_floating_point_policy</a>;
+    
+    template &lt;typename Enum, 'hidden' Invalid&gt;
+    class <a href='doc_compact_optional.html#ts::compact_enum_policy-Enum,Invalid-'>compact_enum_policy</a>;
+    
+    template &lt;class Container&gt;
+    class <a href='doc_compact_optional.html#ts::compact_container_policy-Container-'>compact_container_policy</a>;
+}</code></pre>
+<h2>Class template <code>type_safe::compact_optional_storage</code> [optional]<a id="ts::compact_optional_storage-CompactPolicy-"></a></h2>
+<pre><code class="language-cpp">template &lt;class CompactPolicy&gt;
+class compact_optional_storage
+{
+public:
+    using <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>value_type</a> = typename std::remove_cv&lt;typename CompactPolicy::value_type&gt;::type;
+    
+    using <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>storage_type</a> = typename CompactPolicy::storage_type;
+    
+    using <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>lvalue_reference</a> = 'hidden';
+    
+    using <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>const_lvalue_reference</a> = 'hidden';
+    
+    using <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>rvalue_reference</a> = 'hidden';
+    
+    using <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>const_rvalue_reference</a> = 'hidden';
+    
+    template &lt;typename U&gt;
+    using <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>rebind</a> = direct_optional_storage&lt;U&gt;;
+    
+    <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::compact_optional_storage()'>compact_optional_storage</a>() noexcept;
+    
+    template &lt;typename ... Args&gt;
+    typename std::enable_if&lt;std::is_constructible&lt;value_type, Args&amp;&amp;...&gt;::value&gt;::type <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::create_value(Args&&...)'>create_value</a>(Args&amp;&amp;... args);
+    
+    void <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::create_value(constcompact_optional_storage-CompactPolicy-&)'>create_value</a>(const <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>&amp; other);
+    
+    void <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::create_value(compact_optional_storage-CompactPolicy-&&)'>create_value</a>(<a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>&amp;&amp; other);
+    
+    void <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>create_value_explicit</a>();
+    
+    void <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::copy_value(constcompact_optional_storage-CompactPolicy-&)'>copy_value</a>(const <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>&amp; other);
+    
+    void <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::copy_value(compact_optional_storage-CompactPolicy-&&)'>copy_value</a>(<a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>&amp;&amp; other);
+    
+    void <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::swap_value(compact_optional_storage-CompactPolicy-&)'>swap_value</a>(<a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>&amp; other);
+    
+    void <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::destroy_value()'>destroy_value</a>() noexcept;
+    
+    bool <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::has_value()const'>has_value</a>() const noexcept;
+    
+    <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>lvalue_reference</a> <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::get_value()&'>get_value</a>() &amp; noexcept;
+    <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>const_lvalue_reference</a> <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::get_value()&'>get_value</a>() const &amp; noexcept;
+    <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>rvalue_reference</a> <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::get_value()&'>get_value</a>() &amp;&amp; noexcept;
+    <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>const_rvalue_reference</a> <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::get_value()&'>get_value</a>() const &amp;&amp; noexcept;
+    
+    template &lt;typename U, typename = typename std::enable_if&lt;std::is_copy_constructible&lt;value_type&gt;::value&amp;&amp;std::is_convertible&lt;U&amp;&amp;, value_type&gt;::value&gt;::type&gt;
+    <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>value_type</a> <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::get_value_or(U&&)const&'>get_value_or</a>(U&amp;&amp; u) const &amp;;
+    
+    template &lt;typename U&gt;
+    <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>value_type</a> <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-::get_value_or(U&&)&&'>get_value_or</a>(U&amp;&amp; u) &amp;&amp;;
+};</code></pre>
+<p>A <code>StoragePolicy</code> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that is more space efficient than <a href="doc_optional.html#ts::direct_optional_storage-T-">ts::direct_optional_storage</a>.</p>
+<p>It is designed to have no space overhead compared to a regular object of the stored type. This is accomplished by marking one value of the stored type as invalid and using that in the empty state. What the invalid value is is controlled by the <code>CompactPolicy</code>. It must provide the following <code>static</code> member functions and typedefs:</p>
+<ul>
+<li><code>value_type</code> - the value that is being stored conceptually</li>
+<li><code>storage_type</code> - the actual type that is being stored</li>
+<li><code>storage_type invalid_value()</code> - returns the value that marks the optional as empty</li>
+<li><code>bool is_invalid(const storage_type&amp;)</code> - returns <code>true</code> if the given value is invalid, <code>false</code> otherwise</li>
+</ul>
+<p>In the cases where <code>value_type</code> and <code>storage_type</code> differ, the <code>get_value()</code> functions will not return references, but a copy instead. The implementation assumes that <code>invalid_value()</code> and <code>is_invalid()</code> are <code>noexcept</code> and cheap.</p>
+<p><em>Notes</em>: For a compact optional of pointer type, use <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref</a>.</p>
+<h3>Default constructor <code>type_safe::compact_optional_storage::compact_optional_storage</code><a id="ts::compact_optional_storage-CompactPolicy-::compact_optional_storage()"></a></h3>
+<pre><code class="language-cpp">compact_optional_storage() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes it in the state without value, i.e. sets the storage to the invalid value.</p>
+<h3>Function template <code>type_safe::compact_optional_storage::create_value</code><a id="ts::compact_optional_storage-CompactPolicy-::create_value(Args&&...)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename ... Args&gt;
+typename std::enable_if&lt;std::is_constructible&lt;value_type, Args&amp;&amp;...&gt;::value&gt;::type create_value(Args&amp;&amp;... args);</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates a temporary <code>value_type</code> by perfectly forwarding <code>args</code>, converts that to the <code>storage_type</code> and assigns it. Afterwards <code>has_value()</code> will return <code>true</code>.</p>
+<p><em>Throws</em>: Anything thrown by the constructor of <code>value_type</code>/<code>storage_type</code> or its move assignment operator in which case <code>has_value()</code> is still <code>false</code>. \requires <code>has_value() == false</code> and the given value must not be invalid. \notes This function does not participate in overload resolution unless <code>value_type</code> is constructible from <code>args</code>. \synopsis template</p>
+<h3>Function <code>type_safe::compact_optional_storage::create_value</code><a id="ts::compact_optional_storage-CompactPolicy-::create_value(constcompact_optional_storage-CompactPolicy-&)"></a></h3>
+<pre><code class="language-cpp">void create_value(const <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Copy assigns the <code>storage_type</code>.</p>
+<h3>Function <code>type_safe::compact_optional_storage::create_value</code><a id="ts::compact_optional_storage-CompactPolicy-::create_value(compact_optional_storage-CompactPolicy-&&)"></a></h3>
+<pre><code class="language-cpp">void create_value(<a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>&amp;&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Move assigns the <code>storage_type</code>.</p>
+<h3>Function <code>type_safe::compact_optional_storage::copy_value</code><a id="ts::compact_optional_storage-CompactPolicy-::copy_value(constcompact_optional_storage-CompactPolicy-&)"></a></h3>
+<pre><code class="language-cpp">void copy_value(const <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Copy assigns the <code>storage_type</code>.</p>
+<h3>Function <code>type_safe::compact_optional_storage::copy_value</code><a id="ts::compact_optional_storage-CompactPolicy-::copy_value(compact_optional_storage-CompactPolicy-&&)"></a></h3>
+<pre><code class="language-cpp">void copy_value(<a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>&amp;&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Move assigns the <code>storage_type</code>.</p>
+<h3>Function <code>type_safe::compact_optional_storage::swap_value</code><a id="ts::compact_optional_storage-CompactPolicy-::swap_value(compact_optional_storage-CompactPolicy-&)"></a></h3>
+<pre><code class="language-cpp">void swap_value(<a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>compact_optional_storage</a>&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Swaps the <code>storage_type</code>.</p>
+<h3>Function <code>type_safe::compact_optional_storage::destroy_value</code><a id="ts::compact_optional_storage-CompactPolicy-::destroy_value()"></a></h3>
+<pre><code class="language-cpp">void destroy_value() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Destroys the value by setting it to the invalid storage value. Afterwards <code>has_value()</code> will return <code>false</code>.</p>
+<p><em>Requires</em>: <code>has_value() == true</code>.</p>
+<h3>Function <code>type_safe::compact_optional_storage::has_value</code><a id="ts::compact_optional_storage-CompactPolicy-::has_value()const"></a></h3>
+<pre><code class="language-cpp">bool has_value() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: Whether or not there is a value stored, i.e. whether the stored value is not invalid.</p>
+<h3>Function <code>type_safe::compact_optional_storage::get_value</code><a id="ts::compact_optional_storage-CompactPolicy-::get_value()&"></a></h3>
+<pre><code class="language-cpp">(1)  <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>lvalue_reference</a> get_value() &amp; noexcept;
+
+(2)  <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>const_lvalue_reference</a> get_value() const &amp; noexcept;
+
+(3)  <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>rvalue_reference</a> get_value() &amp;&amp; noexcept;
+
+(4)  <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>const_rvalue_reference</a> get_value() const &amp;&amp; noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A (suitable) reference to the stored value or a copy of the value depending on the policy.</p>
+<p><em>Requires</em>: <code>has_value() == true</code>.</p>
+<h3>Function template <code>type_safe::compact_optional_storage::get_value_or</code><a id="ts::compact_optional_storage-CompactPolicy-::get_value_or(U&&)const&"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U, typename = typename std::enable_if&lt;std::is_copy_constructible&lt;value_type&gt;::value&amp;&amp;std::is_convertible&lt;U&amp;&amp;, value_type&gt;::value&gt;::type&gt;
+<a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>value_type</a> get_value_or(U&amp;&amp; u) const &amp;;</code></pre>
+<p></p>
+<p><em>Returns</em>: Either <code>get_value()</code> or <code>u</code> converted to <code>value_type</code>.</p>
+<p><em>Requires</em>: <code>value_type</code> must be copy (1)/move (2) constructible and <code>u</code> convertible to <code>value_type</code>. \group get_value_or \param 1 \exclude</p>
+<h3>Function template <code>type_safe::compact_optional_storage::get_value_or</code><a id="ts::compact_optional_storage-CompactPolicy-::get_value_or(U&&)&&"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename U&gt;
+     <a href='doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-'>value_type</a> get_value_or(U&amp;&amp; u) &amp;&amp;;</code></pre>
+<p></p>
+<hr />
+<h2>Alias template <code>type_safe::compact_optional</code><a id="ts::compact_optional-CompactPolicy-"></a></h2>
+<pre><code class="language-cpp">template &lt;class CompactPolicy&gt;
+using compact_optional = basic_optional&lt;compact_optional_storage&lt;CompactPolicy&gt;&gt;;</code></pre>
+<p>An alias for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> using <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> with the given <code>CompactPolicy</code>. \module optional</p>
+<h2>Class template <code>type_safe::compact_bool_policy</code><a id="ts::compact_bool_policy-Boolean-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Boolean&gt;
+class compact_bool_policy
+{
+public:
+    using <a href='doc_compact_optional.html#ts::compact_bool_policy-Boolean-'>value_type</a> = Boolean;
+    
+    using <a href='doc_compact_optional.html#ts::compact_bool_policy-Boolean-'>storage_type</a> = char;
+    
+    static <a href='doc_compact_optional.html#ts::compact_bool_policy-Boolean-'>storage_type</a> <a href='doc_compact_optional.html#ts::compact_bool_policy-Boolean-'>invalid_value</a>() noexcept;
+    
+    static bool <a href='doc_compact_optional.html#ts::compact_bool_policy-Boolean-'>is_invalid</a>(<a href='doc_compact_optional.html#ts::compact_bool_policy-Boolean-'>storage_type</a> storage) noexcept;
+};</code></pre>
+<p>A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for boolean types.</p>
+<p>It is designed for either <code>bool</code> or <a href="doc_boolean.html#ts::boolean">ts::boolean</a>.</p>
+<p><em>Notes</em>: It uses a different <code>storage_type</code> and thus cannot return a reference to the stored value. \module optional</p>
+<h2>Class template <code>type_safe::compact_integer_policy</code><a id="ts::compact_integer_policy-Integer,Invalid-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Integer, Integer Invalid&gt;
+class compact_integer_policy
+{
+public:
+    using <a href='doc_compact_optional.html#ts::compact_integer_policy-Integer,Invalid-'>value_type</a> = Integer;
+    
+    using <a href='doc_compact_optional.html#ts::compact_integer_policy-Integer,Invalid-'>storage_type</a> = Integer;
+    
+    static <a href='doc_compact_optional.html#ts::compact_integer_policy-Integer,Invalid-'>storage_type</a> <a href='doc_compact_optional.html#ts::compact_integer_policy-Integer,Invalid-'>invalid_value</a>() noexcept;
+    
+    static bool <a href='doc_compact_optional.html#ts::compact_integer_policy-Integer,Invalid-'>is_invalid</a>(const <a href='doc_compact_optional.html#ts::compact_integer_policy-Integer,Invalid-'>storage_type</a>&amp; storage) noexcept;
+};</code></pre>
+<p>A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for integer types.</p>
+<p>The given <code>Invalid</code> value will be used to mark an empty optional.</p>
+<h2>Class template <code>type_safe::compact_floating_point_policy</code> [optional]<a id="ts::compact_floating_point_policy-FloatingPoint-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename FloatingPoint&gt;
+class compact_floating_point_policy
+{
+public:
+    using <a href='doc_compact_optional.html#ts::compact_floating_point_policy-FloatingPoint-'>value_type</a> = FloatingPoint;
+    
+    using <a href='doc_compact_optional.html#ts::compact_floating_point_policy-FloatingPoint-'>storage_type</a> = FloatingPoint;
+    
+    static <a href='doc_compact_optional.html#ts::compact_floating_point_policy-FloatingPoint-'>storage_type</a> <a href='doc_compact_optional.html#ts::compact_floating_point_policy-FloatingPoint-'>invalid_value</a>() noexcept;
+    
+    static bool <a href='doc_compact_optional.html#ts::compact_floating_point_policy-FloatingPoint-'>is_invalid</a>(const <a href='doc_compact_optional.html#ts::compact_floating_point_policy-FloatingPoint-'>storage_type</a>&amp; storage) noexcept;
+};</code></pre>
+<p>A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for floating point types.</p>
+<p><code>NaN</code> will be used to mark an empty optional.</p>
+<h2>Class template <code>type_safe::compact_enum_policy</code><a id="ts::compact_enum_policy-Enum,Invalid-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Enum, 'hidden' Invalid&gt;
+class compact_enum_policy
+{
+public:
+    using <a href='doc_compact_optional.html#ts::compact_enum_policy-Enum,Invalid-'>value_type</a> = Enum;
+    
+    using <a href='doc_compact_optional.html#ts::compact_enum_policy-Enum,Invalid-'>storage_type</a> = 'hidden';
+    
+    static <a href='doc_compact_optional.html#ts::compact_enum_policy-Enum,Invalid-'>storage_type</a> <a href='doc_compact_optional.html#ts::compact_enum_policy-Enum,Invalid-'>invalid_value</a>() noexcept;
+    
+    static bool <a href='doc_compact_optional.html#ts::compact_enum_policy-Enum,Invalid-'>is_invalid</a>(const <a href='doc_compact_optional.html#ts::compact_enum_policy-Enum,Invalid-'>storage_type</a>&amp; storage) noexcept;
+};</code></pre>
+<p>A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for enumeration types.</p>
+<p>It uses the given <code>Invalid</code> value of the underlying type to mark an empty optional.</p>
+<p><em>Notes</em>: It uses a different <code>storage_type</code> and thus cannot return a reference to the stored value. \module optional</p>
+<h2>Class template <code>type_safe::compact_container_policy</code><a id="ts::compact_container_policy-Container-"></a></h2>
+<pre><code class="language-cpp">template &lt;class Container&gt;
+class compact_container_policy
+{
+public:
+    using <a href='doc_compact_optional.html#ts::compact_container_policy-Container-'>value_type</a> = Container;
+    
+    using <a href='doc_compact_optional.html#ts::compact_container_policy-Container-'>storage_type</a> = Container;
+    
+    static <a href='doc_compact_optional.html#ts::compact_container_policy-Container-'>storage_type</a> <a href='doc_compact_optional.html#ts::compact_container_policy-Container-'>invalid_value</a>() noexcept;
+    
+    static bool <a href='doc_compact_optional.html#ts::compact_container_policy-Container-'>is_invalid</a>(const <a href='doc_compact_optional.html#ts::compact_container_policy-Container-'>storage_type</a>&amp; storage) noexcept;
+};</code></pre>
+<p>A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for container types.</p>
+<p>A <code>Container</code> is a type with a cheap no-throwing default constructor initializing it empty, and either an <code>empty()</code> member function or ADL function that returns <code>true</code> if the container is empty, <code>false</code> otherwise. An empty container will be marked as an empty optional. \module optional</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

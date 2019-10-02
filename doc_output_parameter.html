@@ -1,0 +1,110 @@
+<h1>Header file <code>output_parameter.hpp</code><a id="output_parameter.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;typename T&gt;
+    class <a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>;
+    
+    template &lt;typename T&gt;
+    <a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter&lt;T&gt;</a> <a href='doc_output_parameter.html#ts::out(T&)'>out</a>(T&amp; obj) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter&lt;T&gt;</a> <a href='doc_output_parameter.html#ts::out(deferred_construction-T-&)'>out</a>(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction&lt;T&gt;</a>&amp; o) noexcept;
+}</code></pre>
+<h2>Class template <code>type_safe::output_parameter</code><a id="ts::output_parameter-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+class output_parameter
+{
+public:
+    using <a href='doc_output_parameter.html#ts::output_parameter-T-'>parameter_type</a> = T;
+    
+    <a href='doc_output_parameter.html#ts::output_parameter-T-::output_parameter(T&)'>output_parameter</a>(T&amp; obj) noexcept;
+    
+    <a href='doc_output_parameter.html#ts::output_parameter-T-::output_parameter(constT&)'>output_parameter</a>(const T&amp;) = delete;
+    <a href='doc_output_parameter.html#ts::output_parameter-T-::output_parameter(constT&)'>output_parameter</a>(T&amp;&amp;) = delete;
+    <a href='doc_output_parameter.html#ts::output_parameter-T-::output_parameter(constT&)'>output_parameter</a>(const T&amp;&amp;) = delete;
+    
+    <a href='doc_output_parameter.html#ts::output_parameter-T-::output_parameter(deferred_construction-T-&)'>output_parameter</a>(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction&lt;T&gt;</a>&amp; out) noexcept;
+    
+    <a href='doc_output_parameter.html#ts::output_parameter-T-::output_parameter(constdeferred_construction-T-&)'>output_parameter</a>(const <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction&lt;T&gt;</a>&amp;) = delete;
+    <a href='doc_output_parameter.html#ts::output_parameter-T-::output_parameter(constdeferred_construction-T-&)'>output_parameter</a>(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction&lt;T&gt;</a>&amp;&amp;) = delete;
+    <a href='doc_output_parameter.html#ts::output_parameter-T-::output_parameter(constdeferred_construction-T-&)'>output_parameter</a>(const <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction&lt;T&gt;</a>&amp;&amp;) = delete;
+    
+    <a href='doc_output_parameter.html#ts::output_parameter-T-::output_parameter(output_parameter-T-&&)'>output_parameter</a>(<a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>&amp;&amp; other) noexcept;
+    
+    <a href='doc_output_parameter.html#ts::output_parameter-T-'>~output_parameter</a>() noexcept = default;
+    
+    <a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>&amp; <a href='doc_output_parameter.html#ts::output_parameter-T-::operator=(constoutput_parameter-T-&)'>operator=</a>(const <a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>&amp;) = delete;
+    <a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>&amp; <a href='doc_output_parameter.html#ts::output_parameter-T-::operator=(constoutput_parameter-T-&)'>operator=</a>(<a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>&amp;&amp;) = delete;
+    
+    template &lt;typename U&gt;
+    typename std::enable_if&lt;std::is_constructible&lt;T, decltype(std::forward&lt;U&gt;(u))&gt;::value, parameter_type&amp;&gt;::type <a href='doc_output_parameter.html#ts::output_parameter-T-::operator=(U&&)'>operator=</a>(U&amp;&amp; u);
+    
+    template &lt;typename ... Args&gt;
+    T&amp; <a href='doc_output_parameter.html#ts::output_parameter-T-'>assign</a>(Args&amp;&amp;... args);
+};</code></pre>
+<p>A tiny wrapper modelling an output parameter of a function.</p>
+<p>An output parameter is a parameter that will be used to transport output of a function to its caller, like a return value does. Usually they are implemented with lvalue references. They have a couple of disadvantages though:</p>
+<ul>
+<li>They require an already created object, i.e. a default constructor or similar.</li>
+<li>It is not obvious when just looking at the call that the argument will be changed.</li>
+<li>They make it easy to accidentally use them as regular parameters, i.e. reading their value, even though that was not intended.</li>
+</ul>
+<p>If you use this class as your output parameter type, you do not have these disadvantages. The creation is explicit, you cannot read the value, and it works with <a href="doc_deferred_construction.html#ts::deferred_construction-T-">ts::deferred_construction</a>.</p>
+<p><em>Notes</em>: While you could use this class in other locations besides parameters, this is not recommended.</p>
+<h3>Constructor <code>type_safe::output_parameter::output_parameter</code><a id="ts::output_parameter-T-::output_parameter(T&)"></a></h3>
+<pre><code class="language-cpp">output_parameter(T&amp; obj) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates it from an lvalue reference. All output will be assigned to the object referred by the reference.</p>
+<p><em>Requires</em>: The referred object must live as long as the function has not returned.</p>
+<h3>Constructor <code>type_safe::output_parameter::output_parameter</code><a id="ts::output_parameter-T-::output_parameter(constT&)"></a></h3>
+<pre><code class="language-cpp">(1)  output_parameter(const T&amp;) = delete;
+
+(2)  output_parameter(T&amp;&amp;) = delete;
+
+(3)  output_parameter(const T&amp;&amp;) = delete;</code></pre>
+<p></p>
+<h3>Constructor <code>type_safe::output_parameter::output_parameter</code><a id="ts::output_parameter-T-::output_parameter(deferred_construction-T-&)"></a></h3>
+<pre><code class="language-cpp">output_parameter(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction&lt;T&gt;</a>&amp; out) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates it from a <a href="doc_deferred_construction.html#ts::deferred_construction-T-">ts::deferred_construction</a> object. All output will be assigned or created in the storage of the defer construction object, depending on wheter it is initialized.</p>
+<p><em>Requires</em>: The referred object must live as long as the function has not returned.</p>
+<h3>Constructor <code>type_safe::output_parameter::output_parameter</code><a id="ts::output_parameter-T-::output_parameter(constdeferred_construction-T-&)"></a></h3>
+<pre><code class="language-cpp">(1)  output_parameter(const <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction&lt;T&gt;</a>&amp;) = delete;
+
+(2)  output_parameter(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction&lt;T&gt;</a>&amp;&amp;) = delete;
+
+(3)  output_parameter(const <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction&lt;T&gt;</a>&amp;&amp;) = delete;</code></pre>
+<p></p>
+<h3>Move constructor <code>type_safe::output_parameter::output_parameter</code><a id="ts::output_parameter-T-::output_parameter(output_parameter-T-&&)"></a></h3>
+<pre><code class="language-cpp">output_parameter(<a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>&amp;&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Moves an output parameter. This will put <code>other</code> in an invalid state, it must not be used afterwards.</p>
+<p><em>Notes</em>: This constructor is only there because guaranteed copy elision isn't available and otherwise the <code>out()</code> function could not be implemented. It is not intended to use it otherwise.</p>
+<h3>Assignment operator <code>type_safe::output_parameter::operator=</code><a id="ts::output_parameter-T-::operator=(constoutput_parameter-T-&)"></a></h3>
+<pre><code class="language-cpp">(1)  <a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>&amp; operator=(const <a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>&amp;) = delete;
+
+(2)  <a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>&amp; operator=(<a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter</a>&amp;&amp;) = delete;</code></pre>
+<p></p>
+<h3>Assignment operator <code>type_safe::output_parameter::operator=</code><a id="ts::output_parameter-T-::operator=(U&&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U&gt;
+typename std::enable_if&lt;std::is_constructible&lt;T, decltype(std::forward&lt;U&gt;(u))&gt;::value, parameter_type&amp;&gt;::type operator=(U&amp;&amp; u);</code></pre>
+<p></p>
+<p><em>Effects</em>: Same as <code>assign(std::forward&lt;U&gt;(u))</code>.</p>
+<p><em>Returns</em>: A reference to the value that was assigned, <em>not</em> <code>*this</code> as normal &quot;assignment&quot; operators. \requires <code>value_type</code> must be constructible from <code>U</code>. \synopsis_return parameter_type&amp;</p>
+<hr />
+<h2>Function template <code>type_safe::out</code><a id="ts::out(T&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter&lt;T&gt;</a> out(T&amp; obj) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A new <a href="doc_output_parameter.html#ts::output_parameter-T-">ts::output_parameter</a> using the reference <code>obj</code> as output.</p>
+<h2>Function template <code>type_safe::out</code><a id="ts::out(deferred_construction-T-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_output_parameter.html#ts::output_parameter-T-'>output_parameter&lt;T&gt;</a> out(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction&lt;T&gt;</a>&amp; o) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A new <a href="doc_output_parameter.html#ts::output_parameter-T-">ts::output_parameter</a> using the <a href="doc_deferred_construction.html#ts::deferred_construction-T-">ts::deferred_construction</a> as output.</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

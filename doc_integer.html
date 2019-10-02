@@ -1,0 +1,377 @@
+<h1>Header file <code>integer.hpp</code><a id="integer.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;typename IntegerT, class Policy&gt;
+    class <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>;
+    
+    template &lt;class Integer&gt;
+    using <a href='doc_integer.html#ts::make_signed_t-Integer-'>make_signed_t</a> = 'hidden';
+    
+    template &lt;typename Integer&gt;
+    constexpr <a href='doc_integer.html#ts::make_signed_t-Integer-'>make_signed_t&lt;Integer&gt;</a> <a href='doc_integer.html#ts::make_signed(constInteger&)'>make_signed</a>(const Integer&amp; i);
+    
+    template &lt;typename Integer, class Policy&gt;
+    constexpr <a href='doc_integer.html#ts::make_signed_t-Integer-'>make_signed_t&lt;integer&lt;Integer, Policy&gt;&gt;</a> <a href='doc_integer.html#ts::make_signed(constinteger-Integer,Policy-&)'>make_signed</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;Integer, Policy&gt;</a>&amp; i);
+    
+    template &lt;class Integer&gt;
+    using <a href='doc_integer.html#ts::make_unsigned_t-Integer-'>make_unsigned_t</a> = 'hidden';
+    
+    template &lt;typename Integer&gt;
+    constexpr <a href='doc_integer.html#ts::make_unsigned_t-Integer-'>make_unsigned_t&lt;Integer&gt;</a> <a href='doc_integer.html#ts::make_unsigned(constInteger&)'>make_unsigned</a>(const Integer&amp; i);
+    
+    template &lt;typename Integer, class Policy&gt;
+    constexpr <a href='doc_integer.html#ts::make_unsigned_t-Integer-'>make_unsigned_t&lt;integer&lt;Integer, Policy&gt;&gt;</a> <a href='doc_integer.html#ts::make_unsigned(constinteger-Integer,Policy-&)'>make_unsigned</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;Integer, Policy&gt;</a>&amp; i);
+    
+    template &lt;typename SignedInteger&gt;
+    constexpr <a href='doc_integer.html#ts::make_unsigned_t-Integer-'>make_unsigned_t&lt;SignedInteger&gt;</a> <a href='doc_integer.html#ts::abs(constSignedInteger&)'>abs</a>(const SignedInteger&amp; i);
+    
+    template &lt;typename SignedInteger, class Policy&gt;
+    constexpr <a href='doc_integer.html#ts::make_unsigned_t-Integer-'>make_unsigned_t&lt;integer&lt;SignedInteger, Policy&gt;&gt;</a> <a href='doc_integer.html#ts::abs(constinteger-SignedInteger,Policy-&)'>abs</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;SignedInteger, Policy&gt;</a>&amp; i);
+    
+    template &lt;typename UnsignedInteger&gt;
+    constexpr UnsignedInteger <a href='doc_integer.html#ts::abs(constUnsignedInteger&)'>abs</a>(const UnsignedInteger&amp; i);
+    
+    template &lt;typename UnsignedInteger, class Policy&gt;
+    constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;UnsignedInteger, Policy&gt;</a> <a href='doc_integer.html#ts::abs(constinteger-UnsignedInteger,Policy-&)'>abs</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;UnsignedInteger, Policy&gt;</a>&amp; i);
+    
+    //=== <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>Comparison operators</a> ===//
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator==</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator==</a>(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, class Policy, typename B&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator==</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator!=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator!=</a>(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, class Policy, typename B&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator!=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&lt;</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&lt;</a>(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, class Policy, typename B&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&lt;</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&lt;=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&lt;=</a>(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, class Policy, typename B&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&lt;=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&gt;</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&gt;</a>(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, class Policy, typename B&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&gt;</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&gt;=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&gt;=</a>(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, class Policy, typename B&gt;
+    constexpr bool <a href='doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator&gt;=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+    
+    //=== <a href='doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)'>Binary operations</a> ===//
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr 'hidden' <a href='doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator+</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr 'hidden' <a href='doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator-</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr 'hidden' <a href='doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator*</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr 'hidden' <a href='doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator/</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    template &lt;typename A, typename B, class Policy&gt;
+    constexpr 'hidden' <a href='doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)'>operator%</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+    
+    //=== <a href='doc_integer.html#ts::operator--(std::basic_istream-Char,CharTraits-&,integer-IntegerT,Policy-&)'>Input/output</a> ===//
+    template &lt;typename Char, class CharTraits, typename IntegerT, class Policy&gt;
+    <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; <a href='doc_integer.html#ts::operator--(std::basic_istream-Char,CharTraits-&,integer-IntegerT,Policy-&)'>operator&gt;&gt;</a>(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; in, <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;IntegerT, Policy&gt;</a>&amp; i);
+    
+    template &lt;typename Char, class CharTraits, typename IntegerT, class Policy&gt;
+    <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; <a href='doc_integer.html#ts::operator--(std::basic_ostream-Char,CharTraits-&,constinteger-IntegerT,Policy-&)'>operator&lt;&lt;</a>(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; out, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;IntegerT, Policy&gt;</a>&amp; i);
+}
+
+namespace <a href='doc_boolean.html#boolean.hpp'>std</a>
+{
+}</code></pre>
+<h2>Class template <code>type_safe::integer</code><a id="ts::integer-IntegerT,Policy-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename IntegerT, class Policy&gt;
+class integer
+{
+public:
+    using <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer_type</a> = IntegerT;
+    
+    template &lt;typename T&gt;
+    constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-::integer(constT&)'>integer</a>(const T&amp; val);
+    template &lt;typename T&gt;
+    constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-::integer(constT&)'>integer</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; val);
+    
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator=(constT&)'>operator=</a>(const T&amp; val);
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator=(constT&)'>operator=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; val);
+    
+    constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operatorinteger_type()const'>operator integer_type</a>() const noexcept;
+    constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer_type</a> <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operatorinteger_type()const'>get</a>() const noexcept;
+    
+    constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a> <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+()const'>operator+</a>() const;
+    
+    constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a> <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator-()const'>operator-</a>() const;
+    
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator++()'>operator++</a>();
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a> <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator++()'>operator++</a>(int);
+    
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator--()'>operator--</a>();
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a> <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator--()'>operator--</a>(int);
+    
+    //=== <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>Compound assignment</a> ===//
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>operator+=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; other);
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>operator+=</a>(const T&amp; other);
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>operator-=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; other);
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>operator-=</a>(const T&amp; other);
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>operator*=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; other);
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>operator*=</a>(const T&amp; other);
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>operator/=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; other);
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>operator/=</a>(const T&amp; other);
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>operator%=</a>(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; other);
+    template &lt;typename T&gt;
+    <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; <a href='doc_integer.html#ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)'>operator%=</a>(const T&amp; other);
+};</code></pre>
+<p>A type safe integer class.</p>
+<p>This is a tiny, no overhead wrapper over a standard integer type. It behaves exactly like the built-in types except that narrowing conversions are not allowed. It also checks against <code>unsigned</code> under/overflow in debug mode and marks it as undefined for the optimizer otherwise.</p>
+<p>A conversion is considered safe if both integer types have the same signedness and the size of the value being converted is less than or equal to the destination size.</p>
+<p><em>Requires</em>: <code>IntegerT</code> must be an integral type except <code>bool</code> and <code>char</code> (use <code>signed char</code>/<code>unsigned char</code>). \notes It intentionally does not provide the bitwise operations. \module types</p>
+<h3>Function template <code>type_safe::integer::integer</code><a id="ts::integer-IntegerT,Policy-::integer(constT&)"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     constexpr integer(const T&amp; val);
+
+(2)  template &lt;typename T&gt;
+     constexpr integer(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; val);</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes it with the given value.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution if <code>T</code> is not an integer type safely convertible to this type.</p>
+<h3>Assignment operator <code>type_safe::integer::operator=</code><a id="ts::integer-IntegerT,Policy-::operator=(constT&)"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator=(const T&amp; val);
+
+(2)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; val);</code></pre>
+<p></p>
+<p><em>Effects</em>: Assigns it with the given value.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution if <code>T</code> is not an integer type safely convertible to this type.</p>
+<h3>Conversion operator <code>type_safe::integer::operator integer_type</code><a id="ts::integer-IntegerT,Policy-::operatorinteger_type()const"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr operator integer_type() const noexcept;
+
+(2)  constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer_type</a> get() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The stored value as the native integer type.</p>
+<h3>Operator <code>type_safe::integer::operator+</code><a id="ts::integer-IntegerT,Policy-::operator+()const"></a></h3>
+<pre><code class="language-cpp">constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a> operator+() const;</code></pre>
+<p></p>
+<p><em>Returns</em>: The integer type unchanged.</p>
+<h3>Operator <code>type_safe::integer::operator-</code><a id="ts::integer-IntegerT,Policy-::operator-()const"></a></h3>
+<pre><code class="language-cpp">constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a> operator-() const;</code></pre>
+<p></p>
+<p><em>Returns</em>: The negative integer type.</p>
+<p><em>Requires</em>: The integer type must not be unsigned.</p>
+<h3>Operator <code>type_safe::integer::operator++</code><a id="ts::integer-IntegerT,Policy-::operator++()"></a></h3>
+<pre><code class="language-cpp">(1)  <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator++();
+
+(2)  <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a> operator++(int);</code></pre>
+<p></p>
+<p><em>Effects</em>: Increments the integer by one.</p>
+<h3>Operator <code>type_safe::integer::operator--</code><a id="ts::integer-IntegerT,Policy-::operator--()"></a></h3>
+<pre><code class="language-cpp">(1)  <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator--();
+
+(2)  <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a> operator--(int);</code></pre>
+<p></p>
+<p><em>Effects</em>: Decrements the integer by one.</p>
+<h3>Compound assignment<a id="ts::integer-IntegerT,Policy-::operator+=(constinteger-T,Policy-&)"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator+=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; other);
+
+(2)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator+=(const T&amp; other);
+
+(3)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator-=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; other);
+
+(4)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator-=(const T&amp; other);
+
+(5)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator*=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; other);
+
+(6)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator*=(const T&amp; other);
+
+(7)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator/=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; other);
+
+(8)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator/=(const T&amp; other);
+
+(9)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator%=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a>&amp; other);
+
+(10)  template &lt;typename T&gt;
+     <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer</a>&amp; operator%=(const T&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Same as the operation on the integer type.</p>
+<p><em>Notes</em>: These functions do not participate in overload resolution, if <code>T</code> is not an integer type safely convertible to this type.</p>
+<hr />
+<h2>Alias template <code>type_safe::make_signed_t</code> [types]<a id="ts::make_signed_t-Integer-"></a></h2>
+<pre><code class="language-cpp">template &lt;class Integer&gt;
+using make_signed_t = 'hidden';</code></pre>
+<p><a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::make_signed">std::make_signed</a> for <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a>.</p>
+<h2>Function template <code>type_safe::make_signed</code> [types]<a id="ts::make_signed(constInteger&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Integer&gt;
+constexpr <a href='doc_integer.html#ts::make_signed_t-Integer-'>make_signed_t&lt;Integer&gt;</a> make_signed(const Integer&amp; i);</code></pre>
+<p></p>
+<p><em>Returns</em>: A new integer of the corresponding signed integer type.</p>
+<p><em>Requires</em>: The value of <code>i</code> must fit into signed type.</p>
+<h2>Function template <code>type_safe::make_signed</code> [types]<a id="ts::make_signed(constinteger-Integer,Policy-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Integer, class Policy&gt;
+constexpr <a href='doc_integer.html#ts::make_signed_t-Integer-'>make_signed_t&lt;integer&lt;Integer, Policy&gt;&gt;</a> make_signed(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;Integer, Policy&gt;</a>&amp; i);</code></pre>
+<p></p>
+<p><em>Returns</em>: A new <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a> of the corresponding signed integer type.</p>
+<p><em>Requires</em>: The value of <code>i</code> must fit into signed type.</p>
+<h2>Alias template <code>type_safe::make_unsigned_t</code> [types]<a id="ts::make_unsigned_t-Integer-"></a></h2>
+<pre><code class="language-cpp">template &lt;class Integer&gt;
+using make_unsigned_t = 'hidden';</code></pre>
+<p><a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::make_unsigned">std::make_unsigned</a> for <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a>.</p>
+<h2>Function template <code>type_safe::make_unsigned</code> [types]<a id="ts::make_unsigned(constInteger&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Integer&gt;
+constexpr <a href='doc_integer.html#ts::make_unsigned_t-Integer-'>make_unsigned_t&lt;Integer&gt;</a> make_unsigned(const Integer&amp; i);</code></pre>
+<p></p>
+<p><em>Returns</em>: A new integer of the corresponding unsigned integer type.</p>
+<p><em>Requires</em>: The value of <code>i</code> must not be negative.</p>
+<h2>Function template <code>type_safe::make_unsigned</code> [types]<a id="ts::make_unsigned(constinteger-Integer,Policy-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Integer, class Policy&gt;
+constexpr <a href='doc_integer.html#ts::make_unsigned_t-Integer-'>make_unsigned_t&lt;integer&lt;Integer, Policy&gt;&gt;</a> make_unsigned(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;Integer, Policy&gt;</a>&amp; i);</code></pre>
+<p></p>
+<p><em>Returns</em>: A new <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a> of the corresponding unsigned integer type.</p>
+<p><em>Requires</em>: The value of <code>i</code> must not be negative.</p>
+<h2>Function template <code>type_safe::abs</code> [types]<a id="ts::abs(constSignedInteger&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename SignedInteger&gt;
+constexpr <a href='doc_integer.html#ts::make_unsigned_t-Integer-'>make_unsigned_t&lt;SignedInteger&gt;</a> abs(const SignedInteger&amp; i);</code></pre>
+<p></p>
+<p><em>Returns</em>: The absolute value of a built-in signed integer. It will be changed to the unsigned return type as well.</p>
+<h2>Function template <code>type_safe::abs</code> [types]<a id="ts::abs(constinteger-SignedInteger,Policy-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename SignedInteger, class Policy&gt;
+constexpr <a href='doc_integer.html#ts::make_unsigned_t-Integer-'>make_unsigned_t&lt;integer&lt;SignedInteger, Policy&gt;&gt;</a> abs(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;SignedInteger, Policy&gt;</a>&amp; i);</code></pre>
+<p></p>
+<p><em>Returns</em>: The absolute value of an <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a>.</p>
+<h2>Function template <code>type_safe::abs</code> [types]<a id="ts::abs(constUnsignedInteger&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename UnsignedInteger&gt;
+constexpr UnsignedInteger abs(const UnsignedInteger&amp; i);</code></pre>
+<p></p>
+<p><em>Returns</em>: <code>i</code> unchanged.</p>
+<p><em>Notes</em>: This is an optimization of <code>abs()</code> for unsigned integer types.</p>
+<h2>Function template <code>type_safe::abs</code> [types]<a id="ts::abs(constinteger-UnsignedInteger,Policy-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename UnsignedInteger, class Policy&gt;
+constexpr <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;UnsignedInteger, Policy&gt;</a> abs(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;UnsignedInteger, Policy&gt;</a>&amp; i);</code></pre>
+<p></p>
+<p><em>Returns</em>: <code>i</code> unchanged.</p>
+<p><em>Notes</em>: This is an optimization of <code>abs()</code> for unsigned integer types.</p>
+<h2>Comparison operators<a id="ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)"></a> [types]</h2>
+<pre><code class="language-cpp">(1)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator==(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(2)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator==(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(3)  template &lt;typename A, class Policy, typename B&gt;
+     constexpr bool operator==(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+
+(4)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator!=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(5)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator!=(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(6)  template &lt;typename A, class Policy, typename B&gt;
+     constexpr bool operator!=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+
+(7)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator&lt;(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(8)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator&lt;(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(9)  template &lt;typename A, class Policy, typename B&gt;
+     constexpr bool operator&lt;(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+
+(10)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator&lt;=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(11)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator&lt;=(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(12)  template &lt;typename A, class Policy, typename B&gt;
+     constexpr bool operator&lt;=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+
+(13)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator&gt;(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(14)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator&gt;(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(15)  template &lt;typename A, class Policy, typename B&gt;
+     constexpr bool operator&gt;(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);
+
+(16)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator&gt;=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(17)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr bool operator&gt;=(const A&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(18)  template &lt;typename A, class Policy, typename B&gt;
+     constexpr bool operator&gt;=(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const B&amp; b);</code></pre>
+<p></p>
+<p><em>Returns</em>: The result of the comparison of the stored integer value in the <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a>.</p>
+<p><em>Notes</em>: These functions do not participate in overload resolution unless <code>A</code> and <code>B</code> are both integer types.</p>
+<h2>Binary operations<a id="ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)"></a> [types]</h2>
+<pre><code class="language-cpp">(1)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr 'hidden' operator+(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(2)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr 'hidden' operator-(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(3)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr 'hidden' operator*(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(4)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr 'hidden' operator/(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);
+
+(5)  template &lt;typename A, typename B, class Policy&gt;
+     constexpr 'hidden' operator%(const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;A, Policy&gt;</a>&amp; a, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;B, Policy&gt;</a>&amp; b);</code></pre>
+<p></p>
+<p><em>Returns</em>: The result of the binary operation of the stored integer value in the <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a>. The type is a <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a> of the bigger integer type.</p>
+<p><em>Notes</em>: These functions do not participate in overload resolution, unless <code>A</code> and <code>B</code> are both integer types.</p>
+<h2>Input operator <code>type_safe::operator&gt;&gt;</code> [types]<a id="ts::operator--(std::basic_istream-Char,CharTraits-&,integer-IntegerT,Policy-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Char, class CharTraits, typename IntegerT, class Policy&gt;
+<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; operator&gt;&gt;(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; in, <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;IntegerT, Policy&gt;</a>&amp; i);</code></pre>
+<p></p>
+<p><em>Effects</em>: Reads an integer from the <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::istream">std::istream</a> and assigns it to the given <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a>.</p>
+<h2>Output operator <code>type_safe::operator&lt;&lt;</code><a id="ts::operator--(std::basic_ostream-Char,CharTraits-&,constinteger-IntegerT,Policy-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Char, class CharTraits, typename IntegerT, class Policy&gt;
+<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; operator&lt;&lt;(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; out, const <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;IntegerT, Policy&gt;</a>&amp; i);</code></pre>
+<p></p>
+<p><em>Effects</em>: Converts the given <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a> to the underlying integer type and writes it to th <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ostream">std::ostream</a>. \module types</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

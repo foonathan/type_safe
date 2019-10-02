@@ -1,0 +1,1341 @@
+---
+layout: docs
+title: type_safe - Zero overhead abstractions for more type safety
+project: type_safe
+---
+
+<ul>
+<li>
+<p><a href="doc_config.html#TYPE_SAFE_ARITHMETIC_UB" title="TYPE_SAFE_ARITHMETIC_UB">TYPE_SAFE_ARITHMETIC_UB</a> - Controls whether <a href="doc_arithmetic_policy.html#ts::arithmetic_policy_default">ts::arithmetic_policy_default</a> is <a href="doc_arithmetic_policy.html#ts::undefined_behavior_arithmetic">ts::undefined_behavior_arithmetic</a> or <a href="doc_arithmetic_policy.html#ts::default_arithmetic">ts::default_arithmetic</a>.</p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#strong_typedef.hpp" title="TYPE_SAFE_DETAIL_MAKE_OP_MIXED">TYPE_SAFE_DETAIL_MAKE_OP_MIXED</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#strong_typedef.hpp" title="TYPE_SAFE_DETAIL_MAKE_OP_OTHER_STRONGTYPEDEF">TYPE_SAFE_DETAIL_MAKE_OP_OTHER_STRONGTYPEDEF</a></p>
+</li>
+<li>
+<p><a href="doc_config.html#TYPE_SAFE_ENABLE_ASSERTIONS" title="TYPE_SAFE_ENABLE_ASSERTIONS">TYPE_SAFE_ENABLE_ASSERTIONS</a> - Controls whether internal assertions are enabled.</p>
+</li>
+<li>
+<p><a href="doc_config.html#TYPE_SAFE_ENABLE_PRECONDITION_CHECKS" title="TYPE_SAFE_ENABLE_PRECONDITION_CHECKS">TYPE_SAFE_ENABLE_PRECONDITION_CHECKS</a> - Controls whether preconditions are checked.</p>
+</li>
+<li>
+<p><a href="doc_config.html#TYPE_SAFE_ENABLE_WRAPPER" title="TYPE_SAFE_ENABLE_WRAPPER">TYPE_SAFE_ENABLE_WRAPPER</a> - Controls whether the typedefs in <a href="doc_types.html#types.hpp">types.hpp</a> use the type safe wrapper types.</p>
+</li>
+<li>
+<p><a href="doc_config.html#config.hpp" title="TYPE_SAFE_USE_RTTI">TYPE_SAFE_USE_RTTI</a></p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#operator%7c(constEnum&,constEnum&)" title="operator|(const Enum &amp;, const Enum &amp;)">operator|(const Enum &amp;, const Enum &amp;)</a> - Creates a <a href="doc_flag_set.html#ts::flag_combo-Enum-">ts::flag_combo</a> from two enums.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#operator~(constEnum&)" title="operator~(const Enum &amp;)">operator~(const Enum &amp;)</a> - Creates a <a href="doc_flag_set.html#ts::flag_mask-Enum-">ts::flag_mask</a> for the single enum value.</p>
+</li>
+<li>
+<p><code>type_safe</code></p>
+<ul>
+<li>
+<p><a href="doc_constrained_type.html#constrain" title="constrain">constrain(T &amp;&amp;, Constraint)</a> - Creates a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> with the default verifier, <a href="doc_constrained_type.html#ts::assertion_verifier">ts::assertion_verifier</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#constrain_verifier" title="constrain_verifier">constrain(T &amp;&amp;, Constraint)</a> - Creates a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#constrained_type_ref" title="constrained_type_ref">constrained_type&lt;T&amp;, Constraint, Verifier&gt;</a> - Specialization of <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> for references.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::abs(constSignedInteger&)" title="ts::abs(const SignedInteger &amp;)">abs(const SignedInteger &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::abs(constUnsignedInteger&)" title="ts::abs(const UnsignedInteger &amp;)">abs(const UnsignedInteger &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::abs(constinteger-SignedInteger,Policy-&)" title="ts::abs(const integer&lt;SignedInteger, Policy&gt; &amp;)">abs(const integer&lt;SignedInteger, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::abs(constinteger-UnsignedInteger,Policy-&)" title="ts::abs(const integer&lt;UnsignedInteger, Policy&gt; &amp;)">abs(const integer&lt;UnsignedInteger, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::advance(type_safe::index_t&,consttype_safe::difference_t&)" title="ts::advance(type_safe::index_t &amp;, const type_safe::difference_t &amp;)">advance(type_safe::index_t &amp;, const type_safe::difference_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_arithmetic_policy.html#ts::arithmetic_policy_default" title="ts::arithmetic_policy_default">arithmetic_policy_default</a> - The default <code>ArithmeticPolicy</code>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::array_ref-T,XValue-" title="ts::array_ref&lt;T, XValue&gt;">array_ref</a> - A reference to an array of objects of type <code>T</code>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::array_xvalue_ref-T-" title="ts::array_xvalue_ref&lt;T&gt;">array_xvalue_ref</a> - Convenience alias for <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a> where <code>XValue</code> is <code>true</code>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::assertion_verifier" title="ts::assertion_verifier">assertion_verifier</a> - A <code>Verifier</code> for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that <code>DEBUG_ASSERT</code>s the constraint.</p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::at(Indexable&&,consttype_safe::index_t&)" title="ts::at(Indexable &amp;&amp;, const type_safe::index_t &amp;)">at(Indexable &amp;&amp;, const type_safe::index_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::basic_optional-StoragePolicy-" title="ts::basic_optional&lt;StoragePolicy&gt;">basic_optional</a> - An optional type, i.e. a type that may or may not be there.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-" title="ts::basic_variant&lt;VariantPolicy, HeadT, TailT...&gt;">basic_variant</a> - An improved <code>union</code> storing at most one of the given types at a time (or possibly none).</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::boolean" title="ts::boolean">boolean</a> - A type safe boolean class.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-" title="ts::bounded_type&lt;T, LowerInclusive, UpperInclusive, LowerBound, UpperBound, Verifier&gt;">bounded_type</a> - An alias for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that uses <a href="doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-">ts::constraints::bounded</a> as its <code>Constraint</code>. \notes This is some type where the values must be in a certain interval.</p>
+</li>
+<li>
+<p><a href="doc_arithmetic_policy.html#ts::checked_arithmetic" title="ts::checked_arithmetic">checked_arithmetic</a> - An <code>ArithmeticPolicy</code> where under/overflow throws an exception.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::clamp(constconstraints::closed_interval-T,LowerBound,UpperBound-&,U&&)" title="ts::clamp(const constraints::closed_interval&lt;T, LowerBound, UpperBound&gt; &amp;, U &amp;&amp;)">clamp(const constraints::closed_interval&lt;T, LowerBound, UpperBound&gt; &amp;, U &amp;&amp;)</a> - Returns a copy of <code>val</code> so that it is in the given <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::clamped_type-T,LowerBound,UpperBound-" title="ts::clamped_type&lt;T, LowerBound, UpperBound&gt;">clamped_type</a> - An alias for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that uses <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a> as its <code>Constraint</code> and <a href="doc_bounded_type.html#ts::clamping_verifier">ts::clamping_verifier</a> as its <code>Verifier</code>. \notes This is some type where the values are always clamped so that they are in a certain interval.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::clamping_verifier" title="ts::clamping_verifier">clamping_verifier</a> - A <code>Verifier</code> for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that clamps the value to make it valid.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::combo(constflag_mask-Enum-&)" title="ts::combo(const flag_mask&lt;Enum&gt; &amp;)">combo(const flag_mask&lt;Enum&gt; &amp;)</a> - Converts a flag mask to a flag combination.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::combo(constflag_set-Enum-&)" title="ts::combo(const flag_set&lt;Enum&gt; &amp;)">combo(const flag_set&lt;Enum&gt; &amp;)</a> - Converts a <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a> to a flag combination.</p>
+</li>
+<li>
+<p><a href="doc_compact_optional.html#ts::compact_bool_policy-Boolean-" title="ts::compact_bool_policy&lt;Boolean&gt;">compact_bool_policy</a> - A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for boolean types.</p>
+</li>
+<li>
+<p><a href="doc_compact_optional.html#ts::compact_container_policy-Container-" title="ts::compact_container_policy&lt;Container&gt;">compact_container_policy</a> - A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for container types.</p>
+</li>
+<li>
+<p><a href="doc_compact_optional.html#ts::compact_enum_policy-Enum,Invalid-" title="ts::compact_enum_policy&lt;Enum, Invalid&gt;">compact_enum_policy</a> - A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for enumeration types.</p>
+</li>
+<li>
+<p><a href="doc_compact_optional.html#ts::compact_floating_point_policy-FloatingPoint-" title="ts::compact_floating_point_policy&lt;FloatingPoint&gt;">compact_floating_point_policy</a> - A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for floating point types.</p>
+</li>
+<li>
+<p><a href="doc_compact_optional.html#ts::compact_integer_policy-Integer,Invalid-" title="ts::compact_integer_policy&lt;Integer, Invalid&gt;">compact_integer_policy</a> - A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for integer types.</p>
+</li>
+<li>
+<p><a href="doc_compact_optional.html#ts::compact_optional-CompactPolicy-" title="ts::compact_optional&lt;CompactPolicy&gt;">compact_optional</a> - An alias for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> using <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> with the given <code>CompactPolicy</code>. \module optional</p>
+</li>
+<li>
+<p><a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-" title="ts::compact_optional_storage&lt;CompactPolicy&gt;">compact_optional_storage</a> - A <code>StoragePolicy</code> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that is more space efficient than <a href="doc_optional.html#ts::direct_optional_storage-T-">ts::direct_optional_storage</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::constrain_error" title="ts::constrain_error">constrain_error</a> - The exception class thrown by the <a href="doc_constrained_type.html#ts::throwing_verifier">ts::throwing_verifier</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-" title="ts::constrained_modifier&lt;T, Constraint, Verifier&gt;">constrained_modifier</a> - A proxy class to provide write access to the stored value of a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::constrained_ref-T,Constraint,Verifier-" title="ts::constrained_ref&lt;T, Constraint, Verifier&gt;">constrained_ref</a> - Alias for <a href="standardese://ts::constrained_type_ref/">ts::constrained_type&lt;T&amp;&gt;</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-" title="ts::constrained_type&lt;T, Constraint, Verifier&gt;">constrained_type</a> - A value of type <code>T</code> that always fulfills the predicate <code>Constraint</code>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::copy(constobject_ref-T-&)" title="ts::copy(const object_ref&lt;T&gt; &amp;)">copy(const object_ref&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::copy(constoptional_ref-T-&)" title="ts::copy(const optional_ref&lt;T&gt; &amp;)">copy(const optional_ref&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::copy_union" title="ts::copy_union">copy(tagged_union&lt;Types...&gt; &amp;, const tagged_union&lt;Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::ref(T&)" title="ts::cref(const T &amp;)">cref(const T &amp;)</a> - Creates a (const) <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::cref(constT(&)%5bSize%5d)" title="ts::cref(const T (&amp;)[Size])">cref(const T (&amp;)[Size])</a> - Creates a <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a> to <code>const</code>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::cref(constT(&)%5bSize%5d)" title="ts::cref(const T *, const T *)">cref(const T *, const T *)</a> - Creates a <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a> to <code>const</code>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::cref(constT(&)%5bSize%5d)" title="ts::cref(const T *, size_t)">cref(const T *, size_t)</a> - Creates a <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a> to <code>const</code>.</p>
+</li>
+<li>
+<p><a href="doc_arithmetic_policy.html#ts::default_arithmetic" title="ts::default_arithmetic">default_arithmetic</a> - An <code>ArithmeticPolicy</code> that behaves like the default integer implementations: Signed under/overflow is UB, unsigned under/overflow wraps around.</p>
+</li>
+<li>
+<p><a href="doc_deferred_construction.html#ts::deferred_construction-T-" title="ts::deferred_construction&lt;T&gt;">deferred_construction</a> - A tiny wrapper to create an object without constructing it yet.</p>
+</li>
+<li>
+<p><a href="doc_downcast.html#ts::derived_type-T-" title="ts::derived_type&lt;T&gt;">derived_type</a> - Tag type to specify the derived type of a <a href="doc_downcast.html#ts::downcast(Base&)">ts::downcast</a>.</p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::destroy(tagged_union-Types...-&)" title="ts::destroy(tagged_union&lt;Types...&gt; &amp;)">destroy(tagged_union&lt;Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::difference_t" title="ts::difference_t">difference_t</a> - A type modelling the difference between two <a href="doc_index.html#ts::index_t">ts::index_t</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::direct_optional_storage-T-" title="ts::direct_optional_storage&lt;T&gt;">direct_optional_storage</a> - A <code>StoragePolicy</code> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that is similar to <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::optional%3cT%3e">std::optional&lt;T&gt;</a>'s implementation.</p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::distance(consttype_safe::index_t&,consttype_safe::index_t&)" title="ts::distance(const type_safe::index_t &amp;, const type_safe::index_t &amp;)">distance(const type_safe::index_t &amp;, const type_safe::index_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_downcast.html#ts::downcast(Base&)" title="ts::downcast(Base &amp;)">downcast(Base &amp;)</a> - Casts an object of base class type to the derived class type.</p>
+</li>
+<li>
+<p><a href="doc_downcast.html#ts::downcast(derived_type-Derived-,Base&)" title="ts::downcast(derived_type&lt;Derived&gt;, Base &amp;)">downcast(derived_type&lt;Derived&gt;, Base &amp;)</a> - Casts an object of base class type to the derived class type.</p>
+</li>
+<li>
+<p><a href="doc_downcast.html#ts::downcast(derived_type-Derived-,Base&)" title="ts::downcast(derived_type&lt;Derived&gt;, const Base &amp;)">downcast(derived_type&lt;Derived&gt;, const Base &amp;)</a> - Casts an object of base class type to the derived class type.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::equal_to">equal_to</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::fallback_variant-Fallback,OtherTypes...-" title="ts::fallback_variant&lt;Fallback, OtherTypes...&gt;">fallback_variant</a> - A <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> using the <a href="doc_variant.html#ts::fallback_variant_policy-Fallback-">ts::fallback_variant_policy</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::fallback_variant_policy-Fallback-" title="ts::fallback_variant_policy&lt;Fallback&gt;">fallback_variant_policy</a> - A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that uses a fallback type.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::flag" title="ts::flag">flag</a> - A type safe flag, it can either be <code>true</code> or <code>false</code>.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::flag_combo-Enum-" title="ts::flag_combo&lt;Enum&gt;">flag_combo</a> - Represents a combination of multiple flags.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::flag_mask-Enum-" title="ts::flag_mask&lt;Enum&gt;">flag_mask</a> - Represents a mask of flags.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::flag_set-Enum-" title="ts::flag_set&lt;Enum&gt;">flag_set</a> - A set of flags where each one can either be <code>0</code> or <code>1</code>.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::flag_set_traits-Enum-" title="ts::flag_set_traits&lt;Enum&gt;">flag_set_traits</a> - Traits for the enum used in a <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a>.</p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::floating_point-FloatT-" title="ts::floating_point&lt;FloatT&gt;">floating_point</a> - A type safe floating point class.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::function_ref-Return(Args...)-" title="ts::function_ref&lt;Return(Args...)&gt;">function_ref&lt;Return(Args...)&gt;</a> - A reference to a function.</p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::get(strong_typedef-Tag,T-&)" title="ts::get(const strong_typedef&lt;Tag, T&gt; &amp;&amp;)">get(const strong_typedef&lt;Tag, T&gt; &amp;&amp;)</a> - Accesses the underlying value.</p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::get(strong_typedef-Tag,T-&)" title="ts::get(const strong_typedef&lt;Tag, T&gt; &amp;)">get(const strong_typedef&lt;Tag, T&gt; &amp;)</a> - Accesses the underlying value.</p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::get(strong_typedef-Tag,T-&)" title="ts::get(strong_typedef&lt;Tag, T&gt; &amp;&amp;)">get(strong_typedef&lt;Tag, T&gt; &amp;&amp;)</a> - Accesses the underlying value.</p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::get(strong_typedef-Tag,T-&)" title="ts::get(strong_typedef&lt;Tag, T&gt; &amp;)">get(strong_typedef&lt;Tag, T&gt; &amp;)</a> - Accesses the underlying value.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::greater">greater</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::greater_equal">greater_equal</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::hashable-StrongTypedef-" title="ts::hashable&lt;StrongTypedef&gt;">hashable</a> - Inherit from it in the <code>std::hash&lt;StrongTypedef&gt;</code> specialization to make it hashable like the underlying type. See example/strong_typedef.cpp.</p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::index_t" title="ts::index_t">index_t</a> - A type modelling an index into an array.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::integer-IntegerT,Policy-" title="ts::integer&lt;IntegerT, Policy&gt;">integer</a> - A type safe integer class.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::less">less</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::less_equal">less_equal</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::make_bounded(T&&,U1&&,U2&&)" title="ts::make_bounded(T &amp;&amp;, U1 &amp;&amp;, U2 &amp;&amp;)">make_bounded(T &amp;&amp;, U1 &amp;&amp;, U2 &amp;&amp;)</a> - Creates a <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> to a specified <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::make_bounded_exclusive(T&&,U1&&,U2&&)" title="ts::make_bounded_exclusive(T &amp;&amp;, U1 &amp;&amp;, U2 &amp;&amp;)">make_bounded_exclusive(T &amp;&amp;, U1 &amp;&amp;, U2 &amp;&amp;)</a> - Creates a <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> to a specified <a href="doc_bounded_type.html#ts::constraints::open_interval-T,LowerBound,UpperBound-">ts::constraints::open_interval</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::make_clamped(T&&,U1&&,U2&&)" title="ts::make_clamped(T &amp;&amp;, U1 &amp;&amp;, U2 &amp;&amp;)">make_clamped(T &amp;&amp;, U1 &amp;&amp;, U2 &amp;&amp;)</a> - Creates a <a href="doc_bounded_type.html#ts::clamped_type-T,LowerBound,UpperBound-">ts::clamped_type</a> from the specified <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::make_optional(Args&&...)" title="ts::make_optional(Args &amp;&amp;...)">make_optional(Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::make_optional(T&&)" title="ts::make_optional(T &amp;&amp;)">make_optional(T &amp;&amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_signed(constInteger&)" title="ts::make_signed(const Integer &amp;)">make_signed(const Integer &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_signed(constinteger-Integer,Policy-&)" title="ts::make_signed(const integer&lt;Integer, Policy&gt; &amp;)">make_signed(const integer&lt;Integer, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_signed_t-Integer-" title="ts::make_signed_t&lt;Integer&gt;">make_signed_t</a> - <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::make_signed">std::make_signed</a> for <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a>.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_unsigned(constInteger&)" title="ts::make_unsigned(const Integer &amp;)">make_unsigned(const Integer &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_unsigned(constinteger-Integer,Policy-&)" title="ts::make_unsigned(const integer&lt;Integer, Policy&gt; &amp;)">make_unsigned(const integer&lt;Integer, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_unsigned_t-Integer-" title="ts::make_unsigned_t&lt;Integer&gt;">make_unsigned_t</a> - <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::make_unsigned">std::make_unsigned</a> for <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a>.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::mask(constEnum&)" title="ts::mask(const Enum &amp;)">mask(const Enum &amp;)</a> - Converts a flag combination to a flag mask.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::mask(constEnum&)" title="ts::mask(const flag_combo&lt;Enum&gt; &amp;)">mask(const flag_combo&lt;Enum&gt; &amp;)</a> - Converts a flag combination to a flag mask.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::mask(constflag_set-Enum-&)" title="ts::mask(const flag_set&lt;Enum&gt; &amp;)">mask(const flag_set&lt;Enum&gt; &amp;)</a> - Converts a <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a> to a flag mask.</p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::move(constoptional_xvalue_ref-T-&)" title="ts::move(const optional_xvalue_ref&lt;T&gt; &amp;)">move(const optional_xvalue_ref&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::copy(constobject_ref-T-&)" title="ts::move(const xvalue_ref&lt;T&gt; &amp;)">move(const xvalue_ref&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::copy_union" title="ts::move_union">move(tagged_union&lt;Types...&gt; &amp;, tagged_union&lt;Types...&gt; &amp;&amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_narrow_cast.html#ts::narrow_cast(constSource&)" title="ts::narrow_cast(const Source &amp;)">narrow_cast(const Source &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_narrow_cast.html#ts::narrow_cast(constfloating_point-Source-&)" title="ts::narrow_cast(const floating_point&lt;Source&gt; &amp;)">narrow_cast(const floating_point&lt;Source&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_narrow_cast.html#ts::narrow_cast(constinteger-Source,Policy-&)" title="ts::narrow_cast(const integer&lt;Source, Policy&gt; &amp;)">narrow_cast(const integer&lt;Source, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::never_empty_variant_policy" title="ts::never_empty_variant_policy">never_empty_variant_policy</a> - A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that creates a variant which is never empty.</p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::next(consttype_safe::index_t&,consttype_safe::difference_t&)" title="ts::next(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)">next(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::noflag" title="ts::noflag">noflag</a> - Tag object of type <a href="doc_flag_set.html#ts::noflag_t">ts::noflag_t</a>.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::noflag_t" title="ts::noflag_t">noflag_t</a> - Tag type to mark a <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a> without any flags set.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::not_equal_to">not_equal_to</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::null_verifier" title="ts::null_verifier">null_verifier</a> - A <code>Verifier</code> for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that doesn't check the constraint.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::nullopt" title="ts::nullopt">nullopt</a> - Tag object of type <a href="doc_optional.html#ts::nullopt_t">ts::nullopt_t</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::nullopt_t" title="ts::nullopt_t">nullopt_t</a> - Tag type to mark a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> without a value.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::nullvar" title="ts::nullvar">nullvar</a> - Tag object of type <a href="doc_variant.html#ts::nullvar_t">ts::nullvar_t</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::nullvar_t" title="ts::nullvar_t">nullvar_t</a> - Tag type to mark a <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> without a value.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::object_ref-T,XValue-" title="ts::object_ref&lt;T, XValue&gt;">object_ref</a> - A reference to an object of some type <code>T</code>.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator!=(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator!=(T, const type_safe::boolean &amp;)">operator!=(T, const type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator!=(type_safe::flag,type_safe::flag)" title="ts::operator!=(T, type_safe::flag)">operator!=(T, type_safe::flag)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator!=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">operator!=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)" title="ts::operator!=(const FlagCombo &amp;, const flag_set&lt;Enum&gt; &amp;)">operator!=(const FlagCombo &amp;, const flag_set&lt;Enum&gt; &amp;)</a> - <code>flag_set</code> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator!=(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator!=(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)" title="ts::operator!=(const T &amp;, const object_ref&lt;U, XValue&gt; &amp;)">operator!=(const T &amp;, const object_ref&lt;U, XValue&gt; &amp;)</a> - Comparison operator for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator!=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator!=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator!=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">operator!=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator!=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator!=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator!=(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)">operator!=(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator!=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)">operator!=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator!=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator!=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator!=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)">operator!=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)</a></p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)" title="ts::operator!=(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)">operator!=(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)</a> - Compares a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)" title="ts::operator!=(const flag_set&lt;Enum&gt; &amp;, const FlagCombo &amp;)">operator!=(const flag_set&lt;Enum&gt; &amp;, const FlagCombo &amp;)</a> - <code>flag_set</code> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)" title="ts::operator!=(const flag_set&lt;Enum&gt; &amp;, const flag_set&lt;Enum&gt; &amp;)">operator!=(const flag_set&lt;Enum&gt; &amp;, const flag_set&lt;Enum&gt; &amp;)</a> - <code>flag_set</code> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)" title="ts::operator!=(const flag_set&lt;Enum&gt; &amp;, type_safe::noflag_t)">operator!=(const flag_set&lt;Enum&gt; &amp;, type_safe::noflag_t)</a> - <code>flag_set</code> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator!=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">operator!=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator!=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator!=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)" title="ts::operator!=(const object_ref&lt;T, XValue&gt; &amp;, U &amp;)">operator!=(const object_ref&lt;T, XValue&gt; &amp;, U &amp;)</a> - Comparison operator for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)" title="ts::operator!=(const object_ref&lt;T, XValue&gt; &amp;, const object_ref&lt;U, XValue&gt; &amp;)">operator!=(const object_ref&lt;T, XValue&gt; &amp;, const object_ref&lt;U, XValue&gt; &amp;)</a> - Comparison operator for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator!=(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator!=(const type_safe::boolean &amp;, T)">operator!=(const type_safe::boolean &amp;, T)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator!=(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator!=(const type_safe::boolean &amp;, const type_safe::boolean &amp;)">operator!=(const type_safe::boolean &amp;, const type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator!=(type_safe::flag,type_safe::flag)" title="ts::operator!=(type_safe::flag, T)">operator!=(type_safe::flag, T)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator!=(type_safe::flag,type_safe::flag)" title="ts::operator!=(type_safe::flag, type_safe::flag)">operator!=(type_safe::flag, type_safe::flag)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)" title="ts::operator!=(type_safe::noflag_t, const flag_set&lt;Enum&gt; &amp;)">operator!=(type_safe::noflag_t, const flag_set&lt;Enum&gt; &amp;)</a> - <code>flag_set</code> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator!=(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator!=(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator!=(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator!=(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator%(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator%(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator&(constflag_set-Enum-&,constFlagCombo&)" title="ts::operator&amp;(const FlagCombo &amp;, const flag_set&lt;Enum&gt; &amp;)">operator&amp;(const FlagCombo &amp;, const flag_set&lt;Enum&gt; &amp;)</a> - Checks whether a combination of flags is set in <code>a</code>.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)" title="ts::operator&amp;(const flag_mask&lt;Enum&gt; &amp;, const flag_set&lt;Enum&gt; &amp;)">operator&amp;(const flag_mask&lt;Enum&gt; &amp;, const flag_set&lt;Enum&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator&(constflag_set-Enum-&,constFlagCombo&)" title="ts::operator&amp;(const flag_set&lt;Enum&gt; &amp;, const FlagCombo &amp;)">operator&amp;(const flag_set&lt;Enum&gt; &amp;, const FlagCombo &amp;)</a> - Checks whether a combination of flags is set in <code>a</code>.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)" title="ts::operator&amp;(const flag_set&lt;Enum&gt; &amp;, const flag_mask&lt;Enum&gt; &amp;)">operator&amp;(const flag_set&lt;Enum&gt; &amp;, const flag_mask&lt;Enum&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator*(const A &amp;, const floating_point&lt;B&gt; &amp;)">operator*(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator*(const floating_point&lt;A&gt; &amp;, const B &amp;)">operator*(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator*(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">operator*(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator*(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator*(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator+(const A &amp;, const floating_point&lt;B&gt; &amp;)">operator+(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator+(const floating_point&lt;A&gt; &amp;, const B &amp;)">operator+(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator+(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">operator+(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator+(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator+(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::operator+(consttype_safe::index_t&,consttype_safe::difference_t&)" title="ts::operator+(const type_safe::difference_t &amp;, const type_safe::index_t &amp;)">operator+(const type_safe::difference_t &amp;, const type_safe::index_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::operator+(consttype_safe::index_t&,consttype_safe::difference_t&)" title="ts::operator+(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)">operator+(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator-(const A &amp;, const floating_point&lt;B&gt; &amp;)">operator-(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator-(const floating_point&lt;A&gt; &amp;, const B &amp;)">operator-(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator-(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">operator-(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator-(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator-(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::operator-(consttype_safe::index_t&,consttype_safe::difference_t&)" title="ts::operator-(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)">operator-(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::operator-(consttype_safe::index_t&,consttype_safe::index_t&)" title="ts::operator-(const type_safe::index_t &amp;, const type_safe::index_t &amp;)">operator-(const type_safe::index_t &amp;, const type_safe::index_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator/(const A &amp;, const floating_point&lt;B&gt; &amp;)">operator/(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator/(const floating_point&lt;A&gt; &amp;, const B &amp;)">operator/(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator/(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">operator/(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator/(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator/(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&lt;(const A &amp;, const floating_point&lt;B&gt; &amp;)">operator&lt;(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">operator&lt;(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&lt;(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&lt;(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&lt;(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&lt;(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&lt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">operator&lt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator&lt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&lt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator&lt;(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)">operator&lt;(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&lt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)">operator&lt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&lt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&lt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&lt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)">operator&lt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)</a></p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)" title="ts::operator&lt;(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)">operator&lt;(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)</a> - Compares a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&lt;(const floating_point&lt;A&gt; &amp;, const B &amp;)">operator&lt;(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator&lt;(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">operator&lt;(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">operator&lt;(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator&lt;(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator&lt;(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&lt;(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&lt;(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&lt;(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator--(std::basic_ostream-Char,CharTraits-&,constfloating_point-FloatT-&)" title="ts::operator&lt;&lt;(std::basic_ostream&lt;Char, CharTraits&gt; &amp;, const floating_point&lt;FloatT&gt; &amp;)">operator&lt;&lt;(std::basic_ostream&lt;Char, CharTraits&gt; &amp;, const floating_point&lt;FloatT&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator--(std::basic_ostream-Char,CharTraits-&,constinteger-IntegerT,Policy-&)" title="ts::operator&lt;&lt;(std::basic_ostream&lt;Char, CharTraits&gt; &amp;, const integer&lt;IntegerT, Policy&gt; &amp;)">operator&lt;&lt;(std::basic_ostream&lt;Char, CharTraits&gt; &amp;, const integer&lt;IntegerT, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator--(std::basic_ostream-Char,CharTraits-&,consttype_safe::boolean&)" title="ts::operator&lt;&lt;(std::basic_ostream&lt;Char, CharTraits&gt; &amp;, const type_safe::boolean &amp;)">operator&lt;&lt;(std::basic_ostream&lt;Char, CharTraits&gt; &amp;, const type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> output operator.</p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&lt;=(const A &amp;, const floating_point&lt;B&gt; &amp;)">operator&lt;=(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">operator&lt;=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&lt;=(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&lt;=(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&lt;=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&lt;=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&lt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">operator&lt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator&lt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&lt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator&lt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)">operator&lt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&lt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)">operator&lt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&lt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&lt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&lt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)">operator&lt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)</a></p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)" title="ts::operator&lt;=(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)">operator&lt;=(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)</a> - Compares a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&lt;=(const floating_point&lt;A&gt; &amp;, const B &amp;)">operator&lt;=(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&lt;=(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">operator&lt;=(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">operator&lt;=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator&lt;=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator&lt;=(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&lt;=(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&lt;=(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&lt;=(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator==(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator==(T, const type_safe::boolean &amp;)">operator==(T, const type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator==(type_safe::flag,type_safe::flag)" title="ts::operator==(T, type_safe::flag)">operator==(T, type_safe::flag)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator==(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">operator==(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)" title="ts::operator==(const FlagCombo &amp;, const flag_set&lt;Enum&gt; &amp;)">operator==(const FlagCombo &amp;, const flag_set&lt;Enum&gt; &amp;)</a> - <code>flag_set</code> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator==(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator==(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)" title="ts::operator==(const T &amp;, const object_ref&lt;U, XValue&gt; &amp;)">operator==(const T &amp;, const object_ref&lt;U, XValue&gt; &amp;)</a> - Comparison operator for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator==(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator==(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator==(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">operator==(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator==(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator==(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,type_safe::nullopt_t)" title="ts::operator==(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)">operator==(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)</a> - Comparison of <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with <a href="doc_optional.html#ts::nullopt">ts::nullopt</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constbasic_variant-VariantPolicy,Head,Types...-&,constT&)" title="ts::operator==(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)">operator==(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)</a> - Compares a <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator==(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator==(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a> - Compares two <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a>s.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constbasic_variant-VariantPolicy,Head,Types...-&,type_safe::nullvar_t)" title="ts::operator==(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)">operator==(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)</a> - Compares a <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> with <a href="doc_variant.html#ts::nullvar">ts::nullvar</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)" title="ts::operator==(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)">operator==(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)</a> - Compares a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)" title="ts::operator==(const flag_set&lt;Enum&gt; &amp;, const FlagCombo &amp;)">operator==(const flag_set&lt;Enum&gt; &amp;, const FlagCombo &amp;)</a> - <code>flag_set</code> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)" title="ts::operator==(const flag_set&lt;Enum&gt; &amp;, const flag_set&lt;Enum&gt; &amp;)">operator==(const flag_set&lt;Enum&gt; &amp;, const flag_set&lt;Enum&gt; &amp;)</a> - <code>flag_set</code> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)" title="ts::operator==(const flag_set&lt;Enum&gt; &amp;, type_safe::noflag_t)">operator==(const flag_set&lt;Enum&gt; &amp;, type_safe::noflag_t)</a> - <code>flag_set</code> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator==(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">operator==(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator==(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator==(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)" title="ts::operator==(const object_ref&lt;T, XValue&gt; &amp;, U &amp;)">operator==(const object_ref&lt;T, XValue&gt; &amp;, U &amp;)</a> - Comparison operator for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)" title="ts::operator==(const object_ref&lt;T, XValue&gt; &amp;, const object_ref&lt;U, XValue&gt; &amp;)">operator==(const object_ref&lt;T, XValue&gt; &amp;, const object_ref&lt;U, XValue&gt; &amp;)</a> - Comparison operator for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator==(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator==(const type_safe::boolean &amp;, T)">operator==(const type_safe::boolean &amp;, T)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator==(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator==(const type_safe::boolean &amp;, const type_safe::boolean &amp;)">operator==(const type_safe::boolean &amp;, const type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator==(type_safe::flag,type_safe::flag)" title="ts::operator==(type_safe::flag, T)">operator==(type_safe::flag, T)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator==(type_safe::flag,type_safe::flag)" title="ts::operator==(type_safe::flag, type_safe::flag)">operator==(type_safe::flag, type_safe::flag)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)" title="ts::operator==(type_safe::noflag_t, const flag_set&lt;Enum&gt; &amp;)">operator==(type_safe::noflag_t, const flag_set&lt;Enum&gt; &amp;)</a> - <code>flag_set</code> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator==(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator==(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator==(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator==(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&gt;(const A &amp;, const floating_point&lt;B&gt; &amp;)">operator&gt;(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">operator&gt;(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&gt;(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&gt;(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&gt;(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&gt;(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&gt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">operator&gt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator&gt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&gt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator&gt;(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)">operator&gt;(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&gt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)">operator&gt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&gt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&gt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&gt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)">operator&gt;(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)</a></p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)" title="ts::operator&gt;(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)">operator&gt;(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)</a> - Compares a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&gt;(const floating_point&lt;A&gt; &amp;, const B &amp;)">operator&gt;(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&gt;(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">operator&gt;(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">operator&gt;(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator&gt;(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator&gt;(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&gt;(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&gt;(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&gt;(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&gt;=(const A &amp;, const floating_point&lt;B&gt; &amp;)">operator&gt;=(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">operator&gt;=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&gt;=(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&gt;=(const T &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&gt;=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&gt;=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&gt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">operator&gt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator&gt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&gt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator&gt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)">operator&gt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, type_safe::nullopt_t)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(constT&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&gt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)">operator&gt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator!=(constbasic_variant-VariantPolicy,Head,Types...-&,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&gt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&gt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&gt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)">operator&gt;=(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, type_safe::nullvar_t)</a></p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)" title="ts::operator&gt;=(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)">operator&gt;=(const constrained_type&lt;T, Constraint, Verifier&gt; &amp;, const constrained_type&lt;T, Constraint, Verifier&gt; &amp;)</a> - Compares a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&gt;=(const floating_point&lt;A&gt; &amp;, const B &amp;)">operator&gt;=(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator-(constA&,constfloating_point-B-&)" title="ts::operator&gt;=(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">operator&gt;=(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">operator&gt;=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">operator&gt;=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)" title="ts::operator&gt;=(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)">operator&gt;=(type_safe::nullopt_t, const basic_optional&lt;StoragePolicy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::operator==(type_safe::nullvar_t,constbasic_variant-VariantPolicy,Head,Types...-&)" title="ts::operator&gt;=(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)">operator&gt;=(type_safe::nullvar_t, const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator--(std::basic_istream-Char,CharTraits-&,floating_point-FloatT-&)" title="ts::operator&gt;&gt;(std::basic_istream&lt;Char, CharTraits&gt; &amp;, floating_point&lt;FloatT&gt; &amp;)">operator&gt;&gt;(std::basic_istream&lt;Char, CharTraits&gt; &amp;, floating_point&lt;FloatT&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator--(std::basic_istream-Char,CharTraits-&,integer-IntegerT,Policy-&)" title="ts::operator&gt;&gt;(std::basic_istream&lt;Char, CharTraits&gt; &amp;, integer&lt;IntegerT, Policy&gt; &amp;)">operator&gt;&gt;(std::basic_istream&lt;Char, CharTraits&gt; &amp;, integer&lt;IntegerT, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator--(std::basic_istream-Char,CharTraits-&,type_safe::boolean&)" title="ts::operator&gt;&gt;(std::basic_istream&lt;Char, CharTraits&gt; &amp;, type_safe::boolean &amp;)">operator&gt;&gt;(std::basic_istream&lt;Char, CharTraits&gt; &amp;, type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> input operator.</p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)" title="ts::operator^(const FlagCombo &amp;, const flag_set&lt;Enum&gt; &amp;)">operator^(const FlagCombo &amp;, const flag_set&lt;Enum&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)" title="ts::operator^(const flag_set&lt;Enum&gt; &amp;, const FlagCombo &amp;)">operator^(const flag_set&lt;Enum&gt; &amp;, const FlagCombo &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)" title="ts::operator|(const FlagCombo &amp;, const flag_set&lt;Enum&gt; &amp;)">operator|(const FlagCombo &amp;, const flag_set&lt;Enum&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)" title="ts::operator|(const flag_set&lt;Enum&gt; &amp;, const FlagCombo &amp;)">operator|(const flag_set&lt;Enum&gt; &amp;, const FlagCombo &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_cref(constT&)" title="ts::opt_cref(const T &amp;)">opt_cref(const T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_cref(constT*)" title="ts::opt_cref(const T *)">opt_cref(const T *)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_cref(constobject_ref-T-&)" title="ts::opt_cref(const object_ref&lt;T&gt; &amp;)">opt_cref(const object_ref&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_cref(constoptional-T-&)" title="ts::opt_cref(const optional&lt;T&gt; &amp;)">opt_cref(const optional&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_ref(T&)" title="ts::opt_ref(T &amp;)">opt_ref(T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_ref(T*)" title="ts::opt_ref(T *)">opt_ref(T *)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_ref(constobject_ref-T-&)" title="ts::opt_ref(const object_ref&lt;T&gt; &amp;)">opt_ref(const object_ref&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_ref(optional-T-&)" title="ts::opt_ref(optional&lt;T&gt; &amp;)">opt_ref(optional&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_xref(T&)" title="ts::opt_xref(T &amp;)">opt_xref(T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_xref(T*)" title="ts::opt_xref(T *)">opt_xref(T *)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional-T-" title="ts::optional&lt;T&gt;">optional</a> - A <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that uses <a href="doc_optional.html#ts::direct_optional_storage-T-">ts::direct_optional_storage&lt;T&gt;</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional_for-T-" title="ts::optional_for&lt;T&gt;">optional_for</a> - Uses <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> to select the appropriate <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::optional_ref-T-" title="ts::optional_ref&lt;T&gt;">optional_ref</a> - A <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that uses <a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-">ts::reference_optional_storage</a>. It is an optional reference.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional_storage_policy_for-T&&-" title="ts::optional_storage_policy_for&lt;T&amp;&amp;&gt;">optional_storage_policy_for&lt;T&amp;&amp;&gt;</a> - Specialization of <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> for rvalue references.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional_storage_policy_for-T&-" title="ts::optional_storage_policy_for&lt;T&amp;&gt;">optional_storage_policy_for&lt;T&amp;&gt;</a> - Specialization of <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> for lvalue references.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional_storage_policy_for-T-" title="ts::optional_storage_policy_for&lt;T&gt;">optional_storage_policy_for</a> - Selects the storage policy used when rebinding a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional_storage_policy_for-basic_optional-StoragePolicy--" title="ts::optional_storage_policy_for&lt;basic_optional&lt;StoragePolicy&gt;&gt;">optional_storage_policy_for&lt;basic_optional&lt;StoragePolicy&gt;&gt;</a> - Specialization of <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> itself.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--" title="ts::optional_storage_policy_for&lt;object_ref&lt;T, XValue&gt;&gt;">optional_storage_policy_for&lt;object_ref&lt;T, XValue&gt;&gt;</a> - Sets the <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> storage policy for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a> to <a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-">ts::reference_optional_storage</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::optional_variant_policy" title="ts::optional_variant_policy">optional_variant_policy</a> - A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that creates a variant with explicit empty state.</p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::optional_xvalue_ref-T-" title="ts::optional_xvalue_ref&lt;T&gt;">optional_xvalue_ref</a> - A <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that uses <a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-">ts::reference_optional_storage</a> with <code>XValue</code> being <code>true</code>. It is an optional reference to an xvalue, i.e. an lvalue that can be moved from, like returned by <code>std::move()</code>. \notes <code>T</code> is the type without the reference, i.e. <code>optional_xvalue_ref&lt;int&gt;</code>. \module optional</p>
+</li>
+<li>
+<p><a href="doc_output_parameter.html#ts::out(T&)" title="ts::out(T &amp;)">out(T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_output_parameter.html#ts::out(deferred_construction-T-&)" title="ts::out(deferred_construction&lt;T&gt; &amp;)">out(deferred_construction&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_output_parameter.html#ts::output_parameter-T-" title="ts::output_parameter&lt;T&gt;">output_parameter</a> - A tiny wrapper modelling an output parameter of a function.</p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::prev(consttype_safe::index_t&,consttype_safe::difference_t&)" title="ts::prev(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)">prev(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::rarely_empty_variant_policy" title="ts::rarely_empty_variant_policy">rarely_empty_variant_policy</a> - A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that creates a variant which is rarely empty.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::ref(T&)" title="ts::ref(T &amp;)">ref(T &amp;)</a> - Creates a (const) <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::ref(T(&)%5bSize%5d)" title="ts::ref(T (&amp;)[Size])">ref(T (&amp;)[Size])</a> - Creates a <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::ref(T(&)%5bSize%5d)" title="ts::ref(T *, T *)">ref(T *, T *)</a> - Creates a <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::ref(T(&)%5bSize%5d)" title="ts::ref(T *, size_t)">ref(T *, size_t)</a> - Creates a <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-" title="ts::reference_optional_storage&lt;T, XValue&gt;">reference_optional_storage</a> - A <code>StoragePolicy</code> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that allows optional references.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::sanitize(T&&,Constraint)" title="ts::sanitize(T &amp;&amp;, Constraint)">sanitize(T &amp;&amp;, Constraint)</a> - Creates a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> using the <a href="doc_constrained_type.html#ts::throwing_verifier">ts::throwing_verifier</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::sanitize_bounded(T&&,U1&&,U2&&)" title="ts::sanitize_bounded(T &amp;&amp;, U1 &amp;&amp;, U2 &amp;&amp;)">sanitize_bounded(T &amp;&amp;, U1 &amp;&amp;, U2 &amp;&amp;)</a> - Creates a <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> to a specified <a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-">ts::constraints::closed_interval</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::sanitize_bounded_exclusive(T&&,U1&&,U2&&)" title="ts::sanitize_bounded_exclusive(T &amp;&amp;, U1 &amp;&amp;, U2 &amp;&amp;)">sanitize_bounded_exclusive(T &amp;&amp;, U1 &amp;&amp;, U2 &amp;&amp;)</a> - Creates a <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a> to a specified <a href="doc_bounded_type.html#ts::constraints::open_interval-T,LowerBound,UpperBound-">ts::constraints::open_interval</a>, using <a href="doc_constrained_type.html#ts::throwing_verifier">ts::throwing_verifier</a>.</p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef-Tag,T-" title="ts::strong_typedef&lt;Tag, T&gt;">strong_typedef</a> - A strong typedef emulation.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::tag(T&&,Constraint)" title="ts::tag(T &amp;&amp;, Constraint)">tag(T &amp;&amp;, Constraint)</a> - Creates a new <a href="doc_constrained_type.html#ts::tagged_type-T,Constraint-">ts::tagged_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::tagged_ref-T,Constraint-" title="ts::tagged_ref&lt;T, Constraint&gt;">tagged_ref</a> - An alias for <a href="doc_constrained_type.html#ts::tagged_type-T,Constraint-">ts::tagged_type</a> with reference.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::tagged_type-T,Constraint-" title="ts::tagged_type&lt;T, Constraint&gt;">tagged_type</a> - An alias for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that never checks the constraint.</p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::tagged_union-Types...-" title="ts::tagged_union&lt;Types...&gt;">tagged_union</a> - A tagged union.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::throwing_verifier" title="ts::throwing_verifier">throwing_verifier</a> - A <code>Verifier</code> for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that throws an exception in case of failure.</p>
+</li>
+<li>
+<p><a href="doc_arithmetic_policy.html#ts::undefined_behavior_arithmetic" title="ts::undefined_behavior_arithmetic">undefined_behavior_arithmetic</a> - An <code>ArithmeticPolicy</code> where under/overflow is always undefined behavior, albeit checked when assertions are enabled.</p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::underlying_type-StrongTypedef-" title="ts::underlying_type&lt;StrongTypedef&gt;">underlying_type</a> - The underlying type of the <a href="doc_strong_typedef.html#ts::strong_typedef-Tag,T-">ts::strong_typedef</a>.</p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::union_type-T-" title="ts::union_type&lt;T&gt;">union_type</a> - Tag type so no explicit template instantiation of function parameters is required.</p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::union_types-Ts...-" title="ts::union_types&lt;Ts...&gt;">union_types</a> - Very basic typelist.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::variant-Types...-" title="ts::variant&lt;Types...&gt;">variant</a> - A <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> with the recommended default semantics.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::variant_type-T-" title="ts::variant_type&lt;T&gt;">variant_type</a> - Convenience alias for <a href="doc_tagged_union.html#ts::union_type-T-">ts::union_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::variant_types-Ts...-" title="ts::variant_types&lt;Ts...&gt;">variant_types</a> - Convenience alias for <a href="doc_tagged_union.html#ts::union_types-Ts...-">ts::union_types</a>.</p>
+</li>
+<li>
+<p><a href="doc_visitor.html#ts::visit(Visitor&&,Optionals&&...)" title="ts::visit(Visitor &amp;&amp;, Optionals &amp;&amp;...)">visit(Visitor &amp;&amp;, Optionals &amp;&amp;...)</a> - Visits a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a>.</p>
+</li>
+<li>
+<p><a href="doc_visitor.html#ts::visit(Visitor&&,Variants&&...)" title="ts::visit(Visitor &amp;&amp;, Variants &amp;&amp;...)">visit(Visitor &amp;&amp;, Variants &amp;&amp;...)</a> - Visits a <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::with(Optional&&,Func&&,Args&&...)" title="ts::with(Optional &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(Optional &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)</a> - With operation for <a href="doc_optional.html#ts::optional-T-">ts::optional</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)" title="ts::with(basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)" title="ts::with(basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::with(constarray_ref-T,XValue-&,Func&&,Args&&...)" title="ts::with(const array_ref&lt;T, XValue&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(const array_ref&lt;T, XValue&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a> - With operation for <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)" title="ts::with(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)" title="ts::with(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::with(constobject_ref-T,XValue-&,Func&&,Args&&...)" title="ts::with(const object_ref&lt;T, XValue&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(const object_ref&lt;T, XValue&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a> - With operation for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::with(constrained_type-T,Constraint,Verifier-&,Func&&,Args&&...)" title="ts::with(constrained_type&lt;T, Constraint, Verifier&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(constrained_type&lt;T, Constraint, Verifier&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a> - With operation for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)" title="ts::with(const tagged_union&lt;Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(const tagged_union&lt;Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)" title="ts::with(const tagged_union&lt;Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(const tagged_union&lt;Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)" title="ts::with(tagged_union&lt;Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(tagged_union&lt;Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)" title="ts::with(tagged_union&lt;Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">with(tagged_union&lt;Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::xref(T&)" title="ts::xref(T &amp;)">xref(T &amp;)</a> - Creates a <a href="doc_reference.html#ts::xvalue_ref-T-">ts::xvalue_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::xref(T(&)%5bSize%5d)" title="ts::xref(T (&amp;)[Size])">xref(T (&amp;)[Size])</a> - Creates a <a href="doc_reference.html#ts::array_xvalue_ref-T-">ts::array_xvalue_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::xref(T(&)%5bSize%5d)" title="ts::xref(T *, T *)">xref(T *, T *)</a> - Creates a <a href="doc_reference.html#ts::array_xvalue_ref-T-">ts::array_xvalue_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::xref(T(&)%5bSize%5d)" title="ts::xref(T *, size_t)">xref(T *, size_t)</a> - Creates a <a href="doc_reference.html#ts::array_xvalue_ref-T-">ts::array_xvalue_ref</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::xvalue_ref-T-" title="ts::xvalue_ref&lt;T&gt;">xvalue_ref</a> - Convenience alias of <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a> where <code>XValue</code> is <code>true</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>type_safe::constraints</code></p>
+<ul>
+<li>
+<p><a href="doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-" title="ts::constraints::bounded&lt;T, LowerInclusive, UpperInclusive, LowerBound, UpperBound&gt;">bounded</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::constraints::open" title="ts::constraints::closed">closed</a> - Tag objects to specify bounds for <a href="doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-">ts::constraints::bounded</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::constraints::closed_interval-T,LowerBound,UpperBound-" title="ts::constraints::closed_interval&lt;T, LowerBound, UpperBound&gt;">closed_interval</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::constraints::dynamic_bound" title="ts::constraints::dynamic_bound">dynamic_bound</a> - Tag type to enable a dynamic bound.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::constraints::greater-T,Bound-" title="ts::constraints::greater&lt;T, Bound&gt;">greater</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::constraints::greater_equal-T,Bound-" title="ts::constraints::greater_equal&lt;T, Bound&gt;">greater_equal</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::constraints::less-T,Bound-" title="ts::constraints::less&lt;T, Bound&gt;">less</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::constraints::less_equal-T,Bound-" title="ts::constraints::less_equal&lt;T, Bound&gt;">less_equal</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::constraints::non_default" title="ts::constraints::non_default">non_default</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::constraints::non_empty" title="ts::constraints::non_empty">non_empty</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::constraints::non_invalid" title="ts::constraints::non_invalid">non_invalid</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::constraints::non_null" title="ts::constraints::non_null">non_null</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::constraints::open" title="ts::constraints::open">open</a> - Tag objects to specify bounds for <a href="doc_bounded_type.html#ts::constraints::bounded-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound-">ts::constraints::bounded</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::constraints::open_interval-T,LowerBound,UpperBound-" title="ts::constraints::open_interval&lt;T, LowerBound, UpperBound&gt;">open_interval</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_constrained_type.html#ts::constraints::owner" title="ts::constraints::owner">owner</a> - A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::tagged_type-T,Constraint-">ts::tagged_type</a>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>type_safe::detail</code></p>
+<ul>
+<li>
+<p><a href="doc_downcast.html#downcast.hpp" title="ts::detail::is_safe_downcast(derived_type&lt;Derived&gt;, const Base &amp;)">is_safe_downcast(derived_type&lt;Derived&gt;, const Base &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_downcast.html#downcast.hpp" title="ts::detail::is_safe_downcast(derived_type&lt;T&gt;, const T &amp;)">is_safe_downcast(derived_type&lt;T&gt;, const T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_downcast.html#downcast.hpp" title="ts::detail::validate_downcast(const Base &amp;)">validate_downcast(const Base &amp;)</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>type_safe::literals</code></p>
+<ul>
+<li>
+<p><a href="doc_bounded_type.html#ts::literals::operator%22%22_bound()" title="ts::literals::operator&quot;&quot;_bound()">operator&quot;&quot;_bound()</a> - Creates a static bound for <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_bounded_type.html#ts::literals::operator%22%22_bound()" title="ts::literals::operator&quot;&quot;_boundu()">operator&quot;&quot;_boundu()</a> - Creates a static bound for <a href="doc_bounded_type.html#ts::bounded_type-T,LowerInclusive,UpperInclusive,LowerBound,UpperBound,Verifier-">ts::bounded_type</a>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>type_safe::strong_typedef_op</code> - Some operations for <a href="doc_strong_typedef.html#ts::strong_typedef-Tag,T-">ts::strong_typedef</a>.</p>
+<ul>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::addition&lt;StrongTypedef&gt;">addition</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::array_subscript&lt;StrongTypedef, Result, Index&gt;">array_subscript</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::bidirectional_iterator&lt;StrongTypedef, T, Distance&gt;">bidirectional_iterator</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::bitmask&lt;StrongTypedef&gt;">bitmask</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::bitshift&lt;StrongTypedef, IntT&gt;">bitshift</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::bitwise_or&lt;StrongTypedef&gt;">bitwise_or</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::complement&lt;StrongTypedef&gt;">complement</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::decrement&lt;StrongTypedef&gt;">decrement</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::dereference&lt;StrongTypedef, Result, ResultPtr, ResultConstPtr&gt;">dereference</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::equality_comparison&lt;StrongTypedef&gt;">equality_comparison</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::explicit_bool&lt;StrongTypedef&gt;">explicit_bool</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::floating_point_arithmetic&lt;StrongTypedef&gt;">floating_point_arithmetic</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::forward_iterator&lt;StrongTypedef, T, Distance&gt;">forward_iterator</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::increment&lt;StrongTypedef&gt;">increment</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::input_iterator&lt;StrongTypedef, T, Distance&gt;">input_iterator</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::input_operator&lt;StrongTypedef&gt;">input_operator</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::integer_arithmetic&lt;StrongTypedef&gt;">integer_arithmetic</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::iterator&lt;StrongTypedef, Category, T, Distance&gt;">iterator</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::mixed_equality_comparison&lt;StrongTypedef, Other&gt;">mixed_equality_comparison</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::mixed_relational_comparison&lt;StrongTypedef, Other&gt;">mixed_relational_comparison</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::output_iterator&lt;StrongTypedef, T, Distance&gt;">output_iterator</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::output_operator&lt;StrongTypedef&gt;">output_operator</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::random_access_iterator&lt;StrongTypedef, T, Distance&gt;">random_access_iterator</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::relational_comparison&lt;StrongTypedef&gt;">relational_comparison</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::unary_minus&lt;StrongTypedef&gt;">unary_minus</a></p>
+</li>
+<li>
+<p><a href="doc_strong_typedef.html#ts::strong_typedef_op" title="ts::strong_typedef_op::unary_plus&lt;StrongTypedef&gt;">unary_plus</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>type_safe::types</code></p>
+<ul>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::bool_t">bool_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::double_t">double_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::float_t">float_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int16_t">int16_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int32_t">int32_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int64_t">int64_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int8_t">int8_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int_fast16_t">int_fast16_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int_fast32_t">int_fast32_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int_fast64_t">int_fast64_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int_fast8_t">int_fast8_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int_least16_t">int_least16_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int_least32_t">int_least32_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int_least64_t">int_least64_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int_least8_t">int_least8_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::int_t">int_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::intmax_t">intmax_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::intptr_t">intptr_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::ptrdiff_t">ptrdiff_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::size_t">size_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint16_t">uint16_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint32_t">uint32_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint64_t">uint64_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint8_t">uint8_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint_fast16_t">uint_fast16_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint_fast32_t">uint_fast32_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint_fast64_t">uint_fast64_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint_fast8_t">uint_fast8_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint_least16_t">uint_least16_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint_least32_t">uint_least32_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint_least64_t">uint_least64_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uint_least8_t">uint_least8_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uintmax_t">uintmax_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::uintptr_t">uintptr_t</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::unsigned_t">unsigned_t</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>type_safe::types::literals</code></p>
+<ul>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_d(long double)">operator&quot;&quot;_d(long double)</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_f(long double)">operator&quot;&quot;_f(long double)</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_i()">operator&quot;&quot;_i()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_i16()">operator&quot;&quot;_i16()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_i32()">operator&quot;&quot;_i32()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_i64()">operator&quot;&quot;_i64()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_i8()">operator&quot;&quot;_i8()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_isize()">operator&quot;&quot;_isize()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_u()">operator&quot;&quot;_u()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_u16()">operator&quot;&quot;_u16()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_u32()">operator&quot;&quot;_u32()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_u64()">operator&quot;&quot;_u64()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_u8()">operator&quot;&quot;_u8()</a></p>
+</li>
+<li>
+<p><a href="doc_types.html#types.hpp" title="ts::types::literals::operator&quot;&quot;_usize()">operator&quot;&quot;_usize()</a></p>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

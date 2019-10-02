@@ -1,0 +1,620 @@
+<h1>Header file <code>optional.hpp</code><a id="optional.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    //=== <a href='doc_optional.html#ts::nullopt_t'>Basic optional</a> ===//
+    struct <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>;
+    
+    constexpr <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a> <a href='doc_optional.html#ts::nullopt'>nullopt</a>;
+    
+    template &lt;typename T&gt;
+    struct <a href='doc_optional.html#ts::optional_storage_policy_for-T-'>optional_storage_policy_for</a>;
+    
+    template &lt;class StoragePolicy&gt;
+    struct <a href='doc_optional.html#ts::optional_storage_policy_for-basic_optional-StoragePolicy--'>optional_storage_policy_for&lt;basic_optional&lt;StoragePolicy&gt;&gt;</a>;
+    
+    template &lt;typename T&gt;
+    struct <a href='doc_optional.html#ts::optional_storage_policy_for-T&-'>optional_storage_policy_for&lt;T&amp;&gt;</a>;
+    
+    template &lt;typename T&gt;
+    struct <a href='doc_optional.html#ts::optional_storage_policy_for-T&&-'>optional_storage_policy_for&lt;T&amp;&amp;&gt;</a>;
+    
+    template &lt;class StoragePolicy&gt;
+    class <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>;
+    
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,type_safe::nullopt_t)'>operator==</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+    
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator==</a>(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator!=</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator!=</a>(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator&lt;</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator&lt;</a>(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator&lt;=</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator&lt;=</a>(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator&gt;</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator&gt;</a>(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator&gt;=</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)'>operator&gt;=</a>(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    
+    //=== <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>Optional value comparison</a> ===//
+    template &lt;class StoragePolicy, typename U&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator==</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool                                                                       <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator==</a>(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator!=</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool                                                                       <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator!=</a>(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator&lt;</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool                                                                       <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator&lt;</a>(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator&lt;=</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool                                                                       <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator&lt;=</a>(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator&gt;</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool                                                                       <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator&gt;</a>(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator&gt;=</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+    template &lt;class StoragePolicy, typename U&gt;
+    bool                                                                       <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)'>operator&gt;=</a>(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    
+    //=== <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)'>Optional comparison</a> ===//
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)'>operator==</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)'>operator!=</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)'>operator&lt;</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)'>operator&lt;=</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)'>operator&gt;</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    template &lt;class StoragePolicy&gt;
+    bool <a href='doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)'>operator&gt;=</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+    
+    template &lt;class Optional, typename Func, typename ... Args&gt;
+    void <a href='doc_optional.html#ts::with(Optional&&,Func&&,Args&&...)'>with</a>(Optional&amp;&amp; opt, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+    
+    //=== <a href='doc_optional.html#ts::direct_optional_storage-T-'>Optional</a> ===//
+    template &lt;typename T&gt;
+    class <a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>;
+    
+    template &lt;typename T&gt;
+    using <a href='doc_optional.html#ts::optional-T-'>optional</a> = <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;direct_optional_storage&lt;T&gt;&gt;</a>;
+    
+    template &lt;typename T&gt;
+    using <a href='doc_optional.html#ts::optional_for-T-'>optional_for</a> = <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::rebind-U-'>basic_optional&lt;direct_optional_storage&lt;int&gt;&gt;::rebind&lt;T&gt;</a>;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional.html#ts::optional-T-'>optional&lt;typename std::decay&lt;T&gt;::type&gt;</a> <a href='doc_optional.html#ts::make_optional(T&&)'>make_optional</a>(T&amp;&amp; t);
+    
+    template &lt;typename T, typename ... Args&gt;
+    <a href='doc_optional.html#ts::optional-T-'>optional&lt;T&gt;</a> <a href='doc_optional.html#ts::make_optional(Args&&...)'>make_optional</a>(Args&amp;&amp;... args);
+}
+
+namespace <a href='doc_boolean.html#boolean.hpp'>std</a>
+{
+}</code></pre>
+<h2>Struct <code>type_safe::nullopt_t</code> [optional]<a id="ts::nullopt_t"></a></h2>
+<pre><code class="language-cpp">struct nullopt_t
+{
+    constexpr <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>();
+};</code></pre>
+<p>Tag type to mark a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> without a value.</p>
+<h2>Variable <code>type_safe::nullopt</code> [optional]<a id="ts::nullopt"></a></h2>
+<pre><code class="language-cpp">constexpr <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a> nullopt;</code></pre>
+<p>Tag object of type <a href="doc_optional.html#ts::nullopt_t">ts::nullopt_t</a>.</p>
+<h2>Class template <code>type_safe::optional_storage_policy_for</code> [optional]<a id="ts::optional_storage_policy_for-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+struct optional_storage_policy_for
+{
+    using <a href='doc_optional.html#ts::optional_storage_policy_for-T-'>type</a> = void;
+};</code></pre>
+<p>Selects the storage policy used when rebinding a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a>.</p>
+<p>Some operations like <a href="doc_optional.html#ts::basic_optional-StoragePolicy-::map">ts::basic_optional::map()</a> change the type of an optional. This traits controls which <code>StoragePolicy</code> is going to be used for the new optional. You can for example requests a <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for your type, simply specialize it and set a <code>type</code> typedef.</p>
+<h2>Class template <code>type_safe::optional_storage_policy_for&lt;basic_optional&lt;StoragePolicy&gt;&gt;</code><a id="ts::optional_storage_policy_for-basic_optional-StoragePolicy--"></a></h2>
+<pre><code class="language-cpp">template &lt;class StoragePolicy&gt;
+struct optional_storage_policy_for&lt;basic_optional&lt;StoragePolicy&gt;&gt;
+{
+    using <a href='doc_optional.html#ts::optional_storage_policy_for-basic_optional-StoragePolicy--'>type</a> = StoragePolicy;
+};</code></pre>
+<p>Specialization of <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> itself.</p>
+<p>It will simply forward to the same policy, so <code>ts::optional_for&lt;ts::optional&lt;T&gt;&gt;</code> is simply <code>ts::optional&lt;T&gt;</code>, not <code>ts::optional&lt;ts::optional&lt;T&gt;&gt;</code>. \module optional</p>
+<h2>Class template <code>type_safe::optional_storage_policy_for&lt;T&amp;&gt;</code> [optional]<a id="ts::optional_storage_policy_for-T&-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+struct optional_storage_policy_for&lt;T&amp;&gt;
+{
+    using <a href='doc_optional.html#ts::optional_storage_policy_for-T&-'>type</a> = reference_optional_storage&lt;T&gt;;
+};</code></pre>
+<p>Specialization of <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> for lvalue references.</p>
+<p>It will use <a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-">ts::reference_optional_storage</a> as policy.</p>
+<h2>Class template <code>type_safe::optional_storage_policy_for&lt;T&amp;&amp;&gt;</code> [optional]<a id="ts::optional_storage_policy_for-T&&-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+struct optional_storage_policy_for&lt;T&amp;&amp;&gt;
+{
+};</code></pre>
+<p>Specialization of <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> for rvalue references.</p>
+<p>They are not supported.</p>
+<h2>Class template <code>type_safe::basic_optional</code> [optional]<a id="ts::basic_optional-StoragePolicy-"></a></h2>
+<pre><code class="language-cpp">template &lt;class StoragePolicy&gt;
+class basic_optional
+{
+public:
+    using <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>storage</a> = StoragePolicy;
+    
+    using <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>value_type</a> = typename storage::value_type;
+    
+    template &lt;typename U&gt;
+    using <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::rebind-U-'>rebind</a> = 'hidden';
+    
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::basic_optional()'>basic_optional</a>() noexcept = default;
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::basic_optional()'>basic_optional</a>(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::basic_optional(T&&,decltype(std::declval-storage-().create_value(std::forward-T-(value)),0))'>basic_optional</a>(T&amp;&amp; value);
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::basic_optional(T&&,decltype(std::declval-storage-().create_value_explicit(std::forward-T-(value)),0))'>basic_optional</a>(T&amp;&amp; value);
+    
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::basic_optional(constbasic_optional-StoragePolicy-&)'>basic_optional</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; other) = default;
+    
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::basic_optional(basic_optional-StoragePolicy-&&)'>basic_optional</a>(<a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp;&amp; other) = default;
+    
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::~basic_optional()'>~basic_optional</a>() noexcept = default;
+    
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::operator=(type_safe::nullopt_t)'>operator=</a>(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>) noexcept;
+    
+    template &lt;typename T&gt;
+    decltype(std::declval&lt;basic_optional&lt;storage&gt;&gt;().get_storage().create_value(std::forward&lt;T&gt;(value)), *this) <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::operator=(T&&)'>operator=</a>(T&amp;&amp; value);
+    
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::operator=(constbasic_optional-StoragePolicy-&)'>operator=</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; other) = default;
+    
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::operator=(basic_optional-StoragePolicy-&&)'>operator=</a>(<a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp;&amp; other) = default;
+    
+    friend void <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::swap(basic_optional-StoragePolicy-&,basic_optional-StoragePolicy-&)'>swap</a>(<a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; a, <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; b) noexcept('hidden');
+    
+    //=== <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::reset()'>Modifiers</a> ===//
+    void <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::reset()'>reset</a>() noexcept;
+    
+    template &lt;typename ... Args&gt;
+    decltype(std::declval&lt;basic_optional&lt;storage&gt;&gt;().get_storage().create_value(std::forward&lt;Args&gt;(args)...)) <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::emplace(Args&&...)'>emplace</a>(Args&amp;&amp;... args) noexcept('hidden');
+    
+    template &lt;typename Arg, typename = typename std::enable_if&lt;detail::is_direct_assignable&lt;decltype(std::declval&lt;storage&amp;&gt;().get_value()), Arg&amp;&amp;&gt;::value&gt;::type&gt;
+    decltype(std::declval&lt;basic_optional&lt;storage&gt;&gt;().get_storage().create_value(std::forward&lt;Arg&gt;(arg))) <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::emplace(Arg&&)'>emplace</a>(Arg&amp;&amp; arg) noexcept('hidden');
+    
+    //=== <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::operatorbool()const'>Observers</a> ===//
+    <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::operatorbool()const'>operator bool</a>() const noexcept;
+    
+    bool <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::has_value()const'>has_value</a>() const noexcept;
+    
+    decltype(std::declval&lt;storage&amp;&gt;().get_value()) <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::value()&'>value</a>() &amp; noexcept;
+    decltype(std::declval&lt;const storage&amp;&gt;().get_value()) <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::value()&'>value</a>() const &amp; noexcept;
+    decltype(std::declval&lt;storage&amp;&amp;&gt;().get_value()) <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::value()&'>value</a>() &amp;&amp; noexcept;
+    decltype(std::declval&lt;const storage&amp;&amp;&gt;().get_value()) <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::value()&'>value</a>() const &amp;&amp; noexcept;
+    
+    template &lt;typename U&gt;
+    decltype(std::declval&lt;const storage&amp;&gt;().get_value_or(std::forward&lt;U&gt;(u))) <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::value_or(U&&)const&'>value_or</a>(U&amp;&amp; u) const &amp;;
+    
+    template &lt;typename U&gt;
+    decltype(std::declval&lt;storage&amp;&amp;&gt;().get_value_or(std::forward&lt;U&gt;(u))) <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::value_or(U&&)&&'>value_or</a>(U&amp;&amp; u) &amp;&amp;;
+    
+    template &lt;typename Func, typename ... Args&gt;
+    'hidden' <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::map'>map</a>(Func&amp;&amp; f, Args&amp;&amp;... args) &amp;;
+    template &lt;typename Func, typename ... Args&gt;
+    'hidden' <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::map'>map</a>(Func&amp;&amp; f, Args&amp;&amp;... args) const &amp;;
+    template &lt;typename Func, typename ... Args&gt;
+    'hidden' <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::map'>map</a>(Func&amp;&amp; f, Args&amp;&amp;... args) &amp;&amp;;
+    template &lt;typename Func, typename ... Args&gt;
+    'hidden' <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::map'>map</a>(Func&amp;&amp; f, Args&amp;&amp;... args) const &amp;&amp;;
+};</code></pre>
+<p>An optional type, i.e. a type that may or may not be there.</p>
+<p>It is similar to <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::optional%3cT%3e">std::optional&lt;T&gt;</a> but lacks some functions and provides some others. It can be in one of two states: it contains a value of a certain type or it does not (it is &quot;empty&quot;).</p>
+<p>The storage itself is managed via the <code>StoragePolicy</code>. It must provide the following members:</p>
+<ul>
+<li>Typedef <code>value_type</code> - the type stored in the optional</li>
+<li>Typedef <code>(const_)lvalue_reference</code> - <code>const</code> lvalue reference type</li>
+<li>Typedef <code>(const_)rvalue_reference</code> - <code>const</code> rvalue reference type</li>
+<li>Template alias <code>rebind&lt;U&gt;</code> - the same policy for a different type</li>
+<li><code>StoragePolicy() noexcept</code> - a no-throw default constructor that initializes it in the &quot;empty&quot; state</li>
+<li><code>void create_value(Args&amp;&amp;... args)</code> - creates a value by forwarding the arguments to its constructor</li>
+<li><code>void create_value_explicit(T&amp;&amp; obj)</code> - creates a value requiring an <code>explicit</code> constructor</li>
+<li><code>void create_value(const StoragePolicy&amp;/StoragePolicy&amp;&amp;)</code> - creates a value by using the value stored in the other policy</li>
+<li><code>void copy_value(const StoragePolicy&amp;/StoragePolicy&amp;&amp;)</code> - similar to above, but *this may contain a value already</li>
+<li><code>void swap_value(StoragePolicy&amp;)</code> - swaps the stored value (if any) with the one in the other policy</li>
+<li><code>void destroy_value() noexcept</code> - calls the destructor of the value, afterwards the storage is &quot;empty&quot;</li>
+<li><code>bool has_value() const noexcept</code> - returns whether or not there is a value, i.e. <code>create_value()</code> has been called but <code>destroy_value()</code> has not</li>
+<li><code>U get_value() (const)&amp; noexcept</code> - returns a reference to the stored value, U is one of the <code>XXX_reference</code> typedefs</li>
+<li><code>U get_value() (const)&amp;&amp; noexcept</code> - returns a reference to the stored value, U is one of the <code>XXX_reference</code> typedefs</li>
+<li><code>U get_value_or(T&amp;&amp; val) [const&amp;/&amp;&amp;]</code> - returns either <code>get_value()</code> or <code>val</code><code>U get_value_or(T&amp;&amp; val) [const&amp;/&amp;&amp;]</code> - returns either <code>get_value()</code> or <code>val</code></li>
+</ul>
+<h3>Alias template <code>type_safe::basic_optional::rebind</code><a id="ts::basic_optional-StoragePolicy-::rebind-U-"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U&gt;
+using rebind = 'hidden';</code></pre>
+<p>Rebinds the current optional to the type <code>U</code>.</p>
+<p>It will use <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> to determine whether a change of storage policy is needed. \notes If <code>U</code> is <code>void</code>, the result will be <code>void</code> as well. \notes Due to a specialization of <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a>, if <code>U</code> is an optional itself, the result will be <code>U</code>, not an optional of an optional. \exclude target</p>
+<h3>Default constructor <code>type_safe::basic_optional::basic_optional</code><a id="ts::basic_optional-StoragePolicy-::basic_optional()"></a></h3>
+<pre><code class="language-cpp">(1)  basic_optional() noexcept = default;
+
+(2)  basic_optional(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates it without a value.</p>
+<h3>Function template <code>type_safe::basic_optional::basic_optional</code><a id="ts::basic_optional-StoragePolicy-::basic_optional(T&&,decltype(std::declval-storage-().create_value(std::forward-T-(value)),0))"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+basic_optional(T&amp;&amp; value);</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates it with a value by forwarding <code>value</code>.</p>
+<p><em>Throws</em>: Anything thrown by the constructor of <code>value_type</code>.</p>
+<p><em>Requires</em>: The <code>create_value()</code> function of the <code>StoragePolicy</code> must accept <code>value</code>.</p>
+<h3>Function template <code>type_safe::basic_optional::basic_optional</code><a id="ts::basic_optional-StoragePolicy-::basic_optional(T&&,decltype(std::declval-storage-().create_value_explicit(std::forward-T-(value)),0))"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+basic_optional(T&amp;&amp; value);</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates it with a value by forwarding <code>value</code>.</p>
+<p><em>Throws</em>: Anything thrown by the constructor of <code>value_type</code>.</p>
+<p><em>Requires</em>: The <code>create_value_explicit()</code> function of the <code>StoragePolicy</code> must accept <code>value</code>.</p>
+<h3>Copy constructor <code>type_safe::basic_optional::basic_optional</code><a id="ts::basic_optional-StoragePolicy-::basic_optional(constbasic_optional-StoragePolicy-&)"></a></h3>
+<pre><code class="language-cpp">basic_optional(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; other) = default;</code></pre>
+<p>Copy constructor.</p>
+<p><em>Effects</em>: If <code>other</code> does not have a value, it will be created without a value as well. If <code>other</code> has a value, it will be created with a value by copying <code>other.value()</code>.</p>
+<p><em>Throws</em>: Anything thrown by the copy constructor of <code>value_type</code> if <code>other</code> has a value.</p>
+<p><em>Notes</em>: This constructor will not participate in overload resolution, unless the <code>value_type</code> is copy constructible.</p>
+<h3>Move constructor <code>type_safe::basic_optional::basic_optional</code><a id="ts::basic_optional-StoragePolicy-::basic_optional(basic_optional-StoragePolicy-&&)"></a></h3>
+<pre><code class="language-cpp">basic_optional(<a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp;&amp; other) = default;</code></pre>
+<p>Move constructor.</p>
+<p><em>Effects</em>: If <code>other</code> does not have a value, it will be created without a value as well. If <code>other</code> has a value, it will be created with a value by moving <code>other.value()</code>.</p>
+<p><em>Throws</em>: Anything thrown by the move constructor of <code>value_type</code> if <code>other</code> has a value.</p>
+<p><em>Notes</em>: <code>other</code> will still have a value after the move operation, it is just in a moved-from state.</p>
+<p><em>Notes</em>: This constructor will not participate in overload resolution, unless the <code>value_type</code> is move constructible.</p>
+<h3>Destructor <code>type_safe::basic_optional::~basic_optional</code><a id="ts::basic_optional-StoragePolicy-::~basic_optional()"></a></h3>
+<pre><code class="language-cpp">~basic_optional() noexcept = default;</code></pre>
+<p>Destructor.</p>
+<p><em>Effects</em>: If it has a value, it will be destroyed.</p>
+<h3>Assignment operator <code>type_safe::basic_optional::operator=</code><a id="ts::basic_optional-StoragePolicy-::operator=(type_safe::nullopt_t)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; operator=(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Same as <code>reset()</code>.</p>
+<h3>Assignment operator <code>type_safe::basic_optional::operator=</code><a id="ts::basic_optional-StoragePolicy-::operator=(T&&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+decltype(std::declval&lt;basic_optional&lt;storage&gt;&gt;().get_storage().create_value(std::forward&lt;T&gt;(value)), *this) operator=(T&amp;&amp; value);</code></pre>
+<p></p>
+<p><em>Effects</em>: Same as <code>emplace(std::forward&lt;T&gt;(t))</code>.</p>
+<p><em>Requires</em>: The call to <code>emplace()</code> must be well-formed.</p>
+<h3>Assignment operator <code>type_safe::basic_optional::operator=</code><a id="ts::basic_optional-StoragePolicy-::operator=(constbasic_optional-StoragePolicy-&)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; operator=(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; other) = default;</code></pre>
+<p>Copy assignment operator.</p>
+<p><em>Effects</em>: If <code>other</code> has a value, does something equivalent to <code>emplace(other.value())</code> (this will always trigger the single parameter version). Otherwise will reset the optional to the empty state. \throws Anything thrown by the call to <code>emplace()</code>. \notes This operator will not participate in overload resolution, unless the <code>value_type</code> is copy constructible.</p>
+<h3>Assignment operator <code>type_safe::basic_optional::operator=</code><a id="ts::basic_optional-StoragePolicy-::operator=(basic_optional-StoragePolicy-&&)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; operator=(<a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp;&amp; other) = default;</code></pre>
+<p>Move assignment operator.</p>
+<p><em>Effects</em>: If <code>other</code> has a value, does something equivalent to <code>emplace(std::move(other).value())</code> (this will always trigger the single parameter version). Otherwise will reset the optional to the empty state.</p>
+<p><em>Throws</em>: Anything thrown by the call to <code>emplace()</code>.</p>
+<p><em>Notes</em>: This operator will not participate in overload resolution, unless the <code>value_type</code> is copy constructible.</p>
+<h3>Function <code>type_safe::swap</code><a id="ts::basic_optional-StoragePolicy-::swap(basic_optional-StoragePolicy-&,basic_optional-StoragePolicy-&)"></a></h3>
+<pre><code class="language-cpp">friend void swap(<a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; a, <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional</a>&amp; b) noexcept('hidden');</code></pre>
+<p></p>
+<p><em>Effects</em>: Swap. If both <code>a</code> and <code>b</code> have values, swaps the values with their swap function. Otherwise, if only one of them have a value, moves that value to the other one and makes the moved-from empty. Otherwise, if both are empty, does nothing. \throws Anything thrown by the move construction or swap.</p>
+<h3>Function <code>type_safe::basic_optional::reset</code><a id="ts::basic_optional-StoragePolicy-::reset()"></a></h3>
+<pre><code class="language-cpp">void reset() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Destroys the value by calling its destructor, if there is any stored. Afterwards <code>has_value()</code> will return <code>false</code>.</p>
+<h3>Function template <code>type_safe::basic_optional::emplace</code><a id="ts::basic_optional-StoragePolicy-::emplace(Args&&...)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename ... Args&gt;
+decltype(std::declval&lt;basic_optional&lt;storage&gt;&gt;().get_storage().create_value(std::forward&lt;Args&gt;(args)...)) emplace(Args&amp;&amp;... args) noexcept('hidden');</code></pre>
+<p></p>
+<p><em>Effects</em>: First destroys any old value like <code>reset()</code>. Then creates the value by perfectly forwarding <code>args...</code> to the constructor of <code>value_type</code>.</p>
+<p><em>Throws</em>: Anything thrown by the constructor of <code>value_type</code>. If this function is left by an exception, the optional will be empty.</p>
+<p><em>Notes</em>: If the <code>create_value()</code> function of the <code>StoragePolicy</code> does not accept the arguments, this function will not participate in overload resolution. \synopsis_return void</p>
+<h3>Function template <code>type_safe::basic_optional::emplace</code><a id="ts::basic_optional-StoragePolicy-::emplace(Arg&&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Arg, typename = typename std::enable_if&lt;detail::is_direct_assignable&lt;decltype(std::declval&lt;storage&amp;&gt;().get_value()), Arg&amp;&amp;&gt;::value&gt;::type&gt;
+decltype(std::declval&lt;basic_optional&lt;storage&gt;&gt;().get_storage().create_value(std::forward&lt;Arg&gt;(arg))) emplace(Arg&amp;&amp; arg) noexcept('hidden');</code></pre>
+<p></p>
+<p><em>Effects</em>: If <code>has_value()</code> is <code>false</code> creates it by calling the constructor with <code>arg</code> perfectly forwarded. Otherwise assigns a perfectly forwarded <code>arg</code> to <code>value()</code>. \throws Anything thrown by the constructor or assignment operator chosen. \notes This function does not participate in overload resolution unless there is an <code>operator=</code> that takes <code>arg</code> without an implicit user-defined conversion and the <code>create_value()</code> function of the <code>StoragePolicy</code> accepts the argument. \synopsis_return void</p>
+<h3>Conversion operator <code>type_safe::basic_optional::operator bool</code><a id="ts::basic_optional-StoragePolicy-::operatorbool()const"></a></h3>
+<pre><code class="language-cpp">operator bool() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The same as <code>has_value()</code>.</p>
+<h3>Function <code>type_safe::basic_optional::has_value</code><a id="ts::basic_optional-StoragePolicy-::has_value()const"></a></h3>
+<pre><code class="language-cpp">bool has_value() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: Whether or not the optional has a value.</p>
+<h3>Function <code>type_safe::basic_optional::value</code><a id="ts::basic_optional-StoragePolicy-::value()&"></a></h3>
+<pre><code class="language-cpp">(1)  decltype(std::declval&lt;storage&amp;&gt;().get_value()) value() &amp; noexcept;
+
+(2)  decltype(std::declval&lt;const storage&amp;&gt;().get_value()) value() const &amp; noexcept;
+
+(3)  decltype(std::declval&lt;storage&amp;&amp;&gt;().get_value()) value() &amp;&amp; noexcept;
+
+(4)  decltype(std::declval&lt;const storage&amp;&amp;&gt;().get_value()) value() const &amp;&amp; noexcept;</code></pre>
+<p>Access to the stored value.</p>
+<p><em>Returns</em>: A reference to the stored value. The exact type depends on the <code>StoragePolicy</code>.</p>
+<p><em>Requires</em>: <code>has_value() == true</code>.</p>
+<h3>Function template <code>type_safe::basic_optional::value_or</code><a id="ts::basic_optional-StoragePolicy-::value_or(U&&)const&"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U&gt;
+decltype(std::declval&lt;const storage&amp;&gt;().get_value_or(std::forward&lt;U&gt;(u))) value_or(U&amp;&amp; u) const &amp;;</code></pre>
+<p></p>
+<p><em>Returns</em>: If it has a value, <code>value()</code>, otherwise <code>u</code> converted to the same type as <code>value()</code>. \requires <code>u</code> must be valid argument to the <code>value_or()</code> function of the <code>StoragePolicy</code>. \notes Depending on the <code>StoragePolicy</code>, this either returns a decayed type or a reference. \group value_or</p>
+<h3>Function template <code>type_safe::basic_optional::value_or</code><a id="ts::basic_optional-StoragePolicy-::value_or(U&&)&&"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename U&gt;
+     decltype(std::declval&lt;storage&amp;&amp;&gt;().get_value_or(std::forward&lt;U&gt;(u))) value_or(U&amp;&amp; u) &amp;&amp;;</code></pre>
+<p></p>
+<h3>Function template <code>type_safe::basic_optional::map</code><a id="ts::basic_optional-StoragePolicy-::map"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename Func, typename ... Args&gt;
+     'hidden' map(Func&amp;&amp; f, Args&amp;&amp;... args) &amp;;
+
+(2)  template &lt;typename Func, typename ... Args&gt;
+     'hidden' map(Func&amp;&amp; f, Args&amp;&amp;... args) const &amp;;
+
+(3)  template &lt;typename Func, typename ... Args&gt;
+     'hidden' map(Func&amp;&amp; f, Args&amp;&amp;... args) &amp;&amp;;
+
+(4)  template &lt;typename Func, typename ... Args&gt;
+     'hidden' map(Func&amp;&amp; f, Args&amp;&amp;... args) const &amp;&amp;;</code></pre>
+<p>Maps an optional.</p>
+<p><em>Effects</em>: If the optional contains a value, calls the function with the value followed by the additional arguments perfectly forwarded.</p>
+<p><em>Returns</em>: A <code>basic_optional</code> rebound to the result type of the function, that is empty if <code>*this</code> is empty and contains the result of the function otherwise.</p>
+<p><em>Requires</em>: <code>f</code> must either be a function or function object of matching signature, or a member function pointer of the stored type with compatible signature.</p>
+<p><em>Notes</em>: Due to the way <a href="doc_optional.html#ts::basic_optional-StoragePolicy-::rebind-U-">ts::basic_optional::rebind</a> works, if the result of the function is <code>void</code>, <code>map()</code> will return <code>void</code> as well, and if the result of the function is an optional itself, <code>map()</code> will return the optional unchanged.</p>
+<hr />
+<h2>Comparison operator <code>type_safe::operator==</code><a id="ts::operator==(constbasic_optional-StoragePolicy-&,type_safe::nullopt_t)"></a></h2>
+<pre><code class="language-cpp">template &lt;class StoragePolicy&gt;
+bool operator==(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);</code></pre>
+<p>Comparison of <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with <a href="doc_optional.html#ts::nullopt">ts::nullopt</a>.</p>
+<p>An optional is equal to <a href="doc_optional.html#ts::nullopt">ts::nullopt</a> if it does not have a value. Nothing is less than <a href="doc_optional.html#ts::nullopt">ts::nullopt</a>, it is only less than an optional, A optional compares equal to <code>nullopt</code>, when it does not have a value. A optional compares never less to <code>nullopt</code>, <code>nullopt</code> compares less only if the optional has a value. The other comparisons behave accordingly. \group optional_comp_null Optional null comparison \module optional</p>
+<h2>Comparison operator <code>type_safe::operator==</code><a id="ts::operator==(type_safe::nullopt_t,constbasic_optional-StoragePolicy-&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;class StoragePolicy&gt;
+     bool operator==(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(2)  template &lt;class StoragePolicy&gt;
+     bool operator!=(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+
+(3)  template &lt;class StoragePolicy&gt;
+     bool operator!=(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(4)  template &lt;class StoragePolicy&gt;
+     bool operator&lt;(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+
+(5)  template &lt;class StoragePolicy&gt;
+     bool operator&lt;(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(6)  template &lt;class StoragePolicy&gt;
+     bool operator&lt;=(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+
+(7)  template &lt;class StoragePolicy&gt;
+     bool operator&lt;=(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(8)  template &lt;class StoragePolicy&gt;
+     bool operator&gt;(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+
+(9)  template &lt;class StoragePolicy&gt;
+     bool operator&gt;(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(10)  template &lt;class StoragePolicy&gt;
+     bool operator&gt;=(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, <a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>);
+
+(11)  template &lt;class StoragePolicy&gt;
+     bool operator&gt;=(<a href='doc_optional.html#ts::nullopt_t'>nullopt_t</a>, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);</code></pre>
+<p></p>
+<h2>Optional value comparison<a id="ts::operator==(constbasic_optional-StoragePolicy-&,constU&)"></a> [optional]</h2>
+<pre><code class="language-cpp">(1)  template &lt;class StoragePolicy, typename U&gt;
+     bool operator==(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+
+(2)  template &lt;class StoragePolicy, typename U&gt;
+     bool                                                                       operator==(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(3)  template &lt;class StoragePolicy, typename U&gt;
+     bool operator!=(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+
+(4)  template &lt;class StoragePolicy, typename U&gt;
+     bool                                                                       operator!=(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(5)  template &lt;class StoragePolicy, typename U&gt;
+     bool operator&lt;(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+
+(6)  template &lt;class StoragePolicy, typename U&gt;
+     bool                                                                       operator&lt;(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(7)  template &lt;class StoragePolicy, typename U&gt;
+     bool operator&lt;=(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+
+(8)  template &lt;class StoragePolicy, typename U&gt;
+     bool                                                                       operator&lt;=(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(9)  template &lt;class StoragePolicy, typename U&gt;
+     bool operator&gt;(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+
+(10)  template &lt;class StoragePolicy, typename U&gt;
+     bool                                                                       operator&gt;(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(11)  template &lt;class StoragePolicy, typename U&gt;
+     bool operator&gt;=(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const U&amp; rhs);
+
+(12)  template &lt;class StoragePolicy, typename U&gt;
+     bool                                                                       operator&gt;=(const U&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);</code></pre>
+<p>Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+<p>An optional compares equal to a value if it has a value and the value compares equal. An optional compares less to a value if it does not have a value or the value compares less. A value compares less to an optional if the optional has a value and the value compares less than the optional. The other comparisons behave accordingly.</p>
+<p>Value comparison is done by the comparison operator of the <code>value_type</code>, a function only participates in overload resolution if the <code>value_type</code>, has that comparison function.</p>
+<h2>Optional comparison<a id="ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)"></a> [optional]</h2>
+<pre><code class="language-cpp">(1)  template &lt;class StoragePolicy&gt;
+     bool operator==(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(2)  template &lt;class StoragePolicy&gt;
+     bool operator!=(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(3)  template &lt;class StoragePolicy&gt;
+     bool operator&lt;(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(4)  template &lt;class StoragePolicy&gt;
+     bool operator&lt;=(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(5)  template &lt;class StoragePolicy&gt;
+     bool operator&gt;(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);
+
+(6)  template &lt;class StoragePolicy&gt;
+     bool operator&gt;=(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; lhs, const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;StoragePolicy&gt;</a>&amp; rhs);</code></pre>
+<p>Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+<p>If <code>lhs</code> has a value, forwards to <code>lhs.value() &lt;op&gt; rhs</code>. Else forwards to <code>nullopt &lt;op&gt; rhs</code>.</p>
+<h2>Function template <code>type_safe::with</code> [optional]<a id="ts::with(Optional&&,Func&&,Args&&...)"></a></h2>
+<pre><code class="language-cpp">template &lt;class Optional, typename Func, typename ... Args&gt;
+void with(Optional&amp;&amp; opt, Func&amp;&amp; f, Args&amp;&amp;... additional_args);</code></pre>
+<p>With operation for <a href="doc_optional.html#ts::optional-T-">ts::optional</a>.</p>
+<p><em>Effects</em>: Calls the <code>operator()</code> of <code>f</code> passing it the value of <code>opt</code> and additional arguments, if it has a value. Otherwise does nothing.</p>
+<h2>Class template <code>type_safe::direct_optional_storage</code> [optional]<a id="ts::direct_optional_storage-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+class direct_optional_storage
+{
+public:
+    using <a href='doc_optional.html#ts::direct_optional_storage-T-'>value_type</a> = typename std::remove_cv&lt;T&gt;::type;
+    
+    using <a href='doc_optional.html#ts::direct_optional_storage-T-'>lvalue_reference</a> = T&amp;;
+    
+    using <a href='doc_optional.html#ts::direct_optional_storage-T-'>const_lvalue_reference</a> = const T&amp;;
+    
+    using <a href='doc_optional.html#ts::direct_optional_storage-T-'>rvalue_reference</a> = T&amp;&amp;;
+    
+    using <a href='doc_optional.html#ts::direct_optional_storage-T-'>const_rvalue_reference</a> = const T&amp;&amp;;
+    
+    template &lt;typename U&gt;
+    using <a href='doc_optional.html#ts::direct_optional_storage-T-'>rebind</a> = <a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage&lt;U&gt;</a>;
+    
+    <a href='doc_optional.html#ts::direct_optional_storage-T-::direct_optional_storage()'>direct_optional_storage</a>() noexcept;
+    
+    template &lt;typename ... Args&gt;
+    typename std::enable_if&lt;std::is_constructible&lt;value_type, Args&amp;&amp;...&gt;::value&gt;::type <a href='doc_optional.html#ts::direct_optional_storage-T-::create_value(Args&&...)'>create_value</a>(Args&amp;&amp;... args);
+    
+    void <a href='doc_optional.html#ts::direct_optional_storage-T-::create_value(constdirect_optional_storage-T-&)'>create_value</a>(const <a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp; other);
+    void <a href='doc_optional.html#ts::direct_optional_storage-T-::create_value(constdirect_optional_storage-T-&)'>create_value</a>(<a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp;&amp; other);
+    
+    void <a href='doc_optional.html#ts::direct_optional_storage-T-'>create_value_explicit</a>();
+    
+    void <a href='doc_optional.html#copy_value_assign'>copy_value</a>(const <a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp; other);
+    void <a href='doc_optional.html#copy_value_assign'>copy_value</a>(const <a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp; other);
+    
+    void <a href='doc_optional.html#copy_value_move_assign'>copy_value</a>(<a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp;&amp; other);
+    void <a href='doc_optional.html#copy_value_move_assign'>copy_value</a>(<a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp;&amp; other);
+    
+    void <a href='doc_optional.html#ts::direct_optional_storage-T-::swap_value(direct_optional_storage-T-&)'>swap_value</a>(<a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp; other);
+    
+    void <a href='doc_optional.html#ts::direct_optional_storage-T-::destroy_value()'>destroy_value</a>() noexcept;
+    
+    bool <a href='doc_optional.html#ts::direct_optional_storage-T-::has_value()const'>has_value</a>() const noexcept;
+    
+    <a href='doc_optional.html#ts::direct_optional_storage-T-'>lvalue_reference</a> <a href='doc_optional.html#ts::direct_optional_storage-T-::get_value()&'>get_value</a>() &amp; noexcept;
+    <a href='doc_optional.html#ts::direct_optional_storage-T-'>const_lvalue_reference</a> <a href='doc_optional.html#ts::direct_optional_storage-T-::get_value()&'>get_value</a>() const &amp; noexcept;
+    <a href='doc_optional.html#ts::direct_optional_storage-T-'>rvalue_reference</a> <a href='doc_optional.html#ts::direct_optional_storage-T-::get_value()&'>get_value</a>() &amp;&amp; noexcept;
+    <a href='doc_optional.html#ts::direct_optional_storage-T-'>const_rvalue_reference</a> <a href='doc_optional.html#ts::direct_optional_storage-T-::get_value()&'>get_value</a>() const &amp;&amp; noexcept;
+    
+    template &lt;typename U, typename = typename std::enable_if&lt;std::is_copy_constructible&lt;value_type&gt;::value&amp;&amp;std::is_convertible&lt;U&amp;&amp;, value_type&gt;::value&gt;::type&gt;
+    <a href='doc_optional.html#ts::direct_optional_storage-T-'>value_type</a> <a href='doc_optional.html#ts::direct_optional_storage-T-::get_value_or(U&&)const&'>get_value_or</a>(U&amp;&amp; u) const &amp;;
+    
+    template &lt;typename U&gt;
+    <a href='doc_optional.html#ts::direct_optional_storage-T-'>value_type</a> <a href='doc_optional.html#ts::direct_optional_storage-T-::get_value_or(U&&)&&'>get_value_or</a>(U&amp;&amp; u) &amp;&amp;;
+};</code></pre>
+<p>A <code>StoragePolicy</code> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that is similar to <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::optional%3cT%3e">std::optional&lt;T&gt;</a>'s implementation.</p>
+<p>It uses <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::aligned_storage">std::aligned_storage</a> and a <code>bool</code> flag whether a value was created.</p>
+<p><em>Requires</em>: <code>T</code> must not be a reference.</p>
+<h3>Default constructor <code>type_safe::direct_optional_storage::direct_optional_storage</code><a id="ts::direct_optional_storage-T-::direct_optional_storage()"></a></h3>
+<pre><code class="language-cpp">direct_optional_storage() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes it in the state without value.</p>
+<h3>Function template <code>type_safe::direct_optional_storage::create_value</code><a id="ts::direct_optional_storage-T-::create_value(Args&&...)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename ... Args&gt;
+typename std::enable_if&lt;std::is_constructible&lt;value_type, Args&amp;&amp;...&gt;::value&gt;::type create_value(Args&amp;&amp;... args);</code></pre>
+<p></p>
+<p><em>Effects</em>: Calls the constructor of <code>value_type</code> by perfectly forwarding <code>args</code>. Afterwards <code>has_value()</code> will return <code>true</code>.</p>
+<p><em>Throws</em>: Anything thrown by the constructor of <code>value_type</code> in which case <code>has_value()</code> is still <code>false</code>. \requires <code>has_value() == false</code>. \notes This function does not participate in overload resolution unless <code>value_type</code> is constructible from <code>args</code>. \synopsis_return void</p>
+<h3>Function <code>type_safe::direct_optional_storage::create_value</code><a id="ts::direct_optional_storage-T-::create_value(constdirect_optional_storage-T-&)"></a></h3>
+<pre><code class="language-cpp">(1)  void create_value(const <a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp; other);
+
+(2)  void create_value(<a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp;&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates a value by copy(1)/move(2) constructing from the value stored in <code>other</code>, if there is any.</p>
+<h3>Function template <code>type_safe::direct_optional_storage::copy_value::copy_value</code><a id="copy_value_assign"></a></h3>
+<pre><code class="language-cpp">(1)  void copy_value(const <a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp; other);
+
+(2)  void copy_value(const <a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Copies the policy from <code>other</code>, by copy-constructing or assigning the stored value, if any.</p>
+<p><em>Throws</em>: Anything thrown by the copy constructor or copy assignment operator of <code>other</code>.</p>
+<h3>Function template <code>type_safe::direct_optional_storage::copy_value::copy_value</code><a id="copy_value_move_assign"></a></h3>
+<pre><code class="language-cpp">(1)  void copy_value(<a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp;&amp; other);
+
+(2)  void copy_value(<a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp;&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Copies the policy from <code>other</code>, by move-constructing or assigning the stored value, if any.</p>
+<p><em>Throws</em>: Anything thrown by the move constructor or move assignment operator of <code>other</code>.</p>
+<h3>Function <code>type_safe::direct_optional_storage::swap_value</code><a id="ts::direct_optional_storage-T-::swap_value(direct_optional_storage-T-&)"></a></h3>
+<pre><code class="language-cpp">void swap_value(<a href='doc_optional.html#ts::direct_optional_storage-T-'>direct_optional_storage</a>&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Swaps the value with the value in <code>other</code>.</p>
+<h3>Function <code>type_safe::direct_optional_storage::destroy_value</code><a id="ts::direct_optional_storage-T-::destroy_value()"></a></h3>
+<pre><code class="language-cpp">void destroy_value() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Calls the destructor of <code>value_type</code>. Afterwards <code>has_value()</code> will return <code>false</code>.</p>
+<p><em>Requires</em>: <code>has_value() == true</code>.</p>
+<h3>Function <code>type_safe::direct_optional_storage::has_value</code><a id="ts::direct_optional_storage-T-::has_value()const"></a></h3>
+<pre><code class="language-cpp">bool has_value() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: Whether or not there is a value stored.</p>
+<h3>Function <code>type_safe::direct_optional_storage::get_value</code><a id="ts::direct_optional_storage-T-::get_value()&"></a></h3>
+<pre><code class="language-cpp">(1)  <a href='doc_optional.html#ts::direct_optional_storage-T-'>lvalue_reference</a> get_value() &amp; noexcept;
+
+(2)  <a href='doc_optional.html#ts::direct_optional_storage-T-'>const_lvalue_reference</a> get_value() const &amp; noexcept;
+
+(3)  <a href='doc_optional.html#ts::direct_optional_storage-T-'>rvalue_reference</a> get_value() &amp;&amp; noexcept;
+
+(4)  <a href='doc_optional.html#ts::direct_optional_storage-T-'>const_rvalue_reference</a> get_value() const &amp;&amp; noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A (<code>const</code>) (rvalue) reference to the stored value.</p>
+<p><em>Requires</em>: <code>has_value() == true</code>.</p>
+<h3>Function template <code>type_safe::direct_optional_storage::get_value_or</code><a id="ts::direct_optional_storage-T-::get_value_or(U&&)const&"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U, typename = typename std::enable_if&lt;std::is_copy_constructible&lt;value_type&gt;::value&amp;&amp;std::is_convertible&lt;U&amp;&amp;, value_type&gt;::value&gt;::type&gt;
+<a href='doc_optional.html#ts::direct_optional_storage-T-'>value_type</a> get_value_or(U&amp;&amp; u) const &amp;;</code></pre>
+<p></p>
+<p><em>Returns</em>: Either <code>get_value()</code> or <code>u</code> converted to <code>value_type</code>.</p>
+<p><em>Requires</em>: <code>value_type</code> must be copy(1)/move(2) constructible and <code>u</code> convertible to <code>value_type</code>. \group get_value_or \param 1 \exclude</p>
+<h3>Function template <code>type_safe::direct_optional_storage::get_value_or</code><a id="ts::direct_optional_storage-T-::get_value_or(U&&)&&"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename U&gt;
+     <a href='doc_optional.html#ts::direct_optional_storage-T-'>value_type</a> get_value_or(U&amp;&amp; u) &amp;&amp;;</code></pre>
+<p></p>
+<hr />
+<h2>Alias template <code>type_safe::optional</code> [optional]<a id="ts::optional-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+using optional = <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;direct_optional_storage&lt;T&gt;&gt;</a>;</code></pre>
+<p>A <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that uses <a href="doc_optional.html#ts::direct_optional_storage-T-">ts::direct_optional_storage&lt;T&gt;</a>.</p>
+<h2>Alias template <code>type_safe::optional_for</code> [optional]<a id="ts::optional_for-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+using optional_for = <a href='doc_optional.html#ts::basic_optional-StoragePolicy-::rebind-U-'>basic_optional&lt;direct_optional_storage&lt;int&gt;&gt;::rebind&lt;T&gt;</a>;</code></pre>
+<p>Uses <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> to select the appropriate <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a>.</p>
+<p>By default, it uses <a href="doc_optional.html#ts::direct_optional_storage-T-">ts::direct_optional_storage</a>.</p>
+<p><em>Notes</em>: If <code>T</code> is <code>void</code>, <code>optional_for</code> will also be <code>void</code>.</p>
+<h2>Function template <code>type_safe::make_optional</code> [optional]<a id="ts::make_optional(T&&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional.html#ts::optional-T-'>optional&lt;typename std::decay&lt;T&gt;::type&gt;</a> make_optional(T&amp;&amp; t);</code></pre>
+<p></p>
+<p><em>Returns</em>: A new <a href="doc_optional.html#ts::optional-T-">ts::optional&lt;T&gt;</a> storing a copy of <code>t</code>.</p>
+<h2>Function template <code>type_safe::make_optional</code><a id="ts::make_optional(Args&&...)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename ... Args&gt;
+<a href='doc_optional.html#ts::optional-T-'>optional&lt;T&gt;</a> make_optional(Args&amp;&amp;... args);</code></pre>
+<p></p>
+<p><em>Returns</em>: A new <a href="doc_optional.html#ts::optional-T-">ts::optional&lt;T&gt;</a> with a value created by perfectly forwarding <code>args</code> to the constructor. \module optional</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

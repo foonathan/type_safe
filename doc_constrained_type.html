@@ -1,0 +1,427 @@
+<h1>Header file <code>constrained_type.hpp</code><a id="constrained_type.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    //=== <a href='doc_constrained_type.html#ts::assertion_verifier'>Constrained type</a> ===//
+    struct <a href='doc_constrained_type.html#ts::assertion_verifier'>assertion_verifier</a>;
+    
+    class <a href='doc_constrained_type.html#ts::constrain_error'>constrain_error</a>;
+    
+    struct <a href='doc_constrained_type.html#ts::throwing_verifier'>throwing_verifier</a>;
+    
+    template &lt;typename T, typename Constraint, class Verifier = assertion_verifier&gt;
+    class <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>;
+    
+    template &lt;typename T, class Constraint, class Verifier&gt;
+    class <a href='doc_constrained_type.html#constrained_type_ref'>constrained_type&lt;T&amp;, Constraint, Verifier&gt;</a>;
+    
+    template &lt;typename T, class Constraint, class Verifier = assertion_verifier&gt;
+    using <a href='doc_constrained_type.html#ts::constrained_ref-T,Constraint,Verifier-'>constrained_ref</a> = <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T&amp;, Constraint, Verifier&gt;</a>;
+    
+    template &lt;typename T, class Constraint, class Verifier&gt;
+    class <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier</a>;
+    
+    template &lt;typename T, typename Constraint, class Verifier&gt;
+    constexpr bool <a href='doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)'>operator==</a>(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+    template &lt;typename T, typename Constraint, class Verifier&gt;
+    constexpr bool <a href='doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)'>operator!=</a>(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+    template &lt;typename T, typename Constraint, class Verifier&gt;
+    constexpr bool <a href='doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)'>operator&lt;</a>(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+    template &lt;typename T, typename Constraint, class Verifier&gt;
+    constexpr bool <a href='doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)'>operator&lt;=</a>(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+    template &lt;typename T, typename Constraint, class Verifier&gt;
+    constexpr bool <a href='doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)'>operator&gt;</a>(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+    template &lt;typename T, typename Constraint, class Verifier&gt;
+    constexpr bool <a href='doc_constrained_type.html#ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)'>operator&gt;=</a>(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+    
+    template &lt;class Verifier, typename T, typename Constraint&gt;
+    constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;typename std::decay&lt;T&gt;::type, Constraint, Verifier&gt;</a> <a href='doc_constrained_type.html#constrain_verifier'>constrain</a>(T&amp;&amp; value, Constraint c);
+    
+    template &lt;typename T, typename Constraint&gt;
+    constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;typename std::decay&lt;T&gt;::type, Constraint&gt;</a> <a href='doc_constrained_type.html#constrain'>constrain</a>(T&amp;&amp; value, Constraint c);
+    
+    template &lt;typename T, typename Constraint&gt;
+    constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;typename std::decay&lt;T&gt;::type, Constraint, throwing_verifier&gt;</a> <a href='doc_constrained_type.html#ts::sanitize(T&&,Constraint)'>sanitize</a>(T&amp;&amp; value, Constraint c);
+    
+    template &lt;typename T, typename Constraint, class Verifier, typename Func, typename ... Args&gt;
+    void <a href='doc_constrained_type.html#ts::with(constrained_type-T,Constraint,Verifier-&,Func&&,Args&&...)'>with</a>(<a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; value, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+    
+    //=== <a href='doc_constrained_type.html#ts::null_verifier'>Tagged type</a> ===//
+    struct <a href='doc_constrained_type.html#ts::null_verifier'>null_verifier</a>;
+    
+    template &lt;typename T, class Constraint&gt;
+    using <a href='doc_constrained_type.html#ts::tagged_type-T,Constraint-'>tagged_type</a> = <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, null_verifier&gt;</a>;
+    
+    template &lt;typename T, class Constraint&gt;
+    using <a href='doc_constrained_type.html#ts::tagged_ref-T,Constraint-'>tagged_ref</a> = <a href='doc_constrained_type.html#ts::constrained_ref-T,Constraint,Verifier-'>constrained_ref&lt;T, Constraint, null_verifier&gt;</a>;
+    
+    template &lt;typename T, typename Constraint&gt;
+    constexpr <a href='doc_constrained_type.html#ts::tagged_type-T,Constraint-'>tagged_type&lt;typename std::decay&lt;T&gt;::type, Constraint&gt;</a> <a href='doc_constrained_type.html#ts::tag(T&&,Constraint)'>tag</a>(T&amp;&amp; value, Constraint c);
+    
+    namespace <a href='doc_bounded_type.html#bounded_type.hpp'>constraints</a>
+    {
+        struct <a href='doc_constrained_type.html#ts::constraints::non_null'>non_null</a>;
+        
+        class <a href='doc_constrained_type.html#ts::constraints::non_empty'>non_empty</a>;
+        
+        struct <a href='doc_constrained_type.html#ts::constraints::non_default'>non_default</a>;
+        
+        struct <a href='doc_constrained_type.html#ts::constraints::non_invalid'>non_invalid</a>;
+        
+        struct <a href='doc_constrained_type.html#ts::constraints::owner'>owner</a>;
+    }
+}</code></pre>
+<h2>Struct <code>type_safe::assertion_verifier</code><a id="ts::assertion_verifier"></a></h2>
+<pre><code class="language-cpp">struct assertion_verifier
+{
+    template &lt;typename Value, typename Predicate&gt;
+    static constexpr typename std::decay&lt;Value&gt;::type <a href='doc_constrained_type.html#ts::assertion_verifier'>verify</a>(Value&amp;&amp; val, const Predicate&amp; p);
+};</code></pre>
+<p>A <code>Verifier</code> for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that <code>DEBUG_ASSERT</code>s the constraint.</p>
+<p>If <a href="doc_config.html#TYPE_SAFE_ENABLE_PRECONDITION_CHECKS">TYPE_SAFE_ENABLE_PRECONDITION_CHECKS</a> is <code>true</code>, it will assert that the value fulfills the predicate and returns it unchanged. If assertions are disabled, it will just return the value unchanged.</p>
+<h2>Class <code>type_safe::constrain_error</code><a id="ts::constrain_error"></a></h2>
+<pre><code class="language-cpp">class constrain_error
+: public <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::logic_error'>std::logic_error</a>
+{
+public:
+    <a href='doc_constrained_type.html#ts::constrain_error'>constrain_error</a>();
+};</code></pre>
+<p>The exception class thrown by the <a href="doc_constrained_type.html#ts::throwing_verifier">ts::throwing_verifier</a>.</p>
+<h2>Struct <code>type_safe::throwing_verifier</code><a id="ts::throwing_verifier"></a></h2>
+<pre><code class="language-cpp">struct throwing_verifier
+{
+    template &lt;typename Value, typename Predicate&gt;
+    static constexpr typename std::decay&lt;Value&gt;::type <a href='doc_constrained_type.html#ts::throwing_verifier'>verify</a>(Value&amp;&amp; val, const Predicate&amp; p);
+};</code></pre>
+<p>A <code>Verifier</code> for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that throws an exception in case of failure.</p>
+<p>Unlike <a href="doc_constrained_type.html#ts::assertion_verifier">ts::assertion_verifier</a>, it will <em>always</em> check the constrain. If it is not fulfilled, it throws an exception of type <a href="doc_constrained_type.html#ts::constrain_error">ts::constrain_error</a>, otherwise return the original value unchanged.</p>
+<p><em>Notes</em>: <a href="doc_constrained_type.html#ts::assertion_verifier">ts::assertion_verifier</a> is the default, because a constrain violation is a logic error, usually done by a programmer. Use this one only if you want to use <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> with unsanitized user input, for example.</p>
+<h2>Class template <code>type_safe::constrained_type</code><a id="ts::constrained_type-T,Constraint,Verifier-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename Constraint, class Verifier = assertion_verifier&gt;
+class constrained_type
+{
+public:
+    using <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a> = typename std::remove_cv&lt;T&gt;::type;
+    
+    using <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a> = Constraint;
+    
+    constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::constrained_type(constvalue_type&,constraint_predicate)'>constrained_type</a>(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; value, <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a> predicate = {});
+    constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::constrained_type(constvalue_type&,constraint_predicate)'>constrained_type</a>(<a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp;&amp; value, <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a> predicate = {}) noexcept('hidden');
+    
+    constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::constrained_type(constconstrained_type-T,Constraint,Verifier-&)'>constrained_type</a>(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; other);
+    
+    <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::~constrained_type()'>~constrained_type</a>() noexcept = default;
+    
+    constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::operator=(constvalue_type&)'>operator=</a>(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; other);
+    
+    constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::operator=(value_type&&)'>operator=</a>(<a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp;&amp; other) noexcept('hidden');
+    
+    constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::operator=(constconstrained_type-T,Constraint,Verifier-&)'>operator=</a>(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; other);
+    
+    friend constexpr void <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::swap(constrained_type-T,Constraint,Verifier-&,constrained_type-T,Constraint,Verifier-&)'>swap</a>(<a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; a, <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; b) noexcept('hidden');
+    
+    template &lt;typename Dummy = T, typename = typename std::enable_if&lt;!std::is_const&lt;Dummy&gt;::value&gt;::type&gt;
+    <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier&lt;T, Constraint, Verifier&gt;</a> <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::modify()'>modify</a>() noexcept;
+    
+    constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp;&amp; <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::release()&&'>release</a>() &amp;&amp; noexcept;
+    
+    constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::operator*()const'>operator*</a>() const noexcept;
+    
+    constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>* <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::operator--()const'>operator-&gt;</a>() const noexcept;
+    
+    constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::get_value()const'>get_value</a>() const noexcept;
+    
+    constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a>&amp; <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-::get_constraint()const'>get_constraint</a>() const noexcept;
+};</code></pre>
+<p>A value of type <code>T</code> that always fulfills the predicate <code>Constraint</code>.</p>
+<p>The <code>Constraint</code> is checked by the <code>Verifier</code>. The <code>Constraint</code> can also provide a nested template <code>is_valid&lt;T&gt;</code> to statically check types. Those will be checked regardless of the <code>Verifier</code>.</p>
+<p>If <code>T</code> is <code>const</code>, the <code>modify()</code> function will not be available, you can only modify the type by assigning a completely new value to it.</p>
+<p><em>Requires</em>: <code>T</code> must not be a reference, <code>Constraint</code> must be a moveable, non-final class where no operation throws, and <code>Verifier</code> must provide a <code>static</code> function <code>[const] T[&amp;] verify(const T&amp;, const Predicate&amp;)</code>. The return value is stored and it must always fulfill the predicate. It also requires that no <code>const</code> operation on <code>T</code> may modify it in a way that the predicate isn't fulfilled anymore. \notes Additional requirements of the <code>Constraint</code> depend on the <code>Verifier</code> used. If not stated otherwise, a <code>Verifier</code> in this library requires that the <code>Constraint</code> is a <code>Predicate</code> for <code>T</code>.</p>
+<h3>Constructor <code>type_safe::constrained_type::constrained_type</code><a id="ts::constrained_type-T,Constraint,Verifier-::constrained_type(constvalue_type&,constraint_predicate)"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr constrained_type(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; value, <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a> predicate = {});
+
+(2)  constexpr constrained_type(<a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp;&amp; value, <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a> predicate = {}) noexcept('hidden');</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates it giving it a valid <code>value</code> and a <code>predicate</code>. The <code>value</code> will be copied(1)/moved(2) and verified.</p>
+<p><em>Throws</em>: Anything thrown by the copy(1)/move(2) constructor of <code>value_type</code> or the <code>Verifier</code> if the <code>value</code> is invalid.</p>
+<h3>Copy constructor <code>type_safe::constrained_type::constrained_type</code><a id="ts::constrained_type-T,Constraint,Verifier-::constrained_type(constconstrained_type-T,Constraint,Verifier-&)"></a></h3>
+<pre><code class="language-cpp">constexpr constrained_type(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Copies the value and predicate of <code>other</code>.</p>
+<p><em>Throws</em>: Anything thrown by the copy constructor of <code>value_type</code>.</p>
+<p><em>Requires</em>: <code>Constraint</code> must be copyable.</p>
+<h3>Destructor <code>type_safe::constrained_type::~constrained_type</code><a id="ts::constrained_type-T,Constraint,Verifier-::~constrained_type()"></a></h3>
+<pre><code class="language-cpp">~constrained_type() noexcept = default;</code></pre>
+<p></p>
+<p><em>Effects</em>: Destroys the value.</p>
+<h3>Assignment operator <code>type_safe::constrained_type::operator=</code><a id="ts::constrained_type-T,Constraint,Verifier-::operator=(constvalue_type&)"></a></h3>
+<pre><code class="language-cpp">constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; operator=(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Same as assigning <code>constrained_type(other, get_constraint()).release()</code> to the stored value. It will invoke copy(1)/move(2) constructor followed by move assignment operator. \throws Anything thrown by the copy(1)/move(2) constructor or move assignment operator of <code>value_type</code>, or the <code>Verifier</code> if the <code>value</code> is invalid. If the <code>value</code> is invalid, nothing will be changed. \requires <code>Constraint</code> must be copyable. \group assign_value</p>
+<h3>Assignment operator <code>type_safe::constrained_type::operator=</code><a id="ts::constrained_type-T,Constraint,Verifier-::operator=(value_type&&)"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; operator=(<a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp;&amp; other) noexcept('hidden');</code></pre>
+<p></p>
+<h3>Assignment operator <code>type_safe::constrained_type::operator=</code><a id="ts::constrained_type-T,Constraint,Verifier-::operator=(constconstrained_type-T,Constraint,Verifier-&)"></a></h3>
+<pre><code class="language-cpp">constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; operator=(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; other);</code></pre>
+<p></p>
+<p><em>Effects</em>: Copies the value and predicate from <code>other</code>.</p>
+<p><em>Throws</em>: Anything thrown by the copy assignment operator of <code>value_type</code>.</p>
+<p><em>Requires</em>: <code>Constraint</code> must be copyable.</p>
+<h3>Function <code>type_safe::swap</code><a id="ts::constrained_type-T,Constraint,Verifier-::swap(constrained_type-T,Constraint,Verifier-&,constrained_type-T,Constraint,Verifier-&)"></a></h3>
+<pre><code class="language-cpp">friend constexpr void swap(<a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; a, <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type</a>&amp; b) noexcept('hidden');</code></pre>
+<p></p>
+<p><em>Effects</em>: Swaps the value and predicate of a <code>a</code> and <code>b</code>.</p>
+<p><em>Throws</em>: Anything thrown by the swap function of <code>value_type</code>.</p>
+<p><em>Requires</em>: <code>Constraint</code> must be swappable.</p>
+<h3>Function template <code>type_safe::constrained_type::modify</code><a id="ts::constrained_type-T,Constraint,Verifier-::modify()"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Dummy = T, typename = typename std::enable_if&lt;!std::is_const&lt;Dummy&gt;::value&gt;::type&gt;
+<a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier&lt;T, Constraint, Verifier&gt;</a> modify() noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A proxy object to provide verified write-access to the stored value.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution if <code>T</code> is <code>const</code>.</p>
+<h3>Function <code>type_safe::constrained_type::release</code><a id="ts::constrained_type-T,Constraint,Verifier-::release()&&"></a></h3>
+<pre><code class="language-cpp">constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp;&amp; release() &amp;&amp; noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Moves the stored value out of the <code>constrained_type</code>, it will not be checked further.</p>
+<p><em>Returns</em>: An rvalue reference to the stored value.</p>
+<p><em>Notes</em>: After this function is called, the object must not be used anymore except as target for assignment or in the destructor.</p>
+<h3>Operator <code>type_safe::constrained_type::operator*</code><a id="ts::constrained_type-T,Constraint,Verifier-::operator*()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; operator*() const noexcept;</code></pre>
+<p>Dereference operator.</p>
+<p><em>Returns</em>: A <code>const</code> reference to the stored value.</p>
+<h3>Operator <code>type_safe::constrained_type::operator-&gt;</code><a id="ts::constrained_type-T,Constraint,Verifier-::operator--()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>* operator-&gt;() const noexcept;</code></pre>
+<p>Member access operator.</p>
+<p><em>Returns</em>: A <code>const</code> pointer to the stored value.</p>
+<h3>Function <code>type_safe::constrained_type::get_value</code><a id="ts::constrained_type-T,Constraint,Verifier-::get_value()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; get_value() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <code>const</code> reference to the stored value.</p>
+<h3>Function <code>type_safe::constrained_type::get_constraint</code><a id="ts::constrained_type-T,Constraint,Verifier-::get_constraint()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a>&amp; get_constraint() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The predicate that determines validity.</p>
+<hr />
+<h2>Class template <code>type_safe::constrained_type&lt;T&amp;, Constraint, Verifier&gt;</code><a id="constrained_type_ref"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, class Constraint, class Verifier&gt;
+class constrained_type&lt;T&amp;, Constraint, Verifier&gt;
+{
+public:
+    using <a href='doc_constrained_type.html#constrained_type_ref'>value_type</a> = T;
+    
+    using <a href='doc_constrained_type.html#constrained_type_ref'>constraint_predicate</a> = Constraint;
+    
+    constexpr <a href='doc_constrained_type.html#constrained_type_ref::constrained_type(T&,constraint_predicate)'>constrained_type</a>(T&amp; value, <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a> predicate = {});
+    
+    template &lt;typename Dummy = T, typename = typename std::enable_if&lt;!std::is_const&lt;Dummy&gt;::value&gt;::type&gt;
+    <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier&lt;T&amp;, Constraint, Verifier&gt;</a> <a href='doc_constrained_type.html#constrained_type_ref::modify()'>modify</a>() noexcept;
+    
+    constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; <a href='doc_constrained_type.html#constrained_type_ref::operator*()const'>operator*</a>() const noexcept;
+    
+    constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>* <a href='doc_constrained_type.html#constrained_type_ref::operator--()const'>operator-&gt;</a>() const noexcept;
+    
+    constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; <a href='doc_constrained_type.html#constrained_type_ref::get_value()const'>get_value</a>() const noexcept;
+    
+    constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a>&amp; <a href='doc_constrained_type.html#constrained_type_ref::get_constraint()const'>get_constraint</a>() const noexcept;
+};</code></pre>
+<p>Specialization of <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> for references.</p>
+<p>It models a reference to a value that always fulfills the given constraint. The value must not be changed by other means, it is thus perfect for function parameters.</p>
+<h3>Constructor <code>type_safe::constrained_type&lt;T&amp;, Constraint, Verifier&gt;::constrained_type</code><a id="constrained_type_ref::constrained_type(T&,constraint_predicate)"></a></h3>
+<pre><code class="language-cpp">constexpr constrained_type(T&amp; value, <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a> predicate = {});</code></pre>
+<p></p>
+<p><em>Effects</em>: Binds the reference to the given object.</p>
+<h3>Function template <code>type_safe::constrained_type&lt;T&amp;, Constraint, Verifier&gt;::modify</code><a id="constrained_type_ref::modify()"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Dummy = T, typename = typename std::enable_if&lt;!std::is_const&lt;Dummy&gt;::value&gt;::type&gt;
+<a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier&lt;T&amp;, Constraint, Verifier&gt;</a> modify() noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A proxy object to provide verified write-access to the referred value.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution if <code>T</code> is <code>const</code>.</p>
+<h3>Operator <code>type_safe::constrained_type&lt;T&amp;, Constraint, Verifier&gt;::operator*</code><a id="constrained_type_ref::operator*()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; operator*() const noexcept;</code></pre>
+<p>Dereference operator.</p>
+<p><em>Returns</em>: A <code>const</code> reference to the referred value.</p>
+<h3>Operator <code>type_safe::constrained_type&lt;T&amp;, Constraint, Verifier&gt;::operator-&gt;</code><a id="constrained_type_ref::operator--()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>* operator-&gt;() const noexcept;</code></pre>
+<p>Member access operator.</p>
+<p><em>Returns</em>: A <code>const</code> pointer to the referred value.</p>
+<h3>Function <code>type_safe::constrained_type&lt;T&amp;, Constraint, Verifier&gt;::get_value</code><a id="constrained_type_ref::get_value()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>value_type</a>&amp; get_value() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <code>const</code> reference to the referred value.</p>
+<h3>Function <code>type_safe::constrained_type&lt;T&amp;, Constraint, Verifier&gt;::get_constraint</code><a id="constrained_type_ref::get_constraint()const"></a></h3>
+<pre><code class="language-cpp">constexpr const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constraint_predicate</a>&amp; get_constraint() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The predicate that determines validity.</p>
+<hr />
+<h2>Alias template <code>type_safe::constrained_ref</code><a id="ts::constrained_ref-T,Constraint,Verifier-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, class Constraint, class Verifier = assertion_verifier&gt;
+using constrained_ref = <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T&amp;, Constraint, Verifier&gt;</a>;</code></pre>
+<p>Alias for <a href="standardese://ts::constrained_type_ref/">ts::constrained_type&lt;T&amp;&gt;</a>.</p>
+<h2>Class template <code>type_safe::constrained_modifier</code><a id="ts::constrained_modifier-T,Constraint,Verifier-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, class Constraint, class Verifier&gt;
+class constrained_modifier
+{
+public:
+    using <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>value_type</a> = typename constrained_type&lt;T, Constraint, Verifier&gt;::value_type;
+    
+    <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-::constrained_modifier(constrained_modifier-T,Constraint,Verifier-&&)'>constrained_modifier</a>(<a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier</a>&amp;&amp; other) noexcept;
+    
+    <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-::~constrained_modifier()'>~constrained_modifier</a>() noexcept(false);
+    
+    <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier</a>&amp; <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-::operator=(constrained_modifier-T,Constraint,Verifier-&&)'>operator=</a>(<a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier</a>&amp;&amp; other) noexcept;
+    
+    <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>value_type</a>&amp; <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-::operator*()'>operator*</a>() noexcept;
+    
+    <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>value_type</a>* <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-::operator--()'>operator-&gt;</a>() noexcept;
+    
+    <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>value_type</a>&amp; <a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-::get()'>get</a>() noexcept;
+};</code></pre>
+<p>A proxy class to provide write access to the stored value of a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>The destructor will verify the value again.</p>
+<h3>Move constructor <code>type_safe::constrained_modifier::constrained_modifier</code><a id="ts::constrained_modifier-T,Constraint,Verifier-::constrained_modifier(constrained_modifier-T,Constraint,Verifier-&&)"></a></h3>
+<pre><code class="language-cpp">constrained_modifier(<a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier</a>&amp;&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Move constructs it. <code>other</code> will not verify any value afterwards.</p>
+<h3>Destructor <code>type_safe::constrained_modifier::~constrained_modifier</code><a id="ts::constrained_modifier-T,Constraint,Verifier-::~constrained_modifier()"></a></h3>
+<pre><code class="language-cpp">~constrained_modifier() noexcept(false);</code></pre>
+<p></p>
+<p><em>Effects</em>: Verifies the value, if there is any.</p>
+<h3>Assignment operator <code>type_safe::constrained_modifier::operator=</code><a id="ts::constrained_modifier-T,Constraint,Verifier-::operator=(constrained_modifier-T,Constraint,Verifier-&&)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier</a>&amp; operator=(<a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>constrained_modifier</a>&amp;&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Move assigns it. <code>other</code> will not verify any value afterwards.</p>
+<h3>Operator <code>type_safe::constrained_modifier::operator*</code><a id="ts::constrained_modifier-T,Constraint,Verifier-::operator*()"></a></h3>
+<pre><code class="language-cpp"><a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>value_type</a>&amp; operator*() noexcept;</code></pre>
+<p>Dereference operator.</p>
+<p><em>Returns</em>: A reference to the stored value.</p>
+<p><em>Requires</em>: It must not be in the moved-from state.</p>
+<h3>Operator <code>type_safe::constrained_modifier::operator-&gt;</code><a id="ts::constrained_modifier-T,Constraint,Verifier-::operator--()"></a></h3>
+<pre><code class="language-cpp"><a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>value_type</a>* operator-&gt;() noexcept;</code></pre>
+<p>Member access operator.</p>
+<p><em>Returns</em>: A pointer to the stored value.</p>
+<p><em>Requires</em>: It must not be in the moved-from state.</p>
+<h3>Function <code>type_safe::constrained_modifier::get</code><a id="ts::constrained_modifier-T,Constraint,Verifier-::get()"></a></h3>
+<pre><code class="language-cpp"><a href='doc_constrained_type.html#ts::constrained_modifier-T,Constraint,Verifier-'>value_type</a>&amp; get() noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A reference to the stored value.</p>
+<p><em>Requires</em>: It must not be in the moved-from state.</p>
+<hr />
+<h2>Constrained type comparison<a id="ts::operator==(constconstrained_type-T,Constraint,Verifier-&,constconstrained_type-T,Constraint,Verifier-&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename T, typename Constraint, class Verifier&gt;
+     constexpr bool operator==(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+
+(2)  template &lt;typename T, typename Constraint, class Verifier&gt;
+     constexpr bool operator!=(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+
+(3)  template &lt;typename T, typename Constraint, class Verifier&gt;
+     constexpr bool operator&lt;(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+
+(4)  template &lt;typename T, typename Constraint, class Verifier&gt;
+     constexpr bool operator&lt;=(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+
+(5)  template &lt;typename T, typename Constraint, class Verifier&gt;
+     constexpr bool operator&gt;(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');
+
+(6)  template &lt;typename T, typename Constraint, class Verifier&gt;
+     constexpr bool operator&gt;=(const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; lhs, const <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; rhs) noexcept('hidden');</code></pre>
+<p>Compares a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p><em>Returns</em>: The result of the comparison of the underlying value.</p>
+<p><em>Notes</em>: The comparison operators do not participate in overload resolution, unless the stored type provides them as well.</p>
+<h2>Function template <code>type_safe::constrain</code><a id="constrain_verifier"></a></h2>
+<pre><code class="language-cpp">template &lt;class Verifier, typename T, typename Constraint&gt;
+constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;typename std::decay&lt;T&gt;::type, Constraint, Verifier&gt;</a> constrain(T&amp;&amp; value, Constraint c);</code></pre>
+<p>Creates a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p><em>Returns</em>: A <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> with the given <code>value</code>,  <code>Constraint</code> and <code>Verifier</code>.</p>
+<h2>Function template <code>type_safe::constrain</code><a id="constrain"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename Constraint&gt;
+constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;typename std::decay&lt;T&gt;::type, Constraint&gt;</a> constrain(T&amp;&amp; value, Constraint c);</code></pre>
+<p>Creates a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> with the default verifier, <a href="doc_constrained_type.html#ts::assertion_verifier">ts::assertion_verifier</a>.</p>
+<p><em>Returns</em>: A <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> with the given <code>value</code> and <code>Constraint</code>.</p>
+<p><em>Requires</em>: As it uses a <code>DEBUG_ASSERT</code> to check constrain, the value must be valid.</p>
+<h2>Function template <code>type_safe::sanitize</code><a id="ts::sanitize(T&&,Constraint)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename Constraint&gt;
+constexpr <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;typename std::decay&lt;T&gt;::type, Constraint, throwing_verifier&gt;</a> sanitize(T&amp;&amp; value, Constraint c);</code></pre>
+<p>Creates a <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> using the <a href="doc_constrained_type.html#ts::throwing_verifier">ts::throwing_verifier</a>.</p>
+<p><em>Returns</em>: A <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> with the given <code>value</code> and <code>Constraint</code>.</p>
+<p><em>Throws</em>: A <a href="doc_constrained_type.html#ts::constrain_error">ts::constrain_error</a> if the <code>value</code> isn't valid, or anything else thrown by the constructor.</p>
+<p><em>Notes</em>: This is meant for sanitizing user input, using a recoverable error handling strategy.</p>
+<h2>Function template <code>type_safe::with</code><a id="ts::with(constrained_type-T,Constraint,Verifier-&,Func&&,Args&&...)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename Constraint, class Verifier, typename Func, typename ... Args&gt;
+void with(<a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, Verifier&gt;</a>&amp; value, Func&amp;&amp; f, Args&amp;&amp;... additional_args);</code></pre>
+<p>With operation for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p><em>Effects</em>: Calls <code>f</code> with a non-<code>const</code> reference to the stored value of the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>. It checks that <code>f</code> does not change the validity of the object. \notes The same behavior can be accomplished by using the <code>modify()</code> member function.</p>
+<h2>Struct <code>type_safe::null_verifier</code><a id="ts::null_verifier"></a></h2>
+<pre><code class="language-cpp">struct null_verifier
+{
+    template &lt;typename Value, typename Predicate&gt;
+    static constexpr Value&amp;&amp; <a href='doc_constrained_type.html#ts::null_verifier'>verify</a>(Value&amp;&amp; v, const Predicate&amp;);
+};</code></pre>
+<p>A <code>Verifier</code> for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that doesn't check the constraint.</p>
+<p>It will simply return the value unchanged, without any checks.</p>
+<p><em>Notes</em>: It does not impose any additional requirements on the <code>Predicate</code>.</p>
+<h2>Alias template <code>type_safe::tagged_type</code><a id="ts::tagged_type-T,Constraint-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, class Constraint&gt;
+using tagged_type = <a href='doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-'>constrained_type&lt;T, Constraint, null_verifier&gt;</a>;</code></pre>
+<p>An alias for <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> that never checks the constraint.</p>
+<p>It is useful for creating tagged types: The <code>Constraint</code> - which does not need to be a predicate anymore - is a &quot;tag&quot; to differentiate a type in different states. For example, you could have a &quot;sanitized&quot; value and a &quot;non-sanitized&quot; value that have different types, so you cannot accidentally mix them. \notes It is only intended if the <code>Constraint</code> cannot be formalized easily and/or is expensive. Otherwise <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a> is recommended as it does additional runtime checks in debug mode.</p>
+<h2>Alias template <code>type_safe::tagged_ref</code><a id="ts::tagged_ref-T,Constraint-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, class Constraint&gt;
+using tagged_ref = <a href='doc_constrained_type.html#ts::constrained_ref-T,Constraint,Verifier-'>constrained_ref&lt;T, Constraint, null_verifier&gt;</a>;</code></pre>
+<p>An alias for <a href="doc_constrained_type.html#ts::tagged_type-T,Constraint-">ts::tagged_type</a> with reference.</p>
+<h2>Function template <code>type_safe::tag</code><a id="ts::tag(T&&,Constraint)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, typename Constraint&gt;
+constexpr <a href='doc_constrained_type.html#ts::tagged_type-T,Constraint-'>tagged_type&lt;typename std::decay&lt;T&gt;::type, Constraint&gt;</a> tag(T&amp;&amp; value, Constraint c);</code></pre>
+<p>Creates a new <a href="doc_constrained_type.html#ts::tagged_type-T,Constraint-">ts::tagged_type</a>.</p>
+<p><em>Returns</em>: A <a href="doc_constrained_type.html#ts::tagged_type-T,Constraint-">ts::tagged_type</a> with the given <code>value</code> and <code>Constraint</code>.</p>
+<h2>Struct <code>type_safe::constraints::non_null</code><a id="ts::constraints::non_null"></a></h2>
+<pre><code class="language-cpp">struct non_null
+{
+    template &lt;typename T&gt;
+    struct <a href='doc_constrained_type.html#ts::constraints::non_null'>is_valid</a>
+    : <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::true_type'>std::true_type</a>
+    {
+    };
+    
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_constrained_type.html#ts::constraints::non_null'>operator()</a>(const T&amp; ptr) const noexcept;
+};</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value of a pointer type is valid if it is not equal to <code>nullptr</code>. This is borrowed from GSL's <a href="http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#a-namess-viewsagslview-views">non_null</a>.</p>
+<h2>Class <code>type_safe::constraints::non_empty</code><a id="ts::constraints::non_empty"></a></h2>
+<pre><code class="language-cpp">class non_empty
+{
+public:
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_constrained_type.html#ts::constraints::non_empty'>operator()</a>(const T&amp; t) const;
+};</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value of a container type is valid if it is not empty. Empty-ness is determined with either a member or non-member function.</p>
+<h2>Struct <code>type_safe::constraints::non_default</code><a id="ts::constraints::non_default"></a></h2>
+<pre><code class="language-cpp">struct non_default
+{
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_constrained_type.html#ts::constraints::non_default'>operator()</a>(const T&amp; t) const noexcept('hidden');
+};</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value is valid if it not equal to the default constructed value.</p>
+<h2>Struct <code>type_safe::constraints::non_invalid</code><a id="ts::constraints::non_invalid"></a></h2>
+<pre><code class="language-cpp">struct non_invalid
+{
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_constrained_type.html#ts::constraints::non_invalid'>operator()</a>(const T&amp; t) const noexcept('hidden');
+};</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::constrained_type-T,Constraint,Verifier-">ts::constrained_type</a>.</p>
+<p>A value of a pointer-like type is valid if the expression <code>!value</code> is <code>false</code>.</p>
+<h2>Struct <code>type_safe::constraints::owner</code><a id="ts::constraints::owner"></a></h2>
+<pre><code class="language-cpp">struct owner
+{
+};</code></pre>
+<p>A <code>Constraint</code> for the <a href="doc_constrained_type.html#ts::tagged_type-T,Constraint-">ts::tagged_type</a>.</p>
+<p>It marks an owning pointer. It is borrowed from GSL's <a href="http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#a-namess-viewsagslview-views">non_null</a>.</p>
+<p><em>Notes</em>: This is not actually a predicate.</p>
+<hr />
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

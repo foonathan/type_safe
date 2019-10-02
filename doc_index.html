@@ -1,0 +1,150 @@
+<h1>Header file <code>index.hpp</code><a id="index.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    struct <a href='doc_index.html#ts::difference_t'>difference_t</a>;
+    
+    struct <a href='doc_index.html#ts::index_t'>index_t</a>;
+    
+    constexpr <a href='doc_index.html#ts::index_t'>index_t</a> <a href='doc_index.html#ts::operator+(consttype_safe::index_t&,consttype_safe::difference_t&)'>operator+</a>(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; lhs, const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; rhs) noexcept;
+    constexpr <a href='doc_index.html#ts::index_t'>index_t</a> <a href='doc_index.html#ts::operator+(consttype_safe::index_t&,consttype_safe::difference_t&)'>operator+</a>(const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; lhs, const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; rhs) noexcept;
+    
+    constexpr <a href='doc_index.html#ts::index_t'>index_t</a> <a href='doc_index.html#ts::operator-(consttype_safe::index_t&,consttype_safe::difference_t&)'>operator-</a>(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; lhs, const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; rhs) noexcept;
+    
+    constexpr <a href='doc_index.html#ts::difference_t'>difference_t</a> <a href='doc_index.html#ts::operator-(consttype_safe::index_t&,consttype_safe::index_t&)'>operator-</a>(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; lhs, const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; rhs) noexcept;
+    
+    template &lt;typename Indexable&gt;
+    decltype(std::forward&lt;Indexable&gt;(obj)[static_cast&lt;std::size_t&gt;(get(index))]) <a href='doc_index.html#ts::at(Indexable&&,consttype_safe::index_t&)'>at</a>(Indexable&amp;&amp; obj, const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; index);
+    
+    void <a href='doc_index.html#ts::advance(type_safe::index_t&,consttype_safe::difference_t&)'>advance</a>(<a href='doc_index.html#ts::index_t'>index_t</a>&amp; index, const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; dist);
+    
+    constexpr <a href='doc_index.html#ts::difference_t'>difference_t</a> <a href='doc_index.html#ts::distance(consttype_safe::index_t&,consttype_safe::index_t&)'>distance</a>(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; a, const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; b);
+    
+    constexpr <a href='doc_index.html#ts::index_t'>index_t</a> <a href='doc_index.html#ts::next(consttype_safe::index_t&,consttype_safe::difference_t&)'>next</a>(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; index, const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; dist = difference_t(1));
+    
+    constexpr <a href='doc_index.html#ts::index_t'>index_t</a> <a href='doc_index.html#ts::prev(consttype_safe::index_t&,consttype_safe::difference_t&)'>prev</a>(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; index, const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; dist = difference_t(1));
+}</code></pre>
+<h2>Struct <code>type_safe::difference_t</code> [types]<a id="ts::difference_t"></a></h2>
+<pre><code class="language-cpp">struct difference_t
+: strong_typedef&lt;struct type_safe::difference_t, ptrdiff_t&gt;,
+  strong_typedef_op::equality_comparison&lt;difference_t&gt;,
+  strong_typedef_op::relational_comparison&lt;difference_t&gt;,
+  strong_typedef_op::unary_plus&lt;difference_t&gt;,
+  strong_typedef_op::unary_minus&lt;difference_t&gt;,
+  strong_typedef_op::addition&lt;difference_t&gt;,
+  strong_typedef_op::subtraction&lt;difference_t&gt;
+{
+    constexpr <a href='doc_index.html#ts::difference_t::difference_t()'>difference_t</a>() noexcept;
+    
+    template &lt;typename T&gt;
+    constexpr <a href='doc_index.html#ts::difference_t::difference_t(T)'>difference_t</a>(T i) noexcept;
+    template &lt;typename T, class Policy, typename = typename std::enable_if&lt;detail::is_safe_integer_conversion&lt;T, std::ptrdiff_t&gt;::value&gt;::type&gt;
+    constexpr <a href='doc_index.html#ts::difference_t::difference_t(T)'>difference_t</a>(<a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a> i) noexcept;
+};</code></pre>
+<p>A type modelling the difference between two <a href="doc_index.html#ts::index_t">ts::index_t</a> objects.</p>
+<p>It is a <a href="doc_strong_typedef.html#ts::strong_typedef-Tag,T-">ts::strong_typedef</a> for <a href="standardese://ts::ptrdiff_t/">ts::ptrdiff_t</a>. It is comparable and you can add and subtract two differences.</p>
+<h3>Default constructor <code>type_safe::difference_t::difference_t</code><a id="ts::difference_t::difference_t()"></a></h3>
+<pre><code class="language-cpp">constexpr difference_t() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes it to <code>0</code>.</p>
+<h3>Function template <code>type_safe::difference_t::difference_t</code><a id="ts::difference_t::difference_t(T)"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     constexpr difference_t(T i) noexcept;
+
+(2)  template &lt;typename T, class Policy, typename = typename std::enable_if&lt;detail::is_safe_integer_conversion&lt;T, std::ptrdiff_t&gt;::value&gt;::type&gt;
+     constexpr difference_t(<a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a> i) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes it from a valid <code>signed</code> integer type.</p>
+<p><em>Notes</em>: This constructor does not participate in overload resolution, if <code>T</code> is not safely convertible to <a href="standardese://ts::ptrdiff_t/">ts::ptrdiff_t</a>.</p>
+<hr />
+<h2>Struct <code>type_safe::index_t</code> [types]<a id="ts::index_t"></a></h2>
+<pre><code class="language-cpp">struct index_t
+: strong_typedef&lt;struct type_safe::index_t, size_t&gt;,
+  strong_typedef_op::equality_comparison&lt;index_t&gt;,
+  strong_typedef_op::relational_comparison&lt;index_t&gt;,
+  strong_typedef_op::increment&lt;index_t&gt;,
+  strong_typedef_op::decrement&lt;index_t&gt;,
+  strong_typedef_op::unary_plus&lt;index_t&gt;
+{
+    constexpr <a href='doc_index.html#ts::index_t::index_t()'>index_t</a>() noexcept;
+    
+    template &lt;typename T&gt;
+    constexpr <a href='doc_index.html#ts::index_t::index_t(T)'>index_t</a>(T i) noexcept;
+    template &lt;typename T, class Policy, typename = typename std::enable_if&lt;detail::is_safe_integer_conversion&lt;T, std::size_t&gt;::value&gt;::type&gt;
+    constexpr <a href='doc_index.html#ts::index_t::index_t(T)'>index_t</a>(<a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a> i) noexcept;
+    
+    <a href='doc_index.html#ts::index_t'>index_t</a>&amp; <a href='doc_index.html#ts::index_t::operator+=(consttype_safe::difference_t&)'>operator+=</a>(const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; rhs) noexcept;
+    
+    <a href='doc_index.html#ts::index_t'>index_t</a>&amp; <a href='doc_index.html#ts::index_t::operator-=(consttype_safe::difference_t&)'>operator-=</a>(const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; rhs) noexcept;
+};</code></pre>
+<p>A type modelling an index into an array.</p>
+<p>It is a <a href="doc_strong_typedef.html#ts::strong_typedef-Tag,T-">ts::strong_typedef</a> for <a href="standardese://ts::size_t/">ts::size_t</a>. It is comparable and you can increment and decrement it, as well as adding/subtracting a <a href="standardese://ts::distance_t/">ts::distance_t</a>.</p>
+<p><em>Notes</em>: It has a similar interface to a <code>RandomAccessIterator</code>, but without the dereference functions.</p>
+<h3>Default constructor <code>type_safe::index_t::index_t</code><a id="ts::index_t::index_t()"></a></h3>
+<pre><code class="language-cpp">constexpr index_t() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes it to <code>0</code>.</p>
+<h3>Function template <code>type_safe::index_t::index_t</code><a id="ts::index_t::index_t(T)"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     constexpr index_t(T i) noexcept;
+
+(2)  template &lt;typename T, class Policy, typename = typename std::enable_if&lt;detail::is_safe_integer_conversion&lt;T, std::size_t&gt;::value&gt;::type&gt;
+     constexpr index_t(<a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;T, Policy&gt;</a> i) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes it from a valid <code>unsigned</code> integer type.</p>
+<p><em>Notes</em>: This constructor does not participate in overload resolution, if <code>T</code> is not safely convertible to <a href="standardese://ts::size_t/">ts::size_t</a>.</p>
+<h3>Operator <code>type_safe::index_t::operator+=</code><a id="ts::index_t::operator+=(consttype_safe::difference_t&)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_index.html#ts::index_t'>index_t</a>&amp; operator+=(const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; rhs) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Advances the index by the distance specified in <code>rhs</code>. If <code>rhs</code> is a negative distance, it advances backwards.</p>
+<p><em>Requires</em>: The new index must be greater or equal to <code>0</code>.</p>
+<h3>Operator <code>type_safe::index_t::operator-=</code><a id="ts::index_t::operator-=(consttype_safe::difference_t&)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_index.html#ts::index_t'>index_t</a>&amp; operator-=(const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; rhs) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Advances the index backwards by the distance specified in <code>rhs</code>. If <code>rhs</code> is a negative distance, it advances forwards.</p>
+<p><em>Requires</em>: The new index must be greater or equal to <code>0</code>.</p>
+<hr />
+<h2>Operator <code>type_safe::operator+</code> [types]<a id="ts::operator+(consttype_safe::index_t&,consttype_safe::difference_t&)"></a></h2>
+<pre><code class="language-cpp">(1)  constexpr <a href='doc_index.html#ts::index_t'>index_t</a> operator+(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; lhs, const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; rhs) noexcept;
+
+(2)  constexpr <a href='doc_index.html#ts::index_t'>index_t</a> operator+(const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; lhs, const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; rhs) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The given <a href="doc_index.html#ts::index_t">ts::index_t</a> advanced by the given <a href="standardese://ts::distance_t/">ts::distance_t</a>.</p>
+<h2>Operator <code>type_safe::operator-</code> [types]<a id="ts::operator-(consttype_safe::index_t&,consttype_safe::difference_t&)"></a></h2>
+<pre><code class="language-cpp">constexpr <a href='doc_index.html#ts::index_t'>index_t</a> operator-(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; lhs, const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; rhs) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The given <a href="doc_index.html#ts::index_t">ts::index_t</a> advanced backwards by the given <a href="standardese://ts::distance_t/">ts::distance_t</a>.</p>
+<h2>Operator <code>type_safe::operator-</code> [types]<a id="ts::operator-(consttype_safe::index_t&,consttype_safe::index_t&)"></a></h2>
+<pre><code class="language-cpp">constexpr <a href='doc_index.html#ts::difference_t'>difference_t</a> operator-(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; lhs, const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; rhs) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: Returns the distance between two indices. This is the number of steps you need to increment <code>lhs</code> to reach <code>rhs</code>, it is negative if <code>lhs &gt; rhs</code>.</p>
+<h2>Function template <code>type_safe::at</code><a id="ts::at(Indexable&&,consttype_safe::index_t&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Indexable&gt;
+decltype(std::forward&lt;Indexable&gt;(obj)[static_cast&lt;std::size_t&gt;(get(index))]) at(Indexable&amp;&amp; obj, const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; index);</code></pre>
+<p></p>
+<p><em>Returns</em>: The <code>i</code>th element of <code>obj</code> by invoking its <code>operator[]</code> with the <a href="doc_index.html#ts::index_t">ts::index_t</a> converted to <code>std::size_t</code>. \requires <code>index</code> must be a valid index for <code>obj</code>, i.e. less than the size of <code>obj</code>. \exclude return \module types</p>
+<h2>Function <code>type_safe::advance</code> [types]<a id="ts::advance(type_safe::index_t&,consttype_safe::difference_t&)"></a></h2>
+<pre><code class="language-cpp">void advance(<a href='doc_index.html#ts::index_t'>index_t</a>&amp; index, const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; dist);</code></pre>
+<p></p>
+<p><em>Effects</em>: Increments the <a href="doc_index.html#ts::index_t">ts::index_t</a> by the specified distance. If the distance is negative, decrements the index instead.</p>
+<p><em>Notes</em>: This is the same as <code>index += dist</code> and the equivalent of <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::advance()">std::advance()</a>.</p>
+<h2>Function <code>type_safe::distance</code> [types]<a id="ts::distance(consttype_safe::index_t&,consttype_safe::index_t&)"></a></h2>
+<pre><code class="language-cpp">constexpr <a href='doc_index.html#ts::difference_t'>difference_t</a> distance(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; a, const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; b);</code></pre>
+<p></p>
+<p><em>Returns</em>: The distance between two <a href="doc_index.html#ts::index_t">ts::index_t</a> objects, i.e. how often you'd have to increment <code>a</code> to reach <code>b</code>.</p>
+<p><em>Notes</em>: This is the same as <code>b - a</code> and the equivalent of <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::distance()">std::distance()</a>.</p>
+<h2>Function <code>type_safe::next</code> [types]<a id="ts::next(consttype_safe::index_t&,consttype_safe::difference_t&)"></a></h2>
+<pre><code class="language-cpp">constexpr <a href='doc_index.html#ts::index_t'>index_t</a> next(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; index, const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; dist = difference_t(1));</code></pre>
+<p></p>
+<p><em>Returns</em>: The <a href="doc_index.html#ts::index_t">ts::index_t</a> that is <code>dist</code> greater than <code>index</code>.</p>
+<p><em>Notes</em>: This is the same as <code>index + dist</code> and the equivalent of <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::next()">std::next()</a>.</p>
+<h2>Function <code>type_safe::prev</code> [types]<a id="ts::prev(consttype_safe::index_t&,consttype_safe::difference_t&)"></a></h2>
+<pre><code class="language-cpp">constexpr <a href='doc_index.html#ts::index_t'>index_t</a> prev(const <a href='doc_index.html#ts::index_t'>index_t</a>&amp; index, const <a href='doc_index.html#ts::difference_t'>difference_t</a>&amp; dist = difference_t(1));</code></pre>
+<p></p>
+<p><em>Returns</em>: The <a href="doc_index.html#ts::index_t">ts::index_t</a> that is <code>dist</code> smaller than <code>index</code>.</p>
+<p><em>Notes</em>: This is the same as <code>index - dist</code> and the equivalent of <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::prev()">std::prev()</a>.</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

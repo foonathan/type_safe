@@ -1,0 +1,202 @@
+<h1>Header file <code>tagged_union.hpp</code><a id="tagged_union.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;typename T&gt;
+    struct <a href='doc_tagged_union.html#ts::union_type-T-'>union_type</a>;
+    
+    template &lt;typename ... Ts&gt;
+    struct <a href='doc_tagged_union.html#ts::union_types-Ts...-'>union_types</a>;
+    
+    template &lt;typename ... Types&gt;
+    class <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union</a>;
+    
+    template &lt;typename ... Types, typename Func, typename ... Args&gt;
+    void <a href='doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)'>with</a>(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; u, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+    template &lt;typename ... Types, typename Func, typename ... Args&gt;
+    void <a href='doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)'>with</a>(const <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; u, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+    template &lt;typename ... Types, typename Func, typename ... Args&gt;
+    void <a href='doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)'>with</a>(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp;&amp; u, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+    template &lt;typename ... Types, typename Func, typename ... Args&gt;
+    void <a href='doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)'>with</a>(const <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp;&amp; u, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+    
+    template &lt;typename ... Types&gt;
+    void <a href='doc_tagged_union.html#ts::destroy(tagged_union-Types...-&)'>destroy</a>(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; u) noexcept;
+    
+    template &lt;typename ... Types&gt;
+    void <a href='doc_tagged_union.html#ts::copy_union'>copy</a>(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; dest, const <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; org);
+    template &lt;typename ... Types&gt;
+    void <a href='doc_tagged_union.html#ts::copy_union'>move</a>(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; dest, <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp;&amp; org);
+}</code></pre>
+<h2>Class template <code>type_safe::union_type</code> [variant]<a id="ts::union_type-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+struct union_type
+{
+    constexpr <a href='doc_tagged_union.html#ts::union_type-T-'>union_type</a>();
+};</code></pre>
+<p>Tag type so no explicit template instantiation of function parameters is required.</p>
+<h2>Class template <code>type_safe::union_types</code> [variant]<a id="ts::union_types-Ts...-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename ... Ts&gt;
+struct union_types
+{
+};</code></pre>
+<p>Very basic typelist.</p>
+<h2>Class template <code>type_safe::tagged_union</code> [variant]<a id="ts::tagged_union-Types...-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename ... Types&gt;
+class tagged_union
+{
+public:
+    using <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>types</a> = <a href='doc_tagged_union.html#ts::union_types-Ts...-'>union_types&lt;typename std::decay&lt;Types&gt;::type...&gt;</a>;
+    
+    class <a href='doc_tagged_union.html#ts::tagged_union-Types...-::type_id'>type_id</a>;
+    
+    static constexpr <a href='doc_tagged_union.html#ts::tagged_union-Types...-::type_id'>type_id</a> <a href='doc_tagged_union.html#ts::tagged_union-Types...-::invalid_type'>invalid_type</a> = type_id();
+    
+    <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union</a>() noexcept = default;
+    
+    <a href='doc_tagged_union.html#ts::tagged_union-Types...-::~tagged_union()'>~tagged_union</a>() noexcept = default;
+    
+    <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union</a>(const <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union</a>&amp;) = delete;
+    
+    <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union</a>&amp; <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>operator=</a>(const <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union</a>&amp;) = delete;
+    
+    template &lt;typename T, typename ... Args&gt;
+    void <a href='doc_tagged_union.html#ts::tagged_union-Types...-::emplace(union_type-T-,Args&&...)'>emplace</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a>, Args&amp;&amp;... args);
+    
+    template &lt;typename T&gt;
+    void <a href='doc_tagged_union.html#ts::tagged_union-Types...-::destroy(union_type-T-)'>destroy</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type) noexcept;
+    
+    const <a href='doc_tagged_union.html#ts::tagged_union-Types...-::type_id'>type_id</a>&amp; <a href='doc_tagged_union.html#ts::tagged_union-Types...-::type()const'>type</a>() const noexcept;
+    
+    bool <a href='doc_tagged_union.html#ts::tagged_union-Types...-::has_value()const'>has_value</a>() const noexcept;
+    
+    template &lt;typename T&gt;
+    T&amp; <a href='doc_tagged_union.html#ts::tagged_union-Types...-::value(union_type-T-)&'>value</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type) &amp; noexcept;
+    template &lt;typename T&gt;
+    const T&amp; <a href='doc_tagged_union.html#ts::tagged_union-Types...-::value(union_type-T-)&'>value</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type) const &amp; noexcept;
+    template &lt;typename T&gt;
+    T&amp;&amp; <a href='doc_tagged_union.html#ts::tagged_union-Types...-::value(union_type-T-)&'>value</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type) &amp;&amp; noexcept;
+    template &lt;typename T&gt;
+    const T&amp;&amp; <a href='doc_tagged_union.html#ts::tagged_union-Types...-::value(union_type-T-)&'>value</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type) const &amp;&amp; noexcept;
+};</code></pre>
+<p>A tagged union.</p>
+<p>It is much like a plain old C <code>union</code>, but remembers which type it currently stores. It can either store one of the given types or no type at all.</p>
+<p><em>Notes</em>: Like the C <code>union</code> it does not automatically destroy the currently stored type, and copy operations are deleted.</p>
+<h3>Class <code>type_safe::tagged_union::type_id</code><a id="ts::tagged_union-Types...-::type_id"></a></h3>
+<pre><code class="language-cpp">class type_id
+: public <a href='doc_strong_typedef.html#ts::strong_typedef-Tag,T-'>strong_typedef&lt;class type_safe::tagged_union::type_id, std::size_t&gt;</a>,
+  public <a href='doc_strong_typedef.html#ts::strong_typedef_op'>strong_typedef_op::equality_comparison&lt;type_id&gt;</a>,
+  public <a href='doc_strong_typedef.html#ts::strong_typedef_op'>strong_typedef_op::relational_comparison&lt;type_id&gt;</a>
+{
+public:
+    template &lt;typename T&gt;
+    static constexpr bool <a href='doc_tagged_union.html#ts::tagged_union-Types...-::type_id::is_valid()'>is_valid</a>();
+    
+    constexpr <a href='doc_tagged_union.html#ts::tagged_union-Types...-::type_id::type_id()'>type_id</a>() noexcept;
+    
+    template &lt;typename T&gt;
+    constexpr <a href='doc_tagged_union.html#ts::tagged_union-Types...-::type_id::type_id(union_type-T-)'>type_id</a>(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a>) noexcept;
+    
+    <a href='doc_tagged_union.html#ts::tagged_union-Types...-::type_id::operatorbool()const'>operator bool</a>() const noexcept;
+};</code></pre>
+<p>The id of a type.</p>
+<p>It is a <a href="doc_strong_typedef.html#ts::strong_typedef-Tag,T-">ts::strong_typedef</a> for <code>std::size_t</code> and provides equality and relational comparison.</p>
+<h4>Function template <code>type_safe::tagged_union::type_id::is_valid</code><a id="ts::tagged_union-Types...-::type_id::is_valid()"></a></h4>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+static constexpr bool is_valid();</code></pre>
+<p></p>
+<p><em>Returns</em>: <code>true</code> if <code>T</code> is a valid type, <code>false</code> otherwise.</p>
+<h4>Default constructor <code>type_safe::tagged_union::type_id::type_id</code><a id="ts::tagged_union-Types...-::type_id::type_id()"></a></h4>
+<pre><code class="language-cpp">constexpr type_id() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes it to an invalid value.</p>
+<p><em>Notes</em>: The invalid value compares less than all valid values.</p>
+<h4>Function template <code>type_safe::tagged_union::type_id::type_id</code><a id="ts::tagged_union-Types...-::type_id::type_id(union_type-T-)"></a></h4>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+constexpr type_id(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a>) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes it to the value of the type <code>T</code>. If <code>T</code> is not one of the types of the union types, it will be the same as the default constructor.</p>
+<h4>Conversion operator <code>type_safe::tagged_union::type_id::operator bool</code><a id="ts::tagged_union-Types...-::type_id::operatorbool()const"></a></h4>
+<pre><code class="language-cpp">operator bool() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: <code>true</code> if the id is valid, <code>false</code> otherwise.</p>
+<hr />
+<h3>Variable <code>type_safe::tagged_union::invalid_type</code><a id="ts::tagged_union-Types...-::invalid_type"></a></h3>
+<pre><code class="language-cpp">static constexpr <a href='doc_tagged_union.html#ts::tagged_union-Types...-::type_id'>type_id</a> invalid_type = type_id();</code></pre>
+<p>A global invalid type id object.</p>
+<h3>Destructor <code>type_safe::tagged_union::~tagged_union</code><a id="ts::tagged_union-Types...-::~tagged_union()"></a></h3>
+<pre><code class="language-cpp">~tagged_union() noexcept = default;</code></pre>
+<p></p>
+<p><em>Notes</em>: Does not destroy the currently stored type.</p>
+<h3>Function template <code>type_safe::tagged_union::emplace</code><a id="ts::tagged_union-Types...-::emplace(union_type-T-,Args&&...)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T, typename ... Args&gt;
+void emplace(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a>, Args&amp;&amp;... args);</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates a new object of given type by perfectly forwarding <code>args</code>.</p>
+<p><em>Throws</em>: Anything thrown by <code>T</code>s constructor, in which case the union will stay empty.</p>
+<p><em>Requires</em>: The union must currently be empty. and <code>T</code> must be a valid type and constructible from the arguments.</p>
+<h3>Function template <code>type_safe::tagged_union::destroy</code><a id="ts::tagged_union-Types...-::destroy(union_type-T-)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+void destroy(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Destroys the currently stored type by calling its destructor, and setting the union to the empty state.</p>
+<p><em>Requires</em>: The union must currently store an object of the given type.</p>
+<h3>Function <code>type_safe::tagged_union::type</code><a id="ts::tagged_union-Types...-::type()const"></a></h3>
+<pre><code class="language-cpp">const <a href='doc_tagged_union.html#ts::tagged_union-Types...-::type_id'>type_id</a>&amp; type() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The <a href="doc_tagged_union.html#ts::tagged_union-Types...-::type_id">type_id</a> of the type currently stored, or <a href="doc_tagged_union.html#ts::tagged_union-Types...-::invalid_type">invalid_type</a> if there is none.</p>
+<h3>Function <code>type_safe::tagged_union::has_value</code><a id="ts::tagged_union-Types...-::has_value()const"></a></h3>
+<pre><code class="language-cpp">bool has_value() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: <code>true</code> if there is a type stored, <code>false</code> otherwise.</p>
+<h3>Function template <code>type_safe::tagged_union::value</code><a id="ts::tagged_union-Types...-::value(union_type-T-)&"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     T&amp; value(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type) &amp; noexcept;
+
+(2)  template &lt;typename T&gt;
+     const T&amp; value(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type) const &amp; noexcept;
+
+(3)  template &lt;typename T&gt;
+     T&amp;&amp; value(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type) &amp;&amp; noexcept;
+
+(4)  template &lt;typename T&gt;
+     const T&amp;&amp; value(<a href='doc_tagged_union.html#ts::union_type-T-'>union_type&lt;T&gt;</a> type) const &amp;&amp; noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A (<code>const</code>) lvalue/rvalue reference to the currently stored type.</p>
+<p><em>Requires</em>: The union must currently store an object of the given type.</p>
+<hr />
+<h2>Function template <code>type_safe::with</code> [variant]<a id="ts::with(tagged_union-Types...-&,Func&&,Args&&...)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename ... Types, typename Func, typename ... Args&gt;
+     void with(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; u, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+
+(2)  template &lt;typename ... Types, typename Func, typename ... Args&gt;
+     void with(const <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; u, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+
+(3)  template &lt;typename ... Types, typename Func, typename ... Args&gt;
+     void with(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp;&amp; u, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+
+(4)  template &lt;typename ... Types, typename Func, typename ... Args&gt;
+     void with(const <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp;&amp; u, Func&amp;&amp; f, Args&amp;&amp;... additional_args);</code></pre>
+<p></p>
+<p><em>Effects</em>: If the union is empty, does nothing. Otherwise let the union contain an object of type <code>T</code>. If the functor is callable for the <code>T</code>, calls its <code>operator()</code> passing it the stored object. Else does nothing.</p>
+<h2>Function template <code>type_safe::destroy</code> [variant]<a id="ts::destroy(tagged_union-Types...-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename ... Types&gt;
+void destroy(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; u) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Destroys the type currently stored in the <a href="doc_tagged_union.html#ts::tagged_union-Types...-">ts::tagged_union</a>, by calling <code>u.destroy(union_type&lt;T&gt;{})</code>.</p>
+<h2>Function template <code>type_safe::copy</code> [variant]<a id="ts::copy_union"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename ... Types&gt;
+     void copy(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; dest, const <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; org);
+
+(2)  template &lt;typename ... Types&gt;
+     void move(<a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp; dest, <a href='doc_tagged_union.html#ts::tagged_union-Types...-'>tagged_union&lt;Types...&gt;</a>&amp;&amp; org);</code></pre>
+<p></p>
+<p><em>Effects</em>: Copies the type currently stored in one <a href="doc_tagged_union.html#ts::tagged_union-Types...-">ts::tagged_union</a> to another. This is equivalent to calling <code>dest.emplace(union_type&lt;T&gt;{}, org.value(union_type&lt;T&gt;{}))</code> (1)</p>
+<p><code>dest.emplace(union_type&lt;T&gt;{}, std::move(org).value(union_type&lt;T&gt;{}))</code> (2), where <code>T</code> is the type currently stored in the union.</p>
+<p><em>Throws</em>: Anything by the copy/move constructor in which case nothing has changed.</p>
+<p><em>Requires</em>: <code>dest</code> must not store a type, and all types must be copyable/moveable.</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

@@ -1,0 +1,132 @@
+<h1>Header file <code>types.hpp</code><a id="types.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    inline namespace <a href='doc_types.html#types.hpp'>types</a>
+    {
+        using <a href='doc_types.html#types.hpp'>int8_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int8_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int16_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int16_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int32_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int32_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int64_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int64_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint8_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint8_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint16_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint16_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint32_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint32_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint64_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint64_t&gt;</a>;
+        
+        inline namespace <a href='doc_types.html#types.hpp'>literals</a>
+        {
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>int8_t</a> <a href='doc_types.html#types.hpp'>operator""_i8</a>();
+            
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>int16_t</a> <a href='doc_types.html#types.hpp'>operator""_i16</a>();
+            
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>int32_t</a> <a href='doc_types.html#types.hpp'>operator""_i32</a>();
+            
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>int64_t</a> <a href='doc_types.html#types.hpp'>operator""_i64</a>();
+            
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>uint8_t</a> <a href='doc_types.html#types.hpp'>operator""_u8</a>();
+            
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>uint16_t</a> <a href='doc_types.html#types.hpp'>operator""_u16</a>();
+            
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>uint32_t</a> <a href='doc_types.html#types.hpp'>operator""_u32</a>();
+            
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>uint64_t</a> <a href='doc_types.html#types.hpp'>operator""_u64</a>();
+        }
+        
+        using <a href='doc_types.html#types.hpp'>int_fast8_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int_fast8_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int_fast16_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int_fast16_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int_fast32_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int_fast32_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int_fast64_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int_fast64_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint_fast8_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint_fast8_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint_fast16_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint_fast16_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint_fast32_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint_fast32_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint_fast64_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint_fast64_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int_least8_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int_least8_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int_least16_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int_least16_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int_least32_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int_least32_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int_least64_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int_least64_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint_least8_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint_least8_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint_least16_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint_least16_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint_least32_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint_least32_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uint_least64_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uint_least64_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>intmax_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;intmax_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uintmax_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uintmax_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>intptr_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;intptr_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>uintptr_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;uintptr_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>ptrdiff_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;ptrdiff_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>size_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;size_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>int_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;int&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>unsigned_t</a> = <a href='doc_integer.html#ts::integer-IntegerT,Policy-'>integer&lt;unsigned&gt;</a>;
+        
+        inline namespace <a href='doc_types.html#types.hpp'>literals</a>
+        {
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>ptrdiff_t</a> <a href='doc_types.html#types.hpp'>operator""_isize</a>();
+            
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>size_t</a> <a href='doc_types.html#types.hpp'>operator""_usize</a>();
+            
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>int_t</a> <a href='doc_types.html#types.hpp'>operator""_i</a>();
+            
+            template &lt;char ... Digits&gt;
+            constexpr <a href='doc_types.html#types.hpp'>unsigned_t</a> <a href='doc_types.html#types.hpp'>operator""_u</a>();
+        }
+        
+        using <a href='doc_types.html#types.hpp'>float_t</a> = <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;std::float_t&gt;</a>;
+        
+        using <a href='doc_types.html#types.hpp'>double_t</a> = <a href='doc_floating_point.html#ts::floating_point-FloatT-'>floating_point&lt;std::double_t&gt;</a>;
+        
+        inline namespace <a href='doc_types.html#types.hpp'>literals</a>
+        {
+            constexpr <a href='doc_types.html#types.hpp'>float_t</a> <a href='doc_types.html#types.hpp'>operator""_f</a>(long double val);
+            
+            constexpr <a href='doc_types.html#types.hpp'>double_t</a> <a href='doc_types.html#types.hpp'>operator""_d</a>(long double val);
+        }
+        
+        using <a href='doc_types.html#types.hpp'>bool_t</a> = <a href='doc_boolean.html#ts::boolean'>boolean</a>;
+    }
+}</code></pre>
+<hr />
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

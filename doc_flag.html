@@ -1,0 +1,131 @@
+<h1>Header file <code>flag.hpp</code><a id="flag.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    class <a href='doc_flag.html#ts::flag'>flag</a>;
+    
+    constexpr bool <a href='doc_flag.html#ts::operator==(type_safe::flag,type_safe::flag)'>operator==</a>(<a href='doc_flag.html#ts::flag'>flag</a> lhs, <a href='doc_flag.html#ts::flag'>flag</a> rhs) noexcept;
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_flag.html#ts::operator==(type_safe::flag,type_safe::flag)'>operator==</a>(<a href='doc_flag.html#ts::flag'>flag</a> lhs, T rhs) noexcept;
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_flag.html#ts::operator==(type_safe::flag,type_safe::flag)'>operator==</a>(T lhs, <a href='doc_flag.html#ts::flag'>flag</a> rhs) noexcept;
+    
+    constexpr bool <a href='doc_flag.html#ts::operator!=(type_safe::flag,type_safe::flag)'>operator!=</a>(<a href='doc_flag.html#ts::flag'>flag</a> lhs, <a href='doc_flag.html#ts::flag'>flag</a> rhs) noexcept;
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_flag.html#ts::operator!=(type_safe::flag,type_safe::flag)'>operator!=</a>(<a href='doc_flag.html#ts::flag'>flag</a> lhs, T rhs) noexcept;
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_flag.html#ts::operator!=(type_safe::flag,type_safe::flag)'>operator!=</a>(T lhs, <a href='doc_flag.html#ts::flag'>flag</a> rhs) noexcept;
+}</code></pre>
+<h2>Class <code>type_safe::flag</code> [types]<a id="ts::flag"></a></h2>
+<pre><code class="language-cpp">class flag
+{
+public:
+    <a href='doc_flag.html#ts::flag'>flag</a>() = delete;
+    
+    template &lt;typename T, typename = detail::enable_boolean&lt;T&gt;&gt;
+    constexpr <a href='doc_flag.html#ts::flag::flag(T)'>flag</a>(T initial_state) noexcept;
+    
+    bool <a href='doc_flag.html#ts::flag::toggle()'>toggle</a>() noexcept;
+    
+    template &lt;typename T&gt;
+    void <a href='doc_flag.html#ts::flag::change(T)'>change</a>(T new_state) noexcept;
+    
+    void <a href='doc_flag.html#ts::flag::set()'>set</a>() noexcept;
+    
+    bool <a href='doc_flag.html#ts::flag::try_set()'>try_set</a>() noexcept;
+    
+    void <a href='doc_flag.html#ts::flag::reset()'>reset</a>() noexcept;
+    
+    bool <a href='doc_flag.html#ts::flag::try_reset()'>try_reset</a>() noexcept;
+};</code></pre>
+<p>A type safe flag, it can either be <code>true</code> or <code>false</code>.</p>
+<p>Consider the following snippet:</p>
+<pre><code class="language-cpp">auto was_newl = false;
+for (auto x : …)
+{
+    if (x == '/n')
+    {
+         assert(!was_newl); // want to change value here
+         was_newl = true;
+    }
+    else if (was_newl)
+    {
+        do_sth(c);
+        was_newl = false; // separate step, easy to forget (I did here originally!)
+    }
+}
+</code></pre>
+<p>With flag, it is better:</p>
+<pre><code class="language-cpp">type_safe::flag was_newl(false);
+for (auto x : …)
+{
+     if (x == '/n')
+         was_newl.change(true); // asserts that value is changed
+     else if (was_newl.try_reset()) // resets flag and returns whether value changed
+         do_sth(x); // no way to forget
+}
+</code></pre>
+<p><em>Notes</em>: It is named <code>flag</code> for consistency with <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::atomic_flag">std::atomic_flag</a>, even though this one can provide an extended interface as it is not atomic. <code>flag</code> has nothing to do with <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a>.</p>
+<h3>Function template <code>type_safe::flag::flag</code><a id="ts::flag::flag(T)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T, typename = detail::enable_boolean&lt;T&gt;&gt;
+constexpr flag(T initial_state) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Gives the flag the initial state.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution if <code>T</code> is not a boolean type. \param 1 \exclude</p>
+<h3>Function <code>type_safe::flag::toggle</code><a id="ts::flag::toggle()"></a></h3>
+<pre><code class="language-cpp">bool toggle() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Flips the state of the flag.</p>
+<p><em>Returns</em>: The old value.</p>
+<h3>Function template <code>type_safe::flag::change</code><a id="ts::flag::change(T)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+void change(T new_state) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets its state to the new one.</p>
+<p><em>Requires</em>: The new state must be different than the old one.</p>
+<h3>Function <code>type_safe::flag::set</code><a id="ts::flag::set()"></a></h3>
+<pre><code class="language-cpp">void set() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets its state to <code>true</code>.</p>
+<h3>Function <code>type_safe::flag::try_set</code><a id="ts::flag::try_set()"></a></h3>
+<pre><code class="language-cpp">bool try_set() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets its state to <code>true</code>.</p>
+<p><em>Returns</em>: <code>true</code> if the previous state was <code>false</code>, <code>false</code> otherwise, i.e. whether or not the state was changed.</p>
+<h3>Function <code>type_safe::flag::reset</code><a id="ts::flag::reset()"></a></h3>
+<pre><code class="language-cpp">void reset() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets its state to <code>false</code>.</p>
+<h3>Function <code>type_safe::flag::try_reset</code><a id="ts::flag::try_reset()"></a></h3>
+<pre><code class="language-cpp">bool try_reset() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets its state to <code>false</code>.</p>
+<p><em>Returns</em>: <code>true</code> if the previous state was <code>true</code>, <code>false</code> otherwise, i.e. whether or not the state was changed.</p>
+<hr />
+<h2>Comparison operator <code>type_safe::operator==</code> [types]<a id="ts::operator==(type_safe::flag,type_safe::flag)"></a></h2>
+<pre><code class="language-cpp">(1)  constexpr bool operator==(<a href='doc_flag.html#ts::flag'>flag</a> lhs, <a href='doc_flag.html#ts::flag'>flag</a> rhs) noexcept;
+
+(2)  template &lt;typename T&gt;
+     constexpr bool operator==(<a href='doc_flag.html#ts::flag'>flag</a> lhs, T rhs) noexcept;
+
+(3)  template &lt;typename T&gt;
+     constexpr bool operator==(T lhs, <a href='doc_flag.html#ts::flag'>flag</a> rhs) noexcept;</code></pre>
+<p><a href="doc_flag.html#ts::flag">ts::flag</a> equality comparison.</p>
+<p><em>Returns</em>: <code>true</code> if (1) both <a href="doc_flag.html#ts::flag">ts::flag</a> objects are in the same state, (2)/(3) the flag is in the given state.</p>
+<p><em>Notes</em>: (2)/(3) do not participate in overload resolution unless <code>T</code> is a boolean type.</p>
+<h2>Comparison operator <code>type_safe::operator!=</code> [types]<a id="ts::operator!=(type_safe::flag,type_safe::flag)"></a></h2>
+<pre><code class="language-cpp">(1)  constexpr bool operator!=(<a href='doc_flag.html#ts::flag'>flag</a> lhs, <a href='doc_flag.html#ts::flag'>flag</a> rhs) noexcept;
+
+(2)  template &lt;typename T&gt;
+     constexpr bool operator!=(<a href='doc_flag.html#ts::flag'>flag</a> lhs, T rhs) noexcept;
+
+(3)  template &lt;typename T&gt;
+     constexpr bool operator!=(T lhs, <a href='doc_flag.html#ts::flag'>flag</a> rhs) noexcept;</code></pre>
+<p><a href="doc_flag.html#ts::flag">ts::flag</a> in-equality comparison.</p>
+<p><em>Returns</em>: <code>true</code> if (1) both <a href="doc_flag.html#ts::flag">ts::flag</a> objects are in the same state, (2)/(3) the flag is in the given state.</p>
+<p><em>Notes</em>: (2)/(3) do not participate in overload resolution unless <code>T</code> is a boolean type.</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

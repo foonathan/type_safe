@@ -1,0 +1,499 @@
+---
+layout: docs
+title: type_safe - Zero overhead abstractions for more type safety
+project: type_safe
+---
+
+<ul>
+<li>
+<h2>optional</h2>
+<ul>
+<li>
+<p><a href="doc_optional.html#ts::basic_optional-StoragePolicy-" title="ts::basic_optional&lt;StoragePolicy&gt;">type_safe::basic_optional</a> - An optional type, i.e. a type that may or may not be there.</p>
+</li>
+<li>
+<p><a href="doc_compact_optional.html#ts::compact_floating_point_policy-FloatingPoint-" title="ts::compact_floating_point_policy&lt;FloatingPoint&gt;">type_safe::compact_floating_point_policy</a> - A <code>CompactPolicy</code> for <a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-">ts::compact_optional_storage</a> for floating point types.</p>
+</li>
+<li>
+<p><a href="doc_compact_optional.html#ts::compact_optional_storage-CompactPolicy-" title="ts::compact_optional_storage&lt;CompactPolicy&gt;">type_safe::compact_optional_storage</a> - A <code>StoragePolicy</code> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that is more space efficient than <a href="doc_optional.html#ts::direct_optional_storage-T-">ts::direct_optional_storage</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::copy(constoptional_ref-T-&)" title="ts::copy(const optional_ref&lt;T&gt; &amp;)">type_safe::copy(const optional_ref&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::direct_optional_storage-T-" title="ts::direct_optional_storage&lt;T&gt;">type_safe::direct_optional_storage</a> - A <code>StoragePolicy</code> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that is similar to <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::optional%3cT%3e">std::optional&lt;T&gt;</a>'s implementation.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::make_optional(T&&)" title="ts::make_optional(T &amp;&amp;)">type_safe::make_optional(T &amp;&amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::nullopt" title="ts::nullopt">type_safe::nullopt</a> - Tag object of type <a href="doc_optional.html#ts::nullopt_t">ts::nullopt_t</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::nullopt_t" title="ts::nullopt_t">type_safe::nullopt_t</a> - Tag type to mark a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> without a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator!=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator!=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator!=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">type_safe::operator!=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator!=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator!=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&lt;(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator&lt;(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&lt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">type_safe::operator&lt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator&lt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator&lt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&lt;=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator&lt;=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&lt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">type_safe::operator&lt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator&lt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator&lt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator==(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator==(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator==(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">type_safe::operator==(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator==(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator==(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&gt;(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator&gt;(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&gt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">type_safe::operator&gt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator&gt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator&gt;(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&gt;=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator&gt;=(const U &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constU&)" title="ts::operator&gt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)">type_safe::operator&gt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const U &amp;)</a> - Compares a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> with a value.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::operator==(constbasic_optional-StoragePolicy-&,constbasic_optional-StoragePolicy-&)" title="ts::operator&gt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)">type_safe::operator&gt;=(const basic_optional&lt;StoragePolicy&gt; &amp;, const basic_optional&lt;StoragePolicy&gt; &amp;)</a> - Compares two <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_cref(constT&)" title="ts::opt_cref(const T &amp;)">type_safe::opt_cref(const T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_cref(constT*)" title="ts::opt_cref(const T *)">type_safe::opt_cref(const T *)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_cref(constobject_ref-T-&)" title="ts::opt_cref(const object_ref&lt;T&gt; &amp;)">type_safe::opt_cref(const object_ref&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_cref(constoptional-T-&)" title="ts::opt_cref(const optional&lt;T&gt; &amp;)">type_safe::opt_cref(const optional&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_ref(T&)" title="ts::opt_ref(T &amp;)">type_safe::opt_ref(T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_ref(T*)" title="ts::opt_ref(T *)">type_safe::opt_ref(T *)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_ref(constobject_ref-T-&)" title="ts::opt_ref(const object_ref&lt;T&gt; &amp;)">type_safe::opt_ref(const object_ref&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_ref(optional-T-&)" title="ts::opt_ref(optional&lt;T&gt; &amp;)">type_safe::opt_ref(optional&lt;T&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_xref(T&)" title="ts::opt_xref(T &amp;)">type_safe::opt_xref(T &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::opt_xref(T*)" title="ts::opt_xref(T *)">type_safe::opt_xref(T *)</a></p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional-T-" title="ts::optional&lt;T&gt;">type_safe::optional</a> - A <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that uses <a href="doc_optional.html#ts::direct_optional_storage-T-">ts::direct_optional_storage&lt;T&gt;</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional_for-T-" title="ts::optional_for&lt;T&gt;">type_safe::optional_for</a> - Uses <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> to select the appropriate <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::optional_ref-T-" title="ts::optional_ref&lt;T&gt;">type_safe::optional_ref</a> - A <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that uses <a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-">ts::reference_optional_storage</a>. It is an optional reference.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional_storage_policy_for-T&&-" title="ts::optional_storage_policy_for&lt;T&amp;&amp;&gt;">type_safe::optional_storage_policy_for&lt;T&amp;&amp;&gt;</a> - Specialization of <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> for rvalue references.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional_storage_policy_for-T&-" title="ts::optional_storage_policy_for&lt;T&amp;&gt;">type_safe::optional_storage_policy_for&lt;T&amp;&gt;</a> - Specialization of <a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--">ts::optional_storage_policy_for</a> for lvalue references.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::optional_storage_policy_for-T-" title="ts::optional_storage_policy_for&lt;T&gt;">type_safe::optional_storage_policy_for</a> - Selects the storage policy used when rebinding a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a>.</p>
+</li>
+<li>
+<p><a href="doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--" title="ts::optional_storage_policy_for&lt;object_ref&lt;T, XValue&gt;&gt;">type_safe::optional_storage_policy_for&lt;object_ref&lt;T, XValue&gt;&gt;</a> - Sets the <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> storage policy for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a> to <a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-">ts::reference_optional_storage</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-" title="ts::reference_optional_storage&lt;T, XValue&gt;">type_safe::reference_optional_storage</a> - A <code>StoragePolicy</code> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that allows optional references.</p>
+</li>
+<li>
+<p><a href="doc_visitor.html#ts::visit(Visitor&&,Optionals&&...)" title="ts::visit(Visitor &amp;&amp;, Optionals &amp;&amp;...)">type_safe::visit(Visitor &amp;&amp;, Optionals &amp;&amp;...)</a> - Visits a <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a>.</p>
+</li>
+<li>
+<p><a href="doc_optional.html#ts::with(Optional&&,Func&&,Args&&...)" title="ts::with(Optional &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)">type_safe::with(Optional &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)</a> - With operation for <a href="doc_optional.html#ts::optional-T-">ts::optional</a>.</p>
+</li>
+</ul>
+</li>
+<li>
+<h2>types</h2>
+<ul>
+<li>
+<p><a href="doc_integer.html#ts::abs(constSignedInteger&)" title="ts::abs(const SignedInteger &amp;)">type_safe::abs(const SignedInteger &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::abs(constUnsignedInteger&)" title="ts::abs(const UnsignedInteger &amp;)">type_safe::abs(const UnsignedInteger &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::abs(constinteger-SignedInteger,Policy-&)" title="ts::abs(const integer&lt;SignedInteger, Policy&gt; &amp;)">type_safe::abs(const integer&lt;SignedInteger, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::abs(constinteger-UnsignedInteger,Policy-&)" title="ts::abs(const integer&lt;UnsignedInteger, Policy&gt; &amp;)">type_safe::abs(const integer&lt;UnsignedInteger, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::advance(type_safe::index_t&,consttype_safe::difference_t&)" title="ts::advance(type_safe::index_t &amp;, const type_safe::difference_t &amp;)">type_safe::advance(type_safe::index_t &amp;, const type_safe::difference_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_arithmetic_policy.html#ts::arithmetic_policy_default" title="ts::arithmetic_policy_default">type_safe::arithmetic_policy_default</a> - The default <code>ArithmeticPolicy</code>.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::boolean" title="ts::boolean">type_safe::boolean</a> - A type safe boolean class.</p>
+</li>
+<li>
+<p><a href="doc_arithmetic_policy.html#ts::checked_arithmetic" title="ts::checked_arithmetic">type_safe::checked_arithmetic</a> - An <code>ArithmeticPolicy</code> where under/overflow throws an exception.</p>
+</li>
+<li>
+<p><a href="doc_arithmetic_policy.html#ts::default_arithmetic" title="ts::default_arithmetic">type_safe::default_arithmetic</a> - An <code>ArithmeticPolicy</code> that behaves like the default integer implementations: Signed under/overflow is UB, unsigned under/overflow wraps around.</p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::difference_t" title="ts::difference_t">type_safe::difference_t</a> - A type modelling the difference between two <a href="doc_index.html#ts::index_t">ts::index_t</a> objects.</p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::distance(consttype_safe::index_t&,consttype_safe::index_t&)" title="ts::distance(const type_safe::index_t &amp;, const type_safe::index_t &amp;)">type_safe::distance(const type_safe::index_t &amp;, const type_safe::index_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::equal_to">type_safe::equal_to</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::flag" title="ts::flag">type_safe::flag</a> - A type safe flag, it can either be <code>true</code> or <code>false</code>.</p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::floating_point-FloatT-" title="ts::floating_point&lt;FloatT&gt;">type_safe::floating_point</a> - A type safe floating point class.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::greater">type_safe::greater</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::greater_equal">type_safe::greater_equal</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::index_t" title="ts::index_t">type_safe::index_t</a> - A type modelling an index into an array.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::less">type_safe::less</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::less_equal">type_safe::less_equal</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_signed(constInteger&)" title="ts::make_signed(const Integer &amp;)">type_safe::make_signed(const Integer &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_signed(constinteger-Integer,Policy-&)" title="ts::make_signed(const integer&lt;Integer, Policy&gt; &amp;)">type_safe::make_signed(const integer&lt;Integer, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_signed_t-Integer-" title="ts::make_signed_t&lt;Integer&gt;">type_safe::make_signed_t</a> - <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::make_signed">std::make_signed</a> for <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a>.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_unsigned(constInteger&)" title="ts::make_unsigned(const Integer &amp;)">type_safe::make_unsigned(const Integer &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_unsigned(constinteger-Integer,Policy-&)" title="ts::make_unsigned(const integer&lt;Integer, Policy&gt; &amp;)">type_safe::make_unsigned(const integer&lt;Integer, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::make_unsigned_t-Integer-" title="ts::make_unsigned_t&lt;Integer&gt;">type_safe::make_unsigned_t</a> - <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::make_unsigned">std::make_unsigned</a> for <a href="doc_integer.html#ts::integer-IntegerT,Policy-">ts::integer</a>.</p>
+</li>
+<li>
+<p><a href="doc_narrow_cast.html#ts::narrow_cast(constSource&)" title="ts::narrow_cast(const Source &amp;)">type_safe::narrow_cast(const Source &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_narrow_cast.html#ts::narrow_cast(constfloating_point-Source-&)" title="ts::narrow_cast(const floating_point&lt;Source&gt; &amp;)">type_safe::narrow_cast(const floating_point&lt;Source&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_narrow_cast.html#ts::narrow_cast(constinteger-Source,Policy-&)" title="ts::narrow_cast(const integer&lt;Source, Policy&gt; &amp;)">type_safe::narrow_cast(const integer&lt;Source, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::next(consttype_safe::index_t&,consttype_safe::difference_t&)" title="ts::next(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)">type_safe::next(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::equal_to" title="ts::not_equal_to">type_safe::not_equal_to</a> - Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator!=(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator!=(T, const type_safe::boolean &amp;)">type_safe::operator!=(T, const type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator!=(type_safe::flag,type_safe::flag)" title="ts::operator!=(T, type_safe::flag)">type_safe::operator!=(T, type_safe::flag)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator!=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator!=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator!=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">type_safe::operator!=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator!=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator!=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator!=(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator!=(const type_safe::boolean &amp;, T)">type_safe::operator!=(const type_safe::boolean &amp;, T)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator!=(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator!=(const type_safe::boolean &amp;, const type_safe::boolean &amp;)">type_safe::operator!=(const type_safe::boolean &amp;, const type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator!=(type_safe::flag,type_safe::flag)" title="ts::operator!=(type_safe::flag, T)">type_safe::operator!=(type_safe::flag, T)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator!=(type_safe::flag,type_safe::flag)" title="ts::operator!=(type_safe::flag, type_safe::flag)">type_safe::operator!=(type_safe::flag, type_safe::flag)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> in-equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator%(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator%(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator*(const A &amp;, const floating_point&lt;B&gt; &amp;)">type_safe::operator*(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator*(const floating_point&lt;A&gt; &amp;, const B &amp;)">type_safe::operator*(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator*(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">type_safe::operator*(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator*(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator*(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator+(const A &amp;, const floating_point&lt;B&gt; &amp;)">type_safe::operator+(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator+(const floating_point&lt;A&gt; &amp;, const B &amp;)">type_safe::operator+(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator+(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">type_safe::operator+(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator+(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator+(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::operator+(consttype_safe::index_t&,consttype_safe::difference_t&)" title="ts::operator+(const type_safe::difference_t &amp;, const type_safe::index_t &amp;)">type_safe::operator+(const type_safe::difference_t &amp;, const type_safe::index_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::operator+(consttype_safe::index_t&,consttype_safe::difference_t&)" title="ts::operator+(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)">type_safe::operator+(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator-(const A &amp;, const floating_point&lt;B&gt; &amp;)">type_safe::operator-(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator-(const floating_point&lt;A&gt; &amp;, const B &amp;)">type_safe::operator-(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator-(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">type_safe::operator-(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator-(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator-(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::operator-(consttype_safe::index_t&,consttype_safe::difference_t&)" title="ts::operator-(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)">type_safe::operator-(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::operator-(consttype_safe::index_t&,consttype_safe::index_t&)" title="ts::operator-(const type_safe::index_t &amp;, const type_safe::index_t &amp;)">type_safe::operator-(const type_safe::index_t &amp;, const type_safe::index_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator/(const A &amp;, const floating_point&lt;B&gt; &amp;)">type_safe::operator/(const A &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator/(const floating_point&lt;A&gt; &amp;, const B &amp;)">type_safe::operator/(const floating_point&lt;A&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_floating_point.html#ts::operator+(constfloating_point-A-&,constfloating_point-B-&)" title="ts::operator/(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)">type_safe::operator/(const floating_point&lt;A&gt; &amp;, const floating_point&lt;B&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator+(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator/(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator/(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator&lt;(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">type_safe::operator&lt;(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator&lt;(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator--(std::basic_ostream-Char,CharTraits-&,consttype_safe::boolean&)" title="ts::operator&lt;&lt;(std::basic_ostream&lt;Char, CharTraits&gt; &amp;, const type_safe::boolean &amp;)">type_safe::operator&lt;&lt;(std::basic_ostream&lt;Char, CharTraits&gt; &amp;, const type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> output operator.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator&lt;=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">type_safe::operator&lt;=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&lt;=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator&lt;=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator==(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator==(T, const type_safe::boolean &amp;)">type_safe::operator==(T, const type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator==(type_safe::flag,type_safe::flag)" title="ts::operator==(T, type_safe::flag)">type_safe::operator==(T, type_safe::flag)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator==(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator==(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator==(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">type_safe::operator==(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator==(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator==(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator==(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator==(const type_safe::boolean &amp;, T)">type_safe::operator==(const type_safe::boolean &amp;, T)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator==(consttype_safe::boolean&,consttype_safe::boolean&)" title="ts::operator==(const type_safe::boolean &amp;, const type_safe::boolean &amp;)">type_safe::operator==(const type_safe::boolean &amp;, const type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator==(type_safe::flag,type_safe::flag)" title="ts::operator==(type_safe::flag, T)">type_safe::operator==(type_safe::flag, T)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_flag.html#ts::operator==(type_safe::flag,type_safe::flag)" title="ts::operator==(type_safe::flag, type_safe::flag)">type_safe::operator==(type_safe::flag, type_safe::flag)</a> - <a href="doc_flag.html#ts::flag">ts::flag</a> equality comparison.</p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator&gt;(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">type_safe::operator&gt;(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator&gt;(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator&gt;=(const A &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)">type_safe::operator&gt;=(const integer&lt;A, Policy&gt; &amp;, const B &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator==(constinteger-A,Policy-&,constinteger-B,Policy-&)" title="ts::operator&gt;=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)">type_safe::operator&gt;=(const integer&lt;A, Policy&gt; &amp;, const integer&lt;B, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_integer.html#ts::operator--(std::basic_istream-Char,CharTraits-&,integer-IntegerT,Policy-&)" title="ts::operator&gt;&gt;(std::basic_istream&lt;Char, CharTraits&gt; &amp;, integer&lt;IntegerT, Policy&gt; &amp;)">type_safe::operator&gt;&gt;(std::basic_istream&lt;Char, CharTraits&gt; &amp;, integer&lt;IntegerT, Policy&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_boolean.html#ts::operator--(std::basic_istream-Char,CharTraits-&,type_safe::boolean&)" title="ts::operator&gt;&gt;(std::basic_istream&lt;Char, CharTraits&gt; &amp;, type_safe::boolean &amp;)">type_safe::operator&gt;&gt;(std::basic_istream&lt;Char, CharTraits&gt; &amp;, type_safe::boolean &amp;)</a> - <a href="doc_boolean.html#ts::boolean">ts::boolean</a> input operator.</p>
+</li>
+<li>
+<p><a href="doc_index.html#ts::prev(consttype_safe::index_t&,consttype_safe::difference_t&)" title="ts::prev(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)">type_safe::prev(const type_safe::index_t &amp;, const type_safe::difference_t &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_arithmetic_policy.html#ts::undefined_behavior_arithmetic" title="ts::undefined_behavior_arithmetic">type_safe::undefined_behavior_arithmetic</a> - An <code>ArithmeticPolicy</code> where under/overflow is always undefined behavior, albeit checked when assertions are enabled.</p>
+</li>
+</ul>
+</li>
+<li>
+<h2>variant</h2>
+<ul>
+<li>
+<p><a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-" title="ts::basic_variant&lt;VariantPolicy, HeadT, TailT...&gt;">type_safe::basic_variant</a> - An improved <code>union</code> storing at most one of the given types at a time (or possibly none).</p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::copy_union" title="ts::copy_union">type_safe::copy(tagged_union&lt;Types...&gt; &amp;, const tagged_union&lt;Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::destroy(tagged_union-Types...-&)" title="ts::destroy(tagged_union&lt;Types...&gt; &amp;)">type_safe::destroy(tagged_union&lt;Types...&gt; &amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::fallback_variant-Fallback,OtherTypes...-" title="ts::fallback_variant&lt;Fallback, OtherTypes...&gt;">type_safe::fallback_variant</a> - A <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> using the <a href="doc_variant.html#ts::fallback_variant_policy-Fallback-">ts::fallback_variant_policy</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::fallback_variant_policy-Fallback-" title="ts::fallback_variant_policy&lt;Fallback&gt;">type_safe::fallback_variant_policy</a> - A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that uses a fallback type.</p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::copy_union" title="ts::move_union">type_safe::move(tagged_union&lt;Types...&gt; &amp;, tagged_union&lt;Types...&gt; &amp;&amp;)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::never_empty_variant_policy" title="ts::never_empty_variant_policy">type_safe::never_empty_variant_policy</a> - A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that creates a variant which is never empty.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::nullvar" title="ts::nullvar">type_safe::nullvar</a> - Tag object of type <a href="doc_variant.html#ts::nullvar_t">ts::nullvar_t</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::nullvar_t" title="ts::nullvar_t">type_safe::nullvar_t</a> - Tag type to mark a <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> without a value.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::optional_variant_policy" title="ts::optional_variant_policy">type_safe::optional_variant_policy</a> - A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that creates a variant with explicit empty state.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::rarely_empty_variant_policy" title="ts::rarely_empty_variant_policy">type_safe::rarely_empty_variant_policy</a> - A variant policy for <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> that creates a variant which is rarely empty.</p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::tagged_union-Types...-" title="ts::tagged_union&lt;Types...&gt;">type_safe::tagged_union</a> - A tagged union.</p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::union_type-T-" title="ts::union_type&lt;T&gt;">type_safe::union_type</a> - Tag type so no explicit template instantiation of function parameters is required.</p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::union_types-Ts...-" title="ts::union_types&lt;Ts...&gt;">type_safe::union_types</a> - Very basic typelist.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::variant-Types...-" title="ts::variant&lt;Types...&gt;">type_safe::variant</a> - A <a href="doc_variant.html#ts::basic_variant-VariantPolicy,HeadT,TailT...-">ts::basic_variant</a> with the recommended default semantics.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::variant_type-T-" title="ts::variant_type&lt;T&gt;">type_safe::variant_type</a> - Convenience alias for <a href="doc_tagged_union.html#ts::union_type-T-">ts::union_type</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::variant_types-Ts...-" title="ts::variant_types&lt;Ts...&gt;">type_safe::variant_types</a> - Convenience alias for <a href="doc_tagged_union.html#ts::union_types-Ts...-">ts::union_types</a>.</p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)" title="ts::with(basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)">type_safe::with(basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)" title="ts::with(basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">type_safe::with(basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)" title="ts::with(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)">type_safe::with(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_variant.html#ts::with(basic_variant-VariantPolicy,Head,Types...-&,Func&&,Args&&...)" title="ts::with(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">type_safe::with(const basic_variant&lt;VariantPolicy, Head, Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)" title="ts::with(const tagged_union&lt;Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)">type_safe::with(const tagged_union&lt;Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)" title="ts::with(const tagged_union&lt;Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">type_safe::with(const tagged_union&lt;Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)" title="ts::with(tagged_union&lt;Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)">type_safe::with(tagged_union&lt;Types...&gt; &amp;&amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+<li>
+<p><a href="doc_tagged_union.html#ts::with(tagged_union-Types...-&,Func&&,Args&&...)" title="ts::with(tagged_union&lt;Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)">type_safe::with(tagged_union&lt;Types...&gt; &amp;, Func &amp;&amp;, Args &amp;&amp;...)</a></p>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

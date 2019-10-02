@@ -1,0 +1,391 @@
+<h1>Header file <code>reference.hpp</code><a id="reference.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;typename T, bool XValue&gt;
+    class <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref</a>;
+    
+    template &lt;typename T, bool XValue&gt;
+    struct <a href='doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--'>optional_storage_policy_for&lt;object_ref&lt;T, XValue&gt;&gt;</a>;
+    
+    //=== <a href='doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)'>Object reference comparison</a> ===//
+    template &lt;typename T, typename U, bool XValue&gt;
+    constexpr )&gt;bool <a href='doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)'>operator==</a>(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, XValue&gt;</a>&amp; a, const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;U, XValue&gt;</a>&amp; b) noexcept;
+    template &lt;typename T, typename U, bool XValue&gt;
+    constexpr )&gt;bool <a href='doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)'>operator==</a>(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, XValue&gt;</a>&amp; a, U&amp; b) noexcept;
+    template &lt;typename T, typename U, bool XValue&gt;
+    constexpr )&gt;bool <a href='doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)'>operator==</a>(const T&amp; a, const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;U, XValue&gt;</a>&amp; b) noexcept;
+    template &lt;typename T, typename U, bool XValue&gt;
+    constexpr )&gt;bool <a href='doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)'>operator!=</a>(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, XValue&gt;</a>&amp; a, const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;U, XValue&gt;</a>&amp; b) noexcept;
+    template &lt;typename T, typename U, bool XValue&gt;
+    constexpr )&gt;bool <a href='doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)'>operator!=</a>(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, XValue&gt;</a>&amp; a, U&amp; b) noexcept;
+    template &lt;typename T, typename U, bool XValue&gt;
+    constexpr )&gt;bool <a href='doc_reference.html#ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)'>operator!=</a>(const T&amp; a, const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;U, XValue&gt;</a>&amp; b) noexcept;
+    
+    template &lt;typename T, bool XValue, typename Func, typename ... Args&gt;
+    void <a href='doc_reference.html#ts::with(constobject_ref-T,XValue-&,Func&&,Args&&...)'>with</a>(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, XValue&gt;</a>&amp; ref, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+    
+    template &lt;typename T&gt;
+    constexpr <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T&gt;</a> <a href='doc_reference.html#ts::ref(T&)'>ref</a>(T&amp; obj) noexcept;
+    template &lt;typename T&gt;
+    constexpr <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;const T&gt;</a> <a href='doc_reference.html#ts::ref(T&)'>cref</a>(const T&amp; obj) noexcept;
+    
+    template &lt;typename T&gt;
+    using <a href='doc_reference.html#ts::xvalue_ref-T-'>xvalue_ref</a> = <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, true&gt;</a>;
+    
+    template &lt;typename T&gt;
+    constexpr <a href='doc_reference.html#ts::xvalue_ref-T-'>xvalue_ref&lt;T&gt;</a> <a href='doc_reference.html#ts::xref(T&)'>xref</a>(T&amp; obj) noexcept;
+    
+    template &lt;typename T&gt;
+    constexpr typename std::remove_const&lt;T&gt;::type <a href='doc_reference.html#ts::copy(constobject_ref-T-&)'>copy</a>(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T&gt;</a>&amp; obj);
+    template &lt;typename T&gt;
+    constexpr T <a href='doc_reference.html#ts::copy(constobject_ref-T-&)'>move</a>(const <a href='doc_reference.html#ts::xvalue_ref-T-'>xvalue_ref&lt;T&gt;</a>&amp; obj) noexcept('hidden');
+    
+    template &lt;typename T, bool XValue = false&gt;
+    class <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref</a>;
+    
+    template &lt;typename T, bool XValue, typename Func, typename ... Args&gt;
+    void <a href='doc_reference.html#ts::with(constarray_ref-T,XValue-&,Func&&,Args&&...)'>with</a>(const <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;T, XValue&gt;</a>&amp; ref, Func&amp;&amp; f, Args&amp;&amp;... additional_args);
+    
+    template &lt;typename T, <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> Size&gt;
+    <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;T&gt;</a> <a href='doc_reference.html#ts::ref(T(&)%5bSize%5d)'>ref</a>(T(&amp;)[Size] arr) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;T&gt;</a> <a href='doc_reference.html#ts::ref(T(&)%5bSize%5d)'>ref</a>(T* begin, T* end) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;T&gt;</a> <a href='doc_reference.html#ts::ref(T(&)%5bSize%5d)'>ref</a>(T* array, size_t size) noexcept;
+    
+    template &lt;typename T, <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> Size&gt;
+    <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;const T&gt;</a> <a href='doc_reference.html#ts::cref(constT(&)%5bSize%5d)'>cref</a>(const T(&amp;)[Size] arr) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;const T&gt;</a> <a href='doc_reference.html#ts::cref(constT(&)%5bSize%5d)'>cref</a>(const T* begin, const T* end) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;const T&gt;</a> <a href='doc_reference.html#ts::cref(constT(&)%5bSize%5d)'>cref</a>(const T* array, size_t size) noexcept;
+    
+    template &lt;typename T&gt;
+    using <a href='doc_reference.html#ts::array_xvalue_ref-T-'>array_xvalue_ref</a> = <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;T, true&gt;</a>;
+    
+    template &lt;typename T, <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> Size&gt;
+    <a href='doc_reference.html#ts::array_xvalue_ref-T-'>array_xvalue_ref&lt;T&gt;</a> <a href='doc_reference.html#ts::xref(T(&)%5bSize%5d)'>xref</a>(T(&amp;)[Size] arr) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_reference.html#ts::array_xvalue_ref-T-'>array_xvalue_ref&lt;T&gt;</a> <a href='doc_reference.html#ts::xref(T(&)%5bSize%5d)'>xref</a>(T* begin, T* end) noexcept;
+    template &lt;typename T&gt;
+    <a href='doc_reference.html#ts::array_xvalue_ref-T-'>array_xvalue_ref&lt;T&gt;</a> <a href='doc_reference.html#ts::xref(T(&)%5bSize%5d)'>xref</a>(T* array, size_t size) noexcept;
+    
+    template &lt;typename Return, typename ... Args&gt;
+    class <a href='doc_reference.html#ts::function_ref-Return(Args...)-'>function_ref&lt;Return(Args...)&gt;</a>;
+}</code></pre>
+<h2>Class template <code>type_safe::object_ref</code><a id="ts::object_ref-T,XValue-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, bool XValue&gt;
+class object_ref
+{
+public:
+    using <a href='doc_reference.html#ts::object_ref-T,XValue-'>value_type</a> = T;
+    
+    using <a href='doc_reference.html#ts::object_ref-T,XValue-'>reference_type</a> = typename std::conditional&lt;XValue, T&amp;&amp;, T&amp;&gt;::type;
+    
+    template &lt;typename U&gt;
+    <a href='doc_reference.html#ts::object_ref-T,XValue-'>)&gt;object_ref</a>&amp; <a href='doc_reference.html#ts::object_ref-T,XValue-::operator=(constobject_ref-U-&)'>operator=</a>(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;U&gt;</a>&amp; obj) noexcept;
+    
+    constexpr <a href='doc_reference.html#ts::object_ref-T,XValue-'>reference_type</a> <a href='doc_reference.html#ts::object_ref-T,XValue-::get()const'>get</a>() const noexcept;
+    constexpr <a href='doc_reference.html#ts::object_ref-T,XValue-'>reference_type</a> <a href='doc_reference.html#ts::object_ref-T,XValue-::get()const'>operator*</a>() const noexcept;
+    
+    constexpr T* <a href='doc_reference.html#ts::object_ref-T,XValue-::operator--()const'>operator-&gt;</a>() const noexcept;
+    
+    template &lt;typename Func, typename ... Args&gt;
+    'hidden' <a href='doc_reference.html#ts::object_ref-T,XValue-::map(Func&&,Args&&...)'>map</a>(Func&amp;&amp; f, Args&amp;&amp;... args);
+};</code></pre>
+<p>A reference to an object of some type <code>T</code>.</p>
+<p>Unlike <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::reference_wrapper">std::reference_wrapper</a> it does not try to model reference semantics, instead it is basically a non-null pointer to a single object. This allows rebinding on assignment. Apart from the different access syntax it can be safely used instead of a reference, and is safe for all kinds of containers.</p>
+<p>If the given type is <code>const</code>, it will only return a <code>const</code> reference, but then <code>XValue</code> must be <code>false</code>.</p>
+<p>If <code>XValue</code> is <code>true</code>, dereferencing will <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::move()">std::move()</a> the object, modelling a reference to an expiring lvalue.</p>
+<p><em>Notes</em>: <code>T</code> is the type without the reference, ie. <code>object_ref&lt;int&gt;</code>.</p>
+<h3>Assignment operator <code>type_safe::object_ref::operator=</code><a id="ts::object_ref-T,XValue-::operator=(constobject_ref-U-&)"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename U&gt;
+     <a href='doc_reference.html#ts::object_ref-T,XValue-'>)&gt;object_ref</a>&amp; operator=(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;U&gt;</a>&amp; obj) noexcept;</code></pre>
+<p></p>
+<h3>Function <code>type_safe::object_ref::get</code><a id="ts::object_ref-T,XValue-::get()const"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr <a href='doc_reference.html#ts::object_ref-T,XValue-'>reference_type</a> get() const noexcept;
+
+(2)  constexpr <a href='doc_reference.html#ts::object_ref-T,XValue-'>reference_type</a> operator*() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A native reference to the referenced object. if <code>XValue</code> is true, this will be an rvalue reference, else an lvalue reference.</p>
+<h3>Operator <code>type_safe::object_ref::operator-&gt;</code><a id="ts::object_ref-T,XValue-::operator--()const"></a></h3>
+<pre><code class="language-cpp">constexpr T* operator-&gt;() const noexcept;</code></pre>
+<p>Member access operator.</p>
+<h3>Function template <code>type_safe::object_ref::map</code><a id="ts::object_ref-T,XValue-::map(Func&&,Args&&...)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Func, typename ... Args&gt;
+'hidden' map(Func&amp;&amp; f, Args&amp;&amp;... args);</code></pre>
+<p></p>
+<p><em>Effects</em>: Invokes the function with the referred object followed by the arguments.</p>
+<p><em>Returns</em>: A <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a> to the result of the function, if <code>*this</code> is an xvalue reference, the result is as well.</p>
+<p><em>Requires</em>: The function must return an lvalue or another <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a> object.</p>
+<hr />
+<h2>Class template <code>type_safe::optional_storage_policy_for&lt;object_ref&lt;T, XValue&gt;&gt;</code> [optional]<a id="ts::optional_storage_policy_for-object_ref-T,XValue--"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, bool XValue&gt;
+struct optional_storage_policy_for&lt;object_ref&lt;T, XValue&gt;&gt;
+{
+    using <a href='doc_reference.html#ts::optional_storage_policy_for-object_ref-T,XValue--'>type</a> = <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>reference_optional_storage&lt;T, XValue&gt;</a>;
+};</code></pre>
+<p>Sets the <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> storage policy for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a> to <a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-">ts::reference_optional_storage</a>.</p>
+<p>It will be used when the optional is rebound.</p>
+<h2>Object reference comparison<a id="ts::operator==(constobject_ref-T,XValue-&,constobject_ref-U,XValue-&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename T, typename U, bool XValue&gt;
+     constexpr )&gt;bool operator==(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, XValue&gt;</a>&amp; a, const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;U, XValue&gt;</a>&amp; b) noexcept;
+
+(2)  template &lt;typename T, typename U, bool XValue&gt;
+     constexpr )&gt;bool operator==(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, XValue&gt;</a>&amp; a, U&amp; b) noexcept;
+
+(3)  template &lt;typename T, typename U, bool XValue&gt;
+     constexpr )&gt;bool operator==(const T&amp; a, const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;U, XValue&gt;</a>&amp; b) noexcept;
+
+(4)  template &lt;typename T, typename U, bool XValue&gt;
+     constexpr )&gt;bool operator!=(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, XValue&gt;</a>&amp; a, const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;U, XValue&gt;</a>&amp; b) noexcept;
+
+(5)  template &lt;typename T, typename U, bool XValue&gt;
+     constexpr )&gt;bool operator!=(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, XValue&gt;</a>&amp; a, U&amp; b) noexcept;
+
+(6)  template &lt;typename T, typename U, bool XValue&gt;
+     constexpr )&gt;bool operator!=(const T&amp; a, const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;U, XValue&gt;</a>&amp; b) noexcept;</code></pre>
+<p>Comparison operator for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+<p>Two references are equal if both refer to the same object. A reference is equal to an object if the reference refers to that object.</p>
+<p><em>Notes</em>: These functions do not participate in overload resolution if the types are not compatible (i.e. const/non-const or derived).</p>
+<h2>Function template <code>type_safe::with</code><a id="ts::with(constobject_ref-T,XValue-&,Func&&,Args&&...)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, bool XValue, typename Func, typename ... Args&gt;
+void with(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, XValue&gt;</a>&amp; ref, Func&amp;&amp; f, Args&amp;&amp;... additional_args);</code></pre>
+<p>With operation for <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+<p><em>Effects</em>: Calls the <code>operator()</code> of <code>f</code> passing it <code>*ref</code> and the additional arguments.</p>
+<h2>Function template <code>type_safe::ref</code><a id="ts::ref(T&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     constexpr <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T&gt;</a> ref(T&amp; obj) noexcept;
+
+(2)  template &lt;typename T&gt;
+     constexpr <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;const T&gt;</a> cref(const T&amp; obj) noexcept;</code></pre>
+<p>Creates a (const) <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>.</p>
+<p><em>Returns</em>: A <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a> to the given object.</p>
+<h2>Alias template <code>type_safe::xvalue_ref</code><a id="ts::xvalue_ref-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+using xvalue_ref = <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T, true&gt;</a>;</code></pre>
+<p>Convenience alias of <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a> where <code>XValue</code> is <code>true</code>.</p>
+<h2>Function template <code>type_safe::xref</code><a id="ts::xref(T&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+constexpr <a href='doc_reference.html#ts::xvalue_ref-T-'>xvalue_ref&lt;T&gt;</a> xref(T&amp; obj) noexcept;</code></pre>
+<p>Creates a <a href="doc_reference.html#ts::xvalue_ref-T-">ts::xvalue_ref</a>.</p>
+<p><em>Returns</em>: A <a href="doc_reference.html#ts::xvalue_ref-T-">ts::xvalue_ref</a> to the given object.</p>
+<h2>Function template <code>type_safe::copy</code><a id="ts::copy(constobject_ref-T-&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename T&gt;
+     constexpr typename std::remove_const&lt;T&gt;::type copy(const <a href='doc_reference.html#ts::object_ref-T,XValue-'>object_ref&lt;T&gt;</a>&amp; obj);
+
+(2)  template &lt;typename T&gt;
+     constexpr T move(const <a href='doc_reference.html#ts::xvalue_ref-T-'>xvalue_ref&lt;T&gt;</a>&amp; obj) noexcept('hidden');</code></pre>
+<p></p>
+<p><em>Returns</em>: A new object containing a copy of the referenced object. It will use the copy (1)/move constructor (2).</p>
+<p><em>Throws</em>: Anything thrown by the copy (1)/move (2) constructor.</p>
+<h2>Class template <code>type_safe::array_ref</code><a id="ts::array_ref-T,XValue-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, bool XValue = false&gt;
+class array_ref
+{
+public:
+    using <a href='doc_reference.html#ts::array_ref-T,XValue-'>value_type</a> = T;
+    
+    using <a href='doc_reference.html#ts::array_ref-T,XValue-'>reference_type</a> = typename std::conditional&lt;XValue, T&amp;&amp;, T&amp;&gt;::type;
+    
+    using <a href='doc_reference.html#ts::array_ref-T,XValue-'>iterator</a> = T*;
+    
+    <a href='doc_reference.html#ts::array_ref-T,XValue-::array_ref(std::nullptr_t)'>array_ref</a>(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::nullptr_t'>std::nullptr_t</a>);
+    void <a href='doc_reference.html#ts::array_ref-T,XValue-::array_ref(std::nullptr_t)'>assign</a>(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::nullptr_t'>std::nullptr_t</a>) noexcept;
+    
+    <a href='doc_reference.html#ts::array_ref-T,XValue-::array_ref(T*,T*)'>array_ref</a>(T* begin, T* end) noexcept;
+    void <a href='doc_reference.html#ts::array_ref-T,XValue-::array_ref(T*,T*)'>assign</a>(T* begin, T* end) noexcept;
+    
+    <a href='doc_reference.html#ts::array_ref-T,XValue-::array_ref(T*,size_t)'>array_ref</a>(T* array, size_t size) noexcept;
+    void <a href='doc_reference.html#ts::array_ref-T,XValue-::array_ref(T*,size_t)'>assign</a>(T* array, size_t size) noexcept;
+    
+    template &lt;<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> Size&gt;
+    <a href='doc_reference.html#ts::array_ref-T,XValue-::array_ref(T(&)%5bSize%5d)'>array_ref</a>(T(&amp;)[Size] arr);
+    template &lt;<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> Size&gt;
+    void <a href='doc_reference.html#ts::array_ref-T,XValue-::array_ref(T(&)%5bSize%5d)'>assign</a>(T(&amp;)[Size] arr) noexcept;
+    
+    <a href='doc_reference.html#ts::array_ref-T,XValue-'>iterator</a> <a href='doc_reference.html#ts::array_ref-T,XValue-::begin()const'>begin</a>() const noexcept;
+    
+    <a href='doc_reference.html#ts::array_ref-T,XValue-'>iterator</a> <a href='doc_reference.html#ts::array_ref-T,XValue-::end()const'>end</a>() const noexcept;
+    
+    T* <a href='doc_reference.html#ts::array_ref-T,XValue-::data()const'>data</a>() const noexcept;
+    
+    size_t <a href='doc_reference.html#ts::array_ref-T,XValue-::size()const'>size</a>() const noexcept;
+    
+    <a href='doc_reference.html#ts::array_ref-T,XValue-'>reference_type</a> <a href='doc_reference.html#ts::array_ref-T,XValue-::operator%5b%5d(type_safe::index_t)const'>operator[]</a>(<a href='doc_index.html#ts::index_t'>index_t</a> i) const noexcept;
+};</code></pre>
+<p>A reference to an array of objects of type <code>T</code>.</p>
+<p>It is a simple pointer + size pair that allows reference access to each element in the array. An &quot;array&quot; here is any contiguous storage (so C arrays, <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::vector">std::vector</a>, etc.). It does not allow changing the size of the array, only the individual elements. Like <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a> it can be safely used in containers.</p>
+<p>If the given type is <code>const</code>, it will only return a <code>const</code> reference to each element, but then <code>XValue</code> must be <code>false</code>.</p>
+<p>If <code>XValue</code> is <code>true</code>, dereferencing will <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::move()">std::move()</a> the object, modelling a reference to an expiring lvalue.</p>
+<p><em>Notes</em>: <code>T</code> is the type stored in the array, so <code>array_ref&lt;int&gt;</code> to reference a contiguous storage of <code>int</code>s. \notes Unlike the other types it isn't technically non-null, as it may contain an empty array. But the range <code>[data(), data() + size)</code> will always be valid.</p>
+<h3>Constructor <code>type_safe::array_ref::array_ref</code><a id="ts::array_ref-T,XValue-::array_ref(std::nullptr_t)"></a></h3>
+<pre><code class="language-cpp">(1)  array_ref(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::nullptr_t'>std::nullptr_t</a>);
+
+(2)  void assign(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::nullptr_t'>std::nullptr_t</a>) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets the reference to an empty array.</p>
+<h3>Constructor <code>type_safe::array_ref::array_ref</code><a id="ts::array_ref-T,XValue-::array_ref(T*,T*)"></a></h3>
+<pre><code class="language-cpp">(1)  array_ref(T* begin, T* end) noexcept;
+
+(2)  void assign(T* begin, T* end) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets the reference to the memory range <code>[begin, end)</code>.</p>
+<p><em>Requires</em>: <code>begin &lt;= end</code>.</p>
+<h3>Constructor <code>type_safe::array_ref::array_ref</code><a id="ts::array_ref-T,XValue-::array_ref(T*,size_t)"></a></h3>
+<pre><code class="language-cpp">(1)  array_ref(T* array, size_t size) noexcept;
+
+(2)  void assign(T* array, size_t size) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets the reference to the memory range <code>[array, array + size)</code>.</p>
+<p><em>Requires</em>: <code>array</code> must not be <code>nullptr</code> unless <code>size</code> is <code>0</code>.</p>
+<h3>Function template <code>type_safe::array_ref::array_ref</code><a id="ts::array_ref-T,XValue-::array_ref(T(&)%5bSize%5d)"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> Size&gt;
+     array_ref(T(&amp;)[Size] arr);
+
+(2)  template &lt;<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> Size&gt;
+     void assign(T(&amp;)[Size] arr) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets the reference to the C array.</p>
+<h3>Function <code>type_safe::array_ref::begin</code><a id="ts::array_ref-T,XValue-::begin()const"></a></h3>
+<pre><code class="language-cpp"><a href='doc_reference.html#ts::array_ref-T,XValue-'>iterator</a> begin() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: An iterator to the beginning of the array.</p>
+<h3>Function <code>type_safe::array_ref::end</code><a id="ts::array_ref-T,XValue-::end()const"></a></h3>
+<pre><code class="language-cpp"><a href='doc_reference.html#ts::array_ref-T,XValue-'>iterator</a> end() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: An iterator one past the last element of the array.</p>
+<h3>Function <code>type_safe::array_ref::data</code><a id="ts::array_ref-T,XValue-::data()const"></a></h3>
+<pre><code class="language-cpp">T* data() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A pointer to the beginning of the array. If <code>size()</code> isn't zero, the pointer is guaranteed to be non-null.</p>
+<h3>Function <code>type_safe::array_ref::size</code><a id="ts::array_ref-T,XValue-::size()const"></a></h3>
+<pre><code class="language-cpp">size_t size() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The number of elements in the array.</p>
+<h3>Array subscript operator <code>type_safe::array_ref::operator[]</code><a id="ts::array_ref-T,XValue-::operator%5b%5d(type_safe::index_t)const"></a></h3>
+<pre><code class="language-cpp"><a href='doc_reference.html#ts::array_ref-T,XValue-'>reference_type</a> operator[](<a href='doc_index.html#ts::index_t'>index_t</a> i) const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A (<code>rvalue</code> if <code>Xvalue</code> is <code>true</code>) reference to the <code>i</code>th element of the array.</p>
+<p><em>Requires</em>: <code>i &lt; size()</code>.</p>
+<hr />
+<h2>Function template <code>type_safe::with</code><a id="ts::with(constarray_ref-T,XValue-&,Func&&,Args&&...)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, bool XValue, typename Func, typename ... Args&gt;
+void with(const <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;T, XValue&gt;</a>&amp; ref, Func&amp;&amp; f, Args&amp;&amp;... additional_args);</code></pre>
+<p>With operation for <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a>.</p>
+<p><em>Effects</em>: For every element of the array in order, it will invoke <code>f</code>, passing it the current element and the additional arguments. / If <code>XValue</code> is <code>true</code>, it will pass an rvalue reference to the element, allowing it to be moved from.</p>
+<h2>Function template <code>type_safe::ref</code><a id="ts::ref(T(&)%5bSize%5d)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename T, <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> Size&gt;
+     <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;T&gt;</a> ref(T(&amp;)[Size] arr) noexcept;
+
+(2)  template &lt;typename T&gt;
+     <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;T&gt;</a> ref(T* begin, T* end) noexcept;
+
+(3)  template &lt;typename T&gt;
+     <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;T&gt;</a> ref(T* array, size_t size) noexcept;</code></pre>
+<p>Creates a <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a>.</p>
+<p><em>Returns</em>: The reference created by forwarding the parameter(s) to the constructor.</p>
+<h2>Function template <code>type_safe::cref</code><a id="ts::cref(constT(&)%5bSize%5d)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename T, <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> Size&gt;
+     <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;const T&gt;</a> cref(const T(&amp;)[Size] arr) noexcept;
+
+(2)  template &lt;typename T&gt;
+     <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;const T&gt;</a> cref(const T* begin, const T* end) noexcept;
+
+(3)  template &lt;typename T&gt;
+     <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;const T&gt;</a> cref(const T* array, size_t size) noexcept;</code></pre>
+<p>Creates a <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a> to <code>const</code>.</p>
+<p><em>Returns</em>: The reference created by forwarding the parameter(s) to the constructor.</p>
+<h2>Alias template <code>type_safe::array_xvalue_ref</code><a id="ts::array_xvalue_ref-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+using array_xvalue_ref = <a href='doc_reference.html#ts::array_ref-T,XValue-'>array_ref&lt;T, true&gt;</a>;</code></pre>
+<p>Convenience alias for <a href="doc_reference.html#ts::array_ref-T,XValue-">ts::array_ref</a> where <code>XValue</code> is <code>true</code>.</p>
+<h2>Function template <code>type_safe::xref</code><a id="ts::xref(T(&)%5bSize%5d)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename T, <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> Size&gt;
+     <a href='doc_reference.html#ts::array_xvalue_ref-T-'>array_xvalue_ref&lt;T&gt;</a> xref(T(&amp;)[Size] arr) noexcept;
+
+(2)  template &lt;typename T&gt;
+     <a href='doc_reference.html#ts::array_xvalue_ref-T-'>array_xvalue_ref&lt;T&gt;</a> xref(T* begin, T* end) noexcept;
+
+(3)  template &lt;typename T&gt;
+     <a href='doc_reference.html#ts::array_xvalue_ref-T-'>array_xvalue_ref&lt;T&gt;</a> xref(T* array, size_t size) noexcept;</code></pre>
+<p>Creates a <a href="doc_reference.html#ts::array_xvalue_ref-T-">ts::array_xvalue_ref</a>.</p>
+<p><em>Returns</em>: The reference created by forwarding the parameter(s) to the constructor.</p>
+<h2>Class template <code>type_safe::function_ref&lt;Return(Args...)&gt;</code><a id="ts::function_ref-Return(Args...)-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Return, typename ... Args&gt;
+class function_ref&lt;Return(Args...)&gt;
+{
+public:
+    using <a href='doc_reference.html#ts::function_ref-Return(Args...)-'>signature</a> = Return(Args...);
+    
+    <a href='doc_reference.html#ts::function_ref-Return(Args...)-::function_ref(Return(*)(Args...))'>function_ref</a>(Return(*)(Args...) fptr);
+    
+    template &lt;typename Return2, typename ... Args2&gt;
+    <a href='doc_reference.html#ts::function_ref-Return(Args...)-::function_ref(Return2(*)(Args2...),typenamedetail::enable_matching_function-decltype(fptr),Return,Args...-::type)'>function_ref</a>(Return2(*)(Args2...) fptr);
+    
+    template &lt;typename Functor&gt;
+    <a href='doc_reference.html#ts::function_ref-Return(Args...)-::function_ref(constFunctor&)'>function_ref</a>(const Functor&amp; f);
+    
+    template &lt;typename Functor&gt;
+    <a href='doc_reference.html#ts::function_ref-Return(Args...)-::function_ref(Functor&)'>function_ref</a>(Functor&amp; f);
+    
+    template &lt;typename Return2, typename ... Args2&gt;
+    <a href='doc_reference.html#ts::function_ref-Return(Args...)-::function_ref(constfunction_ref-Return2(Args2...)-&,detail::enable_matching_function-decltype(other),Return2,Args2...-)'>function_ref</a>(const function_ref&lt;Return2(Args2...)&gt;&amp; other, 'hidden' = 0);
+    
+    template &lt;typename Functor&gt;
+    void <a href='doc_reference.html#ts::function_ref-Return(Args...)-::assign(Functor&&)'>assign</a>(Functor&amp;&amp; f) noexcept;
+    
+    Return <a href='doc_reference.html#ts::function_ref-Return(Args...)-::operator()(Args...)const'>operator()</a>(Args... args) const;
+};</code></pre>
+<p>A reference to a function.</p>
+<p>This is a lightweight reference to a function. It can refer to any function that is compatible with given signature.</p>
+<p>A function is compatible if it is callable with regular function call syntax from the given argument types, and its return type is either implicitly convertible to the specified return type or the specified return type is <code>void</code>.</p>
+<p>In general it will store a pointer to the functor, requiring an lvalue. But if it is created with a function pointer or something convertible to a function pointer, it will store the function pointer itself. This allows creating it from stateless lambdas.</p>
+<p><em>Notes</em>: Due to implementation reasons, it does not support member function pointers, as it requires regular function call syntax. Create a reference to the object returned by <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::mem_fn">std::mem_fn</a>, if that is required.</p>
+<h3>Constructor <code>type_safe::function_ref&lt;Return(Args...)&gt;::function_ref</code><a id="ts::function_ref-Return(Args...)-::function_ref(Return(*)(Args...))"></a></h3>
+<pre><code class="language-cpp">function_ref(Return(*)(Args...) fptr);</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates a reference to the function specified by the function pointer.</p>
+<p><em>Requires</em>: <code>fptr</code> must not be <code>nullptr</code>.</p>
+<p><em>Notes</em>: (2) only participates in overload resolution if the type of the function is compatible with the specified signature. \group function_ptr_ctor</p>
+<h3>Function template <code>type_safe::function_ref&lt;Return(Args...)&gt;::function_ref</code><a id="ts::function_ref-Return(Args...)-::function_ref(Return2(*)(Args2...),typenamedetail::enable_matching_function-decltype(fptr),Return,Args...-::type)"></a></h3>
+<pre><code class="language-cpp">(1)  template &lt;typename Return2, typename ... Args2&gt;
+     function_ref(Return2(*)(Args2...) fptr);</code></pre>
+<p></p>
+<h3>Function template <code>type_safe::function_ref&lt;Return(Args...)&gt;::function_ref</code><a id="ts::function_ref-Return(Args...)-::function_ref(constFunctor&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Functor&gt;
+function_ref(const Functor&amp; f);</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates a reference to the function created by the stateless lambda.</p>
+<p><em>Notes</em>: This constructor is intended for stateless lambdas, which are implicitly convertible to function pointers. It does not participate in overload resolution, unless the type is implicitly convertible to a function pointer that is compatible with the specified signature.</p>
+<p><em>Notes</em>: Due to to implementation reasons, it does not work for polymorphic lambdas, it needs an explicit cast to the desired function pointer type. A polymorphic lambda convertible to a direct match function pointer, works however.</p>
+<h3>Function template <code>type_safe::function_ref&lt;Return(Args...)&gt;::function_ref</code><a id="ts::function_ref-Return(Args...)-::function_ref(Functor&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Functor&gt;
+function_ref(Functor&amp; f);</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates a reference to the specified functor. It will store a pointer to the function object, so it must live as long as the reference.</p>
+<p><em>Notes</em>: This constructor does not participate in overload resolution, unless the functor is compatible with the specified signature.</p>
+<h3>Function template <code>type_safe::function_ref&lt;Return(Args...)&gt;::function_ref</code><a id="ts::function_ref-Return(Args...)-::function_ref(constfunction_ref-Return2(Args2...)-&,detail::enable_matching_function-decltype(other),Return2,Args2...-)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Return2, typename ... Args2&gt;
+function_ref(const function_ref&lt;Return2(Args2...)&gt;&amp; other, 'hidden' = 0);</code></pre>
+<p>Converting copy constructor.</p>
+<p><em>Effects</em>: Creates a reference to the same function referred by <code>other</code>.</p>
+<p><em>Notes</em>: This constructor does not participate in overload resolution, unless the signature of <code>other</code> is compatible with the specified signature.</p>
+<p><em>Notes</em>: This constructor may create a bigger conversion chain. For example, if <code>other</code> has signature <code>void(const char*)</code> it can refer to a function taking <code>std::string</code>. If this signature than accepts a type <code>T</code> implicitly convertible to <code>const char*</code>, calling this will call the function taking <code>std::string</code>, converting <code>T -&gt; std::string</code>, even though such a conversion would be ill-formed otherwise. \param 1 \exclude</p>
+<h3>Function template <code>type_safe::function_ref&lt;Return(Args...)&gt;::assign</code><a id="ts::function_ref-Return(Args...)-::assign(Functor&&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename Functor&gt;
+void assign(Functor&amp;&amp; f) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Rebinds the reference to the specified functor.</p>
+<p><em>Notes</em>: This assignment operator only participates in overload resolution, if the argument can also be a valid constructor argument.</p>
+<h3>Function call operator <code>type_safe::function_ref&lt;Return(Args...)&gt;::operator()</code><a id="ts::function_ref-Return(Args...)-::operator()(Args...)const"></a></h3>
+<pre><code class="language-cpp">Return operator()(Args... args) const;</code></pre>
+<p></p>
+<p><em>Effects</em>: Invokes the stored function with the specified arguments and returns the result.</p>
+<hr />
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

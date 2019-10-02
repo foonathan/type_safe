@@ -1,0 +1,386 @@
+<h1>Header file <code>flag_set.hpp</code><a id="flag_set.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;typename Enum&gt;
+    struct <a href='doc_flag_set.html#ts::flag_set_traits-Enum-'>flag_set_traits</a>;
+    
+    struct <a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a>;
+    
+    constexpr <a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a> <a href='doc_flag_set.html#ts::noflag'>noflag</a>;
+    
+    template &lt;typename Enum&gt;
+    using <a href='doc_flag_set.html#ts::flag_combo-Enum-'>flag_combo</a> = 'hidden';
+    
+    template &lt;typename Enum&gt;
+    using <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask</a> = 'hidden';
+    
+    template &lt;typename Enum&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_combo-Enum-'>flag_combo&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::combo(constflag_mask-Enum-&)'>combo</a>(const <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a>&amp; mask) noexcept;
+    
+    template &lt;typename Enum&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::mask(constEnum&)'>mask</a>(const Enum&amp; flag) noexcept;
+    template &lt;typename Enum&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::mask(constEnum&)'>mask</a>(const <a href='doc_flag_set.html#ts::flag_combo-Enum-'>flag_combo&lt;Enum&gt;</a>&amp; combo) noexcept;
+    
+    template &lt;typename Enum&gt;
+    class <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>;
+    
+    template &lt;typename Enum&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_combo-Enum-'>flag_combo&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::combo(constflag_set-Enum-&)'>combo</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; set) noexcept;
+    
+    template &lt;typename Enum&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::mask(constflag_set-Enum-&)'>mask</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; set) noexcept;
+    
+    //=== <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>flag_set equality comparison</a> ===//
+    template &lt;typename Enum&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>operator==</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+    template &lt;typename Enum&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>operator==</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, <a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a> b) noexcept;
+    template &lt;typename Enum&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>operator==</a>(<a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a> a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+    template &lt;typename Enum, typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>operator==</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const FlagCombo&amp; b) noexcept;
+    template &lt;typename Enum, typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>operator==</a>(const FlagCombo&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+    template &lt;typename Enum&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>operator!=</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+    template &lt;typename Enum&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>operator!=</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, <a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a> b) noexcept;
+    template &lt;typename Enum&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>operator!=</a>(<a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a> a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+    template &lt;typename Enum, typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>operator!=</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const FlagCombo&amp; b) noexcept;
+    template &lt;typename Enum, typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)'>operator!=</a>(const FlagCombo&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+    
+    //=== <a href='doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)'>Bitwise operations for flag_set</a> ===//
+    template &lt;typename Enum, typename FlagCombo&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)'>operator|</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const FlagCombo&amp; b);
+    template &lt;typename Enum, typename FlagCombo&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)'>operator|</a>(const FlagCombo&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b);
+    template &lt;typename Enum, typename FlagCombo&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)'>operator^</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const FlagCombo&amp; b);
+    template &lt;typename Enum, typename FlagCombo&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)'>operator^</a>(const FlagCombo&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b);
+    template &lt;typename Enum&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)'>operator&amp;</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a>&amp; b);
+    template &lt;typename Enum&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> <a href='doc_flag_set.html#ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)'>operator&amp;</a>(const <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a>&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b);
+    
+    //=== <a href='doc_flag_set.html#ts::operator&(constflag_set-Enum-&,constFlagCombo&)'>Bitwise and for flag_set</a> ===//
+    template &lt;typename Enum, typename FlagCombo&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator&(constflag_set-Enum-&,constFlagCombo&)'>operator&amp;</a>(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const FlagCombo&amp; b);
+    template &lt;typename Enum, typename FlagCombo&gt;
+    constexpr bool <a href='doc_flag_set.html#ts::operator&(constflag_set-Enum-&,constFlagCombo&)'>operator&amp;</a>(const FlagCombo&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b);
+}
+
+template &lt;typename Enum&gt;
+constexpr <a href='doc_flag_set.html#ts::flag_mask-Enum-'>type_safe::flag_mask&lt;Enum&gt;</a> <a href='doc_flag_set.html#operator~(constEnum&)'>operator~</a>(const Enum&amp; e) noexcept;
+
+template &lt;typename Enum&gt;
+constexpr <a href='doc_flag_set.html#ts::flag_combo-Enum-'>type_safe::flag_combo&lt;Enum&gt;</a> <a href='doc_flag_set.html#operator%7c(constEnum&,constEnum&)'>operator|</a>(const Enum&amp; a, const Enum&amp; b) noexcept;</code></pre>
+<h2>Class template <code>type_safe::flag_set_traits</code><a id="ts::flag_set_traits-Enum-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Enum&gt;
+struct flag_set_traits
+: 'hidden'
+{
+    static constexpr <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::size_t'>std::size_t</a> <a href='doc_flag_set.html#ts::flag_set_traits-Enum-'>size</a>() noexcept;
+};</code></pre>
+<p>Traits for the enum used in a <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a>.</p>
+<p>For each enum that should be used with <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a> it must provide the following interface:</p>
+<ul>
+<li>Inherit from <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::true_type">std::true_type</a>.</li>
+<li><code>static constexpr std::size_t size()</code> that returns the number of enumerators.</li>
+</ul>
+<p>The default specialization automatically works for enums that have an enumerator <code>_flag_set_size</code>, whose value is the number of enumerators. But you can also specialize the traits for your own enums. Enums which work with <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a> are called flags.</p>
+<p><em>Requires</em>: For all specializations the enum must be contiguous starting at <code>0</code>, simply don't set an explicit value to the enumerators.</p>
+<h2>Struct <code>type_safe::noflag_t</code><a id="ts::noflag_t"></a></h2>
+<pre><code class="language-cpp">struct noflag_t
+{
+    constexpr <a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a>();
+};</code></pre>
+<p>Tag type to mark a <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a> without any flags set.</p>
+<h2>Variable <code>type_safe::noflag</code><a id="ts::noflag"></a></h2>
+<pre><code class="language-cpp">constexpr <a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a> noflag;</code></pre>
+<p>Tag object of type <a href="doc_flag_set.html#ts::noflag_t">ts::noflag_t</a>.</p>
+<h2>Alias template <code>type_safe::flag_combo</code><a id="ts::flag_combo-Enum-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Enum&gt;
+using flag_combo = 'hidden';</code></pre>
+<p>Represents a combination of multiple flags.</p>
+<p>This type is created when you write <code>a | b</code>, where <code>a</code> and <code>b</code> are enumerators of a flag.</p>
+<p>Objects of this type and the flags themselves are flag combinations. You can compare two flag combinations, combine two with <code>|</code> and use them in <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a> to set or toggle a combination of flags. Creating the complement with <code>~</code> will create a <a href="doc_flag_set.html#ts::flag_mask-Enum-">ts::flag_mask</a>.</p>
+<p><em>Requires</em>: <code>Enum</code> must be a flag, i.e. valid with the <a href="doc_flag_set.html#ts::flag_set_traits-Enum-">ts::flag_set_traits</a>.</p>
+<h2>Alias template <code>type_safe::flag_mask</code><a id="ts::flag_mask-Enum-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Enum&gt;
+using flag_mask = 'hidden';</code></pre>
+<p>Represents a mask of flags.</p>
+<p>This type is created when you write <code>~a</code>, where <code>a</code> is the enumerator of a flag.</p>
+<p>Objects of this type are flag masks. You can compare two flag masks, combine them with <code>&amp;</code> and use them in <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a> to clear a combination of flags. Creating the complement with <code>~</code> will create a <a href="doc_flag_set.html#ts::flag_combo-Enum-">ts::flag_combo</a>.</p>
+<p><em>Requires</em>: <code>Enum</code> must be a flag, i.e. valid with the <a href="doc_flag_set.html#ts::flag_set_traits-Enum-">ts::flag_set_traits</a>.</p>
+<h2>Function template <code>type_safe::combo</code><a id="ts::combo(constflag_mask-Enum-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Enum&gt;
+constexpr <a href='doc_flag_set.html#ts::flag_combo-Enum-'>flag_combo&lt;Enum&gt;</a> combo(const <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a>&amp; mask) noexcept;</code></pre>
+<p>Converts a flag mask to a flag combination.</p>
+<p><em>Returns</em>: The flag combination with the same value as the mask.</p>
+<p><em>Notes</em>: As you cannot use a mask to set flags in a <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a>, you cannot write <code>~a</code> to set all flags except <code>a</code> directly, you have to be explicit.</p>
+<h2>Function template <code>type_safe::mask</code><a id="ts::mask(constEnum&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename Enum&gt;
+     constexpr <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a> mask(const Enum&amp; flag) noexcept;
+
+(2)  template &lt;typename Enum&gt;
+     constexpr <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a> mask(const <a href='doc_flag_set.html#ts::flag_combo-Enum-'>flag_combo&lt;Enum&gt;</a>&amp; combo) noexcept;</code></pre>
+<p>Converts a flag combination to a flag mask.</p>
+<p><em>Returns</em>: The flag mask with the same value as the flag combination.</p>
+<p><em>Notes</em>: (1) does not participate in overload resolution, unless the argument is a flagg.</p>
+<p><em>Notes</em>: As you cannot use a combination to clear flags in a <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a>, you cannot write <code>a</code> to clear all flags except <code>a</code> directly, you have to be explicit.</p>
+<h2>Class template <code>type_safe::flag_set</code><a id="ts::flag_set-Enum-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Enum&gt;
+class flag_set
+{
+public:
+    constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-::flag_set()'>flag_set</a>() noexcept;
+    constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-::flag_set()'>flag_set</a>(<a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a>) noexcept;
+    
+    template &lt;typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+    constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-::flag_set(constFlagCombo&)'>flag_set</a>(const FlagCombo&amp; combo) noexcept;
+    
+    template &lt;typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+    <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>&amp; <a href='doc_flag_set.html#ts::flag_set-Enum-::operator=(constFlagCombo&)'>operator=</a>(const FlagCombo&amp; combo) noexcept;
+    
+    <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>&amp; <a href='doc_flag_set.html#ts::flag_set-Enum-::operator=(type_safe::noflag_t)'>operator=</a>(<a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a>) noexcept;
+    
+    void <a href='doc_flag_set.html#ts::flag_set-Enum-::set(constEnum&)'>set</a>(const Enum&amp; flag) noexcept;
+    template &lt;typename T&gt;
+    void <a href='doc_flag_set.html#ts::flag_set-Enum-::set(constEnum&)'>set</a>(const Enum&amp; flag, T value) noexcept;
+    void <a href='doc_flag_set.html#ts::flag_set-Enum-::set(constEnum&)'>set</a>(const Enum&amp; f, <a href='doc_flag.html#ts::flag'>flag</a> value) noexcept;
+    
+    void <a href='doc_flag_set.html#ts::flag_set-Enum-::reset(constEnum&)'>reset</a>(const Enum&amp; flag) noexcept;
+    
+    void <a href='doc_flag_set.html#ts::flag_set-Enum-::toggle(constEnum&)'>toggle</a>(const Enum&amp; flag) noexcept;
+    
+    void <a href='doc_flag_set.html#ts::flag_set-Enum-::set_all()'>set_all</a>() noexcept;
+    template &lt;typename T&gt;
+    void <a href='doc_flag_set.html#ts::flag_set-Enum-::set_all()'>set_all</a>(T value) noexcept;
+    void <a href='doc_flag_set.html#ts::flag_set-Enum-::set_all()'>set_all</a>(<a href='doc_flag.html#ts::flag'>flag</a> value) noexcept;
+    void <a href='doc_flag_set.html#ts::flag_set-Enum-::set_all()'>reset_all</a>() noexcept;
+    void <a href='doc_flag_set.html#ts::flag_set-Enum-::set_all()'>toggle_all</a>() noexcept;
+    
+    constexpr bool <a href='doc_flag_set.html#ts::flag_set-Enum-::is_set(constEnum&)const'>is_set</a>(const Enum&amp; flag) const noexcept;
+    
+    constexpr <a href='doc_flag.html#ts::flag'>flag</a> <a href='doc_flag_set.html#ts::flag_set-Enum-::as_flag(constEnum&)const'>as_flag</a>(const Enum&amp; flag) const noexcept;
+    
+    constexpr bool <a href='doc_flag_set.html#ts::flag_set-Enum-::any()const'>any</a>() const noexcept;
+    
+    constexpr bool <a href='doc_flag_set.html#ts::flag_set-Enum-::all()const'>all</a>() const noexcept;
+    
+    constexpr bool <a href='doc_flag_set.html#ts::flag_set-Enum-::none()const'>none</a>() const noexcept;
+    
+    template &lt;typename T&gt;
+    constexpr T <a href='doc_flag_set.html#ts::flag_set-Enum-::to_int()const'>to_int</a>() const noexcept;
+    
+    constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a> <a href='doc_flag_set.html#ts::flag_set-Enum-::operator~()const'>operator~</a>() const noexcept;
+    
+    template &lt;typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+    <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>&amp; <a href='doc_flag_set.html#ts::flag_set-Enum-::operator%7c=(constFlagCombo&)'>operator|=</a>(const FlagCombo&amp; other) noexcept;
+    
+    template &lt;typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+    <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>&amp; <a href='doc_flag_set.html#ts::flag_set-Enum-::operator%5e=(constFlagCombo&)'>operator^=</a>(const FlagCombo&amp; other) noexcept;
+    
+    <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>&amp; <a href='doc_flag_set.html#ts::flag_set-Enum-::operator&=(constflag_mask-Enum-&)'>operator&amp;=</a>(const <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a>&amp; other) noexcept;
+};</code></pre>
+<p>A set of flags where each one can either be <code>0</code> or <code>1</code>.</p>
+<p>Each enumeration member represents the index of one bit.</p>
+<p>Unlike <a href="doc_flag_set.html#ts::flag_combo-Enum-">ts::flag_combo</a> or <a href="doc_flag_set.html#ts::flag_mask-Enum-">ts::flag_mask</a> this does not have this semantic distinction. It is just a generic container of flags, which can be set, cleared or toggled. It can be interpreted as either a flag combination or flag mask, however.</p>
+<p><em>Requires</em>: <code>Enum</code> must be a flag, i.e. valid with the <a href="doc_flag_set.html#ts::flag_set_traits-Enum-">ts::flag_set_traits</a>.</p>
+<h3>Default constructor <code>type_safe::flag_set::flag_set</code><a id="ts::flag_set-Enum-::flag_set()"></a></h3>
+<pre><code class="language-cpp">(1)  constexpr flag_set() noexcept;
+
+(2)  constexpr flag_set(<a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a>) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates a set where all flags are set to <code>0</code>.</p>
+<h3>Function template <code>type_safe::flag_set::flag_set</code><a id="ts::flag_set-Enum-::flag_set(constFlagCombo&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+constexpr flag_set(const FlagCombo&amp; combo) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates a set where all bits are set to <code>0</code> except the given ones.</p>
+<p><em>Notes</em>: This constructor only participates in overload resolution if the argument is a flag combination.</p>
+<h3>Assignment operator <code>type_safe::flag_set::operator=</code><a id="ts::flag_set-Enum-::operator=(constFlagCombo&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+<a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>&amp; operator=(const FlagCombo&amp; combo) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Same as <code>*this = flag_set(combo)</code>.</p>
+<h3>Assignment operator <code>type_safe::flag_set::operator=</code><a id="ts::flag_set-Enum-::operator=(type_safe::noflag_t)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>&amp; operator=(<a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a>) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Same as <a href="doc_flag_set.html#ts::flag_set-Enum-::set_all()">reset_all</a>.</p>
+<h3>Function <code>type_safe::flag_set::set</code><a id="ts::flag_set-Enum-::set(constEnum&)"></a></h3>
+<pre><code class="language-cpp">(1)  void set(const Enum&amp; flag) noexcept;
+
+(2)  template &lt;typename T&gt;
+     void set(const Enum&amp; flag, T value) noexcept;
+
+(3)  void set(const Enum&amp; f, <a href='doc_flag.html#ts::flag'>flag</a> value) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets the specified flag to <code>1</code> (1)/<code>value</code> (2/3).</p>
+<p><em>Notes</em>: (2) does not participate in overload resolution unless <code>T</code> is a boolean-like type.</p>
+<h3>Function <code>type_safe::flag_set::reset</code><a id="ts::flag_set-Enum-::reset(constEnum&)"></a></h3>
+<pre><code class="language-cpp">void reset(const Enum&amp; flag) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets the specified flag to <code>0</code>.</p>
+<h3>Function <code>type_safe::flag_set::toggle</code><a id="ts::flag_set-Enum-::toggle(constEnum&)"></a></h3>
+<pre><code class="language-cpp">void toggle(const Enum&amp; flag) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Toggles the specified flag.</p>
+<h3>Function <code>type_safe::flag_set::set_all</code><a id="ts::flag_set-Enum-::set_all()"></a></h3>
+<pre><code class="language-cpp">(1)  void set_all() noexcept;
+
+(2)  template &lt;typename T&gt;
+     void set_all(T value) noexcept;
+
+(3)  void set_all(<a href='doc_flag.html#ts::flag'>flag</a> value) noexcept;
+
+(4)  void reset_all() noexcept;
+
+(5)  void toggle_all() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets/resets/toggles all flags.</p>
+<h3>Function <code>type_safe::flag_set::is_set</code><a id="ts::flag_set-Enum-::is_set(constEnum&)const"></a></h3>
+<pre><code class="language-cpp">constexpr bool is_set(const Enum&amp; flag) const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: Whether or not the specified flag is set.</p>
+<h3>Function <code>type_safe::flag_set::as_flag</code><a id="ts::flag_set-Enum-::as_flag(constEnum&)const"></a></h3>
+<pre><code class="language-cpp">constexpr <a href='doc_flag.html#ts::flag'>flag</a> as_flag(const Enum&amp; flag) const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: Same as <code>flag(is_set(flag))</code>.</p>
+<h3>Function <code>type_safe::flag_set::any</code><a id="ts::flag_set-Enum-::any()const"></a></h3>
+<pre><code class="language-cpp">constexpr bool any() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: Whether any flag is set.</p>
+<h3>Function <code>type_safe::flag_set::all</code><a id="ts::flag_set-Enum-::all()const"></a></h3>
+<pre><code class="language-cpp">constexpr bool all() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: Whether all flags are set.</p>
+<h3>Function <code>type_safe::flag_set::none</code><a id="ts::flag_set-Enum-::none()const"></a></h3>
+<pre><code class="language-cpp">constexpr bool none() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: Whether no flag is set.</p>
+<h3>Function template <code>type_safe::flag_set::to_int</code><a id="ts::flag_set-Enum-::to_int()const"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+constexpr T to_int() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: An integer where each bit has the value of the corresponding flag.</p>
+<p><em>Requires</em>: <code>T</code> must be an unsigned integer type with enough bits.</p>
+<h3>Operator <code>type_safe::flag_set::operator~</code><a id="ts::flag_set-Enum-::operator~()const"></a></h3>
+<pre><code class="language-cpp">constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a> operator~() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A set with all the flags flipped.</p>
+<h3>Operator <code>type_safe::flag_set::operator|=</code><a id="ts::flag_set-Enum-::operator%7c=(constFlagCombo&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+<a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>&amp; operator|=(const FlagCombo&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Sets all flags that are set in the given flag combination.</p>
+<p><em>Returns</em>: <code>*this</code></p>
+<p><em>Notes</em>: This operator does not participate in overload resolution, unless the argument is a flag combination. If you truly want to write <code>set |= ~a</code>, i.e. set all flags except <code>a</code>, use <code>set |= combo(~a)</code>.</p>
+<h3>Operator <code>type_safe::flag_set::operator^=</code><a id="ts::flag_set-Enum-::operator%5e=(constFlagCombo&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+<a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>&amp; operator^=(const FlagCombo&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Toggles all flags that are set in the given flag combination.</p>
+<p><em>Returns</em>: <code>*this</code></p>
+<p><em>Notes</em>: This operator does not participate in overload resolution, unless the argument is a flag combination. If you truly want to write <code>set ^= ~a</code>, i.e. toggle all flags except <code>a</code>, use <code>set ^= combo(~a)</code>.</p>
+<h3>Operator <code>type_safe::flag_set::operator&amp;=</code><a id="ts::flag_set-Enum-::operator&=(constflag_mask-Enum-&)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set</a>&amp; operator&amp;=(const <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a>&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Clears all flags that aren't set in the given flag mask.</p>
+<p><em>Returns</em>: <code>*this</code></p>
+<p><em>Notes</em>: This operator does not participate in overload resolution, unless the argument is a flag mask. If you truly want to write <code>set &amp;= a</code>, i.e. clear all flags except <code>a</code>, use <code>set &amp;= mask(a)</code>.</p>
+<hr />
+<h2>Function template <code>type_safe::combo</code><a id="ts::combo(constflag_set-Enum-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Enum&gt;
+constexpr <a href='doc_flag_set.html#ts::flag_combo-Enum-'>flag_combo&lt;Enum&gt;</a> combo(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; set) noexcept;</code></pre>
+<p>Converts a <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a> to a flag combination.</p>
+<p><em>Returns</em>: The flag combination with the same value as the set.</p>
+<h2>Function template <code>type_safe::mask</code><a id="ts::mask(constflag_set-Enum-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Enum&gt;
+constexpr <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a> mask(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; set) noexcept;</code></pre>
+<p>Converts a <a href="doc_flag_set.html#ts::flag_set-Enum-">ts::flag_set</a> to a flag mask.</p>
+<p><em>Returns</em>: The flag mask with the same value as the set.</p>
+<h2>flag_set equality comparison<a id="ts::operator==(constflag_set-Enum-&,constflag_set-Enum-&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename Enum&gt;
+     constexpr bool operator==(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+
+(2)  template &lt;typename Enum&gt;
+     constexpr bool operator==(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, <a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a> b) noexcept;
+
+(3)  template &lt;typename Enum&gt;
+     constexpr bool operator==(<a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a> a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+
+(4)  template &lt;typename Enum, typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+     constexpr bool operator==(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const FlagCombo&amp; b) noexcept;
+
+(5)  template &lt;typename Enum, typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+     constexpr bool operator==(const FlagCombo&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+
+(6)  template &lt;typename Enum&gt;
+     constexpr bool operator!=(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+
+(7)  template &lt;typename Enum&gt;
+     constexpr bool operator!=(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, <a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a> b) noexcept;
+
+(8)  template &lt;typename Enum&gt;
+     constexpr bool operator!=(<a href='doc_flag_set.html#ts::noflag_t'>noflag_t</a> a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;
+
+(9)  template &lt;typename Enum, typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+     constexpr bool operator!=(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const FlagCombo&amp; b) noexcept;
+
+(10)  template &lt;typename Enum, typename FlagCombo, typename = detail::enable_flag_combo&lt;FlagCombo, Enum&gt;&gt;
+     constexpr bool operator!=(const FlagCombo&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b) noexcept;</code></pre>
+<p><code>flag_set</code> equality comparison.</p>
+<p><em>Returns</em>: Whether both flag sets have the same combination of flags set/not set.</p>
+<h2>Bitwise operations for flag_set<a id="ts::operator%7c(constflag_set-Enum-&,constFlagCombo&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename Enum, typename FlagCombo&gt;
+     constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> operator|(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const FlagCombo&amp; b);
+
+(2)  template &lt;typename Enum, typename FlagCombo&gt;
+     constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> operator|(const FlagCombo&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b);
+
+(3)  template &lt;typename Enum, typename FlagCombo&gt;
+     constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> operator^(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const FlagCombo&amp; b);
+
+(4)  template &lt;typename Enum, typename FlagCombo&gt;
+     constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> operator^(const FlagCombo&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b);
+
+(5)  template &lt;typename Enum&gt;
+     constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> operator&amp;(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a>&amp; b);
+
+(6)  template &lt;typename Enum&gt;
+     constexpr <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a> operator&amp;(const <a href='doc_flag_set.html#ts::flag_mask-Enum-'>flag_mask&lt;Enum&gt;</a>&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b);</code></pre>
+<p></p>
+<p><em>Returns</em>: The same as <code>a Op= b</code>.</p>
+<h2>Bitwise and for flag_set<a id="ts::operator&(constflag_set-Enum-&,constFlagCombo&)"></a></h2>
+<pre><code class="language-cpp">(1)  template &lt;typename Enum, typename FlagCombo&gt;
+     constexpr bool operator&amp;(const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; a, const FlagCombo&amp; b);
+
+(2)  template &lt;typename Enum, typename FlagCombo&gt;
+     constexpr bool operator&amp;(const FlagCombo&amp; a, const <a href='doc_flag_set.html#ts::flag_set-Enum-'>flag_set&lt;Enum&gt;</a>&amp; b);</code></pre>
+<p>Checks whether a combination of flags is set in <code>a</code>.</p>
+<p><em>Returns</em>: <code>true</code> if all the flags set in <code>b</code> are also set in <code>a</code>, <code>false</code> otherwise.</p>
+<p><em>Notes</em>: These functions do not participate in overload resolution, unless <code>FlagCombo</code> is a flag operation.</p>
+<hr />
+<h2>Operator <code>operator~</code><a id="operator~(constEnum&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Enum&gt;
+constexpr <a href='doc_flag_set.html#ts::flag_mask-Enum-'>type_safe::flag_mask&lt;Enum&gt;</a> operator~(const Enum&amp; e) noexcept;</code></pre>
+<p>Creates a <a href="doc_flag_set.html#ts::flag_mask-Enum-">ts::flag_mask</a> for the single enum value.</p>
+<p><em>Returns</em>: A <a href="doc_flag_set.html#ts::flag_mask-Enum-">ts::flag_mask</a> where all bits are set, unless the given one.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution, unless <code>Enum</code> is an <code>enum</code> where the <a href="doc_flag_set.html#ts::flag_set_traits-Enum-">ts::flag_set_traits</a> are specialized.</p>
+<h2>Operator <code>operator|</code><a id="operator%7c(constEnum&,constEnum&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Enum&gt;
+constexpr <a href='doc_flag_set.html#ts::flag_combo-Enum-'>type_safe::flag_combo&lt;Enum&gt;</a> operator|(const Enum&amp; a, const Enum&amp; b) noexcept;</code></pre>
+<p>Creates a <a href="doc_flag_set.html#ts::flag_combo-Enum-">ts::flag_combo</a> from two enums.</p>
+<p><em>Returns</em>: A <a href="doc_flag_set.html#ts::flag_combo-Enum-">ts::flag_combo</a> where the two given bits are set.</p>
+<p><em>Notes</em>: These functions do not participate in overload resolution, unless <code>Enum</code> is an <code>enum</code> where the <a href="doc_flag_set.html#ts::flag_set_traits-Enum-">ts::flag_set_traits</a> are specialized.</p>
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

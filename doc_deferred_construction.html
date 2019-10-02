@@ -1,0 +1,113 @@
+<h1>Header file <code>deferred_construction.hpp</code><a id="deferred_construction.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;typename T&gt;
+    class <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction</a>;
+}</code></pre>
+<h2>Class template <code>type_safe::deferred_construction</code><a id="ts::deferred_construction-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+class deferred_construction
+{
+public:
+    using <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a> = T;
+    
+    <a href='doc_deferred_construction.html#ts::deferred_construction-T-::deferred_construction()'>deferred_construction</a>() noexcept;
+    
+    <a href='doc_deferred_construction.html#ts::deferred_construction-T-::deferred_construction(constdeferred_construction-T-&)'>deferred_construction</a>(const <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction</a>&amp; other);
+    
+    <a href='doc_deferred_construction.html#ts::deferred_construction-T-::deferred_construction(deferred_construction-T-&&)'>deferred_construction</a>(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction</a>&amp;&amp; other) noexcept('hidden');
+    
+    <a href='doc_deferred_construction.html#ts::deferred_construction-T-::deferred_construction(value_type)'>deferred_construction</a>(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a>) = delete;
+    
+    <a href='doc_deferred_construction.html#ts::deferred_construction-T-::~deferred_construction()'>~deferred_construction</a>() noexcept;
+    
+    <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction</a>&amp; <a href='doc_deferred_construction.html#ts::deferred_construction-T-::operator=(deferred_construction-T-)'>operator=</a>(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction</a>) = delete;
+    
+    template &lt;typename U&gt;
+    deferred_construction&amp; <a href='doc_deferred_construction.html#ts::deferred_construction-T-::operator=(U&&)'>operator=</a>(U&amp;&amp; u);
+    
+    //=== <a href='doc_deferred_construction.html#ts::deferred_construction-T-::emplace(Args&&...)'>Modifiers</a> ===//
+    template &lt;typename ... Args&gt;
+    void <a href='doc_deferred_construction.html#ts::deferred_construction-T-::emplace(Args&&...)'>emplace</a>(Args&amp;&amp;... args);
+    
+    //=== <a href='doc_deferred_construction.html#ts::deferred_construction-T-::has_value()const'>Observers</a> ===//
+    bool <a href='doc_deferred_construction.html#ts::deferred_construction-T-::has_value()const'>has_value</a>() const noexcept;
+    
+    <a href='doc_deferred_construction.html#ts::deferred_construction-T-::operatorbool()const'>operator bool</a>() const noexcept;
+    
+    <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a>&amp; <a href='doc_deferred_construction.html#ts::deferred_construction-T-::value()&'>value</a>() &amp; noexcept;
+    const <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a>&amp; <a href='doc_deferred_construction.html#ts::deferred_construction-T-::value()&'>value</a>() const &amp; noexcept;
+    <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a>&amp;&amp; <a href='doc_deferred_construction.html#ts::deferred_construction-T-::value()&'>value</a>() &amp;&amp; noexcept;
+    const <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a>&amp;&amp; <a href='doc_deferred_construction.html#ts::deferred_construction-T-::value()&'>value</a>() const &amp;&amp; noexcept;
+};</code></pre>
+<p>A tiny wrapper to create an object without constructing it yet.</p>
+<p>This is useful if you have a type that is default constructible, but can't be initialized properly - yet. It works especially well with <a href="doc_output_parameter.html#ts::output_parameter-T-">ts::output_parameter</a>.</p>
+<p>It has two states: Either it is <em>initialized</em> in which case you can get its value, or it is <em>un-initialized</em> in which case you cannot get its value. All objects start out un-initialized. For consistency with <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> it provides a similar interface, yet it is not as flexible and does not allow to reset it to the uninitialized state, once initialized.</p>
+<h3>Default constructor <code>type_safe::deferred_construction::deferred_construction</code><a id="ts::deferred_construction-T-::deferred_construction()"></a></h3>
+<pre><code class="language-cpp">deferred_construction() noexcept;</code></pre>
+<p>Default constructor.</p>
+<p><em>Effects</em>: Creates it in the un-initialized state.</p>
+<h3>Copy constructor <code>type_safe::deferred_construction::deferred_construction</code><a id="ts::deferred_construction-T-::deferred_construction(constdeferred_construction-T-&)"></a></h3>
+<pre><code class="language-cpp">deferred_construction(const <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction</a>&amp; other);</code></pre>
+<p>Copy constructor:</p>
+<p><em>Effects</em>: If <code>other</code> is un-initialized, it will be un-initialized as well. If <code>other</code> is initialized, it will copy the stored value.</p>
+<p><em>Throws</em>: Anything thrown by the copy constructor of <code>value_type</code> if <code>other</code> is initialized.</p>
+<h3>Move constructor <code>type_safe::deferred_construction::deferred_construction</code><a id="ts::deferred_construction-T-::deferred_construction(deferred_construction-T-&&)"></a></h3>
+<pre><code class="language-cpp">deferred_construction(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction</a>&amp;&amp; other) noexcept('hidden');</code></pre>
+<p>Move constructor:</p>
+<p><em>Effects</em>: If <code>other</code> is un-initialized, it will be un-initialized as well. If <code>other</code> is initialized, it will copy the stored value.</p>
+<p><em>Throws</em>: Anything thrown by the move constructor of <code>value_type</code> if <code>other</code> is initialized.</p>
+<p><em>Notes</em>: <code>other</code> will still be initialized after the move operation, it is just in a moved-from state.</p>
+<h3>Constructor <code>type_safe::deferred_construction::deferred_construction</code><a id="ts::deferred_construction-T-::deferred_construction(value_type)"></a></h3>
+<pre><code class="language-cpp">deferred_construction(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a>) = delete;</code></pre>
+<p></p>
+<p><em>Notes</em>: You cannot construct it from the type directly. If you are able to do that, there is no need to use <code>defer_construction</code>!</p>
+<h3>Destructor <code>type_safe::deferred_construction::~deferred_construction</code><a id="ts::deferred_construction-T-::~deferred_construction()"></a></h3>
+<pre><code class="language-cpp">~deferred_construction() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: If it is initialized, it will destroy the value. Otherwise it has no effect.</p>
+<h3>Assignment operator <code>type_safe::deferred_construction::operator=</code><a id="ts::deferred_construction-T-::operator=(deferred_construction-T-)"></a></h3>
+<pre><code class="language-cpp"><a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction</a>&amp; operator=(<a href='doc_deferred_construction.html#ts::deferred_construction-T-'>deferred_construction</a>) = delete;</code></pre>
+<p></p>
+<p><em>Notes</em>: You cannot copy or move assign it. This is a deliberate design decision to guarantee, that an initialized object stays initialized, no matter what.</p>
+<h3>Assignment operator <code>type_safe::deferred_construction::operator=</code><a id="ts::deferred_construction-T-::operator=(U&&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U&gt;
+deferred_construction&amp; operator=(U&amp;&amp; u);</code></pre>
+<p></p>
+<p><em>Effects</em>: Same as <code>emplace(std::forward&lt;U&gt;(u))</code>.</p>
+<p><em>Requires</em>: <code>value_type</code> must be constructible from <code>U</code>.</p>
+<p><em>Notes</em>: You must not use this function to actually &quot;assign&quot; the value, like <code>emplace()</code>, the object must not be initialized.</p>
+<h3>Function template <code>type_safe::deferred_construction::emplace</code><a id="ts::deferred_construction-T-::emplace(Args&&...)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename ... Args&gt;
+void emplace(Args&amp;&amp;... args);</code></pre>
+<p></p>
+<p><em>Effects</em>: Initializes the object with the <code>value_type</code> constructed from <code>args</code>.</p>
+<p><em>Requires</em>: <code>has_value() == false</code>.</p>
+<p><em>Throws</em>: Anything thrown by the chosen constructor of <code>value_type</code>.</p>
+<p><em>Notes</em>: You must only call this function once, after the object has been initialized, you can use <code>value()</code> to assign to it.</p>
+<h3>Function <code>type_safe::deferred_construction::has_value</code><a id="ts::deferred_construction-T-::has_value()const"></a></h3>
+<pre><code class="language-cpp">bool has_value() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: <code>true</code> if the object is initialized, <code>false</code> otherwise.</p>
+<h3>Conversion operator <code>type_safe::deferred_construction::operator bool</code><a id="ts::deferred_construction-T-::operatorbool()const"></a></h3>
+<pre><code class="language-cpp">operator bool() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The same as <code>has_value()</code>.</p>
+<h3>Function <code>type_safe::deferred_construction::value</code><a id="ts::deferred_construction-T-::value()&"></a></h3>
+<pre><code class="language-cpp">(1)  <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a>&amp; value() &amp; noexcept;
+
+(2)  const <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a>&amp; value() const &amp; noexcept;
+
+(3)  <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a>&amp;&amp; value() &amp;&amp; noexcept;
+
+(4)  const <a href='doc_deferred_construction.html#ts::deferred_construction-T-'>value_type</a>&amp;&amp; value() const &amp;&amp; noexcept;</code></pre>
+<p>Access the stored value.</p>
+<p><em>Returns</em>: A (<code>const</code>) (rvalue) reference to the stored value.</p>
+<p><em>Requires</em>: <code>has_value() == true</code>.</p>
+<hr />
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

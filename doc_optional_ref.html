@@ -1,0 +1,231 @@
+<h1>Header file <code>optional_ref.hpp</code><a id="optional_ref.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    template &lt;typename T, bool XValue&gt;
+    class <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>reference_optional_storage</a>;
+    
+    template &lt;typename T&gt;
+    using <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref</a> = <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;reference_optional_storage&lt;T&gt;&gt;</a>;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a> <a href='doc_optional_ref.html#ts::opt_ref(constobject_ref-T-&)'>opt_ref</a>(const object_ref&lt;T&gt;&amp; ref) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;const T&gt;</a> <a href='doc_optional_ref.html#ts::opt_cref(constobject_ref-T-&)'>opt_cref</a>(const object_ref&lt;T&gt;&amp; ref) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a> <a href='doc_optional_ref.html#ts::opt_ref(T&)'>opt_ref</a>(T&amp; ref) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;const T&gt;</a> <a href='doc_optional_ref.html#ts::opt_cref(constT&)'>opt_cref</a>(const T&amp; ref) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a> <a href='doc_optional_ref.html#ts::opt_ref(optional-T-&)'>opt_ref</a>(<a href='doc_optional.html#ts::optional-T-'>optional&lt;T&gt;</a>&amp; opt) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;const T&gt;</a> <a href='doc_optional_ref.html#ts::opt_cref(constoptional-T-&)'>opt_cref</a>(const <a href='doc_optional.html#ts::optional-T-'>optional&lt;T&gt;</a>&amp; opt) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a> <a href='doc_optional_ref.html#ts::opt_ref(T*)'>opt_ref</a>(T* ptr) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;const T&gt;</a> <a href='doc_optional_ref.html#ts::opt_cref(constT*)'>opt_cref</a>(const T* ptr) noexcept;
+    
+    template &lt;typename T&gt;
+    using <a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref</a> = <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;reference_optional_storage&lt;T, true&gt;&gt;</a>;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref&lt;T&gt;</a> <a href='doc_optional_ref.html#ts::opt_xref(T*)'>opt_xref</a>(T* ptr) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref&lt;T&gt;</a> <a href='doc_optional_ref.html#ts::opt_xref(T&)'>opt_xref</a>(T&amp; obj) noexcept;
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional.html#ts::optional-T-'>optional&lt;typename std::remove_const&lt;T&gt;::type&gt;</a> <a href='doc_optional_ref.html#ts::copy(constoptional_ref-T-&)'>copy</a>(const <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a>&amp; ref);
+    
+    template &lt;typename T&gt;
+    <a href='doc_optional.html#ts::optional-T-'>optional&lt;T&gt;</a> <a href='doc_optional_ref.html#ts::move(constoptional_xvalue_ref-T-&)'>move</a>(const <a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref&lt;T&gt;</a>&amp; ref) noexcept('hidden');
+}</code></pre>
+<h2>Class template <code>type_safe::reference_optional_storage</code> [optional]<a id="ts::reference_optional_storage-T,XValue-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T, bool XValue&gt;
+class reference_optional_storage
+{
+public:
+    using <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>value_type</a> = object_ref&lt;T, XValue&gt;;
+    
+    using <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>lvalue_reference</a> = T&amp;;
+    
+    using <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>const_lvalue_reference</a> = <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>lvalue_reference</a>;
+    
+    using <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>rvalue_reference</a> = 'hidden';
+    
+    using <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>const_rvalue_reference</a> = <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>rvalue_reference</a>;
+    
+    template &lt;typename U&gt;
+    using <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>rebind</a> = <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>reference_optional_storage&lt;U, XValue&gt;</a>;
+    
+    <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::reference_optional_storage()'>reference_optional_storage</a>() noexcept;
+    
+    template &lt;typename U, typename = decltype(std::declval&lt;T*&amp;&gt;()=std::declval&lt;U*&gt;())&gt;
+    )&gt;void <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::create_value(constbasic_optional-reference_optional_storage-U,XValue--&)'>create_value</a>(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;reference_optional_storage&lt;U, XValue&gt;&gt;</a>&amp; ref);
+    
+    void <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::create_value(constreference_optional_storage-T,XValue-&)'>create_value</a>(const <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>reference_optional_storage</a>&amp; other) noexcept;
+    
+    void <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::create_value(constobject_ref-T,XValue-&)'>create_value</a>(const object_ref&lt;T, XValue&gt;&amp; other) noexcept;
+    
+    void <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::create_value(std::nullptr_t)'>create_value</a>(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::nullptr_t'>std::nullptr_t</a>) noexcept;
+    
+    template &lt;typename U, typename = decltype(std::declval&lt;T*&amp;&gt;()=std::declval&lt;U*&gt;())&gt;
+    )&gt;void <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::create_value_explicit(U&)'>create_value_explicit</a>(U&amp; obj) noexcept;
+    
+    void <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>create_value_explicit</a>(T&amp;&amp;) = delete;
+    
+    void <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::copy_value(constreference_optional_storage-T,XValue-&)'>copy_value</a>(const <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>reference_optional_storage</a>&amp; other) noexcept;
+    
+    void <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::swap_value(reference_optional_storage-T,XValue-&)'>swap_value</a>(<a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>reference_optional_storage</a>&amp; other) noexcept;
+    
+    void <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::destroy_value()'>destroy_value</a>() noexcept;
+    
+    bool <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::has_value()const'>has_value</a>() const noexcept;
+    
+    'hidden' <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::get_value()const'>get_value</a>() const noexcept;
+    
+    'hidden' <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-::get_value_or(lvalue_reference)const'>get_value_or</a>(<a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>lvalue_reference</a> other) const noexcept;
+    
+    <a href='standardese://ts::reference_optional_storage<T, XValue>::result_type/'>result_type</a> <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>get_value_or</a>(T&amp;&amp;) const = delete;
+};</code></pre>
+<p>A <code>StoragePolicy</code> for <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that allows optional references.</p>
+<p>The actual <code>value_type</code> passed to the optional is <a href="doc_reference.html#ts::object_ref-T,XValue-">ts::object_ref</a>, but the reference types are normal references, so <code>value()</code> will return a <code>T&amp;</code> and <code>value_or()</code> takes a fallback reference of the same type and returns one of them. Assigning an optional will always change the target of the reference. You cannot pass rvalues.</p>
+<p>If <code>XValue</code> is <code>true</code>, you still cannot pass rvalues, but the result of <code>value()</code>/<code>value_or()</code> will return an rvalue reference, to allow moving of the stored value into something else.</p>
+<p>Depending on the const-ness of <code>T</code> is the reference to <code>const</code> or non-const as well, unless <code>XValue</code> is true<code>, in which case</code>T<code>must not be</code>const`.</p>
+<h3>Default constructor <code>type_safe::reference_optional_storage::reference_optional_storage</code><a id="ts::reference_optional_storage-T,XValue-::reference_optional_storage()"></a></h3>
+<pre><code class="language-cpp">reference_optional_storage() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates it without a bound reference.</p>
+<h3>Function template <code>type_safe::reference_optional_storage::create_value</code><a id="ts::reference_optional_storage-T,XValue-::create_value(constbasic_optional-reference_optional_storage-U,XValue--&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U, typename = decltype(std::declval&lt;T*&amp;&gt;()=std::declval&lt;U*&gt;())&gt;
+)&gt;void create_value(const <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;reference_optional_storage&lt;U, XValue&gt;&gt;</a>&amp; ref);</code></pre>
+<p></p>
+<p><em>Effects</em>: Binds the same reference as stored in the optional.</p>
+<p><em>Notes</em>: This function only participates in overload resolution, if <code>U</code> is a reference compatible with <code>T</code>. \param 1 \exclude</p>
+<h3>Function <code>type_safe::reference_optional_storage::create_value</code><a id="ts::reference_optional_storage-T,XValue-::create_value(constreference_optional_storage-T,XValue-&)"></a></h3>
+<pre><code class="language-cpp">void create_value(const <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>reference_optional_storage</a>&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Binds the reference to the same reference as in <code>other</code>.</p>
+<h3>Function <code>type_safe::reference_optional_storage::create_value</code><a id="ts::reference_optional_storage-T,XValue-::create_value(constobject_ref-T,XValue-&)"></a></h3>
+<pre><code class="language-cpp">void create_value(const object_ref&lt;T, XValue&gt;&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Binds the reference to the same reference as in <code>ref</code>.</p>
+<h3>Function <code>type_safe::reference_optional_storage::create_value</code><a id="ts::reference_optional_storage-T,XValue-::create_value(std::nullptr_t)"></a></h3>
+<pre><code class="language-cpp">void create_value(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::nullptr_t'>std::nullptr_t</a>) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Same as <code>destroy_value()</code>.</p>
+<h3>Function template <code>type_safe::reference_optional_storage::create_value_explicit</code><a id="ts::reference_optional_storage-T,XValue-::create_value_explicit(U&)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename U, typename = decltype(std::declval&lt;T*&amp;&gt;()=std::declval&lt;U*&gt;())&gt;
+)&gt;void create_value_explicit(U&amp; obj) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Binds the reference to <code>obj</code>.</p>
+<p><em>Notes</em>: This function only participates in overload resolution, if <code>U</code> is a reference compatible with <code>T</code>. \param 1 \exclude</p>
+<h3>Function <code>type_safe::reference_optional_storage::copy_value</code><a id="ts::reference_optional_storage-T,XValue-::copy_value(constreference_optional_storage-T,XValue-&)"></a></h3>
+<pre><code class="language-cpp">void copy_value(const <a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>reference_optional_storage</a>&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Binds the reference to the same reference in <code>other</code>.</p>
+<h3>Function <code>type_safe::reference_optional_storage::swap_value</code><a id="ts::reference_optional_storage-T,XValue-::swap_value(reference_optional_storage-T,XValue-&)"></a></h3>
+<pre><code class="language-cpp">void swap_value(<a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>reference_optional_storage</a>&amp; other) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Swaps the reference with the reference in <code>other</code>, i.e. rebinds them, no value change.</p>
+<h3>Function <code>type_safe::reference_optional_storage::destroy_value</code><a id="ts::reference_optional_storage-T,XValue-::destroy_value()"></a></h3>
+<pre><code class="language-cpp">void destroy_value() noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Unbinds the reference.</p>
+<h3>Function <code>type_safe::reference_optional_storage::has_value</code><a id="ts::reference_optional_storage-T,XValue-::has_value()const"></a></h3>
+<pre><code class="language-cpp">bool has_value() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: <code>true</code> if the reference is bound, <code>false</code> otherwise.</p>
+<h3>Function <code>type_safe::reference_optional_storage::get_value</code><a id="ts::reference_optional_storage-T,XValue-::get_value()const"></a></h3>
+<pre><code class="language-cpp">'hidden' get_value() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The target of the reference. Depending on <code>XValue</code>, this will either be <code>T&amp;</code> or <code>T&amp;&amp;</code>.</p>
+<h3>Function <code>type_safe::reference_optional_storage::get_value_or</code><a id="ts::reference_optional_storage-T,XValue-::get_value_or(lvalue_reference)const"></a></h3>
+<pre><code class="language-cpp">'hidden' get_value_or(<a href='doc_optional_ref.html#ts::reference_optional_storage-T,XValue-'>lvalue_reference</a> other) const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: Either <code>get_value()</code> or <code>other</code>. This must be given an lvalue of type <code>T</code> and it returns either an lvalue or an rvalue, depending on <code>XValue</code>.</p>
+<hr />
+<h2>Alias template <code>type_safe::optional_ref</code> [optional]<a id="ts::optional_ref-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+using optional_ref = <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;reference_optional_storage&lt;T&gt;&gt;</a>;</code></pre>
+<p>A <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that uses <a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-">ts::reference_optional_storage</a>. It is an optional reference.</p>
+<p><em>Notes</em>: <code>T</code> is the type without the reference, i.e. <code>optional_ref&lt;int&gt;</code>.</p>
+<h2>Function template <code>type_safe::opt_ref</code> [optional]<a id="ts::opt_ref(constobject_ref-T-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a> opt_ref(const object_ref&lt;T&gt;&amp; ref) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref</a> to the same target as <code>ref</code>.</p>
+<h2>Function template <code>type_safe::opt_cref</code> [optional]<a id="ts::opt_cref(constobject_ref-T-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;const T&gt;</a> opt_cref(const object_ref&lt;T&gt;&amp; ref) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref</a> to <code>const</code> to the same target as <code>ref</code>.</p>
+<h2>Function template <code>type_safe::opt_ref</code> [optional]<a id="ts::opt_ref(T&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a> opt_ref(T&amp; ref) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref</a> to the given object.</p>
+<h2>Function template <code>type_safe::opt_cref</code> [optional]<a id="ts::opt_cref(constT&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;const T&gt;</a> opt_cref(const T&amp; ref) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref</a> to the given object.</p>
+<h2>Function template <code>type_safe::opt_ref</code> [optional]<a id="ts::opt_ref(optional-T-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a> opt_ref(<a href='doc_optional.html#ts::optional-T-'>optional&lt;T&gt;</a>&amp; opt) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref</a> to the stored value in <code>opt</code>.</p>
+<h2>Function template <code>type_safe::opt_cref</code> [optional]<a id="ts::opt_cref(constoptional-T-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;const T&gt;</a> opt_cref(const <a href='doc_optional.html#ts::optional-T-'>optional&lt;T&gt;</a>&amp; opt) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref</a> to <code>const</code> to the stored value in <code>opt</code>.</p>
+<h2>Function template <code>type_safe::opt_ref</code> [optional]<a id="ts::opt_ref(T*)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a> opt_ref(T* ptr) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref&lt;T&gt;</a> to the pointee of <code>ptr</code> or <code>nullopt</code>.</p>
+<h2>Function template <code>type_safe::opt_cref</code> [optional]<a id="ts::opt_cref(constT*)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;const T&gt;</a> opt_cref(const T* ptr) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_ref-T-">ts::optional_ref&lt;T&gt;</a> to <code>const</code> to the pointee of <code>ptr</code> or <code>nullopt</code>.</p>
+<h2>Alias template <code>type_safe::optional_xvalue_ref</code><a id="ts::optional_xvalue_ref-T-"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+using optional_xvalue_ref = <a href='doc_optional.html#ts::basic_optional-StoragePolicy-'>basic_optional&lt;reference_optional_storage&lt;T, true&gt;&gt;</a>;</code></pre>
+<p>A <a href="doc_optional.html#ts::basic_optional-StoragePolicy-">ts::basic_optional</a> that uses <a href="doc_optional_ref.html#ts::reference_optional_storage-T,XValue-">ts::reference_optional_storage</a> with <code>XValue</code> being <code>true</code>. It is an optional reference to an xvalue, i.e. an lvalue that can be moved from, like returned by <code>std::move()</code>. \notes <code>T</code> is the type without the reference, i.e. <code>optional_xvalue_ref&lt;int&gt;</code>. \module optional</p>
+<h2>Function template <code>type_safe::opt_xref</code> [optional]<a id="ts::opt_xref(T*)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref&lt;T&gt;</a> opt_xref(T* ptr) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_xvalue_ref-T-">ts::optional_xvalue_ref&lt;T&gt;</a> to the pointee of <code>ptr</code> or <code>nullopt</code>.</p>
+<p><em>Notes</em>: The pointee will be moved from when you call <code>value()</code>.</p>
+<h2>Function template <code>type_safe::opt_xref</code> [optional]<a id="ts::opt_xref(T&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref&lt;T&gt;</a> opt_xref(T&amp; obj) noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional_ref.html#ts::optional_xvalue_ref-T-">ts::optional_xvalue_ref&lt;T&gt;</a> to the given object.</p>
+<p><em>Notes</em>: The pointee will be moved from when you call <code>value()</code>.</p>
+<h2>Function template <code>type_safe::copy</code> [optional]<a id="ts::copy(constoptional_ref-T-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional.html#ts::optional-T-'>optional&lt;typename std::remove_const&lt;T&gt;::type&gt;</a> copy(const <a href='doc_optional_ref.html#ts::optional_ref-T-'>optional_ref&lt;T&gt;</a>&amp; ref);</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional.html#ts::optional-T-">ts::optional&lt;T&gt;</a> containing a copy of the value of <code>ref</code> if there is any value.</p>
+<p><em>Requires</em>: <code>T</code> must be copyable.</p>
+<h2>Function template <code>type_safe::move</code><a id="ts::move(constoptional_xvalue_ref-T-&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename T&gt;
+<a href='doc_optional.html#ts::optional-T-'>optional&lt;T&gt;</a> move(const <a href='doc_optional_ref.html#ts::optional_xvalue_ref-T-'>optional_xvalue_ref&lt;T&gt;</a>&amp; ref) noexcept('hidden');</code></pre>
+<p></p>
+<p><em>Returns</em>: A <a href="doc_optional.html#ts::optional-T-">ts::optional&lt;T&gt;</a> containing a copy of the value of <code>ref</code> created by move constructing if there is any value. \requires <code>T</code> must be moveable. \module optional</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

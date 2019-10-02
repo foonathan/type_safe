@@ -1,0 +1,164 @@
+<h1>Header file <code>boolean.hpp</code><a id="boolean.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    class <a href='doc_boolean.html#ts::boolean'>boolean</a>;
+    
+    constexpr bool <a href='doc_boolean.html#ts::operator==(consttype_safe::boolean&,consttype_safe::boolean&)'>operator==</a>(const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; a, const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b) noexcept;
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_boolean.html#ts::operator==(consttype_safe::boolean&,consttype_safe::boolean&)'>operator==</a>(const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; a, T b) noexcept;
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_boolean.html#ts::operator==(consttype_safe::boolean&,consttype_safe::boolean&)'>operator==</a>(T a, const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b) noexcept;
+    
+    constexpr bool <a href='doc_boolean.html#ts::operator!=(consttype_safe::boolean&,consttype_safe::boolean&)'>operator!=</a>(const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; a, const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b) noexcept;
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_boolean.html#ts::operator!=(consttype_safe::boolean&,consttype_safe::boolean&)'>operator!=</a>(const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; a, T b) noexcept;
+    template &lt;typename T&gt;
+    constexpr bool <a href='doc_boolean.html#ts::operator!=(consttype_safe::boolean&,consttype_safe::boolean&)'>operator!=</a>(T a, const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b) noexcept;
+    
+    //=== <a href='doc_boolean.html#ts::operator--(std::basic_istream-Char,CharTraits-&,type_safe::boolean&)'>Input/output</a> ===//
+    template &lt;typename Char, class CharTraits&gt;
+    <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; <a href='doc_boolean.html#ts::operator--(std::basic_istream-Char,CharTraits-&,type_safe::boolean&)'>operator&gt;&gt;</a>(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; in, <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b);
+    
+    template &lt;typename Char, class CharTraits&gt;
+    <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; <a href='doc_boolean.html#ts::operator--(std::basic_ostream-Char,CharTraits-&,consttype_safe::boolean&)'>operator&lt;&lt;</a>(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; out, const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b);
+    
+    //=== <a href='doc_boolean.html#ts::equal_to'>Comparison function objects</a> ===//
+    struct <a href='doc_boolean.html#ts::equal_to'>equal_to</a>;
+    struct <a href='doc_boolean.html#ts::equal_to'>not_equal_to</a>;
+    struct <a href='doc_boolean.html#ts::equal_to'>less</a>;
+    struct <a href='doc_boolean.html#ts::equal_to'>less_equal</a>;
+    struct <a href='doc_boolean.html#ts::equal_to'>greater</a>;
+    struct <a href='doc_boolean.html#ts::equal_to'>greater_equal</a>;
+}
+
+namespace <a href='doc_boolean.html#boolean.hpp'>std</a>
+{
+}</code></pre>
+<h2>Class <code>type_safe::boolean</code> [types]<a id="ts::boolean"></a></h2>
+<pre><code class="language-cpp">class boolean
+{
+public:
+    <a href='doc_boolean.html#ts::boolean'>boolean</a>() = delete;
+    
+    template &lt;typename T, typename = detail::enable_boolean&lt;T&gt;&gt;
+    constexpr <a href='doc_boolean.html#ts::boolean::boolean(T)'>boolean</a>(T value) noexcept;
+    
+    template &lt;typename T, typename = detail::enable_boolean&lt;T&gt;&gt;
+    <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; <a href='doc_boolean.html#ts::boolean::operator=(T)'>operator=</a>(T value) noexcept;
+    
+    constexpr <a href='doc_boolean.html#ts::boolean::operatorbool()const'>operator bool</a>() const noexcept;
+    
+    constexpr <a href='doc_boolean.html#ts::boolean'>boolean</a> <a href='doc_boolean.html#ts::boolean::operator!()const'>operator!</a>() const noexcept;
+};</code></pre>
+<p>A type safe boolean class.</p>
+<p>It is a tiny, no overhead wrapper over <code>bool</code>. It can only be constructed from <code>bool</code> values and does not implicitly convert to integral types.</p>
+<h3>Function template <code>type_safe::boolean::boolean</code><a id="ts::boolean::boolean(T)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T, typename = detail::enable_boolean&lt;T&gt;&gt;
+constexpr boolean(T value) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Creates a boolean from the given <code>value</code>.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution if <code>T</code> is not a boolean type. \param 1 \exclude</p>
+<h3>Assignment operator <code>type_safe::boolean::operator=</code><a id="ts::boolean::operator=(T)"></a></h3>
+<pre><code class="language-cpp">template &lt;typename T, typename = detail::enable_boolean&lt;T&gt;&gt;
+<a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; operator=(T value) noexcept;</code></pre>
+<p></p>
+<p><em>Effects</em>: Assigns the given <code>value</code> to the boolean.</p>
+<p><em>Notes</em>: This function does not participate in overload resolution if <code>T</code> is not a boolean type. \param 1 \exclude</p>
+<h3>Conversion operator <code>type_safe::boolean::operator bool</code><a id="ts::boolean::operatorbool()const"></a></h3>
+<pre><code class="language-cpp">constexpr operator bool() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The stored <code>bool</code> value.</p>
+<h3>Operator <code>type_safe::boolean::operator!</code><a id="ts::boolean::operator!()const"></a></h3>
+<pre><code class="language-cpp">constexpr <a href='doc_boolean.html#ts::boolean'>boolean</a> operator!() const noexcept;</code></pre>
+<p></p>
+<p><em>Returns</em>: The same as <code>!static_cast&lt;bool&gt;(*this)</code>.</p>
+<hr />
+<h2>Comparison operator <code>type_safe::operator==</code> [types]<a id="ts::operator==(consttype_safe::boolean&,consttype_safe::boolean&)"></a></h2>
+<pre><code class="language-cpp">(1)  constexpr bool operator==(const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; a, const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b) noexcept;
+
+(2)  template &lt;typename T&gt;
+     constexpr bool operator==(const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; a, T b) noexcept;
+
+(3)  template &lt;typename T&gt;
+     constexpr bool operator==(T a, const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b) noexcept;</code></pre>
+<p><a href="doc_boolean.html#ts::boolean">ts::boolean</a> equality comparison.</p>
+<p><em>Returns</em>: <code>true</code> if (1) both <a href="doc_boolean.html#ts::boolean">ts::boolean</a> objects have the same value, (2)/(3) the boolean has the same value as the given value, <code>false</code> otherwise.</p>
+<p><em>Notes</em>: (2)/(3) do not participate in overload resolution if <code>T</code> is not a boolean type.</p>
+<h2>Comparison operator <code>type_safe::operator!=</code> [types]<a id="ts::operator!=(consttype_safe::boolean&,consttype_safe::boolean&)"></a></h2>
+<pre><code class="language-cpp">(1)  constexpr bool operator!=(const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; a, const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b) noexcept;
+
+(2)  template &lt;typename T&gt;
+     constexpr bool operator!=(const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; a, T b) noexcept;
+
+(3)  template &lt;typename T&gt;
+     constexpr bool operator!=(T a, const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b) noexcept;</code></pre>
+<p><a href="doc_boolean.html#ts::boolean">ts::boolean</a> in-equality comparison.</p>
+<p><em>Returns</em>: <code>false</code> if (1) both <a href="doc_boolean.html#ts::boolean">ts::boolean</a> objects have the same value, (2)/(3) the boolean has the same value as the given value, <code>true</code> otherwise.</p>
+<p><em>Notes</em>: (2)/(3) do not participate in overload resolution if <code>T</code> is not a boolean type.</p>
+<h2>Input operator <code>type_safe::operator&gt;&gt;</code> [types]<a id="ts::operator--(std::basic_istream-Char,CharTraits-&,type_safe::boolean&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Char, class CharTraits&gt;
+<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; operator&gt;&gt;(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_istream%3cChar,CharTraits%3e'>std::basic_istream&lt;Char, CharTraits&gt;</a>&amp; in, <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b);</code></pre>
+<p><a href="doc_boolean.html#ts::boolean">ts::boolean</a> input operator.</p>
+<p><em>Effects</em>: Reads a <code>bool</code> from the <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::istream">std::istream</a> and assigns it to the given <a href="doc_boolean.html#ts::boolean">ts::boolean</a>.</p>
+<h2>Output operator <code>type_safe::operator&lt;&lt;</code> [types]<a id="ts::operator--(std::basic_ostream-Char,CharTraits-&,consttype_safe::boolean&)"></a></h2>
+<pre><code class="language-cpp">template &lt;typename Char, class CharTraits&gt;
+<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; operator&lt;&lt;(<a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::basic_ostream%3cChar,CharTraits%3e'>std::basic_ostream&lt;Char, CharTraits&gt;</a>&amp; out, const <a href='doc_boolean.html#ts::boolean'>boolean</a>&amp; b);</code></pre>
+<p><a href="doc_boolean.html#ts::boolean">ts::boolean</a> output operator.</p>
+<p><em>Effects</em>: Converts the given <a href="doc_boolean.html#ts::boolean">ts::boolean</a> to <code>bool</code> and writes it to the <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::ostream">std::ostream</a>.</p>
+<h2>Comparison function objects<a id="ts::equal_to"></a> [types]</h2>
+<pre><code class="language-cpp">(1)  struct equal_to
+     {
+         using <a href='doc_boolean.html#ts::equal_to'>is_transparent</a> = int;
+         
+         template &lt;typename T1, typename T2&gt;
+         constexpr bool <a href='doc_boolean.html#ts::equal_to'>operator()</a>(T1&amp;&amp; a, T2&amp;&amp; b) const noexcept('hidden');
+     };
+
+(2)  struct not_equal_to
+     {
+         using <a href='doc_boolean.html#boolean.hpp'>is_transparent</a> = int;
+         
+         template &lt;typename T1, typename T2&gt;
+         constexpr bool <a href='doc_boolean.html#boolean.hpp'>operator()</a>(T1&amp;&amp; a, T2&amp;&amp; b) const noexcept('hidden');
+     };
+
+(3)  struct less
+     {
+         using <a href='doc_boolean.html#boolean.hpp'>is_transparent</a> = int;
+         
+         template &lt;typename T1, typename T2&gt;
+         constexpr bool <a href='doc_boolean.html#boolean.hpp'>operator()</a>(T1&amp;&amp; a, T2&amp;&amp; b) const noexcept('hidden');
+     };
+
+(4)  struct less_equal
+     {
+         using <a href='doc_boolean.html#boolean.hpp'>is_transparent</a> = int;
+         
+         template &lt;typename T1, typename T2&gt;
+         constexpr bool <a href='doc_boolean.html#boolean.hpp'>operator()</a>(T1&amp;&amp; a, T2&amp;&amp; b) const noexcept('hidden');
+     };
+
+(5)  struct greater
+     {
+         using <a href='doc_boolean.html#boolean.hpp'>is_transparent</a> = int;
+         
+         template &lt;typename T1, typename T2&gt;
+         constexpr bool <a href='doc_boolean.html#boolean.hpp'>operator()</a>(T1&amp;&amp; a, T2&amp;&amp; b) const noexcept('hidden');
+     };
+
+(6)  struct greater_equal
+     {
+         using <a href='doc_boolean.html#boolean.hpp'>is_transparent</a> = int;
+         
+         template &lt;typename T1, typename T2&gt;
+         constexpr bool <a href='doc_boolean.html#boolean.hpp'>operator()</a>(T1&amp;&amp; a, T2&amp;&amp; b) const noexcept('hidden');
+     };</code></pre>
+<p>Comparison functors similar to the <code>std::</code> version, but explicitly cast the result of the comparison to <code>bool</code>.</p>
+<p>This allows using types where the comparison operator returns <a href="doc_boolean.html#ts::boolean">ts::boolean</a>, as it can not be implicitly converted to <code>bool</code> so, for example, <a href="http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::less">std::less</a> can not be used.</p>
+<p><em>Notes</em>: These comparison functors are always transparent, i.e. can be used with two different types.</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>

@@ -1,0 +1,89 @@
+<h1>Header file <code>arithmetic_policy.hpp</code><a id="arithmetic_policy.hpp"></a></h1>
+<pre><code class="language-cpp">namespace <a href='doc_arithmetic_policy.html#arithmetic_policy.hpp'>type_safe</a>
+{
+    class <a href='doc_arithmetic_policy.html#ts::default_arithmetic'>default_arithmetic</a>;
+    
+    class <a href='doc_arithmetic_policy.html#ts::undefined_behavior_arithmetic'>undefined_behavior_arithmetic</a>;
+    
+    class <a href='doc_arithmetic_policy.html#ts::checked_arithmetic'>checked_arithmetic</a>;
+    
+    using <a href='doc_arithmetic_policy.html#ts::arithmetic_policy_default'>arithmetic_policy_default</a> = 'hidden';
+}</code></pre>
+<h2>Class <code>type_safe::default_arithmetic</code> [types]<a id="ts::default_arithmetic"></a></h2>
+<pre><code class="language-cpp">class default_arithmetic
+{
+public:
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::default_arithmetic'>do_addition</a>(const T&amp; a, const T&amp; b) noexcept;
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::default_arithmetic'>do_subtraction</a>(const T&amp; a, const T&amp; b) noexcept;
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::default_arithmetic'>do_multiplication</a>(const T&amp; a, const T&amp; b) noexcept;
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::default_arithmetic'>do_division</a>(const T&amp; a, const T&amp; b) noexcept;
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::default_arithmetic'>do_modulo</a>(const T&amp; a, const T&amp; b) noexcept;
+};</code></pre>
+<p>An <code>ArithmeticPolicy</code> that behaves like the default integer implementations: Signed under/overflow is UB, unsigned under/overflow wraps around.</p>
+<h2>Class <code>type_safe::undefined_behavior_arithmetic</code> [types]<a id="ts::undefined_behavior_arithmetic"></a></h2>
+<pre><code class="language-cpp">class undefined_behavior_arithmetic
+{
+public:
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::undefined_behavior_arithmetic'>do_addition</a>(const T&amp; a, const T&amp; b) noexcept;
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::undefined_behavior_arithmetic'>do_subtraction</a>(const T&amp; a, const T&amp; b) noexcept;
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::undefined_behavior_arithmetic'>do_multiplication</a>(const T&amp; a, const T&amp; b) noexcept;
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::undefined_behavior_arithmetic'>do_division</a>(const T&amp; a, const T&amp; b) noexcept;
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::undefined_behavior_arithmetic'>do_modulo</a>(const T&amp; a, const T&amp; b) noexcept;
+};</code></pre>
+<p>An <code>ArithmeticPolicy</code> where under/overflow is always undefined behavior, albeit checked when assertions are enabled.</p>
+<h2>Class <code>type_safe::checked_arithmetic</code> [types]<a id="ts::checked_arithmetic"></a></h2>
+<pre><code class="language-cpp">class checked_arithmetic
+{
+public:
+    class <a href='doc_arithmetic_policy.html#ts::checked_arithmetic'>error</a>
+    : public <a href='http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=std::range_error'>std::range_error</a>
+    {
+    public:
+        <a href='doc_arithmetic_policy.html#ts::checked_arithmetic'>error</a>(const char* msg);
+    };
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::checked_arithmetic'>do_addition</a>(const T&amp; a, const T&amp; b);
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::checked_arithmetic'>do_subtraction</a>(const T&amp; a, const T&amp; b);
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::checked_arithmetic'>do_multiplication</a>(const T&amp; a, const T&amp; b);
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::checked_arithmetic'>do_division</a>(const T&amp; a, const T&amp; b);
+    
+    template &lt;typename T&gt;
+    static constexpr T <a href='doc_arithmetic_policy.html#ts::checked_arithmetic'>do_modulo</a>(const T&amp; a, const T&amp; b);
+};</code></pre>
+<p>An <code>ArithmeticPolicy</code> where under/overflow throws an exception.</p>
+<p><em>Notes</em>: If exceptions are not supported, this is will assert.</p>
+<h2>Type alias <code>type_safe::arithmetic_policy_default</code> [types]<a id="ts::arithmetic_policy_default"></a></h2>
+<pre><code class="language-cpp">using arithmetic_policy_default = 'hidden';</code></pre>
+<p>The default <code>ArithmeticPolicy</code>.</p>
+<p>It depends on the <a href="doc_config.html#TYPE_SAFE_ARITHMETIC_UB">TYPE_SAFE_ARITHMETIC_UB</a> macro, and is either <a href="doc_arithmetic_policy.html#ts::undefined_behavior_arithmetic">ts::undefined_behavior_arithmetic</a> or <a href="doc_arithmetic_policy.html#ts::default_arithmetic">ts::default_arithmetic</a>.</p>
+<hr />
+
+
+<hr class="footer"/><address class="footer"><small>
+Documentation generated by <a target="_blank" href="https://github.com/foonathan/standardese">standardese</a>.
+</small></address>
