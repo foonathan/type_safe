@@ -31,8 +31,10 @@ namespace detail
     template <typename From, typename To>
     struct is_safe_integer_conversion
     : std::integral_constant<bool, detail::is_integer<From>::value && detail::is_integer<To>::value
-                                       && sizeof(From) <= sizeof(To)
-                                       && std::is_signed<From>::value == std::is_signed<To>::value>
+                                        && ((sizeof(From) <= sizeof(To)
+                                        && std::is_signed<From>::value == std::is_signed<To>::value)
+                                        || (sizeof(From) < sizeof(To)
+                                        && std::is_signed<From>::value == std::is_unsigned<To>::value))>
     {};
 
     template <typename From, typename To>
