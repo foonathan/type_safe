@@ -299,21 +299,21 @@ TEST_CASE("integer")
     {
         // From int8_t
         REQUIRE( !std::is_convertible<integer<int8_t>, integer<uint8_t>>::value );
-        REQUIRE(  std::is_convertible<integer<int8_t>, integer<uint16_t>>::value );
-        REQUIRE(  std::is_convertible<integer<int8_t>, integer<uint32_t>>::value );
-        REQUIRE(  std::is_convertible<integer<int8_t>, integer<uint64_t>>::value );
+        REQUIRE( !std::is_convertible<integer<int8_t>, integer<uint16_t>>::value );
+        REQUIRE( !std::is_convertible<integer<int8_t>, integer<uint32_t>>::value );
+        REQUIRE( !std::is_convertible<integer<int8_t>, integer<uint64_t>>::value );
 
         // From int16_t
         REQUIRE( !std::is_convertible<integer<int16_t>, integer<uint8_t>>::value );
         REQUIRE( !std::is_convertible<integer<int16_t>, integer<uint16_t>>::value );
-        REQUIRE(  std::is_convertible<integer<int16_t>, integer<uint32_t>>::value );
-        REQUIRE(  std::is_convertible<integer<int16_t>, integer<uint64_t>>::value );
+        REQUIRE( !std::is_convertible<integer<int16_t>, integer<uint32_t>>::value );
+        REQUIRE( !std::is_convertible<integer<int16_t>, integer<uint64_t>>::value );
 
         // From int32_t
         REQUIRE( !std::is_convertible<integer<int32_t>, integer<uint8_t>>::value );
         REQUIRE( !std::is_convertible<integer<int32_t>, integer<uint16_t>>::value );
         REQUIRE( !std::is_convertible<integer<int32_t>, integer<uint32_t>>::value );
-        REQUIRE(  std::is_convertible<integer<int32_t>, integer<uint64_t>>::value );
+        REQUIRE( !std::is_convertible<integer<int32_t>, integer<uint64_t>>::value );
 
         // From int64_t
         REQUIRE( !std::is_convertible<integer<int64_t>, integer<uint8_t>>::value );

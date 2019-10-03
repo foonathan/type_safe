@@ -34,7 +34,7 @@ namespace detail
                                         && ((sizeof(From) <= sizeof(To)
                                         && std::is_signed<From>::value == std::is_signed<To>::value)
                                         || (sizeof(From) < sizeof(To)
-                                        && std::is_signed<From>::value == std::is_unsigned<To>::value))>
+                                        && std::is_unsigned<From>::value && std::is_signed<To>::value))>
     {};
 
     template <typename From, typename To>
