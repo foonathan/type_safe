@@ -37,6 +37,15 @@
 #    define TYPE_SAFE_ARITHMETIC_UB 1
 #endif
 
+#ifndef TYPE_SAFE_DELETE_FUNCTIONS
+#    if defined(_MSC_VER) && _MSC_VER < 1914
+#        define TYPE_SAFE_DELETE_FUNCTIONS 0
+#    else
+/// \exclude
+#        define TYPE_SAFE_DELETE_FUNCTIONS 0
+#    endif
+#endif
+
 #ifndef TYPE_SAFE_USE_REF_QUALIFIERS
 #    if defined(__cpp_ref_qualifiers) && __cpp_ref_qualifiers >= 200710
 /// \exclude

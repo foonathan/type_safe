@@ -11,7 +11,8 @@
 using namespace type_safe;
 
 #ifndef TYPE_SAFE_TEST_NO_STATIC_ASSERT
-static_assert(std::is_pod<floating_point<float>>::value, "");
+static_assert(std::is_trivially_copyable<floating_point<float>>::value, "");
+static_assert(std::is_standard_layout<floating_point<float>>::value, "");
 // conversion checks
 static_assert(std::is_constructible<floating_point<float>, float>::value, "");
 static_assert(!std::is_constructible<floating_point<float>, double>::value, "");

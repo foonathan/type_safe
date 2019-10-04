@@ -30,9 +30,12 @@ namespace detail
 
     template <typename From, typename To>
     struct is_safe_integer_conversion
-    : std::integral_constant<bool, detail::is_integer<From>::value && detail::is_integer<To>::value
-                                       && sizeof(From) <= sizeof(To)
-                                       && std::is_signed<From>::value == std::is_signed<To>::value>
+    : std::integral_constant<bool,
+                             detail::is_integer<From>::value && detail::is_integer<To>::value
+                                 && ((sizeof(From) <= sizeof(To)
+                                      && std::is_signed<From>::value == std::is_signed<To>::value)
+                                     || (sizeof(From) < sizeof(To) && std::is_unsigned<From>::value
+                                         && std::is_signed<To>::value))>
     {};
 
     template <typename From, typename To>
@@ -99,8 +102,10 @@ public:
     using integer_type = IntegerT;
 
     //=== constructors ===//
+#if TYPE_SAFE_DELETE_FUNCTIONS
     /// \exclude
     integer() = delete;
+#endif
 
     /// \effects Initializes it with the given value.
     /// \notes This function does not participate in overload resolution
@@ -120,9 +125,14 @@ public:
     : value_(static_cast<T>(val))
     {}
 
+#if TYPE_SAFE_DELETE_FUNCTIONS
     /// \exclude
     template <typename T, typename = detail::fallback_safe_integer_conversion<T, integer_type>>
     constexpr integer(T) = delete;
+    /// \exclude
+    template <typename T, typename = detail::fallback_safe_integer_conversion<T, integer_type>>
+    constexpr integer(const integer<T, Policy>&) = delete;
+#endif
 
     //=== assignment ===//
     /// \effects Assigns it with the given value.
@@ -148,9 +158,14 @@ public:
         return *this;
     }
 
+#if TYPE_SAFE_DELETE_FUNCTIONS
     /// \exclude
     template <typename T, typename = detail::fallback_safe_integer_conversion<T, integer_type>>
-    integer& operator=(T) = delete;
+    constexpr integer(T) = delete;
+    /// \exclude
+    template <typename T, typename = detail::fallback_safe_integer_conversion<T, integer_type>>
+    integer& operator=(const integer<T, Policy>&) = delete;
+#endif
 
     //=== conversion back ===//
     /// \returns The stored value as the native integer type.

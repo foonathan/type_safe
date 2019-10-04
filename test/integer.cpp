@@ -11,7 +11,8 @@
 using namespace type_safe;
 
 #ifndef TYPE_SAFE_TEST_NO_STATIC_ASSERT
-static_assert(std::is_pod<integer<int>>::value, "");
+static_assert(std::is_standard_layout<integer<int>>::value, "");
+static_assert(std::is_trivially_copyable<integer<int>>::value, "");
 // conversion checks
 static_assert(sizeof(short) < sizeof(int), "");
 static_assert(std::is_constructible<integer<short>, short>::value, "");
@@ -294,5 +295,109 @@ TEST_CASE("integer")
         i  = -123;
         ia = type_safe::abs(i);
         REQUIRE(static_cast<unsigned>(ia) == 123u);
+    }
+    SECTION("signed_to_unsigned")
+    {
+        // From int8_t
+        REQUIRE(!std::is_convertible<integer<int8_t>, integer<uint8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int8_t>, integer<uint16_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int8_t>, integer<uint32_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int8_t>, integer<uint64_t>>::value);
+
+        // From int16_t
+        REQUIRE(!std::is_convertible<integer<int16_t>, integer<uint8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int16_t>, integer<uint16_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int16_t>, integer<uint32_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int16_t>, integer<uint64_t>>::value);
+
+        // From int32_t
+        REQUIRE(!std::is_convertible<integer<int32_t>, integer<uint8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int32_t>, integer<uint16_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int32_t>, integer<uint32_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int32_t>, integer<uint64_t>>::value);
+
+        // From int64_t
+        REQUIRE(!std::is_convertible<integer<int64_t>, integer<uint8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int64_t>, integer<uint16_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int64_t>, integer<uint32_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int64_t>, integer<uint64_t>>::value);
+    }
+    SECTION("unsigned_to_signed")
+    {
+        // From uint8_t
+        REQUIRE(!std::is_convertible<integer<uint8_t>, integer<int8_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint8_t>, integer<int16_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint8_t>, integer<int32_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint8_t>, integer<int64_t>>::value);
+
+        // From uint16_t
+        REQUIRE(!std::is_convertible<integer<uint16_t>, integer<int8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<uint16_t>, integer<int16_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint16_t>, integer<int32_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint16_t>, integer<int64_t>>::value);
+
+        // From uint32_t
+        REQUIRE(!std::is_convertible<integer<uint32_t>, integer<int8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<uint32_t>, integer<int16_t>>::value);
+        REQUIRE(!std::is_convertible<integer<uint32_t>, integer<int32_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint32_t>, integer<int64_t>>::value);
+
+        // From uint32_t
+        REQUIRE(!std::is_convertible<integer<uint64_t>, integer<int8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<uint64_t>, integer<int16_t>>::value);
+        REQUIRE(!std::is_convertible<integer<uint64_t>, integer<int32_t>>::value);
+        REQUIRE(!std::is_convertible<integer<uint64_t>, integer<int64_t>>::value);
+    }
+    SECTION("signed_to_signed")
+    {
+        // From int8_t
+        REQUIRE(std::is_convertible<integer<int8_t>, integer<int8_t>>::value);
+        REQUIRE(std::is_convertible<integer<int8_t>, integer<int16_t>>::value);
+        REQUIRE(std::is_convertible<integer<int8_t>, integer<int32_t>>::value);
+        REQUIRE(std::is_convertible<integer<int8_t>, integer<int64_t>>::value);
+
+        // From int16_t
+        REQUIRE(!std::is_convertible<integer<int16_t>, integer<int8_t>>::value);
+        REQUIRE(std::is_convertible<integer<int16_t>, integer<int16_t>>::value);
+        REQUIRE(std::is_convertible<integer<int16_t>, integer<int32_t>>::value);
+        REQUIRE(std::is_convertible<integer<int16_t>, integer<int64_t>>::value);
+
+        // From int32_t
+        REQUIRE(!std::is_convertible<integer<int32_t>, integer<int8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int32_t>, integer<int16_t>>::value);
+        REQUIRE(std::is_convertible<integer<int32_t>, integer<int32_t>>::value);
+        REQUIRE(std::is_convertible<integer<int32_t>, integer<int64_t>>::value);
+
+        // From int64_t
+        REQUIRE(!std::is_convertible<integer<int64_t>, integer<int8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int64_t>, integer<int16_t>>::value);
+        REQUIRE(!std::is_convertible<integer<int64_t>, integer<int32_t>>::value);
+        REQUIRE(std::is_convertible<integer<int64_t>, integer<int64_t>>::value);
+    }
+    SECTION("unsigned_to_unsigned")
+    {
+        // From uint8_t
+        REQUIRE(std::is_convertible<integer<uint8_t>, integer<uint8_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint8_t>, integer<uint16_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint8_t>, integer<uint32_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint8_t>, integer<uint64_t>>::value);
+
+        // From uint16_t
+        REQUIRE(!std::is_convertible<integer<uint16_t>, integer<uint8_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint16_t>, integer<uint16_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint16_t>, integer<uint32_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint16_t>, integer<uint64_t>>::value);
+
+        // From uint32_t
+        REQUIRE(!std::is_convertible<integer<uint32_t>, integer<uint8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<uint32_t>, integer<uint16_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint32_t>, integer<uint32_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint32_t>, integer<uint64_t>>::value);
+
+        // From uint64_t
+        REQUIRE(!std::is_convertible<integer<uint64_t>, integer<uint8_t>>::value);
+        REQUIRE(!std::is_convertible<integer<uint64_t>, integer<uint16_t>>::value);
+        REQUIRE(!std::is_convertible<integer<uint64_t>, integer<uint32_t>>::value);
+        REQUIRE(std::is_convertible<integer<uint64_t>, integer<uint64_t>>::value);
     }
 }
