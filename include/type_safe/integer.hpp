@@ -256,7 +256,7 @@ public:
     template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
     TYPE_SAFE_FORCE_INLINE integer& operator+=(const integer<T, Policy>& other)
     {
-        value_ = Policy::template do_addition(value_, static_cast<T>(other));
+        value_ = Policy::template do_addition<integer_type>(value_, static_cast<T>(other));
         return *this;
     }
     TYPE_SAFE_DETAIL_MAKE_OP(+=)
@@ -267,7 +267,7 @@ public:
     template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
     TYPE_SAFE_FORCE_INLINE integer& operator-=(const integer<T, Policy>& other)
     {
-        value_ = Policy::template do_subtraction(value_, static_cast<T>(other));
+        value_ = Policy::template do_subtraction<integer_type>(value_, static_cast<T>(other));
         return *this;
         return *this;
     }
@@ -279,7 +279,7 @@ public:
     template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
     TYPE_SAFE_FORCE_INLINE integer& operator*=(const integer<T, Policy>& other)
     {
-        value_ = Policy::template do_multiplication(value_, static_cast<T>(other));
+        value_ = Policy::template do_multiplication<integer_type>(value_, static_cast<T>(other));
         return *this;
     }
     TYPE_SAFE_DETAIL_MAKE_OP(*=)
@@ -290,7 +290,7 @@ public:
     template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
     TYPE_SAFE_FORCE_INLINE integer& operator/=(const integer<T, Policy>& other)
     {
-        value_ = Policy::template do_division(value_, static_cast<T>(other));
+        value_ = Policy::template do_division<integer_type>(value_, static_cast<T>(other));
         return *this;
     }
     TYPE_SAFE_DETAIL_MAKE_OP(/=)
@@ -301,7 +301,7 @@ public:
     template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>
     TYPE_SAFE_FORCE_INLINE integer& operator%=(const integer<T, Policy>& other)
     {
-        value_ = Policy::template do_modulo(value_, static_cast<T>(other));
+        value_ = Policy::template do_modulo<integer_type>(value_, static_cast<T>(other));
         return *this;
     }
     TYPE_SAFE_DETAIL_MAKE_OP(%=)

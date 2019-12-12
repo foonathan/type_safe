@@ -22,31 +22,31 @@ class default_arithmetic
 {
 public:
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_addition(const T& a, const T& b) noexcept
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_addition(T a, T b) noexcept
     {
         return a + b;
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_subtraction(const T& a, const T& b) noexcept
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_subtraction(T a, T b) noexcept
     {
         return a - b;
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_multiplication(const T& a, const T& b) noexcept
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_multiplication(T a, T b) noexcept
     {
         return a * b;
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_division(const T& a, const T& b) noexcept
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_division(T a, T b) noexcept
     {
         return a / b;
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_modulo(const T& a, const T& b) noexcept
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_modulo(T a, T b) noexcept
     {
         return a % b;
     }
@@ -66,31 +66,31 @@ namespace detail
                                   unsigned_integer_tag>::type;
 
     template <typename T>
-    constexpr bool will_addition_error(signed_integer_tag, const T& a, const T& b)
+    constexpr bool will_addition_error(signed_integer_tag, T a, T b)
     {
         return b > T(0) ? a > std::numeric_limits<T>::max() - b
                         : a < std::numeric_limits<T>::min() - b;
     }
     template <typename T>
-    constexpr bool will_addition_error(unsigned_integer_tag, const T& a, const T& b)
+    constexpr bool will_addition_error(unsigned_integer_tag, T a, T b)
     {
         return std::numeric_limits<T>::max() - b < a;
     }
 
     template <typename T>
-    constexpr bool will_subtraction_error(signed_integer_tag, const T& a, const T& b)
+    constexpr bool will_subtraction_error(signed_integer_tag, T a, T b)
     {
         return b > T(0) ? a < std::numeric_limits<T>::min() + b
                         : a > std::numeric_limits<T>::max() + b;
     }
     template <typename T>
-    constexpr bool will_subtraction_error(unsigned_integer_tag, const T& a, const T& b)
+    constexpr bool will_subtraction_error(unsigned_integer_tag, T a, T b)
     {
         return a < b;
     }
 
     template <typename T>
-    constexpr bool will_multiplication_error(signed_integer_tag, const T& a, const T& b)
+    constexpr bool will_multiplication_error(signed_integer_tag, T a, T b)
     {
         return a > T(0) ? (b > T(0) ? a > std::numeric_limits<T>::max() / b : // a, b > 0
                                b < std::numeric_limits<T>::min() / a)
@@ -99,29 +99,29 @@ namespace detail
                         a != T(0) && b < std::numeric_limits<T>::max() / a); // a, b <= 0
     }
     template <typename T>
-    constexpr bool will_multiplication_error(unsigned_integer_tag, const T& a, const T& b)
+    constexpr bool will_multiplication_error(unsigned_integer_tag, T a, T b)
     {
         return b != T(0) && a > std::numeric_limits<T>::max() / b;
     }
 
     template <typename T>
-    constexpr bool will_division_error(signed_integer_tag, const T& a, const T& b)
+    constexpr bool will_division_error(signed_integer_tag, T a, T b)
     {
         return b == T(0) || (b == T(-1) && a == std::numeric_limits<T>::min());
     }
     template <typename T>
-    constexpr bool will_division_error(unsigned_integer_tag, const T&, const T& b)
+    constexpr bool will_division_error(unsigned_integer_tag, T, T b)
     {
         return b == T(0);
     }
 
     template <typename T>
-    constexpr bool will_modulo_error(signed_integer_tag, const T&, const T& b)
+    constexpr bool will_modulo_error(signed_integer_tag, T, T b)
     {
         return b == T(0);
     }
     template <typename T>
-    constexpr bool will_modulo_error(unsigned_integer_tag, const T&, const T& b)
+    constexpr bool will_modulo_error(unsigned_integer_tag, T, T b)
     {
         return b == T(0);
     }
@@ -134,7 +134,7 @@ class undefined_behavior_arithmetic
 {
 public:
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_addition(const T& a, const T& b) noexcept
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_addition(T a, T b) noexcept
     {
         return detail::will_addition_error(detail::arithmetic_tag_for<T>{}, a, b)
                    ? DEBUG_UNREACHABLE(detail::precondition_error_handler{},
@@ -143,7 +143,7 @@ public:
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_subtraction(const T& a, const T& b) noexcept
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_subtraction(T a, T b) noexcept
     {
         return detail::will_subtraction_error(detail::arithmetic_tag_for<T>{}, a, b)
                    ? DEBUG_UNREACHABLE(detail::precondition_error_handler{},
@@ -152,7 +152,7 @@ public:
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_multiplication(const T& a, const T& b) noexcept
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_multiplication(T a, T b) noexcept
     {
         return detail::will_multiplication_error(detail::arithmetic_tag_for<T>{}, a, b)
                    ? DEBUG_UNREACHABLE(detail::precondition_error_handler{},
@@ -161,7 +161,7 @@ public:
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_division(const T& a, const T& b) noexcept
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_division(T a, T b) noexcept
     {
         return detail::will_division_error(detail::arithmetic_tag_for<T>{}, a, b)
                    ? DEBUG_UNREACHABLE(detail::precondition_error_handler{},
@@ -170,7 +170,7 @@ public:
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_modulo(const T& a, const T& b) noexcept
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_modulo(T a, T b) noexcept
     {
         return detail::will_modulo_error(detail::arithmetic_tag_for<T>{}, a, b)
                    ? DEBUG_UNREACHABLE(detail::precondition_error_handler{}, "modulo by zero")
@@ -197,7 +197,7 @@ public:
     };
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_addition(const T& a, const T& b)
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_addition(T a, T b)
     {
         return detail::will_addition_error(detail::arithmetic_tag_for<T>{}, a, b)
                ? TYPE_SAFE_THROW(error("addition will result in overflow")),
@@ -205,7 +205,7 @@ public:
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_subtraction(const T& a, const T& b)
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_subtraction(T a, T b)
     {
         return detail::will_subtraction_error(detail::arithmetic_tag_for<T>{}, a, b)
                ? TYPE_SAFE_THROW(error("subtraction will result in underflow")),
@@ -213,7 +213,7 @@ public:
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_multiplication(const T& a, const T& b)
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_multiplication(T a, T b)
     {
         return detail::will_multiplication_error(detail::arithmetic_tag_for<T>{}, a, b)
                ? TYPE_SAFE_THROW(error("multiplication will result in overflow")),
@@ -221,7 +221,7 @@ public:
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_division(const T& a, const T& b)
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_division(T a, T b)
     {
         return detail::will_division_error(detail::arithmetic_tag_for<T>{}, a, b)
                ? TYPE_SAFE_THROW(error("division by zero/overflow")),
@@ -229,7 +229,7 @@ public:
     }
 
     template <typename T>
-    TYPE_SAFE_FORCE_INLINE static constexpr T do_modulo(const T& a, const T& b)
+    TYPE_SAFE_FORCE_INLINE static constexpr T do_modulo(T a, T b)
     {
         return detail::will_modulo_error(detail::arithmetic_tag_for<T>{}, a, b)
                ? TYPE_SAFE_THROW(error("modulo by zero")),

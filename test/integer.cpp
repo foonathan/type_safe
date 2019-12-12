@@ -90,6 +90,10 @@ TEST_CASE("integer")
         normal += 5;
         REQUIRE(static_cast<int>(wrapper) == normal);
 
+        wrapper += short(5);
+        normal += short(5);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
         wrapper = wrapper + (-23);
         normal  = normal + (-23);
         REQUIRE(static_cast<int>(wrapper) == normal);
@@ -110,6 +114,10 @@ TEST_CASE("integer")
 
         wrapper -= 5;
         normal -= 5;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper -= short(5);
+        normal -= short(5);
         REQUIRE(static_cast<int>(wrapper) == normal);
 
         wrapper = wrapper - (-23);
@@ -134,6 +142,10 @@ TEST_CASE("integer")
         normal *= 5;
         REQUIRE(static_cast<int>(wrapper) == normal);
 
+        wrapper *= short(5);
+        normal *= short(5);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
         wrapper = wrapper * (-23);
         normal  = normal * (-23);
         REQUIRE(static_cast<int>(wrapper) == normal);
@@ -148,12 +160,16 @@ TEST_CASE("integer")
     }
     SECTION("division")
     {
-        int_t wrapper(23 * 5);
-        int   normal(23 * 5);
+        int_t wrapper(23 * 25);
+        int   normal(23 * 25);
         REQUIRE(static_cast<int>(wrapper) == normal);
 
         wrapper /= 5;
         normal /= 5;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper /= short(5);
+        normal /= short(5);
         REQUIRE(static_cast<int>(wrapper) == normal);
 
         wrapper = wrapper / (-23);
@@ -176,6 +192,10 @@ TEST_CASE("integer")
 
         wrapper %= 5;
         normal %= 5;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper %= short(5);
+        normal %= short(5);
         REQUIRE(static_cast<int>(wrapper) == normal);
 
         wrapper = wrapper % (-23);
