@@ -237,7 +237,8 @@ public:
     }
 };
 
-#if defined TYPE_SAFE_ARITHMETIC_UB && (TYPE_SAFE_ARITHMETIC_UB == 1)
+#if defined TYPE_SAFE_ARITHMETIC_UB
+#    if (TYPE_SAFE_ARITHMETIC_UB == 1)
 /// The default `ArithmeticPolicy`.
 ///
 /// It depends on the [TYPE_SAFE_ARITHMETIC_UB]() and [TYPE_SAFE_ARITHMETIC_CHECKED]()
@@ -246,8 +247,11 @@ public:
 /// \exclude target
 /// \module types
 using arithmetic_policy_default = undefined_behavior_arithmetic;
-#elif defined TYPE_SAFE_ARITHMETIC_CHECKED && (TYPE_SAFE_ARITHMETIC_CHECKED == 1)
+#    endif
+#elif defined TYPE_SAFE_ARITHMETIC_CHECKED
+#    if (TYPE_SAFE_ARITHMETIC_CHECKED == 1)
 using arithmetic_policy_default = checked_arithmetic;
+#    endif
 #else
 using arithmetic_policy_default = default_arithmetic;
 #endif
