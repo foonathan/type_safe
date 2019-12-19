@@ -42,7 +42,7 @@
 /// [ts::default_arithmetic](). Mutually exclusive with [TYPE_SAFE_ARITHMETIC_CHECKED]().
 ///
 /// It is [ts::undefined_behavior_arithmetic]() by default.
-#    if (TYPE_SAFE_ARITHMETIC_CHECKED == 0)
+#    if ! TYPE_SAFE_ARITHMETIC_CHECKED
 #        define TYPE_SAFE_ARITHMETIC_UB 1
 #    endif
 #endif
