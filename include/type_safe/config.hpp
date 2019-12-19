@@ -31,10 +31,18 @@
 
 #ifndef TYPE_SAFE_ARITHMETIC_UB
 /// Controls whether [ts::arithmetic_policy_default]() is [ts::undefined_behavior_arithmetic]() or
-/// [ts::default_arithmetic]().
+/// [ts::default_arithmetic](). Mutually exclusive with [TYPE_SAFE_ARITHMETIC_CHECKED]().
 ///
 /// It is [ts::undefined_behavior_arithmetic]() by default.
 #    define TYPE_SAFE_ARITHMETIC_UB 1
+#endif
+
+#ifndef TYPE_SAFE_ARITHMETIC_CHECKED
+/// Controls whether [ts::arithmetic_policy_default]() is [ts::undefined_behavior_arithmetic]() or
+/// [ts::checked_arithmetic](). Mutually exclusive with [TYPE_SAFE_ARITHMETIC_UB]().
+///
+/// It is [ts::undefined_behavior_arithmetic]() by default.
+#    define TYPE_SAFE_ARITHMETIC_CHECKED 0
 #endif
 
 #ifndef TYPE_SAFE_DELETE_FUNCTIONS

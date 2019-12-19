@@ -74,7 +74,10 @@ Behavior can be customized with the following macros:
 
 * `TYPE_SAFE_ENABLE_ASSERTIONS` (default is `1`): whether or not assertions are enabled in this library
 * `TYPE_SAFE_ENABLE_WRAPPER` (default is `1`): whether or not the typedefs in `type_safe/types.hpp` use the wrapper classes
-* `TYPE_SAFE_ARITHMETIC_UB` (default is `1`): whether under/overflow in the better integer types is UB.
+* `TYPE_SAFE_ARITHMETIC_UB` (default is `1`): whether under/overflow in the better integer types is UB
+  (mutually exlusive with `TYPE_SAFE_ARITHMETIC_CHECKED`)
+* `TYPE_SAFE_ARITHMETIC_CHECKED` (default is `0`): whether under/overflow in the better integer types is checked
+  (mutually exlusive with `TYPE_SAFE_ARITHMETIC_UB`)
 
 If you're using CMake there is the target `type_safe` available after you've called `add_subdirectory(path/to/type_safe)`.
 Simply link this target to your target and it will setup everything automagically.

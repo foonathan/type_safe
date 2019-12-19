@@ -237,14 +237,17 @@ public:
     }
 };
 
-#if TYPE_SAFE_ARITHMETIC_UB
+#if defined TYPE_SAFE_ARITHMETIC_UB
 /// The default `ArithmeticPolicy`.
 ///
-/// It depends on the [TYPE_SAFE_ARITHMETIC_UB]() macro,
-/// and is either [ts::undefined_behavior_arithmetic]() or [ts::default_arithmetic]().
+/// It depends on the [TYPE_SAFE_ARITHMETIC_UB]() and [TYPE_SAFE_ARITHMETIC_CHECKED]()
+/// macros and is either [ts::undefined_behavior_arithmetic](),
+/// [ts::checked_arithmetic]() or [ts::default_arithmetic]().
 /// \exclude target
 /// \module types
 using arithmetic_policy_default = undefined_behavior_arithmetic;
+#elif defined TYPE_SAFE_ARITHMETIC_CHECKED
+using arithmetic_policy_default = checked_arithmetic;
 #else
 using arithmetic_policy_default = default_arithmetic;
 #endif

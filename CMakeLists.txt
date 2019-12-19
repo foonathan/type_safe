@@ -43,6 +43,13 @@ else()
     set(_type_safe_arithmetic_ub 0)
 endif()
 
+option(TYPE_SAFE_ARITHMETIC_CHECKED "whether or not the checked_arithmetic policy is used" OFF)
+if(${TYPE_SAFE_ARITHMETIC_CHECKED})
+    set(_type_safe_arithmetic_checked 1)
+else()
+    set(_type_safe_arithmetic_checked 0)
+endif()
+
 # interface target
 set(detail_header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/type_safe/detail/aligned_union.hpp
@@ -88,7 +95,8 @@ target_compile_definitions(type_safe INTERFACE
                                      TYPE_SAFE_ENABLE_ASSERTIONS=${_type_safe_enable_assertions}
                                      TYPE_SAFE_ENABLE_PRECONDITION_CHECKS=${_type_safe_enable_precondition_checks}
                                      TYPE_SAFE_ENABLE_WRAPPER=${_type_safe_enable_wrapper}
-                                     TYPE_SAFE_ARITHMETIC_UB=${_type_safe_arithmetic_ub})
+                                     TYPE_SAFE_ARITHMETIC_UB=${_type_safe_arithmetic_ub}
+                                     TYPE_SAFE_ARITHMETIC_CHECKED=${_type_safe_arithmetic_checked})
 target_link_libraries(type_safe INTERFACE debug_assert)
 
 if(MSVC)
