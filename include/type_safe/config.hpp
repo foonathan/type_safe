@@ -34,7 +34,9 @@
 /// [ts::default_arithmetic](). Mutually exclusive with [TYPE_SAFE_ARITHMETIC_CHECKED]().
 ///
 /// It is [ts::undefined_behavior_arithmetic]() by default.
-#    define TYPE_SAFE_ARITHMETIC_UB 1
+#    ifndef TYPE_SAFE_ARITHMETIC_CHECKED
+#        define TYPE_SAFE_ARITHMETIC_UB 1
+#    endif
 #endif
 
 #ifndef TYPE_SAFE_ARITHMETIC_CHECKED
