@@ -219,7 +219,7 @@ namespace strong_typedef_op
         constexpr typename std::enable_if<!is_strong_typedef<T>::value, T&&>::type
             forward_or_underlying(T&& type) noexcept
         {
-            return forward<T>(type);
+            return detail::forward<T>(type);
         }
     } // namespace detail
 
