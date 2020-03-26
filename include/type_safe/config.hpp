@@ -29,12 +29,12 @@
 #    define TYPE_SAFE_ENABLE_WRAPPER 1
 #endif
 
-#ifndef TYPE_SAFE_ARITHMETIC_UB
-/// Controls whether [ts::arithmetic_policy_default]() is [ts::undefined_behavior_arithmetic]() or
-/// [ts::default_arithmetic]().
+#ifndef TYPE_SAFE_ARITHMETIC_POLICY
+/// Controls whether [ts::arithmetic_policy_default]() is [ts::undefined_behavior_arithmetic](),
+/// [ts::checked_arithmetic](), or [ts::default_arithmetic]().
 ///
 /// It is [ts::undefined_behavior_arithmetic]() by default.
-#    define TYPE_SAFE_ARITHMETIC_UB 1
+#    define TYPE_SAFE_ARITHMETIC_POLICY 1
 #endif
 
 #ifndef TYPE_SAFE_DELETE_FUNCTIONS

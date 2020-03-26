@@ -36,11 +36,22 @@ else()
     set(_type_safe_enable_wrapper 0)
 endif()
 
-option(TYPE_SAFE_ARITHMETIC_UB "whether or not the undefined_behavior_arithmetic policy is used" ON)
-if(${TYPE_SAFE_ARITHMETIC_UB})
-    set(_type_safe_arithmetic_ub 1)
+set(TYPE_SAFE_ARITHMETIC_POLICY "ub" CACHE STRING "which policy (ub/checked/default) is going to be used")
+option(TYPE_SAFE_ARITHMETIC_UB "deprecated" ON)
+
+if(NOT ${TYPE_SAFE_ARITHMETIC_UB})
+    set(_type_safe_arithmetic_policy 0)
+    message(DEPRECATION "option TYPE_SAFE_ARITHMETIC_UB is deprecated, use TYPE_SAFE_ARITHMETIC_POLICY instead")
+    message(STATUS "arithmetic_policy_default is default_arithmetic")
+elseif(${TYPE_SAFE_ARITHMETIC_POLICY} STREQUAL "ub")
+    set(_type_safe_arithmetic_policy 1)
+    message(STATUS "arithmetic_policy_default is undefined_behavior_arithmetic")
+elseif(${TYPE_SAFE_ARITHMETIC_POLICY} STREQUAL "checked")
+    set(_type_safe_arithmetic_policy 2)
+    message(STATUS "arithmetic_policy_default is checked_arithmetic")
 else()
-    set(_type_safe_arithmetic_ub 0)
+    set(_type_safe_arithmetic_policy 0)
+    message(STATUS "arithmetic_policy_default is default_arithmetic")
 endif()
 
 # interface target
@@ -88,7 +99,7 @@ target_compile_definitions(type_safe INTERFACE
                                      TYPE_SAFE_ENABLE_ASSERTIONS=${_type_safe_enable_assertions}
                                      TYPE_SAFE_ENABLE_PRECONDITION_CHECKS=${_type_safe_enable_precondition_checks}
                                      TYPE_SAFE_ENABLE_WRAPPER=${_type_safe_enable_wrapper}
-                                     TYPE_SAFE_ARITHMETIC_UB=${_type_safe_arithmetic_ub})
+                                     TYPE_SAFE_ARITHMETIC_POLICY=${_type_safe_arithmetic_policy})
 target_link_libraries(type_safe INTERFACE debug_assert)
 
 if(MSVC)
