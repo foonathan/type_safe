@@ -194,7 +194,7 @@ public:
     {
         static_assert(std::is_signed<integer_type>::value,
                       "cannot call unary minus on unsigned integer");
-        return -value_;
+        return integer(Policy::template do_multiplication(value_, integer_type(-1)));
     }
 
     /// \effects Increments the integer by one.
