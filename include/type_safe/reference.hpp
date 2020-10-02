@@ -567,9 +567,9 @@ public:
     /// \param 1
     /// \exclude
     template <typename Return2, typename... Args2>
-    function_ref(Return2 (*fptr)(Args2...),
-                 typename detail::enable_matching_function<Return2(*)(Args2...), Return, Args...>::type
-                 = 0)
+    function_ref(
+        Return2 (*fptr)(Args2...),
+        typename detail::enable_matching_function<Return2 (*)(Args2...), Return, Args...>::type = 0)
     : function_ref(detail::matching_function_pointer_tag{}, fptr)
     {}
 
@@ -618,7 +618,7 @@ public:
     template <typename Return2, typename... Args2>
     explicit function_ref(const function_ref<Return2(Args2...)>& other,
                           detail::enable_matching_function<const function_ref<Return2(Args2...)>&,
-                                                           Return2, Args2...> = 0)
+                                                           Return, Args...> = 0)
     : storage_(other.storage_), cb_(other.cb_)
     {}
 
