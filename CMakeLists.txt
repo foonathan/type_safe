@@ -141,7 +141,7 @@ endif()
 # other subdirectories
 # only add if not inside add_subdirectory()
 option(TYPE_SAFE_BUILD_TEST_EXAMPLE "build test and example" OFF)
-if(${TYPE_SAFE_BUILD_TEST_EXAMPLE} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+if(TYPE_SAFE_BUILD_TEST_EXAMPLE)
     enable_testing()
     add_subdirectory(example/)
     add_subdirectory(test/)
