@@ -12,7 +12,7 @@ type_safe provides zero overhead abstractions that use the C++ type system to pr
 > especially when assertions for this library are enabled.
 
 The library features cannot really explained in the scope of this readme,
-I highly suggest that you check out [the first](https://foonathan.github.io/blog/2016/10/11/type-safe.html) and [second blog post](https://foonathan.github.io/blog/2016/10/19/strong-typedefs.html) and the examples.
+I highly suggest that you check out [the first](https://www.foonathan.net/2016/10/type-safe/) and [second blog post](https://www.foonathan.net/2016/10/strong-typedefs/) and the examples.
 
 ## Features
 
