@@ -65,7 +65,7 @@ I highly suggest that you check out [the first](https://www.foonathan.net/2016/1
 
 Header-only, just copy the files in your project.
 You need to add the type_safe `include` directory to your include path as well as make [debug_assert.hpp](https://github.com/foonathan/debug_assert) available.
-The repository is included as `git submodule`, simply run `git submodule update --init` and add `external/debug_assert` to the include path.
+The repository is included.
 You also need to enable C++11.
 
 Behavior can be customized with the following macros:
