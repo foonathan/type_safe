@@ -1,7 +1,7 @@
 # type_safe 
 
 ![Project Status](https://img.shields.io/endpoint?url=https%3A%2F%2Fwww.jonathanmueller.dev%2Fproject%2Ftype_safe%2Findex.json)
-[ ![Download](https://api.bintray.com/packages/manu343726/conan-packages/type_safe%3AManu343726/images/download.svg) ](https://bintray.com/manu343726/conan-packages/type_safe%3AManu343726/_latestVersion)
+![Build Status](https://github.com/foonathan/type_safe/workflows/Main%20CI/badge.svg)
 
 type_safe provides zero overhead abstractions that use the C++ type system to prevent bugs.
 
