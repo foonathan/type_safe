@@ -486,16 +486,6 @@ namespace detail
                                        || std::is_convertible<Returned, Required>::value>
     {};
 
-    // can't use template alias, GCC 4.8 gets confused
-    template <typename Func, typename Return, typename... Args>
-    struct enable_matching_function
-    {
-        using type = typename std::enable_if<
-            compatible_return_type<decltype(std::declval<Func&>()(std::declval<Args>()...)),
-                                   Return>::value,
-            int>::type;
-    };
-
     struct matching_function_pointer_tag
     {};
     struct matching_functor_tag
@@ -507,15 +497,17 @@ namespace detail
     struct get_callable_tag
     {
         // use unary + to convert to function pointer
-        template <typename T>
+        template <typename T,
+                  typename Result = decltype((+std::declval<T&>())(std::declval<Args>()...))>
         static matching_function_pointer_tag test(
             int, T& obj,
-            typename enable_matching_function<decltype(+obj), Return, Args...>::type = 0);
+            typename std::enable_if<compatible_return_type<Result, Return>::value, int>::type = 0);
 
-        template <typename T>
-        static matching_functor_tag test(short, T& obj,
-                                         typename enable_matching_function<T, Return, Args...>::type
-                                         = 0);
+        template <typename T,
+                  typename Result = decltype(std::declval<T&>()(std::declval<Args>()...))>
+        static matching_functor_tag test(
+            short, T& obj,
+            typename std::enable_if<compatible_return_type<Result, Return>::value, int>::type = 0);
 
         static invalid_functor_tag test(...);
 
@@ -569,7 +561,8 @@ public:
     template <typename Return2, typename... Args2>
     function_ref(
         Return2 (*fptr)(Args2...),
-        typename detail::enable_matching_function<Return2 (*)(Args2...), Return, Args...>::type = 0)
+        typename std::enable_if<detail::compatible_return_type<Return2, Return>::value, int>::type
+        = 0)
     : function_ref(detail::matching_function_pointer_tag{}, fptr)
     {}
 
@@ -616,9 +609,10 @@ public:
     /// char*`, calling this will call the function taking `std::string`, converting `T ->
     /// std::string`, even though such a conversion would be ill-formed otherwise. \param 1 \exclude
     template <typename Return2, typename... Args2>
-    explicit function_ref(const function_ref<Return2(Args2...)>& other,
-                          detail::enable_matching_function<const function_ref<Return2(Args2...)>&,
-                                                           Return, Args...> = 0)
+    explicit function_ref(
+        const function_ref<Return2(Args2...)>& other,
+        typename std::enable_if<detail::compatible_return_type<Return2, Return>::value, int>::type
+        = 0)
     : storage_(other.storage_), cb_(other.cb_)
     {}
 
