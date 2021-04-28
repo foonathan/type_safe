@@ -230,8 +230,15 @@ namespace detail
     regular_void debug_assertion_failed(const source_location& loc, const char* expression,
                                         Args&&... args)
     {
+#if defined(_MSC_VER)
+#    pragma warning(push)
+#    pragma warning(disable : 4702)
+#endif
         return Handler::handle(loc, expression, detail::forward<Args>(args)...), std::abort(),
                regular_void();
+#if defined(_MSC_VER)
+#    pragma warning(pop)
+#endif
     }
 
     // use enable if instead of tag dispatching
@@ -317,9 +324,9 @@ namespace detail
 /// This should not be necessary, the regular version is optimized away
 /// completely.
 #    define DEBUG_ASSERT(Expr, ...)                                                                \
-        static_cast<void>(debug_assert::detail::do_assert(                                         \
-            [&]() noexcept { return Expr; }, DEBUG_ASSERT_CUR_SOURCE_LOCATION, #Expr,              \
-            __VA_ARGS__))
+        static_cast<void>(debug_assert::detail::do_assert([&]() noexcept { return Expr; },         \
+                                                          DEBUG_ASSERT_CUR_SOURCE_LOCATION, #Expr, \
+                                                          __VA_ARGS__))
 
 /// Marks a branch as unreachable.
 ///
