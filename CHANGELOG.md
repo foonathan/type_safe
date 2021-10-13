@@ -1,3 +1,9 @@
+## Version 0.2.2
+
+* Replace `TYPE_SAFE_ARITHMETIC_UB` CMake option by `TYPE_SAFE_ARITHMETIC_POLICY` to enable checked arithmetic by default (#106)
+* Be less strict in the signed/unsigned conversion of `integer` (#104)
+* Various bugfixes (#97, #108, #111, #115)
+
 ## Version 0.2.1
 
 This release is mainly bugfixes:
