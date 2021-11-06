@@ -9,7 +9,7 @@ type_safe provides zero overhead abstractions that use the C++ type system to pr
 > but may lead to slightly lower runtime in debug mode,
 > especially when assertions for this library are enabled.
 
-The library features cannot really explained in the scope of this readme,
+The library features cannot really be explained in the scope of this readme,
 I highly suggest that you check out [the first](https://www.foonathan.net/2016/10/type-safe/) and [second blog post](https://www.foonathan.net/2016/10/strong-typedefs/) and the examples.
 
 > |[![](https://www.jonathanmueller.dev/embarcadero-logo.png)](https://www.embarcadero.com/de/products/cbuilder/starter) | Sponsored by [Embarcadero C++Builder](https://www.embarcadero.com/de/products/cbuilder/starter). |
