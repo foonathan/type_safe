@@ -91,7 +91,6 @@ public:
         swap(static_cast<T&>(a), static_cast<T&>(b));
     }
 
-private:
     T value_;
 };
 
