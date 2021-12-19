@@ -53,11 +53,11 @@ jobs:
       fail-fast: false
       matrix:
         xcode:
-            - '10'
             - '11'
             - '12'
+            - '13'
 
-    runs-on: macos-latest
+    runs-on: macos-11
 
     steps:
     - uses: actions/checkout@v2
@@ -85,14 +85,13 @@ jobs:
     - name: Create Build Environment
       run: cmake -E make_directory build
 
-    - name: Configure and build
-      uses: lukka/run-cmake@main
-      with:
-       cmakeGenerator: 'Ninja'
-       cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
-       cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-       useVcpkgToolchainFile: true
-       buildDirectory: 'build/'
+    - name: Configure
+      shell: bash
+      working-directory: build/
+      run: cmake $GITHUB_WORKSPACE -G"Visual Studio 16 2019"
+    - name: Build
+      working-directory: build/
+      run: cmake --build . --config Debug -j 2
     - name: Test
       working-directory: build/
       run: ctest -C Debug --output-on-failure
