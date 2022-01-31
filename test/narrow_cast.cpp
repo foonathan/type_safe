@@ -17,6 +17,9 @@ TEST_CASE("narrow_cast<integer>")
 
     integer<short> c = narrow_cast<integer<short>>(a);
     REQUIRE(static_cast<short>(c) == 4);
+
+    integer<short> d = narrow_cast<integer<short>>(42);
+    REQUIRE(static_cast<short>(d) == 42);
 }
 
 TEST_CASE("narrow_cast<floating_point>")
