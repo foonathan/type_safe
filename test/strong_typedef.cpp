@@ -16,7 +16,7 @@ using namespace type_safe;
     {};                                                                                            \
     template <typename Arg1, typename Arg2>                                                        \
     struct CheckerName<Arg1, Arg2,                                                                 \
-                       strong_typedef_op::detail::void_t<decltype(static_cast<Arg1>(               \
+                       detail::void_t<decltype(static_cast<Arg1>(                                  \
                            std::declval<Arg1>()) Op static_cast<Arg2>(std::declval<Arg2>()))>>     \
     : std::true_type                                                                               \
     {};
@@ -603,5 +603,15 @@ TEST_CASE("strong_typedef")
         REQUIRE(!a);
         type b(foo{true});
         REQUIRE(b);
+    }
+    SECTION("is_strong_typedef")
+    {
+        struct strong : strong_typedef<strong, int>
+        {
+            using strong_typedef::strong_typedef;
+        };
+
+        REQUIRE(is_strong_typedef<strong>::value);
+        REQUIRE(!is_strong_typedef<int>::value);
     }
 }

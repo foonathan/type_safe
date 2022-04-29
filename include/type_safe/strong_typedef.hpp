@@ -105,6 +105,14 @@ namespace detail
 {
     template <class Tag, typename T>
     T underlying_type(strong_typedef<Tag, T>);
+
+    template <typename... Ts>
+    struct make_void
+    {
+        typedef void type;
+    };
+    template <typename... Ts>
+    using void_t = typename make_void<Ts...>::type;
 } // namespace detail
 
 /// The underlying type of the [ts::strong_typedef]().
@@ -112,6 +120,19 @@ namespace detail
 template <class StrongTypedef>
 using underlying_type
     = decltype(detail::underlying_type(std::declval<typename std::decay<StrongTypedef>::type>()));
+
+
+/// \group is_strong_typedef
+/// Whether a type `T` is a [ts::strong_type]()
+template <class T, typename = detail::void_t<>>
+struct TYPE_SAFE_MSC_EMPTY_BASES is_strong_typedef : std::false_type
+{};
+
+/// \group is_strong_typedef
+template <class T>
+struct is_strong_typedef<T, detail::void_t<decltype(detail::underlying_type(std::declval<T>()))>>
+    : std::true_type
+{};
 
 /// Accesses the underlying value.
 /// \returns A reference to the underlying value.
@@ -194,24 +215,6 @@ namespace strong_typedef_op
                           "Can not forward an rvalue as an lvalue.");
             return static_cast<T&&>(t);
         }
-
-        template <typename... Ts>
-        struct make_void
-        {
-            typedef void type;
-        };
-        template <typename... Ts>
-        using void_t = typename make_void<Ts...>::type;
-
-        template <class T, typename = void_t<>>
-        struct TYPE_SAFE_MSC_EMPTY_BASES is_strong_typedef : std::false_type
-        {};
-
-        template <class T>
-        struct is_strong_typedef<
-            T, void_t<decltype(type_safe::detail::underlying_type(std::declval<T>()))>>
-        : std::true_type
-        {};
 
         template <class StrongTypedef,
                   typename = typename std::enable_if<is_strong_typedef<StrongTypedef>::value>::type>
