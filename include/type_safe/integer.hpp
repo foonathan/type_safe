@@ -269,7 +269,6 @@ public:
     {
         value_ = Policy::template do_subtraction<integer_type>(value_, static_cast<T>(other));
         return *this;
-        return *this;
     }
     TYPE_SAFE_DETAIL_MAKE_OP(-=)
 
