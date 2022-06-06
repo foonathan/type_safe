@@ -6,6 +6,7 @@
 
 #include <catch.hpp>
 
+#include <climits>
 #include <sstream>
 
 using namespace type_safe;
@@ -42,6 +43,7 @@ static_assert(!std::is_assignable<integer<unsigned>, int>::value, "");
 TEST_CASE("integer")
 {
     using int_t = integer<int>;
+    using uint_t = integer<unsigned int>;
 
     SECTION("constructor")
     {
@@ -212,77 +214,228 @@ TEST_CASE("integer")
     }
     SECTION("comparison")
     {
+        unsigned int u32_max = std::numeric_limits<unsigned int>::max();
+
         // ==
         REQUIRE(bool(int_t(4) == int_t(4)));
         REQUIRE(!(int_t(5) == int_t(4)));
+        REQUIRE(bool(uint_t(4u) == int_t(4)));
+        REQUIRE(!(uint_t(5u) == int_t(4)));
+        REQUIRE(!(uint_t(u32_max) == int_t(-1)));
+        REQUIRE(bool(int_t(4) == uint_t(4u)));
+        REQUIRE(!(int_t(5) == uint_t(4u)));
+        REQUIRE(!(int_t(-1) == uint_t(u32_max)));
 
         REQUIRE(bool(4 == int_t(4)));
         REQUIRE(!(5 == int_t(4)));
+        REQUIRE(bool(4u == int_t(4)));
+        REQUIRE(!(5u == int_t(4)));
+        REQUIRE(!(u32_max == int_t(-1)));
+        REQUIRE(bool(4 == uint_t(4u)));
+        REQUIRE(!(5 == uint_t(4u)));
+        REQUIRE(!(-1 == uint_t(u32_max)));
 
         REQUIRE(bool(int_t(4) == 4));
         REQUIRE(!(int_t(5) == 4));
+        REQUIRE(bool(int_t(4) == 4u));
+        REQUIRE(!(int_t(5) == 4u));
+        REQUIRE(!(int_t(-1) == u32_max));
+        REQUIRE(bool(uint_t(4u) == 4));
+        REQUIRE(!(uint_t(5u) == 4));
+        REQUIRE(!(uint_t(u32_max) == -1));
 
         // !=
         REQUIRE(bool(int_t(5) != int_t(4)));
         REQUIRE(!(int_t(4) != int_t(4)));
+        REQUIRE(bool(uint_t(5u) != int_t(4)));
+        REQUIRE(!(uint_t(4u) != int_t(4)));
+        REQUIRE(bool(uint_t(u32_max) != int_t(-1)));
+        REQUIRE(bool(int_t(5) != uint_t(4u)));
+        REQUIRE(!(int_t(4) != uint_t(4u)));
+        REQUIRE(bool(int_t(-1) != uint_t(u32_max)));
 
         REQUIRE(bool(5 != int_t(4)));
         REQUIRE(!(4 != int_t(4)));
+        REQUIRE(bool(5u != int_t(4)));
+        REQUIRE(!(4u != int_t(4)));
+        REQUIRE(bool(u32_max != int_t(-1)));
+        REQUIRE(bool(5 != uint_t(4u)));
+        REQUIRE(!(4 != uint_t(4u)));
+        REQUIRE(bool(-1 != uint_t(u32_max)));
 
         REQUIRE(bool(int_t(5) != 4));
         REQUIRE(!(int_t(4) != 4));
+        REQUIRE(bool(int_t(5) != 4u));
+        REQUIRE(!(int_t(4) != 4u));
+        REQUIRE(bool(int_t(-1) != u32_max));
+        REQUIRE(bool(uint_t(5u) != 4));
+        REQUIRE(!(uint_t(4u) != 4));
+        REQUIRE(bool(uint_t(u32_max) != -1));
 
         // <
         REQUIRE(bool(int_t(4) < int_t(5)));
         REQUIRE(!(int_t(5) < int_t(4)));
         REQUIRE(!(int_t(4) < int_t(4)));
+        REQUIRE(bool(uint_t(4u) < int_t(5)));
+        REQUIRE(!bool(uint_t(4u) < int_t(-5)));
+        REQUIRE(!(uint_t(5u) < int_t(4)));
+        REQUIRE(!(uint_t(4u) < int_t(4)));
+        REQUIRE(bool(int_t(4) < uint_t(5u)));
+        REQUIRE(bool(int_t(-4) < uint_t(5u)));
+        REQUIRE(!(int_t(5) < uint_t(4u)));
+        REQUIRE(!(int_t(4) < uint_t(4u)));
 
         REQUIRE(bool(4 < int_t(5)));
         REQUIRE(!(5 < int_t(4)));
         REQUIRE(!(4 < int_t(4)));
+        REQUIRE(bool(4u < int_t(5)));
+        REQUIRE(!bool(4u < int_t(-5)));
+        REQUIRE(!(5u < int_t(4)));
+        REQUIRE(!(4u < int_t(4)));
+        REQUIRE(bool(4 < uint_t(5u)));
+        REQUIRE(bool(-4 < uint_t(5u)));
+        REQUIRE(!(5 < uint_t(4u)));
+        REQUIRE(!(4 < uint_t(4u)));
 
         REQUIRE(bool(int_t(4) < 5));
         REQUIRE(!(int_t(5) < 4));
         REQUIRE(!(int_t(4) < 4));
+        REQUIRE(bool(int_t(4) < 5u));
+        REQUIRE(!(int_t(5) < 4u));
+        REQUIRE((int_t(-5) < 4u));
+        REQUIRE(!(int_t(4) < 4u));
+        REQUIRE(bool(uint_t(4u) < 5));
+        REQUIRE(!bool(uint_t(4u) < -5));
+        REQUIRE(!(uint_t(5u) < 4));
+        REQUIRE(!(uint_t(4u) < 4));
 
         // <=
         REQUIRE(bool(int_t(4) <= int_t(5)));
         REQUIRE(!(int_t(5) <= int_t(4)));
         REQUIRE(bool(int_t(4) <= int_t(4)));
+        REQUIRE(bool(uint_t(4u) <= int_t(5)));
+        REQUIRE(!(uint_t(4u) <= int_t(-5)));
+        REQUIRE(!(uint_t(5u) <= int_t(4)));
+        REQUIRE(bool(uint_t(4u) <= int_t(4)));
+        REQUIRE(bool(int_t(4) <= uint_t(5u)));
+        REQUIRE(!(int_t(5) <= uint_t(4u)));
+        REQUIRE(bool(int_t(-5) <= uint_t(4u)));
+        REQUIRE(bool(int_t(4) <= uint_t(4u)));
 
         REQUIRE(bool(4 <= int_t(5)));
         REQUIRE(!(5 <= int_t(4)));
         REQUIRE(bool(4 <= int_t(4)));
+        REQUIRE(bool(4u <= int_t(5)));
+        REQUIRE(!(5u <= int_t(4)));
+        REQUIRE(bool(4u <= int_t(4)));
+        REQUIRE(bool(4 <= int_t(5)));
+        REQUIRE(!(5 <= int_t(4)));
+        REQUIRE(bool(4 <= int_t(4)));
+        REQUIRE(!(4 <= int_t(-4)));
+        REQUIRE(bool(4u <= int_t(5)));
+        REQUIRE(!(5u <= int_t(4)));
+        REQUIRE(bool(4u <= int_t(4)));
+        REQUIRE(bool(4 <= uint_t(5u)));
+        REQUIRE(!(5 <= uint_t(4u)));
+        REQUIRE(bool(4 <= uint_t(4u)));
+        REQUIRE(bool(-4 <= uint_t(4u)));
 
         REQUIRE(bool(int_t(4) <= 5));
         REQUIRE(!(int_t(5) <= 4));
         REQUIRE(bool(int_t(4) <= 4));
+        REQUIRE(bool(int_t(-4) <= 4));
+        REQUIRE(bool(int_t(4) <= 5u));
+        REQUIRE(!(int_t(5) <= 4u));
+        REQUIRE(bool(int_t(4) <= 4u));
+        REQUIRE((int_t(4) <= 5));
+        REQUIRE(!(int_t(5) <= 4));
+        REQUIRE(bool(int_t(4) <= 4));
+        REQUIRE(bool(uint_t(4u) <= 5));
+        REQUIRE(!(uint_t(5u) <= 4));
+        REQUIRE(bool(uint_t(4u) <= 4));
+        REQUIRE(!(uint_t(4u) <= -4));
+        REQUIRE(bool(int_t(4) <= 5u));
+        REQUIRE(!(int_t(5) <= 4u));
+        REQUIRE(bool(int_t(4) <= 4u));
+        REQUIRE(bool(int_t(-4) <= 4u));
 
         // >
         REQUIRE(bool(int_t(5) > int_t(4)));
         REQUIRE(!(int_t(4) > int_t(5)));
         REQUIRE(!(int_t(5) > int_t(5)));
+        REQUIRE(bool(uint_t(5u) > int_t(4)));
+        REQUIRE(bool(uint_t(5u) > int_t(-4)));
+        REQUIRE(!(uint_t(4u) > int_t(5)));
+        REQUIRE(!(uint_t(5u) > int_t(5)));
+        REQUIRE(bool(int_t(5) > uint_t(4u)));
+        REQUIRE(!(int_t(-5) > uint_t(4u)));
+        REQUIRE(!(int_t(4) > uint_t(5u)));
+        REQUIRE(!(int_t(5) > uint_t(5u)));
 
         REQUIRE(bool(5 > int_t(4)));
         REQUIRE(!(4 > int_t(5)));
         REQUIRE(!(5 > int_t(5)));
+        REQUIRE(bool(5u > int_t(4)));
+        REQUIRE(!(4u > int_t(5)));
+        REQUIRE(!(5u > int_t(5)));
+        REQUIRE(bool(5u > int_t(4)));
+        REQUIRE(bool(5u > int_t(-4)));
+        REQUIRE(!(4u > int_t(5)));
+        REQUIRE(!(5u > int_t(5)));
+        REQUIRE(bool(5 > uint_t(4u)));
+        REQUIRE(!(-5 > uint_t(4u)));
+        REQUIRE(!(4 > uint_t(5u)));
+        REQUIRE(!(5 > uint_t(5u)));
 
         REQUIRE(bool(int_t(5) > 4));
         REQUIRE(!(int_t(4) > 5));
         REQUIRE(!(int_t(5) > 5));
+        REQUIRE(bool(uint_t(5u) > 4));
+        REQUIRE(bool(uint_t(5u) > -4));
+        REQUIRE(!(uint_t(4u) > 5));
+        REQUIRE(!(uint_t(5u) > 5));
+        REQUIRE(bool(int_t(5) > 4u));
+        REQUIRE(!(int_t(-5) > 4u));
+        REQUIRE(!(int_t(4) > 5u));
+        REQUIRE(!(int_t(5) > 5u));
 
         // >=
         REQUIRE(bool(int_t(5) >= int_t(4)));
         REQUIRE(!(int_t(4) >= int_t(5)));
         REQUIRE(bool(int_t(5) >= int_t(5)));
+        REQUIRE(bool(uint_t(5u) >= int_t(4)));
+        REQUIRE(!(uint_t(4u) >= int_t(5)));
+        REQUIRE(bool(uint_t(4u) >= int_t(-5)));
+        REQUIRE(bool(uint_t(5u) >= int_t(5)));
+        REQUIRE(bool(int_t(5) >= uint_t(4u)));
+        REQUIRE(!(int_t(4) >= uint_t(5u)));
+        REQUIRE(bool(int_t(5) >= uint_t(5u)));
+        REQUIRE(!(int_t(-5) >= uint_t(5u)));
 
         REQUIRE(bool(5 >= int_t(4)));
         REQUIRE(!(4 >= int_t(5)));
         REQUIRE(bool(5 >= int_t(5)));
+        REQUIRE(bool(5u >= int_t(4)));
+        REQUIRE(!(4u >= int_t(5)));
+        REQUIRE(bool(4u >= int_t(-5)));
+        REQUIRE(bool(5u >= int_t(5)));
+        REQUIRE(bool(5u >= int_t(-5)));
+        REQUIRE(bool(5 >= uint_t(4u)));
+        REQUIRE(!(4 >= uint_t(5u)));
+        REQUIRE(bool(5 >= uint_t(5u)));
+        REQUIRE(!(-5 >= uint_t(5u)));
 
         REQUIRE(bool(int_t(5) >= 4));
         REQUIRE(!(int_t(4) >= 5));
         REQUIRE(bool(int_t(5) >= 5));
+        REQUIRE(bool(uint_t(5u) >= 4));
+        REQUIRE(!(uint_t(4u) >= 5));
+        REQUIRE(bool(uint_t(4u) >= -5));
+        REQUIRE(bool(uint_t(5u) >= 5));
+        REQUIRE(bool(int_t(5) >= 4u));
+        REQUIRE(!(int_t(-5) >= 4u));
+        REQUIRE(!(int_t(4) >= 5u));
+        REQUIRE(bool(int_t(5) >= 5u));
     }
     SECTION("make_(un)signed")
     {
