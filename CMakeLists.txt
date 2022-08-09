@@ -110,11 +110,14 @@ endif()
 include( CMakePackageConfigHelpers )
 set(CONFIG_PACKAGE_INSTALL_DIR lib/cmake/type_safe)
 
+set(TYPE_SAFE_CMAKE_SIZEOF_VOID_P ${CMAKE_SIZEOF_VOID_P})
+set(CMAKE_SIZEOF_VOID_P "")
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/type_safe-config-version.cmake
   VERSION 0.2.2
   COMPATIBILITY SameMajorVersion
 )
+set(CMAKE_SIZEOF_VOID_P ${TYPE_SAFE_CMAKE_SIZEOF_VOID_P})
 
 # Install target
 install(DIRECTORY include/type_safe DESTINATION include)

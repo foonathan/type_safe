@@ -68,12 +68,14 @@ set(debug_assert_LIBRARY debug_assert)
 set(debug_assert_LIBRARIES debug_assert)
 ")
 
+set(DEBUG_ASSERT_CMAKE_SIZEOF_VOID_P ${CMAKE_SIZEOF_VOID_P})
+set(CMAKE_SIZEOF_VOID_P "")
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/debug_assert-config-version.cmake
   VERSION 1.3.1
   COMPATIBILITY SameMajorVersion
 )
-
+set(CMAKE_SIZEOF_VOID_P ${DEBUG_ASSERT_CMAKE_SIZEOF_VOID_P})
 
 if(DEBUG_ASSERT_INSTALL)
     # Install target and header
@@ -94,3 +96,4 @@ if(DEBUG_ASSERT_INSTALL)
     DESTINATION
         ${CONFIG_PACKAGE_INSTALL_DIR} )
 endif()
+
