@@ -54,7 +54,7 @@ else()
     message(STATUS "arithmetic_policy_default is default_arithmetic")
 endif()
 
-option(TYPE_SAFE_IMPORT_STD_MODULE "Build using the standard library modules rather than #include" ON)
+option(TYPE_SAFE_IMPORT_STD_MODULE "Build using the standard library modules rather than #include" OFF)
 
 # interface target
 set(detail_header_files
