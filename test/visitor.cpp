@@ -6,7 +6,10 @@
 
 #include <catch.hpp>
 
-using namespace type_safe;
+using type_safe::nullopt_t;
+using type_safe::nullvar_t;
+using type_safe::optional;
+using type_safe::variant;
 
 TEST_CASE("visit optional")
 {

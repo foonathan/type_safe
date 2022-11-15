@@ -8,7 +8,14 @@
 
 #include "debugger_type.hpp"
 
-using namespace type_safe;
+using type_safe::optional;
+using type_safe::object_ref;
+using type_safe::optional_ref;
+using type_safe::optional_xvalue_ref;
+using type_safe::opt_ref;
+using type_safe::opt_cref;
+using type_safe::opt_xref;
+using type_safe::ref;
 
 template <typename A, typename B, typename Value>
 void test_optional_ref_conversion(Value)

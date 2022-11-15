@@ -9,7 +9,10 @@
 
 #include "debugger_type.hpp"
 
-using namespace type_safe;
+using type_safe::optional;
+using type_safe::optional_ref;
+using type_safe::make_optional;
+using type_safe::nullopt;
 
 TEST_CASE("optional")
 {

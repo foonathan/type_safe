@@ -9,7 +9,12 @@
 
 #include "debugger_type.hpp"
 
-using namespace type_safe;
+using type_safe::array_ref;
+using type_safe::function_ref;
+using type_safe::object_ref;
+using type_safe::cref;
+using type_safe::ref;
+using type_safe::xvalue_ref;
 
 template <typename T>
 void check_object_ref(const object_ref<T>& ref, const debugger_type& value)

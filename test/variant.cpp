@@ -8,7 +8,13 @@
 
 #include "debugger_type.hpp"
 
-using namespace type_safe;
+using type_safe::fallback_variant;
+using type_safe::nullvar;
+using type_safe::nullvar_t;
+using type_safe::tagged_union;
+using type_safe::union_type;
+using type_safe::variant;
+using type_safe::variant_type;
 
 // use optional variant to be able to test all functions
 // test policies separately
