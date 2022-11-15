@@ -5,9 +5,13 @@
 #ifndef TYPE_SAFE_OPTIONAL_HPP_INCLUDED
 #define TYPE_SAFE_OPTIONAL_HPP_INCLUDED
 
+#if defined(TYPE_SAFE_IMPORT_STD_MODULE)
+import std;
+#else
 #include <functional>
 #include <new>
 #include <type_traits>
+#endif
 
 #include <type_safe/detail/assert.hpp>
 #include <type_safe/detail/assign_or_construct.hpp>
@@ -250,8 +254,9 @@ public:
     /// \exclude
     template <typename T, typename = typename std::enable_if<!std::is_same<
                               typename std::decay<T>::type, basic_optional<storage>>::value>::type>
-    basic_optional(T&& value,
-                   decltype(std::declval<storage>().create_value(std::forward<T>(value)), 0) = 0)
+    basic_optional(
+        T&& value,
+        decltype(std::declval<storage>().create_value(std::forward<T>(value)), 0) = 0)
     {
         get_storage().create_value(std::forward<T>(value));
     }
