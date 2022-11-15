@@ -6,7 +6,8 @@
 
 #include <catch.hpp>
 
-using namespace type_safe;
+using type_safe::difference_t;
+using type_safe::index_t;
 
 TEST_CASE("index_t")
 {
