@@ -106,9 +106,11 @@ target_link_libraries(type_safe INTERFACE debug_assert)
 
 
 if(TYPE_SAFE_IMPORT_STD_MODULE)
-    # The standard library module is part of C++23 so we set the default, if sub projects override this they may not build
-    set(CMAKE_CXX_STANDARD  23)
     target_compile_definitions(type_safe INTERFACE TYPE_SAFE_IMPORT_STD_MODULE)
+
+    # If a user has set TYPE_SAFE_IMPORT_STD_MODULE to ON this indicates they want the type_safe headers to import std
+    # This is a C++ 23 feature so we require them to use C++ in their build
+    target_compile_features(type_safe INTERFACE cxx_std_23)
 endif()
 
 if(MSVC)
