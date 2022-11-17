@@ -255,7 +255,7 @@ public:
     template <typename T, typename = typename std::enable_if<!std::is_same<
                               typename std::decay<T>::type, basic_optional<storage>>::value>::type>
     basic_optional(T&& value,
-                   decltype(std::declval<storage>().create_value(std::forward<T>(value)), 0) = 0)
+                   decltype(std::declval<storage>().create_value(std::declval<T>()), 0) = 0)
     {
         get_storage().create_value(std::forward<T>(value));
     }
@@ -272,7 +272,7 @@ public:
         = 0>
     explicit basic_optional(
         T&& value,
-        decltype(std::declval<storage>().create_value_explicit(std::forward<T>(value)), 0) = 0)
+        decltype(std::declval<storage>().create_value_explicit(std::declval<T>()), 0) = 0)
     {
         get_storage().create_value_explicit(std::forward<T>(value));
     }
