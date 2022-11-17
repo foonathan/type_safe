@@ -254,9 +254,8 @@ public:
     /// \exclude
     template <typename T, typename = typename std::enable_if<!std::is_same<
                               typename std::decay<T>::type, basic_optional<storage>>::value>::type>
-    basic_optional(
-        T&& value,
-        decltype(std::declval<storage>().create_value(std::forward<T>(value)), 0) = 0)
+    basic_optional(T&& value,
+                   decltype(std::declval<storage>().create_value(std::forward<T>(value)), 0) = 0)
     {
         get_storage().create_value(std::forward<T>(value));
     }
