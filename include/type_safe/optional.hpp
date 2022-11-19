@@ -946,8 +946,7 @@ private:
         return static_cast<const void*>(&storage_);
     }
 
-    using storage_t = typename std::aligned_storage<sizeof(value_type), alignof(value_type)>::type;
-    storage_t storage_;
+    alignas(value_type) std::byte storage_[sizeof(value_type)];
     bool      empty_;
 };
 

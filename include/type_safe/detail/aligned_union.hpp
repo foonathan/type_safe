@@ -41,11 +41,11 @@ namespace detail
         static constexpr auto size_value      = detail::max(sizeof(Types)...);
         static constexpr auto alignment_value = detail::max(alignof(Types)...);
 
-        using type = typename std::aligned_storage<size_value, alignment_value>::type;
+        alignas(alignment_value) std::byte storage_[size_value];
     };
 
     template <typename... Types>
-    using aligned_union_t = typename aligned_union<Types...>::type;
+    using aligned_union_t = aligned_union<Types...>;
 } // namespace detail
 } // namespace type_safe
 
