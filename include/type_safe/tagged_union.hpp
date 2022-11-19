@@ -8,7 +8,7 @@
 #if defined(TYPE_SAFE_IMPORT_STD_MODULE)
 import std;
 #else
-#include <new>
+#    include <new>
 #endif
 
 #include <type_safe/config.hpp>
@@ -153,7 +153,7 @@ public:
     /// \notes Does not destroy the currently stored type.
     ~tagged_union() noexcept = default;
 
-    tagged_union(const tagged_union&) = delete;
+    tagged_union(const tagged_union&)            = delete;
     tagged_union& operator=(const tagged_union&) = delete;
 
     //=== modifiers ===//
@@ -171,7 +171,7 @@ public:
         static_assert(std::is_constructible<T, Args&&...>::value,
                       "T not constructible from arguments");
 
-        ::new (get_memory()) T(std::forward<Args>(args)...);
+        ::new (storage_.get()) T(std::forward<Args>(args)...);
         cur_type_ = index;
     }
 
@@ -208,7 +208,7 @@ public:
     T& value(union_type<T> type) TYPE_SAFE_LVALUE_REF noexcept
     {
         check(type);
-        return *static_cast<T*>(get_memory());
+        return *static_cast<T*>(storage_.get());
     }
 
     /// \group value
@@ -216,16 +216,16 @@ public:
     const T& value(union_type<T> type) const TYPE_SAFE_LVALUE_REF noexcept
     {
         check(type);
-        return *static_cast<const T*>(get_memory());
+        return *static_cast<const T*>(storage_.get());
     }
 
 #if TYPE_SAFE_USE_REF_QUALIFIERS
     /// \group value
     template <typename T>
-        T&& value(union_type<T> type) && noexcept
+    T&& value(union_type<T> type) && noexcept
     {
         check(type);
-        return std::move(*static_cast<T*>(get_memory()));
+        return std::move(*static_cast<T*>(storage_.get()));
     }
 
     /// \group value
@@ -233,21 +233,11 @@ public:
     const T&& value(union_type<T> type) const&& noexcept
     {
         check(type);
-        return std::move(*static_cast<const T*>(get_memory()));
+        return std::move(*static_cast<const T*>(storage_.get()));
     }
 #endif
 
 private:
-    void* get_memory() noexcept
-    {
-        return static_cast<void*>(&storage_);
-    }
-
-    const void* get_memory() const noexcept
-    {
-        return static_cast<const void*>(&storage_);
-    }
-
     template <typename T>
     void check(union_type<T> type) const noexcept
     {
@@ -255,7 +245,7 @@ private:
                      "different type stored in union");
     }
 
-    using storage_t = detail::aligned_union_t<Types...>;
+    using storage_t = detail::aligned_union<Types...>;
     storage_t storage_;
     type_id   cur_type_;
 };
