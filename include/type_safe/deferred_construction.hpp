@@ -5,9 +5,13 @@
 #ifndef TYPE_SAFE_DEFERRED_CONSTRUCTION_HPP_INCLUDED
 #define TYPE_SAFE_DEFERRED_CONSTRUCTION_HPP_INCLUDED
 
+#if defined(TYPE_SAFE_IMPORT_STD_MODULE)
+import std;
+#else
 #include <new>
 #include <type_traits>
 #include <utility>
+#endif
 
 #include <type_safe/detail/assert.hpp>
 

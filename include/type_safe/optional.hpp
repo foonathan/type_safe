@@ -5,9 +5,13 @@
 #ifndef TYPE_SAFE_OPTIONAL_HPP_INCLUDED
 #define TYPE_SAFE_OPTIONAL_HPP_INCLUDED
 
+#if defined(TYPE_SAFE_IMPORT_STD_MODULE)
+import std;
+#else
 #include <functional>
 #include <new>
 #include <type_traits>
+#endif
 
 #include <type_safe/detail/assert.hpp>
 #include <type_safe/detail/assign_or_construct.hpp>

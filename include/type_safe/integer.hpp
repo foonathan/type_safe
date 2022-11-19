@@ -5,10 +5,14 @@
 #ifndef TYPE_SAFE_INTEGER_HPP_INCLUDED
 #define TYPE_SAFE_INTEGER_HPP_INCLUDED
 
+#if defined(TYPE_SAFE_IMPORT_STD_MODULE)
+import std;
+#else
 #include <functional>
 #include <iosfwd>
 #include <limits>
 #include <type_traits>
+#endif
 
 #include <type_safe/arithmetic_policy.hpp>
 #include <type_safe/detail/assert.hpp>
