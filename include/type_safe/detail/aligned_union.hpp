@@ -9,6 +9,7 @@
 import std;
 #else
 #include <type_traits>
+#include <cstddef>
 #endif
 
 namespace type_safe
