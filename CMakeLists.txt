@@ -119,9 +119,6 @@ if(TYPE_SAFE_IMPORT_STD_MODULE)
         target_sources(type_safe PUBLIC "${CompilerDir}/../../../modules/std.ixx" )
     endif()
 
-    # TEMPORARY for alignas issue
-    target_compile_options(type_safe INTERFACE /wd4996)
-
 endif()
 
 if(MSVC)
