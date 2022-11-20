@@ -170,7 +170,7 @@ private:
         return static_cast<const void*>(&storage_);
     }
 
-    alignas(T) std::uint8_t storage_[sizeof(T)];
+    alignas(T) unsigned char storage_[sizeof(T)];
     bool      initialized_;
 };
 

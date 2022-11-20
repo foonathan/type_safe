@@ -946,7 +946,7 @@ private:
         return static_cast<const void*>(&storage_);
     }
 
-    alignas(value_type) std::uint8_t storage_[sizeof(value_type)];
+    alignas(value_type) unsigned char storage_[sizeof(value_type)];
     bool      empty_;
 };
 
