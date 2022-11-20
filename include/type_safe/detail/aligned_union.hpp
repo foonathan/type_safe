@@ -42,7 +42,7 @@ namespace detail
         static constexpr auto size_value      = detail::max(sizeof(Types)...);
         static constexpr auto alignment_value = detail::max(alignof(Types)...);
 
-        alignas(alignment_value) std::byte storage_[size_value];
+        alignas(alignment_value) std::uint8_t storage_[size_value];
     };
 
     template <typename... Types>
