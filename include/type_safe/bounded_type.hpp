@@ -233,8 +233,8 @@ namespace constraints
         /// arguments are convertible to the bounds. \param 2 \exclude \param 3 \exclude
         template <typename U1, typename U2>
         explicit constexpr bounded(U1&& lower, U2&& upper,
-                                   decltype(lower_type(std::forward<U1>(lower)), 0) = 0,
-                                   decltype(upper_type(std::forward<U2>(upper)), 0) = 0)
+                                   decltype(lower_type(std::declval<U1>()), 0) = 0,
+                                   decltype(upper_type(std::declval<U2>()), 0) = 0)
         : lower_type(std::forward<U1>(lower)), upper_type(std::forward<U2>(upper))
         {}
 

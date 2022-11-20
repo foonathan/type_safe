@@ -2,9 +2,11 @@
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
+#if !defined(TYPE_SAFE_IMPORT_STD_MODULE)
 #include <cctype>
 #include <iostream>
 #include <string>
+#endif
 
 #include <type_safe/optional.hpp>
 #include <type_safe/optional_ref.hpp>

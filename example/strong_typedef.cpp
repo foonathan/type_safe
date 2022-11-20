@@ -2,9 +2,11 @@
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
+#if !defined(TYPE_SAFE_IMPORT_STD_MODULE)
 #include <iostream>
 #include <string>
 #include <unordered_set>
+#endif
 
 #include <type_safe/strong_typedef.hpp>
 

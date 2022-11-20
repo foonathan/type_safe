@@ -2,7 +2,9 @@
 // This file is subject to the license terms in the LICENSE file
 // found in the top-level directory of this distribution.
 
+#if !defined(TYPE_SAFE_IMPORT_STD_MODULE)
 #include <iostream>
+#endif
 
 #include <type_safe/narrow_cast.hpp> // narrow_cast<>
 #include <type_safe/types.hpp>       // boolean<>, integer<>, floating_point<>, aliases

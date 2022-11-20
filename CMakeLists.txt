@@ -111,6 +111,15 @@ if(TYPE_SAFE_IMPORT_STD_MODULE)
     # If a user has set TYPE_SAFE_IMPORT_STD_MODULE to ON this indicates they want the type_safe headers to import std
     # This is a C++ 23 feature so we require them to use C++ in their build
     target_compile_features(type_safe INTERFACE cxx_std_23)
+
+    # Hopefully MS will provide a better/automatic/IJW way to use the standard library module
+    if( MSVC )
+        target_sources(type_safe PUBLIC "C:/Program Files/Microsoft Visual Studio/2022/Preview/VC/Tools/MSVC/14.35.32019/modules/std.ixx")
+    endif()
+
+    # TEMPORARY for alignas issue
+    target_compile_options(type_safe INTERFACE /wd4996)
+
 endif()
 
 if(MSVC)

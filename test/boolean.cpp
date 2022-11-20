@@ -6,7 +6,11 @@
 
 #include <catch.hpp>
 
+#if defined(TYPE_SAFE_IMPORT_STD_MODULE)
+import std;
+#else
 #include <sstream>
+#endif
 
 using namespace type_safe;
 

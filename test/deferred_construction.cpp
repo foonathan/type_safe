@@ -5,7 +5,12 @@
 #include <type_safe/deferred_construction.hpp>
 
 #include <catch.hpp>
+
+#if defined(TYPE_SAFE_IMPORT_STD_MODULE)
+import std;
+#else
 #include <string>
+#endif
 
 using namespace type_safe;
 
