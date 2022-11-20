@@ -111,6 +111,17 @@ if(TYPE_SAFE_IMPORT_STD_MODULE)
     # If a user has set TYPE_SAFE_IMPORT_STD_MODULE to ON this indicates they want the type_safe headers to import std
     # This is a C++ 23 feature so we require them to use C++ in their build
     target_compile_features(type_safe INTERFACE cxx_std_23)
+
+    # Hopefully MS will provide a better/automatic/IJW way to use the standard library module, in other words "import std;" should just work
+    if( MSVC )
+        # We use a path relative to the compiler location which should be stable and avoid VS upgrade/version/preview install location issues
+        cmake_path(GET CMAKE_CXX_COMPILER PARENT_PATH  CompilerDir)
+        target_sources(type_safe PUBLIC "${CompilerDir}/../../../modules/std.ixx" )
+    endif()
+
+    # TEMPORARY for alignas issue
+    target_compile_options(type_safe INTERFACE /wd4996)
+
 endif()
 
 if(MSVC)
