@@ -112,9 +112,11 @@ if(TYPE_SAFE_IMPORT_STD_MODULE)
     # This is a C++ 23 feature so we require them to use C++ in their build
     target_compile_features(type_safe INTERFACE cxx_std_23)
 
-    # Hopefully MS will provide a better/automatic/IJW way to use the standard library module
+    # Hopefully MS will provide a better/automatic/IJW way to use the standard library module, in other words "import std;" should just work
     if( MSVC )
-        target_sources(type_safe PUBLIC "C:/Program Files/Microsoft Visual Studio/2022/Preview/VC/Tools/MSVC/14.35.32019/modules/std.ixx")
+        # We use a path relative to the compiler location which should be stable avoid VS version/Preview install location issues
+        cmake_path(GET CMAKE_CXX_COMPILER PARENT_PATH  CompilerDir)
+        target_sources(type_safe PUBLIC "${CompilerDir}/../../../modules/std.ixx" )
     endif()
 
     # TEMPORARY for alignas issue
