@@ -7,6 +7,7 @@ cmake_minimum_required(VERSION 3.1)
 project(TYPE_SAFE)
 
 include(external/external.cmake)
+include(cmake/type_safe_standard_library_module.cmake)
 
 # options
 if(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -112,16 +113,8 @@ if(TYPE_SAFE_IMPORT_STD_MODULE)
     # This is a C++ 23 feature so we require them to use C++ in their build
     target_compile_features(type_safe INTERFACE cxx_std_23)
 
-    # Hopefully MS will provide a better/automatic/IJW way to use the standard library module, in other words "import std;" should just work
-    if( MSVC )
-        # We use a path relative to the compiler location which should be stable avoid VS version/Preview install location issues
-        cmake_path(GET CMAKE_CXX_COMPILER PARENT_PATH  CompilerDir)
-        target_sources(type_safe PUBLIC "${CompilerDir}/../../../modules/std.ixx" )
-    endif()
-
     # TEMPORARY for alignas issue
     target_compile_options(type_safe INTERFACE /wd4996)
-
 endif()
 
 if(MSVC)

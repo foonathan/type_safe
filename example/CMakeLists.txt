@@ -5,7 +5,9 @@
 function(_type_safe_example name)
     add_executable(type_safe_example_${name} ${name}.cpp)
     target_link_libraries(type_safe_example_${name} PUBLIC type_safe)
-    set_property(TARGET type_safe_example_${name} PROPERTY CXX_STANDARD 11)
+    target_compile_features(type_safe_example_${name} PRIVATE  $<IF:$<BOOL:${TYPE_SAFE_IMPORT_STD_MODULE}>,cxx_std_23,cxx_std_11>)
+
+    type_safe_add_std_module(TARGET type_safe_example_${name})
 endfunction()
 
 _type_safe_example(constrained)

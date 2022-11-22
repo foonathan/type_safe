@@ -51,6 +51,8 @@ if(NOT TYPE_SAFE_IMPORT_STD_MODULE)
     target_compile_features(type_safe_test PRIVATE cxx_std_14) # some tests require 14
 endif()
 
+type_safe_add_std_module(TARGET type_safe_test)
+
 if(MSVC)
     target_compile_definitions(type_safe_test PRIVATE TYPE_SAFE_TEST_NO_STATIC_ASSERT)
 elseif(CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
