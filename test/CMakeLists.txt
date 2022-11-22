@@ -44,7 +44,10 @@ set(source_files test.cpp
 add_executable(type_safe_test debugger_type.hpp ${source_files})
 target_link_libraries(type_safe_test PUBLIC type_safe)
 target_include_directories(type_safe_test PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-set_property(TARGET type_safe_test PROPERTY CXX_STANDARD 14) # some tests require 14
+
+if(NOT TYPE_SAFE_IMPORT_STD_MODULE)
+    target_compile_features(type_safe_test PRIVATE cxx_std_14) # some tests require 14
+endif()
 
 if(MSVC)
     target_compile_definitions(type_safe_test PRIVATE TYPE_SAFE_TEST_NO_STATIC_ASSERT)
