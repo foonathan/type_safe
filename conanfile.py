@@ -5,7 +5,7 @@ import os
 class TypeSafe(ConanFile):
     name = 'type_safe'
     url  = 'https://github.com/foonathan/type_safe'
-    version = '0.2.2'
+    version = '0.2.3'
     requires = 'debug_assert/1.3@Manu343726/testing'
     exports = '*.hpp'
     generators = 'cmake'

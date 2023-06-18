@@ -125,7 +125,7 @@ set(TYPE_SAFE_CMAKE_SIZEOF_VOID_P ${CMAKE_SIZEOF_VOID_P})
 set(CMAKE_SIZEOF_VOID_P "")
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/type_safe-config-version.cmake
-  VERSION 0.2.2
+  VERSION 0.2.3
   COMPATIBILITY SameMajorVersion
 )
 set(CMAKE_SIZEOF_VOID_P ${TYPE_SAFE_CMAKE_SIZEOF_VOID_P})
