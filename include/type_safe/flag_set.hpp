@@ -421,14 +421,14 @@ class flag_set
     static_assert(flag_set_traits<Enum>::value, "invalid enum for flag_set");
 
 public:
+    using int_type = typename detail::flag_set_impl<Enum>::int_type;
+
     /// \returns a flag_set based on the given integer value.
-    /// \requires `T` must be an unsigned integer type with number of bits <= internal used bit size.
+    /// \requires `T` must be of the same type as `int_type`.
     template <typename T>
     static constexpr flag_set from_int(T intVal)
     {
-        static_assert(std::is_unsigned<T>::value
-                          && sizeof(T) <= sizeof(int_type),
-                      "invalid integer type, lossy conversion");
+        static_assert(std::is_same<T, int_type>::value, "invalid integer type, lossy conversion");
         return flag_set(intVal);
     }
 
