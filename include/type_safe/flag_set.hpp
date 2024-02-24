@@ -625,7 +625,6 @@ public:
     }
 
 private:
-    using int_type = typename detail::flag_set_impl<Enum>::int_type;
     explicit constexpr flag_set(int_type rawvalue) noexcept : flags_(detail::flag_set_impl<Enum>::from_int(rawvalue))
     {}
 
