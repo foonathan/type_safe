@@ -427,7 +427,7 @@ public:
     static constexpr flag_set from_int(T intVal)
     {
         static_assert(std::is_unsigned<T>::value
-                          && sizeof(T) * CHAR_BIT >= flag_set_traits<Enum>::size(),
+                          && sizeof(T) <= sizeof(int_type),
                       "invalid integer type, lossy conversion");
         return flag_set(intVal);
     }
