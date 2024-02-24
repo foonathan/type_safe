@@ -153,6 +153,23 @@ TEST_CASE("flag_set")
         b = test_flags::c;
         check_set(b, false, false, true);
     }
+    SECTION("from_int")
+    {
+        set a = set::from_int<std::uint8_t>(0b000);
+        check_set(a, false, false, false);
+
+        a = set::from_int<std::uint8_t>(0b001);
+        check_set(a, true, false, false);
+
+        a = set::from_int<std::uint8_t>(0b010);
+        check_set(a, false, true, false);
+
+        a = set::from_int<std::uint8_t>(0b100);
+        check_set(a, false, false, true);
+
+        a = set::from_int<std::uint8_t>(0b111);
+        check_set(a, true, true, true);
+    }
     SECTION("set")
     {
         s.set(test_flags::a);
