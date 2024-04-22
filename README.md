@@ -12,11 +12,6 @@ type_safe provides zero overhead abstractions that use the C++ type system to pr
 The library features cannot really be explained in the scope of this readme,
 I highly suggest that you check out [the first](https://www.foonathan.net/2016/10/type-safe/) and [second blog post](https://www.foonathan.net/2016/10/strong-typedefs/) and the examples.
 
-> |[![](https://www.jonathanmueller.dev/embarcadero-logo.png)](https://www.embarcadero.com/de/products/cbuilder/starter) | Sponsored by [Embarcadero C++Builder](https://www.embarcadero.com/de/products/cbuilder/starter). |
-> |-------------------------------------|----------------|
->
-> If you like this project, consider [supporting me](https://jonathanmueller.dev/support-me/).
-
 ## Features
 
 ### Improved built-in types
