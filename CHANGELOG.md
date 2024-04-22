@@ -1,3 +1,11 @@
+## Version 0.2.4
+
+* Minimum CMake version is now 3.5 (#156).
+* Better module support (#151).
+* Prevent dangling double-wrapping of `function_ref` (#154).
+* Use EBO for `strong_typedef` on MSVC (#159).
+* Add `flag_set::from_int` (#161).
+
 ## Version 0.2.3
 
 * Enable the use of `import std` (#141, #147).
