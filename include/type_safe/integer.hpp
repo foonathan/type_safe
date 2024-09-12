@@ -8,10 +8,10 @@
 #if defined(TYPE_SAFE_IMPORT_STD_MODULE)
 import std;
 #else
-#include <functional>
-#include <iosfwd>
-#include <limits>
-#include <type_traits>
+#    include <functional>
+#    include <iosfwd>
+#    include <limits>
+#    include <type_traits>
 #endif
 
 #include <type_safe/arithmetic_policy.hpp>
@@ -190,14 +190,14 @@ public:
     {
         static_assert(std::is_signed<integer_type>::value,
                       "cannot call unary minus on unsigned integer");
-        return integer(Policy::template do_multiplication(value_, integer_type(-1)));
+        return integer(Policy::do_multiplication(value_, integer_type(-1)));
     }
 
     /// \effects Increments the integer by one.
     /// \group increment
     TYPE_SAFE_FORCE_INLINE integer& operator++()
     {
-        value_ = Policy::template do_addition(value_, integer_type(1));
+        value_ = Policy::do_addition(value_, integer_type(1));
         return *this;
     }
 
@@ -213,7 +213,7 @@ public:
     /// \group decrement
     TYPE_SAFE_FORCE_INLINE integer& operator--()
     {
-        value_ = Policy::template do_subtraction(value_, integer_type(1));
+        value_ = Policy::do_subtraction(value_, integer_type(1));
         return *this;
     }
 
@@ -232,7 +232,7 @@ public:
      * \param 1                                                                                    \
      * \exclude */                                                                                 \
     template <typename T, typename = detail::enable_safe_integer_conversion<T, integer_type>>      \
-    TYPE_SAFE_FORCE_INLINE integer& operator Op(const T& other)                                    \
+    TYPE_SAFE_FORCE_INLINE integer& operator Op(const T & other)                                   \
     {                                                                                              \
         return *this Op integer<T, Policy>(other);                                                 \
     }                                                                                              \
