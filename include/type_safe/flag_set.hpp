@@ -579,6 +579,18 @@ public:
         return flags_.to_int();
     }
 
+    template <typename UnaryFunction>
+    TYPE_SAFE_CONSTEXPR14 UnaryFunction for_each(UnaryFunction f) const {
+        using int_type = typename detail::flag_set_impl<Enum>::int_type;
+        int_type m = flags_.to_int();
+        for (int_type i = 0; i < std::numeric_limits<int_type>::digits; ++i) {
+            if ((m & int_type(int_type(1u) << i)) != int_type(0u)) {
+                f(static_cast<Enum>(i));
+            }
+        }
+        return f;
+    }
+
     //=== bitwise operations ===//
     /// \returns A set with all the flags flipped.
     constexpr flag_set operator~() const noexcept
