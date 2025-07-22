@@ -394,7 +394,7 @@ inline namespace literals
     /// the value has type `long long` (1)/`unsigned long long`(2).
     /// \group bound_lit
     template <char... Digits>
-    constexpr auto operator"" _bound()
+    constexpr auto operator""_bound()
         -> lit_detail::integer_bound<long long, detail::parse<long long, Digits...>()>
     {
         return {};
@@ -402,7 +402,7 @@ inline namespace literals
 
     /// \group bound_lit
     template <char... Digits>
-    constexpr auto operator"" _boundu()
+    constexpr auto operator""_boundu()
         -> lit_detail::integer_bound<unsigned long long,
                                      detail::parse<unsigned long long, Digits...>()>
     {
