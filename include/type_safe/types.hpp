@@ -81,56 +81,56 @@ inline namespace types
     {
         /// \module types
         template <char... Digits>
-        constexpr int8_t operator"" _i8()
+        constexpr int8_t operator""_i8()
         {
             return int8_t(detail::parse_signed<std::int8_t, Digits...>());
         }
 
         /// \module types
         template <char... Digits>
-        constexpr int16_t operator"" _i16()
+        constexpr int16_t operator""_i16()
         {
             return int16_t(detail::parse_signed<std::int16_t, Digits...>());
         }
 
         /// \module types
         template <char... Digits>
-        constexpr int32_t operator"" _i32()
+        constexpr int32_t operator""_i32()
         {
             return int32_t(detail::parse_signed<std::int32_t, Digits...>());
         }
 
         /// \module types
         template <char... Digits>
-        constexpr int64_t operator"" _i64()
+        constexpr int64_t operator""_i64()
         {
             return int64_t(detail::parse_signed<std::int64_t, Digits...>());
         }
 
         /// \module types
         template <char... Digits>
-        constexpr uint8_t operator"" _u8()
+        constexpr uint8_t operator""_u8()
         {
             return uint8_t(detail::parse_unsigned<std::uint8_t, Digits...>());
         }
 
         /// \module types
         template <char... Digits>
-        constexpr uint16_t operator"" _u16()
+        constexpr uint16_t operator""_u16()
         {
             return uint16_t(detail::parse_unsigned<std::uint16_t, Digits...>());
         }
 
         /// \module types
         template <char... Digits>
-        constexpr uint32_t operator"" _u32()
+        constexpr uint32_t operator""_u32()
         {
             return uint32_t(detail::parse_unsigned<std::uint32_t, Digits...>());
         }
 
         /// \module types
         template <char... Digits>
-        constexpr uint64_t operator"" _u64()
+        constexpr uint64_t operator""_u64()
         {
             return uint64_t(detail::parse_unsigned<std::uint64_t, Digits...>());
         }
@@ -194,21 +194,21 @@ inline namespace types
     {
         /// \module types
         template <char... Digits>
-        constexpr ptrdiff_t operator"" _isize()
+        constexpr ptrdiff_t operator""_isize()
         {
             return ptrdiff_t(detail::parse_signed<std::ptrdiff_t, Digits...>());
         }
 
         /// \module types
         template <char... Digits>
-        constexpr size_t operator"" _usize()
+        constexpr size_t operator""_usize()
         {
             return size_t(detail::parse_unsigned<std::size_t, Digits...>());
         }
 
         /// \module types
         template <char... Digits>
-        constexpr int_t operator"" _i()
+        constexpr int_t operator""_i()
         {
             // int is at least 16 bits
             return int_t(detail::parse_signed<std::int16_t, Digits...>());
@@ -216,7 +216,7 @@ inline namespace types
 
         /// \module types
         template <char... Digits>
-        constexpr unsigned_t operator"" _u()
+        constexpr unsigned_t operator""_u()
         {
             // int is at least 16 bits
             return unsigned_t(detail::parse_unsigned<std::uint16_t, Digits...>());
@@ -232,13 +232,13 @@ inline namespace types
     inline namespace literals
     {
         /// \module types
-        constexpr float_t operator"" _f(long double val)
+        constexpr float_t operator""_f(long double val)
         {
             return float_t(static_cast<std::float_t>(val));
         }
 
         /// \module types
-        constexpr double_t operator"" _d(long double val)
+        constexpr double_t operator""_d(long double val)
         {
             return double_t(static_cast<std::double_t>(val));
         }
