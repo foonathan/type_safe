@@ -9,10 +9,13 @@
 import std;
 #else
 #include <climits>
+#include <cstddef>
 #include <cstdint>
+#include <iterator>
 #include <type_traits>
 #endif
 
+#include <type_safe/config.hpp>
 #include <type_safe/flag.hpp>
 #include <type_safe/types.hpp>
 
@@ -423,6 +426,72 @@ class flag_set
 public:
     using int_type = typename detail::flag_set_impl<Enum>::int_type;
 
+    class const_iterator
+    {
+    public:
+        using iterator_category = std::input_iterator_tag;
+        using value_type        = Enum;
+        using difference_type   = std::ptrdiff_t;
+        using pointer           = void;
+        using reference         = Enum;
+
+        constexpr const_iterator() noexcept
+        : set_(nullptr), index_(flag_set_traits<Enum>::size())
+        {}
+
+        constexpr Enum operator*() const noexcept
+        {
+            return static_cast<Enum>(index_);
+        }
+
+        TYPE_SAFE_CONSTEXPR14 const_iterator& operator++() noexcept
+        {
+            ++index_;
+            skip_unset();
+            return *this;
+        }
+
+        TYPE_SAFE_CONSTEXPR14 const_iterator operator++(int) noexcept
+        {
+            auto result = *this;
+            ++*this;
+            return result;
+        }
+
+        constexpr bool operator==(const const_iterator& other) const noexcept
+        {
+            return set_ == other.set_ && index_ == other.index_;
+        }
+
+        constexpr bool operator!=(const const_iterator& other) const noexcept
+        {
+            return !(*this == other);
+        }
+
+    private:
+        constexpr const_iterator(const flag_set* set, std::size_t index) noexcept
+        : set_(set), index_(index)
+        {}
+
+        TYPE_SAFE_CONSTEXPR14 void skip_unset() noexcept
+        {
+            while (index_ < flag_set_traits<Enum>::size() && !is_set(index_))
+                ++index_;
+        }
+
+        constexpr bool is_set(std::size_t index) const noexcept
+        {
+            return set_->is_set(static_cast<Enum>(index));
+        }
+
+        const flag_set* set_;
+        std::size_t     index_;
+
+        friend class flag_set;
+    };
+
+    using iterator = const_iterator;
+
     /// \returns a flag_set based on the given integer value.
     /// \requires `T` must be of the same type as `int_type`.
     template <typename T>
@@ -577,6 +646,20 @@ public:
                           && sizeof(T) * CHAR_BIT >= flag_set_traits<Enum>::size(),
                       "invalid integer type, lossy conversion");
         return flags_.to_int();
+    }
+
+    /// \returns An iterator to the first set flag.
+    const_iterator begin() const noexcept
+    {
+        auto result = const_iterator(this, 0u);
+        result.skip_unset();
+        return result;
+    }
+
+    /// \returns An iterator one past the last set flag.
+    constexpr const_iterator end() const noexcept
+    {
+        return const_iterator(this, flag_set_traits<Enum>::size());
     }
 
     //=== bitwise operations ===//

@@ -237,4 +237,52 @@ TEST_CASE("flag_set")
         s ^= test_flags::a | test_flags::c;
         check_set(s, true, false, false);
     }
+    SECTION("iteration")
+    {
+        static_assert(std::is_same<decltype(*s.begin()), test_flags>::value, "iterator must return the flag enum");
+
+        test_flags flags[3] = {};
+        auto count = 0u;
+        for (auto flag : s)
+            flags[count++] = flag;
+        REQUIRE(count == 0u);
+
+        s.set(test_flags::b);
+        for (auto flag : s)
+            flags[count++] = flag;
+        REQUIRE(count == 1u);
+        REQUIRE(flags[0] == test_flags::b);
+
+        count = 0u;
+        s |= test_flags::a | test_flags::c;
+        for (auto flag : s)
+            flags[count++] = flag;
+        REQUIRE(count == 3u);
+        REQUIRE(flags[0] == test_flags::a);
+        REQUIRE(flags[1] == test_flags::b);
+        REQUIRE(flags[2] == test_flags::c);
+    }
+    SECTION("const iteration")
+    {
+        const auto c = set(test_flags::a | test_flags::c);
+        test_flags flags[2] = {};
+        auto count = 0u;
+        for (auto flag : c)
+            flags[count++] = flag;
+
+        REQUIRE(count == 2u);
+        REQUIRE(flags[0] == test_flags::a);
+        REQUIRE(flags[1] == test_flags::c);
+    }
+    SECTION("iteration ignores out of range bits")
+    {
+        auto raw = set::from_int<std::uint8_t>(0b11111000);
+        auto count = 0u;
+        for (auto flag : raw)
+        {
+            (void)flag;
+            ++count;
+        }
+        REQUIRE(count == 0u);
+    }
 }
