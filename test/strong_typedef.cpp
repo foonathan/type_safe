@@ -7,6 +7,7 @@
 #include <catch.hpp>
 
 #include <sstream>
+#include <stdexcept>
 
 using namespace type_safe;
 
@@ -27,6 +28,45 @@ CREATE_IS_OPERATOR_CALLABLE_WITH_ARGS_CHECKER(/, is_division_callable_with)
 
 TEST_CASE("strong_typedef")
 {
+    SECTION("value constructor noexcept")
+    {
+        struct throwing_copy
+        {
+            throwing_copy() = default;
+            throwing_copy(const throwing_copy&)
+            {
+                throw std::runtime_error("copy");
+            }
+            throwing_copy(throwing_copy&&) noexcept = default;
+        };
+        struct throwing_move
+        {
+            throwing_move() = default;
+            throwing_move(const throwing_move&) noexcept = default;
+            throwing_move(throwing_move&&)
+            {
+                throw std::runtime_error("move");
+            }
+        };
+        using int_type  = strong_typedef<struct int_tag, int>;
+        using copy_type = strong_typedef<struct copy_tag, throwing_copy>;
+        using move_type = strong_typedef<struct move_tag, throwing_move>;
+
+        CHECK((std::is_nothrow_constructible<int_type, const int&>::value));
+        CHECK((std::is_nothrow_constructible<int_type, int&&>::value));
+        CHECK_FALSE((std::is_nothrow_constructible<copy_type, const throwing_copy&>::value));
+        CHECK((std::is_nothrow_constructible<copy_type, throwing_copy&&>::value));
+        CHECK((std::is_nothrow_constructible<move_type, const throwing_move&>::value));
+        CHECK_FALSE((std::is_nothrow_constructible<move_type, throwing_move&&>::value));
+
+        const int value = 42;
+        REQUIRE(get(int_type(value)) == value);
+        throwing_copy copy;
+        REQUIRE_THROWS_AS(copy_type(copy), std::runtime_error);
+        throwing_move move;
+        REQUIRE_THROWS_AS(move_type(std::move(move)), std::runtime_error);
+    }
+
     // only check compilation here
     SECTION("general")
     {
